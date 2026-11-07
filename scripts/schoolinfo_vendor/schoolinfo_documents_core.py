@@ -49,6 +49,7 @@ class School:
     school_code: str
     neis_school_code: str
     education_office_code: str
+    school_kind: str = "고등학교"
 
 
 @dataclass(frozen=True, slots=True)
@@ -160,6 +161,7 @@ def load_schools() -> tuple[School, ...]:
                 school_code=text(row, "school_code"),
                 neis_school_code=text(row, "neis_school_code"),
                 education_office_code=text(row, "education_office_code"),
+                school_kind=text(row, "school_kind") or "고등학교",
             )
             for row in csv.DictReader(handle)
             if text(row, "year") == str(ACTIVE_YEAR)

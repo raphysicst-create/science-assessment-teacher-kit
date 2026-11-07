@@ -16,6 +16,10 @@ from schoolinfo_documents_core import BASE_URL, USER_AGENT, School
 SEARCH_URL: Final = f"{BASE_URL}/ei/ss/pneiss_a04_s0/getSchoolList.do"
 SEARCH_PAGE_URL: Final = f"{BASE_URL}/ei/ss/pneiss_a03_s0.do"
 HANGMOK_URL: Final = f"{BASE_URL}/ei/ss/pneiss_a03_s0_hangmok_json.do"
+# SCHUL_KIND is supplied by the Schoolinfo autocomplete response.
+# High school "04" preserves the existing code; middle school "03" is inferred
+# and has NOT yet been verified with a live response.
+SCHOOL_KIND_CODES: Final = {"고등학교": "04", "중학교": "03"}
 
 
 @dataclass(frozen=True, slots=True)
@@ -89,7 +93,12 @@ def post_with_retry(
     raise last_error
 
 
-def resolve_shl_idf(opener_value: urllib.request.OpenerDirector, school: School) -> tuple[str, str]:
+def resolve_shl_idf(
+    opener_value: urllib.request.OpenerDirector, school: School, school_kind: str = "고등학교",
+) -> tuple[str, str]:
+    kind_code = SCHOOL_KIND_CODES.get(school_kind)
+    if kind_code is None:
+        return "", f"school_search_invalid_school_kind: {school_kind}"
     try:
         result = post_with_retry(opener_value, SEARCH_URL, {"SEARCH_WORD": school.school_name}, 10)
         payload = json.loads(result.body)
@@ -97,10 +106,14 @@ def resolve_shl_idf(opener_value: urllib.request.OpenerDirector, school: School)
         return "", f"school_search_failed: {type(exc).__name__}: {exc}"
     matches = [
         item for item in payload
-        if isinstance(item, dict) and item.get("SHL_NM") == school.school_name and item.get("SCHUL_KIND") == "04"
+        if isinstance(item, dict) and item.get("SHL_NM") == school.school_name
+        and item.get("SCHUL_KIND") == kind_code
     ]
     if not matches:
-        return "", "school_search_no_match: Schoolinfo autocomplete returned no exact high-school match"
+        return "", (
+            "school_search_no_match: Schoolinfo autocomplete returned "
+            f"no exact {school_kind} match"
+        )
     if len(matches) > 1:
         office_prefix = school.education_office_code[:1].upper()
         office_matches = [

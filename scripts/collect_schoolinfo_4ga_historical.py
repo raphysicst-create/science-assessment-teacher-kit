@@ -109,6 +109,7 @@ def main() -> None:
                 school_code=str(row.get("school_code") or ""),
                 neis_school_code=str(row.get("neis_school_code") or ""),
                 education_office_code=str(row.get("education_office_code") or ""),
+                school_kind=str(row.get("school_kind") or "고등학교").strip() or "고등학교",
             ))
     schools.sort(key=lambda value: (value.region_sido, value.region_sgg, value.school_name, value.school_code))
     selected = schools[args.offset: args.offset + args.limit if args.limit else None]
@@ -131,7 +132,7 @@ def main() -> None:
         records: list[dict[str, object]] = []
         browser = opener()
         time.sleep(max(0.0, args.sleep_seconds))
-        uid, lookup_error = resolve_shl_idf(browser, school)
+        uid, lookup_error = resolve_shl_idf(browser, school, school.school_kind)
         source_url = "https://www.schoolinfo.go.kr/ei/pp/Pneipp_b43_s0p.do"
         if lookup_error or not uid:
             records.append({

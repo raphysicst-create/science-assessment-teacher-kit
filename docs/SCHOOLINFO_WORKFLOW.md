@@ -10,6 +10,7 @@
 | --- | --- |
 | `school_id` | 파일명에 쓸 고유 식별자. 영문·숫자·밑줄·하이픈을 권장합니다. |
 | `school_name` | 학교알리미에 표시되는 학교 이름 |
+| `school_kind` | 선택 열. `고등학교` 또는 `중학교`. 열이 없거나 비어 있으면 `고등학교`로 처리합니다. |
 | `region_sido`, `region_sgg` | 시도명과 시군구명 |
 | `school_code`, `neis_school_code` | 학교 기본정보의 표준학교코드. 두 열에 같은 값을 넣습니다. |
 | `education_office_code` | 시도교육청 코드 |

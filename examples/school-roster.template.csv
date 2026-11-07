@@ -1,2 +1,3 @@
-﻿school_id,school_name,region_sido,region_sgg,school_code,neis_school_code,education_office_code
-example-1,가상 예제 고등학교,서울특별시,가상구,DEMO1,DEMO1,B10
+﻿school_id,school_name,region_sido,region_sgg,school_code,neis_school_code,education_office_code,school_kind
+example-1,가상 예제 고등학교,서울특별시,가상구,DEMO1,DEMO1,B10,고등학교
+example-2,가상 예제 중학교,서울특별시,가상구,DEMO2,DEMO2,B10,중학교

@@ -121,6 +121,7 @@ def load_schools(config: RunConfig) -> tuple[School, ...]:
                 school_code=csv_text(row, "school_code"),
                 neis_school_code=csv_text(row, "neis_school_code"),
                 education_office_code=csv_text(row, "education_office_code"),
+                school_kind=csv_text(row, "school_kind") or "고등학교",
             )
             if config.include_all or school.school_name in wanted:
                 schools.append(school)
@@ -210,7 +211,7 @@ def attachment_log(browser: urllib.request.OpenerDirector, item: DisclosureItem,
 
 
 def collect_school(browser: urllib.request.OpenerDirector, item: DisclosureItem, school: School, year: int) -> tuple[DownloadLog, ...]:
-    shl_idf_cd, lookup_error = resolve_shl_idf(browser, school)
+    shl_idf_cd, lookup_error = resolve_shl_idf(browser, school, school.school_kind)
     source_url = build_source_url(shl_idf_cd, item) if shl_idf_cd else f"{BASE_URL}{item.url_path}"
     if lookup_error:
         return (failure_log(item, school, source_url, lookup_error),)

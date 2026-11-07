@@ -59,7 +59,16 @@ def plan_status(filename: str) -> str:
 def read_roster(path: Path) -> list[School]:
     with path.open(encoding="utf-8-sig", newline="") as stream:
         schools = [
-            School(*(row[field].strip() for field in School.__dataclass_fields__))
+            School(
+                school_id=row["school_id"].strip(),
+                school_name=row["school_name"].strip(),
+                region_sido=row["region_sido"].strip(),
+                region_sgg=row["region_sgg"].strip(),
+                school_code=row["school_code"].strip(),
+                neis_school_code=row["neis_school_code"].strip(),
+                education_office_code=row["education_office_code"].strip(),
+                school_kind=(row.get("school_kind") or "고등학교").strip() or "고등학교",
+            )
             for row in csv.DictReader(stream)
         ]
     ids = {school.school_id for school in schools}
@@ -88,7 +97,7 @@ def collect_school(
         if stop.wait(pause):
             return {**record, "status": "stopped"}
         browser = opener()
-        uid, error = resolve_shl_idf(browser, school)
+        uid, error = resolve_shl_idf(browser, school, school.school_kind)
         if not uid:
             if re.search(r"HTTP Error (403|429|503)\b", error):
                 stop.set()
@@ -97,12 +106,20 @@ def collect_school(
         source_url = f"{BASE_URL}{ITEM_PATH}?{urlencode({'SHL_IDF_CD': uid, 'JG_YEAR': year, 'JG_CHASU': round_no})}"
         record["source_url"] = source_url
         meta = post(browser, HANGMOK_URL, {"SHL_IDF_CD": uid}, 15)
+        payload = json.loads(meta.body)
         items = [
-            item for item in json.loads(meta.body)
+            item for item in payload
             if isinstance(item, dict) and item.get("GS_HANGMOK_NO") == "4-가"
         ]
         if len(items) != 1 or items[0].get("GS_URL") != ITEM_PATH:
-            return {**record, "status": stage, "detail": "4ga_item_missing_or_changed"}
+            observed_items = [
+                {"GS_HANGMOK_NO": item.get("GS_HANGMOK_NO"), "GS_URL": item.get("GS_URL")}
+                for item in payload if isinstance(item, dict)
+            ]
+            detail = "4ga_item_missing_or_changed: " + json.dumps(
+                observed_items, ensure_ascii=False,
+            )
+            return {**record, "status": stage, "detail": detail}
         params = params_from_item(items[0], str(year), uid) | {"JG_CHASU": str(round_no)}
         request = ItemRequest(ITEM_PATH, params)
         page = fetch_item_html(browser, request)
