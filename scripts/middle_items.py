@@ -19,7 +19,7 @@ else:
     from middle_segments import digest_id, text_locator, visible
     from middle_subjects import classify_subject, table_spans
 
-RULE_VERSION = "middle-items-v3"
+RULE_VERSION = "middle-items-v4"
 IDENTITY_VERSION = "middle-items-v2"  # Field-only changes retain source identities.
 FIELDS = (
     "title",
@@ -130,6 +130,7 @@ def title_gate(value: str) -> dict:
         )
         or "[9" in value
         or BOX_RE.search(value)
+        or re.fullmatch(r"\d{1,2}월(?:\s*\d주)?(?:\s*[~∼～-]\s*\d{1,2}월(?:\s*\d주)?)?", value)
     )
     numbered = bool(TASK_NO_RE.fullmatch(value))
     method_like = bool(re.fullmatch(r"포트폴리오|프로젝트|실험|서[·ㆍ･・]?논술형?", value))
@@ -214,6 +215,8 @@ def evidence(cell: dict, conversion: dict, header: dict | None = None) -> dict:
     loc = text_locator(cell["start"], cell["end"], conversion)
     loc.update({k: cell[k] for k in ("table", "row", "col") if k in cell})
     result = {"raw": cell["raw"], "text": cell["text"], "locator": loc}
+    if cell.get("source_cell_proof"):
+        result["source_cell_proof"] = cell["source_cell_proof"]
     if header:
         result["header_raw"] = header["raw"]
         result["header_locator"] = text_locator(header["start"], header["end"], conversion)
@@ -467,6 +470,43 @@ def field_state_counts(items: list[dict], *, legacy: bool = False) -> dict:
     return counts
 
 
+def cell_part(cell: dict, start: int, end: int) -> dict:
+    """A subcell always addresses the unchanged converter cell."""
+    raw = cell["raw"][start:end]
+    return {**cell, "raw": raw, "text": visible(raw),
+            "start": cell["start"] + start, "end": cell["start"] + end}
+
+
+def split_form_labels(table: dict, conversion: dict) -> dict:
+    rows = []
+    for row in table["rows"]:
+        expanded = []
+        for cell in row:
+            raw = cell["raw"]
+            # Only this complete, ordered form grammar licenses a collapsed
+            # title. Dates/method choices cannot supply the title slot.
+            match = re.fullmatch(
+                r"\s*(수행\s*과제)\s+(.+?)\s+(반영\s*비율)\s+(\d+(?:\.\d+)?\s*%)\s*",
+                raw, re.S,
+            )
+            parts = []
+            if match and title_gate(visible(match[2]))["accepted"] and not re.fullmatch(
+                r"실험[·ㆍ･]?실습|서술[·ㆍ･]?논술|구술[·ㆍ･]?발표|프로젝트", visible(match[2])
+            ):
+                parts = [cell_part(cell, *match.span(n)) for n in (1, 2, 3, 4)]
+            unit = re.fullmatch(r"\s*(관련\s*단원)\s+(.+?)\s*", raw, re.S)
+            if unit:
+                parts = [cell_part(cell, *unit.span(n)) for n in (1, 2)]
+            verified = conversion.get("verified_cell_splits", {}).get(str(cell["start"]))
+            if verified and verified["cell_raw"] == raw:
+                parts = [cell_part(cell, p["start"], p["end"]) for p in verified["parts"]]
+                for part in parts:
+                    part["source_cell_proof"] = verified["proof"]
+            expanded.extend(parts or [cell])
+        rows.append(expanded)
+    return {**table, "rows": rows, "cells": [c for row in rows for c in row]}
+
+
 def form_structures(table: dict) -> list[dict]:
     """Label/value forms, possibly several vertically stacked forms per table."""
     pairs = []
@@ -503,9 +543,9 @@ def form_structures(table: dict) -> list[dict]:
             for cell in cells:
                 if (
                     header["row"] <= cell["row"] < header["row"] + header["rowspan"]
-                    and cell["col"] > header["col"]
+                    and cell["start"] > header["start"]
                     and cell["row"] == value["row"]
-                    and cell["col"] >= value["col"]
+                    and cell["start"] >= value["start"]
                 ):
                     if label_role(cell["text"]):
                         break
@@ -604,8 +644,13 @@ def column_structures(table: dict, section: dict) -> list[dict]:
                 for c in table["cells"]
                 if c["col"] < group["col"] and label_role(c["text"]) in TITLE_ROLES
             ]
-            shinmok = any(
-                re.sub(r"\s+", "", c["text"]) == "학기영역"
+            combined_headers = [
+                c for c in table["cells"]
+                if c["col"] < group["col"]
+                and re.sub(r"\s+", "", c["text"]) == "시기/영역"
+            ]
+            combined_area = any(
+                re.sub(r"\s+", "", c["text"]) in {"학기영역", "시기/영역"}
                 for c in table["cells"]
                 if c["col"] < group["col"]
             )
@@ -616,11 +661,20 @@ def column_structures(table: dict, section: dict) -> list[dict]:
                 and c["colspan"] == 1
                 and (
                     any(h["row"] == c["row"] for h in title_headers)
-                    or shinmok
+                    or any(h["row"] == c["row"] for h in combined_headers)
+                    or combined_area
                     and c["row"] == group["row"] + 1
                 )
             ]
             title = titles[0] if titles else None
+            if title and combined_headers and (
+                not title_gate(title["text"])["accepted"]
+                or re.fullmatch(
+                    r"실험(?:[·ㆍ･]실습)?|서술[·ㆍ･]?논술|구술[·ㆍ･]?발표|프로젝트|포트폴리오",
+                    re.sub(r"\s+", "", title["text"]),
+                )
+            ):
+                title = None
             grade_cells = [
                 c for c in table["cells"] if re.fullmatch(r"[123]학년", c["text"].replace(" ", ""))
             ]
@@ -662,7 +716,10 @@ def column_structures(table: dict, section: dict) -> list[dict]:
                         claims[role].append((cell, header))
                     else:
                         shared.append((role, cell, header))
-                elif shinmok and title and cell["row"] == title["row"] + 1 and cell["colspan"] == 1:
+                elif (
+                    combined_area and title and title["rowspan"] == 1
+                    and cell["row"] == title["row"] + 1 and cell["colspan"] == 1
+                ):
                     claims["method"].append((cell, group))
                     claims["timing"].append((cell, group))
             structure = new_structure(table, column, claims, "column")
@@ -881,6 +938,7 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
         },
         "boundary_evidence": {
             "section_locator": section["locator"],
+            "appendix": section.get("appendix_boundary_evidence"),
             "grade_anchor": evidence(structure["anchor"], conversion)
             if structure.get("anchor")
             else None,
@@ -1021,7 +1079,7 @@ def extract_middle_items(
         # Form/row bounds must fit inside their S4/S5 section.
         if not start <= table["start"] < table["end"] <= end:
             continue
-        found = row_structures(table) or form_structures(table)
+        found = row_structures(table) or form_structures(split_form_labels(table, conversion))
         for structure in found:
             title_roles = set(structure["claims"]) & TITLE_ROLES
             if title_roles == {"task_no"}:

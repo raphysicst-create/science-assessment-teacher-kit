@@ -14,7 +14,8 @@ if __package__:
 else:
     from middle_segments import digest_id, structural_events, text_locator, visible
 
-RULE_VERSION = "middle-subjects-v1"
+RULE_VERSION = "middle-subjects-v2"
+IDENTITY_VERSION = "middle-subjects-v1"  # Same source spans retain their identities.
 # National middle-school subject families. Local elective prefixes remain unknown
 # until their source curriculum is checked. This is not a 2022-code validity list.
 MIDDLE_SUBJECT_PREFIXES = {
@@ -304,7 +305,15 @@ def subject_sections(
                 continue
             previous = [h for h in local_headers if h["start"] <= left]
             header = previous[-1] if previous else parent_header
-            verified = bool(header and header["key"] == "과학" and not conflict)
+            # A conflicting summary cell taints its containing table, not the
+            # independently bounded detail tables that follow it.
+            local_conflict = any(left <= c["start"] < right for c in conflicting_anchors)
+            independent_table = any(t["start"] == left and t["end"] == right for t in tables)
+            verified = bool(
+                header and header["key"] == "과학" and not local_conflict
+                and (not conflict or independent_table
+                     and any(left <= c["start"] < right and c["prefix"] == "과" for c in anchors))
+            )
             decision = classify_subject(
                 text[left:right],
                 header=header,
@@ -314,7 +323,7 @@ def subject_sections(
             )
             if "heading_code_conflict" in decision["reasons"]:
                 verified = False
-            section_id = digest_id("subj_", parent["segment_id"], left, right, RULE_VERSION)
+            section_id = digest_id("subj_", parent["segment_id"], left, right, IDENTITY_VERSION)
             locator = {**parent["locator"], "start": left, "end": right}
             if conversion is not None:
                 locator.update(text_locator(left, right, conversion))
@@ -326,11 +335,14 @@ def subject_sections(
                     "document_id": parent.get("document_id"),
                     "child_id": parent.get("child_id"),
                     "grade": parent.get("grade"),
+                    "semester": parent.get("semester"),
+                    "semester_evidence": parent.get("semester_evidence", []),
                     "grade_evidence": parent.get("grade_evidence", []),
                     "parent_statuses": parent.get("statuses", []),
                     "locator": locator,
                     "boundary_method": (
-                        "subject_heading" if header and not conflict else "code_anchor_candidate"
+                        "subject_heading" if header and not local_conflict
+                        else "code_anchor_candidate"
                     ),
                     "boundary_verified": verified,
                     "end_basis": (
@@ -342,6 +354,12 @@ def subject_sections(
                     ),
                 }
             )
+    if conversion is not None:
+        if __package__:
+            from .middle_appendix import recover_appendix_sections
+        else:
+            from middle_appendix import recover_appendix_sections
+        recover_appendix_sections(text, results, conversion)
     return results
 
 
@@ -369,6 +387,7 @@ def table_diagnostics(
         decision = classify_subject(raw, offset=left, level="table", **kwargs)
         units = []
         mixed_cells = []
+        heading_conflict_cells = []
         mixed_rows = []
         for row_index, row in enumerate(rows):
             cells = list(CELL_RE.finditer(row.group()))
@@ -380,6 +399,10 @@ def table_diagnostics(
                 )
                 if cell_decision["status"] == "mixed":
                     mixed_cells.append({"row": row_index, "cell": cell_index, **cell_decision})
+                if "heading_code_conflict" in cell_decision["reasons"]:
+                    heading_conflict_cells.append({
+                        "row": row_index, "cell": cell_index, "raw": cell[1], **cell_decision,
+                    })
             row_decision = classify_subject(
                 row.group(),
                 offset=left + row.start(),
@@ -398,6 +421,7 @@ def table_diagnostics(
                 "table_index": index,
                 "structural_rows": units,
                 "mixed_cells": mixed_cells,
+                "heading_conflict_cells": heading_conflict_cells,
                 "mixed_rows": mixed_rows,
                 "between_rows_mixed": aggregate["between_items_mixed"],
                 "item_ownership": "unresolved_until_S6",

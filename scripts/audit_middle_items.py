@@ -19,6 +19,7 @@ from middle_items import (
     ownership_errors,
     visible,
 )
+from middle_pdf_cells import verified_title_splits
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -54,6 +55,10 @@ def audit(input_path: Path) -> dict:
             conversion["method_check_comparison"] = comparison
             matched_comparison_documents += 1
         text = conversion["text"]
+        if Path(document["original_path"]).suffix.lower() == ".pdf":
+            conversion["verified_cell_splits"] = verified_title_splits(
+                text, ROOT / document["original_path"]
+            )
         if hashlib.sha256(text.encode("utf-8")).hexdigest() != document["text_sha256"]:
             raise ValueError(f"S4 text hash mismatch: {document['converted_path']}")
         for section in subjects["sections"]:

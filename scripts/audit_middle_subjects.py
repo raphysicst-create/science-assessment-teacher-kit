@@ -56,6 +56,7 @@ def audit(input_path: Path) -> dict:
     s4 = json.loads(input_path.read_text(encoding="utf-8"))
     prefix_counts = Counter()
     sections, excluded_examples, documents = [], [], []
+    pre_grade_conflicts = []
     for document in s4["documents"]:
         path = ROOT / document["converted_path"]
         conversion = json.loads(path.read_text(encoding="utf-8"))
@@ -65,6 +66,13 @@ def audit(input_path: Path) -> dict:
             raise ValueError(f"S4 text hash mismatch: {path}")
         prefix_counts.update(c["prefix"] for c in code_evidence(text))
         decisions = subject_sections(text, document["segments"], conversion)
+        pre_grade_conflicts.extend(
+            {"converted_path": document["converted_path"], "section_id": s["section_id"],
+             "grade": s["grade"], "locator": s["locator"], "header": s["header"],
+             "codes": s["codes"], "appendix_boundary_evidence": s.get("appendix_boundary_evidence"),
+             "appendix_review": s.get("appendix_review")}
+            for s in decisions if "heading_code_conflict" in s["reasons"]
+        )
         source_tables = table_spans(text)
         metadata = {
             "school": document["source"]["school_name"],
@@ -152,6 +160,7 @@ def audit(input_path: Path) -> dict:
                     }
                 )
     return {
+        "pre_grade_conflicts": pre_grade_conflicts,
         "schema_version": 1,
         "rule_version": RULE_VERSION,
         "round": s4["round"],

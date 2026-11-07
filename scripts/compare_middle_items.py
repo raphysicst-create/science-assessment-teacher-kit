@@ -1,4 +1,4 @@
-"""Compare S6c-1 with the preserved abb1447 S6b run, entirely offline."""
+"""Compare S6c-2 with the preserved S6c-1 run, entirely offline."""
 
 from __future__ import annotations
 
@@ -7,14 +7,14 @@ from collections import Counter
 from pathlib import Path
 
 from audit_middle_subjects import atomic_write, escape
-from middle_items import FIELD_STATUSES, FIELDS, ROLE_LABELS, field_state_counts
+from middle_items import FIELDS, field_state_counts
 
 ROOT = Path(__file__).resolve().parents[1]
 ROUND = "2026-round-3"
 
 
 def read(previous: bool = False) -> dict:
-    suffix = ".prev-s6b" if previous else ""
+    suffix = ".prev-s6c1" if previous else ""
     return json.loads(
         (ROOT / f"data/derived/items/{ROUND}{suffix}.json").read_text(encoding="utf-8")
     )
@@ -33,6 +33,7 @@ def safety_counts(report: dict) -> dict:
             "bounded 타 교과·대상 외 학년": 0,
             "평문 폴백 bounded": 0,
             "충돌 필드 값 확정": 0,
+            "재귀속 요약 근거·학년 추적 오류": 0,
         }
     )
     conversions = {}
@@ -43,6 +44,29 @@ def safety_counts(report: dict) -> dict:
         conversion = conversions[path]
         text = conversion["text"]
         bounded = item["extraction_status"] == "bounded"
+        appendix = item.get("boundary_evidence", {}).get("appendix")
+        if appendix:
+            observations = (
+                appendix["summary_title"]
+                + appendix["summary_score"]
+                + appendix["summary_standards"]
+            )
+            for obs in observations:
+                loc = obs["locator"]
+                counts["재귀속 요약 근거·학년 추적 오류"] += (
+                    text[loc["start"] : loc["end"]] != obs["raw"]
+                )
+            grades = appendix["summary_grade_evidence"]
+            counts["재귀속 요약 근거·학년 추적 오류"] += not grades or {
+                g["grade"] for g in grades
+            } != {item["grade"]}
+            for obs in grades + appendix["summary_semester_evidence"]:
+                source = item["filename"] if obs["source"] == "filename" else text
+                counts["재귀속 요약 근거·학년 추적 오류"] += (
+                    source[obs["start"] : obs["end"]] != obs["text"]
+                )
+            if bounded:
+                counts["재귀속 요약 근거·학년 추적 오류"] += appendix["number_status"] != "verified"
         if bounded:
             counts["bounded 경계 미입증·검토 사유 잔존"] += bool(
                 item["review_reasons"] or item["layout"] in {"text_candidate", "unlinked_table"}
@@ -98,83 +122,99 @@ def state_comparison(old: dict, new: dict) -> tuple[dict, dict]:
     return before, after
 
 
+def source_key(item: dict) -> tuple:
+    pos = item["layout_position"]
+    return (item["converted_path"], item["grade"], pos["table"], pos["row"], pos["col"])
+
+
+def evidence_label(item: dict) -> str:
+    observations = item["fields"]["title"]["evidence"]
+    if not observations:
+        return "제목 셀 미입증"
+    loc = observations[0]["locator"]
+    label = f"[{loc['start']},{loc['end']}) T{loc.get('table')} R{loc.get('row')} C{loc.get('col')}"
+    proof = observations[0].get("source_cell_proof")
+    if proof:
+        label += f" / PDF p.{proof['page']} 독립 셀 {proof['cells']}"
+    appendix = item["boundary_evidence"].get("appendix")
+    if appendix:
+        label += (
+            f" / 요약 p.{appendix['summary_page']} T{appendix['summary_locator']['table']}"
+            f" → 상세 p.{appendix['detail_page']}, 열순번 {appendix['summary_ordinal']}, "
+            f"번호 {appendix['number_status']}"
+        )
+    return label
+
+
 def markdown() -> str:
     old, new = read(True), read()
     before, after = old["summary"], new["summary"]
-    lines = [
-        "# S6c-1 2차 검수 반영 전후 비교",
-        "",
-        f"직전 abb1447 실측 대비 bounded {before['bounded']}→{after['bounded']}, "
-        f"검토 후보 {before['review']}→{after['review']}.",
-        "",
-        "정밀도·재현율은 미측정이다. 후보 수는 검토 작업 단위이며 독립 수행평가 수가 아니다. "
-        "소유 충돌·근거 불일치 검사는 의미 검증 아님.",
-        "",
-        "기준선은 items/2026-round-3.prev-s6b.json·md·compare.md에 보관했다. "
-        "S4/S5 본문·경계·위치와 항목 ID를 유지하고 필드 규칙 버전을 갱신했다.",
-        "",
-        "## 검토 후보 역할별 분해",
-        "",
-        "이전 실행의 역할은 당시 미측정이다. 별도 표 분해는 보존한 같은 101개 범위에서 비교한다.",
-        "",
-        "| 역할 | 현재 검토 후보 | 별도 표 | 검수 별도 표 기준 |",
-        "|---|---:|---:|---:|",
+    prior = {source_key(i): i for i in old["items"]}
+    current = {source_key(i): i for i in new["items"]}
+    added = [
+        i
+        for i in new["items"]
+        if i["extraction_status"] == "bounded"
+        and (source_key(i) not in prior or prior[source_key(i)]["extraction_status"] != "bounded")
     ]
-    expected = {"teaching_plan": 50, "general_standards": 41, "affective": 5, "performance": 5}
-    for role, label in ROLE_LABELS.items():
-        lines.append(
-            f"| {label} | {after['review_roles'].get(role, 0)} | "
-            f"{after['unlinked_table_roles'].get(role, 0)} | {expected.get(role, 0)} |"
+    lost = [
+        i
+        for i in old["items"]
+        if i["extraction_status"] == "bounded"
+        and (
+            source_key(i) not in current or current[source_key(i)]["extraction_status"] != "bounded"
         )
-    lines.extend(
-        [
-            "",
-            "## 필드별 상태 전후",
-            "",
-            f"분모는 같은 후보 {len(old['items'])}→{len(new['items'])}개다. "
-            "순서는 값 있음 / 원문 미기재 / 추출 실패·미확인 / 충돌이다. "
-            "이전 상태는 기존 reason의 미기재 주장을 그대로 집계하며 원문 검증을 뜻하지 않는다. "
-            "새 빈 필드는 명시적 부재 근거가 있어야 원문 미기재로 기록한다. "
-            "신설 essay_weight의 이전 상태는 미측정·미확인으로 표시한다.",
-            "",
-            "| 필드 | 이전 | 이후 |",
-            "|---|---|---|",
-        ]
+    ]
+    lines = [
+        "# S6c-2 2차 검수 반영 둘째 묶음 비교",
+        "",
+        f"S6c-1 대비 bounded {before['bounded']}→{after['bounded']}, "
+        f"검토 후보 {before['review']}→{after['review']}. "
+        f"새 bounded {len(added)}, 해제 {len(lost)}, 순증 {after['bounded'] - before['bounded']}.",
+        "",
+        "기준선은 segments·subjects·items/2026-round-3.prev-s6c1.json·md 및 "
+        "items/2026-round-3.prev-s6c1.compare.md에 보관했다. "
+        "제목 시작 위치 또는 소속 구간이 회복되면 ID가 바뀐다. "
+        "동일 변환본·학년·표·행·열로 비교했다. "
+        "정밀도·재현율은 미측정이며 후보 수는 독립 수행평가 수가 아니다.",
+        "",
+        "## 검수 사례",
+        "",
+        "| 검수 사례 ID | 이전 | 이후 ID·상태 | 회복 근거 |",
+        "|---|---|---|---|",
+    ]
+    cases = (
+        "6062ec25f39a",
+        "dc07b3ad814f",
+        "471c2516a0cb",
+        "30c33ef97e17",
+        "6183490aa1aa",
+        "9a3d6abbcc8f",
+        "2f1269f7018b",
+        "df2a31a8e114",
+        "e74957df62d9",
+        "bbc99bafc303",
+        "9580fee1f5a1",
+        "a5c49d67c191",
+        "2def60ebdd36",
     )
-    prior_states, current_states = state_comparison(old, new)
-    for name in FIELDS:
-        a, b = (
-            " / ".join(str(counts[name][status]) for status in FIELD_STATUSES)
-            for counts in (prior_states, current_states)
-        )
-        lines.append(f"| {name} | {a} | {b} |")
-    lines.extend(
-        [
-            "",
-            "## 고정 검수 사례",
-            "",
-            "| 항목 ID | 필드 | 이전 | 이후 | 상태·관측 |",
-            "|---|---|---|---|---|",
-        ]
-    )
-    previous_items = {i["item_id"]: i for i in old["items"]}
-    methods = ("b0782a73837c", "b79528092d4f", "36da860582a9", "69d565483e09")
-    scores = ("4b43368e466e", "c4fd958a26bf", "5d4d4efa3a74", "deda0ccfa743", "68b50ae03138")
-    conflicts = {"67aec267aca1": "weight", "871f7d46cc66": "standards", "ba157fe5ff0c": "standards"}
-    for item in new["items"]:
-        prefix = item["item_id"][5:17]
-        name = (
-            "method"
-            if prefix in methods
-            else "score"
-            if prefix in scores
-            else conflicts.get(prefix)
-        )
-        if not name:
-            continue
-        field = item["fields"][name]
-        observed = [(o["source_role"], o["value"]) for o in field.get("source_observations", [])]
-        prior = previous_items[item["item_id"]]["fields"][name]["value"]
+    for prefix in cases:
+        previous = next(i for i in old["items"] if i["item_id"][5:17] == prefix)
+        item = current[source_key(previous)]
+        detail = None
+        if prefix in {"a5c49d67c191", "2def60ebdd36"}:
+            compact_title = "".join(str(item["fields"]["title"]["value"]).split())
+            detail = next(
+                i
+                for i in new["items"]
+                if i["converted_path"] == item["converted_path"]
+                and i["boundary_evidence"].get("appendix")
+                and "".join(str(i["fields"]["title"]["value"]).split()) == compact_title
+            )
+        result = detail or item
+        state = f"{result['item_id'][5:17]} {result['extraction_status']}"
+        if detail:
+            state += f" (요약 {item['item_id'][5:17]} review 유지)"
         lines.append(
             "| "
             + " | ".join(
@@ -182,48 +222,80 @@ def markdown() -> str:
                     escape,
                     (
                         prefix,
-                        name,
-                        prior,
-                        field["value"],
-                        f"{field['status']} {observed}",
+                        previous["extraction_status"],
+                        state,
+                        evidence_label(result),
                     ),
                 )
             )
             + " |"
         )
-    lines.extend(
-        [
-            "",
-            "## 구조·근거 지표",
-            "",
-            "의미 검증 아님. 출처별 관측 근거도 원문 슬라이스와 대조한다.",
-            "",
-            "| 지표 | 이전 | 이후 |",
-            "|---|---:|---:|",
-        ]
-    )
+    lines += [
+        "",
+        "검수 추정 +13 대비 실제 +12. 영통 첫 상세는 제목·만점20·코드06-01/02와 "
+        "요약17쪽·상세564쪽 대응을 확인했지만 상세 자체의 과제번호가 없어 review다. "
+        "코드만으로 학년을 추정하지 않고 요약의 명시적 학년 근거를 첨부했다. "
+        "둘째 상세는 요약 3열순번과 상세565쪽의 수행평가3이 일치한다.",
+        "",
+        "휘문은 평가영역 ‘탐구활동’을 보존하고 관련단원만 분리했다. "
+        "표 아래 과제 ‘거울,렌즈의 상관찰(50점)’을 제목으로 올리거나 외부 제목과 연결하지 않았다. "
+        "공주 [9영02-01] 원문 충돌은 요약표에 보존했다.",
+        "",
+        "## 새 bounded 전체 ID",
+        "",
+        "| 학교·학년 | 이전 ID | 이후 ID | 제목 | 근거 |",
+        "|---|---|---|---|---|",
+    ]
+    for item in added:
+        previous = prior.get(source_key(item))
+        lines.append(
+            "| "
+            + " | ".join(
+                map(
+                    escape,
+                    (
+                        f"{item['school']} 중{item['grade']}",
+                        previous["item_id"][5:17] if previous else "S5 제외",
+                        item["item_id"][5:17],
+                        item["fields"]["title"]["value"],
+                        evidence_label(item),
+                    ),
+                )
+            )
+            + " |"
+        )
+    lines += [
+        "",
+        "새 bounded 중 미입증 경계는 0이다. 다만 영통 상세는 연속표 뒷부분이 "
+        "미연결인 채 독립 첫 표만 bounded이며 평가 완결성을 보증하지 않는다. "
+        "휘문은 구체 과제명이 아닌 원문 평가영역 제목을 유지한다. "
+        "공주 정상 상세3개의 만점은 이번 묶음에서 추가 복구하지 않았다.",
+        "",
+        "## 위반 지표",
+        "",
+        "의미 정확도와 별개의 구조 검사다.",
+        "",
+        "| 지표 | 이전 | 이후 |",
+        "|---|---:|---:|",
+    ]
     safe_before, safe_after = safety_counts(old), safety_counts(new)
-    lines.extend(f"| {key} | {safe_before[key]} | {value} |" for key, value in safe_after.items())
-    lines.extend(
-        [
-            "",
-            "## 체크 손실 전달",
-            "",
-            escape(after["method_check_comparison"]),
-            "",
-            "S3는 같은 원문 SHA-256·물리 페이지·방법 행의 라벨과 glyph를 대조한다. "
-            "S6는 원문 해시와 kordoc 본문 해시가 같은 대조 결과만 읽는다. "
-            "소실·선택 충돌은 출처 관측을 보존하고 확정을 보류한다. "
-            "위치 대응 불가는 unmapped로 남기며 전체 기호 수 차이로 보충하지 않는다.",
-            "",
-            "## 다음 묶음에 남은 범위",
-            "",
-            "S4/S5 경계, 제목 머리글·병합 셀, 지면·연속표, 요약·상세 동일성 확장은 후속 범위다. "
-            "이번 동일성 적용은 2차 검수에서 확인된 3쌍으로 한정했다. "
-            "확인하지 못한 빈 필드는 추출 실패·미확인으로 유지한다.",
-            "",
-        ]
-    )
+    lines += [f"| {key} | {safe_before[key]} | {value} |" for key, value in safe_after.items()]
+    assert not any(safe_after.values()), safe_after
+    lines += [
+        "",
+        "## 회귀·위험·후속",
+        "",
+        "중계 무제목 7개는 계속 review다. "
+        "날짜·방법을 제목으로 승격하지 않는 합성 음성 조건을 고정했다. "
+        "새 bounded는 모두 요청된 6개 학교의 사례에 대응하며 다른 학교의 추가 bounded·해제는 없다. "
+        "제목 위치 회복으로 ID가 바뀐 요약과 상세를 원문 위치로 추적해야 한다.",
+        "",
+        "학년 필터 전 교과 충돌은 subjects JSON의 pre_grade_conflicts에 저장한다. "
+        "S4 구간은 그대로 보존하고 S5에서 해당 독립 상세표만 재귀속한다. "
+        "원문·변환 본문·원문 코드 수정 없음. 지면·연속표·표 밖 제목 연결, "
+        "요약·상세 일반 동일성 처리는 후속 묶음이다.",
+        "",
+    ]
     return "\n".join(lines)
 
 
