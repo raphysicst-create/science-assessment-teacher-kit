@@ -14,9 +14,8 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from build_math_assessment_manifest import classify
-from collect_schoolinfo_4ga_historical import atomic_bytes, atomic_json
-from extract_math_assessment_batch import extract
-
+from collect_schoolinfo_4ga_historical import atomic_json
+from extract_math_assessment_batch import extract_document, source_provenance
 
 ROOT = Path(__file__).resolve().parents[1]
 KORDOC = ROOT / "node_modules" / "kordoc" / "dist" / "cli.js"
@@ -56,6 +55,20 @@ def jsonl(path: Path, rows) -> None:
             stream.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")) + "\n")
 
 
+def confirmed_extraction(source: dict, result: dict) -> dict:
+    """Retain recoverable text even when another ZIP member or PDF page failed."""
+    record = {
+        **result, **source_provenance(ROOT / source["saved_path"], source),
+        "source": source, "char_count": len(result["text"]),
+    }
+    if "children" in result:
+        record["children"] = [
+            {**child, "original_path": f"{source['saved_path']}!/{child['member_name']}",
+             "parent_sha256": record["sha256"]} for child in result["children"]
+        ]
+    return record
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--year", type=int, default=2026)
@@ -75,7 +88,8 @@ def main() -> None:
     collection = ROOT / "data" / "derived" / "schoolinfo_4ga" / f"{args.year}-round-{round_no}"
     snapshot = args.snapshot or collection
     converter_id = hashlib.sha256(kordoc.read_bytes()).hexdigest()[:12]
-    cache = collection / f"extraction_cache_v2-{converter_id}"
+    # v3 invalidates pre-audit entries lacking child/coverage metadata.
+    cache = collection / f"extraction_cache_v3-{converter_id}"
     cache.mkdir(parents=True, exist_ok=True)
     if args.warm_cache:
         if args.snapshot:
@@ -113,8 +127,7 @@ def main() -> None:
                     raise ValueError(f"source hash mismatch: {row['saved_path']}")
         if result_path.is_file():
             return json.loads(result_path.read_text(encoding="utf-8"))
-        text, status = extract(path, kordoc, ROOT)
-        result = {"text": text, "extract_status": status}
+        result = extract_document(path, kordoc, ROOT)
         atomic_json(result_path, result)
         return result
 
@@ -157,9 +170,9 @@ def main() -> None:
         def confirmed_records():
             nonlocal expected
             for row in sources:
-                result = extract_record(row)
+                result = confirmed_extraction(row, extract_record(row))
                 text, status = result["text"], result["extract_status"]
-                term = semester_status(row["candidate_name"], text if status == "ok" else "",
+                term = semester_status(row["candidate_name"], text,
                                        args.semester, args.year)
                 statuses[status] += 1
                 terms[term] += 1
@@ -173,15 +186,18 @@ def main() -> None:
                 }
                 decisions.write(json.dumps({
                     **source, "extract_status": status, "char_count": len(text),
+                    "conversion_status": result["conversion_status"],
+                    **{key: result[key] for key in ("sha256", "original_path", "edition")},
+                    "children": [
+                        {key: value for key, value in child.items() if key != "text"}
+                        for child in result.get("children", [])
+                    ],
                 }, ensure_ascii=False) + "\n")
                 if term == "confirmed":
                     source["confirmed_semester"] = args.semester
                     writer.writerow(source)
                     expected += 1
-                    yield {
-                        "source": source, "sha256": row["sha256"], "extract_status": status,
-                        "char_count": len(text), "text": text if status == "ok" else "",
-                    }
+                    yield {**result, "source": source}
         jsonl(output / "confirmed_extractions.jsonl", confirmed_records())
     reconcile = {
         "year": args.year, "semester": args.semester, "disclosure_round": round_no,

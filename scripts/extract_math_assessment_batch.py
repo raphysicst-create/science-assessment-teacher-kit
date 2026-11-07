@@ -20,66 +20,131 @@ from pathlib import Path
 
 from math_subject_aliases import curriculum_from_codes, subject_hits
 
+CHECKED_SYMBOLS = frozenset("■☑☒✓✔✅þ▣●√")
+EMPTY_SYMBOLS = frozenset("□☐○")
+# Union of parser CHECKED_* near METHOD_TERMS and evidence_index SELECTED_BOXES,
+# plus the requested radical-shaped check. These are glyph counts, not decisions
+# about whether a method was selected. Legacy gfedc font tokens are counted apart.
+STATUS_DEFINITIONS = {
+    "ok": "변환 완료. PDF는 모든 페이지에 비공백 텍스트층이 있음. 보존 정확도 확정 아님",
+    "partial_image": "PDF 일부 페이지에 비공백 텍스트층이 없음(빈 페이지도 포함)",
+    "image_only": "PDF 모든 페이지에 비공백 텍스트층이 없음(빈 문서도 포함)",
+    "partial": "ZIP에서 일부 자식만 ok. 정상 자식 본문과 개별 상태를 보존",
+    "short": "비PDF 변환 결과의 비공백 글자 수가 300 미만(기존 호환 상태)",
+    "coverage_unknown": "kordoc PDF 변환은 완료됐으나 PyMuPDF 페이지층 검사가 실패",
+    "failed": "원문 읽기 또는 변환 실패. 오류는 error에 기록",
+}
 
-def extract_pdf_text(path: Path) -> str:
-    """Use the PDF text layer when kordoc fails or returns an empty document."""
+
+def text_metrics(text: str) -> dict:
+    return {
+        "char_count": len(text),
+        "check_count": sum(text.count(symbol) for symbol in CHECKED_SYMBOLS),
+        "empty_check_count": sum(text.count(symbol) for symbol in EMPTY_SYMBOLS),
+        "check_symbols": {symbol: text.count(symbol) for symbol in sorted(CHECKED_SYMBOLS)},
+        "empty_check_symbols": {symbol: text.count(symbol) for symbol in sorted(EMPTY_SYMBOLS)},
+        "legacy_checked_tokens": len(re.findall(r"gfedcb", text, re.I)),
+        "legacy_empty_tokens": len(re.findall(r"gfedc(?!b)", text, re.I)),
+        "science_code_count": text.count("[9과"),
+        "science_word_count": text.count("과학"),
+    }
+
+
+def pdf_conversion_status(page_count: int, textless_pages: int) -> str:
+    # Textless is an OCR-review proxy, not proof that a page is a scanned image.
+    if not page_count:
+        return "failed"
+    if textless_pages == page_count:
+        return "image_only"
+    return "partial_image" if textless_pages else "ok"
+
+
+def convert_pdf(path: Path) -> dict:
+    """Read every page. Table/cell counts are unknown for this text-layer reader."""
     try:
         import fitz
 
-        fitz.TOOLS.mupdf_display_errors(False)
+        fitz.TOOLS.mupdf_warnings(reset=True)
+        pages = []
+        texts = []
         with fitz.open(path) as document:
-            return "\n\n".join(page.get_text("text") for page in document)
-    except Exception:
-        return ""
+            for number, page in enumerate(document, 1):
+                text = page.get_text("text")
+                has_image = bool(page.get_image_info())
+                texts.append(text)
+                pages.append({
+                    "page": number, **text_metrics(text),
+                    "textless": not text.strip(), "has_raster_image": has_image,
+                })
+        text = "\n\n".join(texts)
+        textless = sum(page["textless"] for page in pages)
+        return {
+            "converter": "pymupdf", "text": text, **text_metrics(text),
+            "conversion_status": pdf_conversion_status(len(pages), textless),
+            "page_count": len(pages), "image_page_count": textless,
+            "textless_page_count": textless,
+            "raster_image_page_count": sum(page["has_raster_image"] for page in pages),
+            "textless_raster_page_count": sum(
+                page["textless"] and page["has_raster_image"] for page in pages
+            ),
+            "table_count": None, "cell_count": None, "pages": pages,
+            "warnings": fitz.TOOLS.mupdf_warnings(reset=True),
+        }
+    except Exception as exc:
+        return failed_conversion("pymupdf", exc)
 
 
-def extract(path: Path, kordoc: Path, cwd: Path) -> tuple[str, str]:
-    if path.suffix.lower() == ".zip":
-        parts: list[str] = []
-        statuses: list[str] = []
-        with tempfile.TemporaryDirectory(prefix="math_plan_zip_") as temp:
-            root = Path(temp)
-            try:
-                with zipfile.ZipFile(path) as archive:
-                    members = [
-                        info for info in archive.infolist()
-                        if not info.is_dir()
-                        and Path(info.filename).suffix.lower() in {".hwp", ".hwpx", ".pdf", ".docx", ".xlsx"}
-                    ]
-                    if len(members) > 400 or sum(info.file_size for info in members) > 512 * 1024**2:
-                        return "[zip extraction limit exceeded]", "failed"
-                    for index, info in enumerate(members):
-                        suffix = Path(info.filename).suffix.lower()
-                        target = root / f"{index:05}{suffix}"
-                        target.write_bytes(archive.read(info))
-                        child, status = extract(target, kordoc, cwd)
-                        statuses.append(status)
-                        parts.append(f"[zip:{info.filename}][{status}]\n{child}")
-            except (OSError, RuntimeError, zipfile.BadZipFile) as exc:
-                return f"[zip error: {exc}]", "failed"
-        text = "\n\n".join(parts)
-        if not statuses or all(status == "failed" for status in statuses):
-            return text, "failed"
-        return text, "ok" if all(status == "ok" for status in statuses) else "short"
-    if path.suffix.lower() == ".pdf":
-        direct_pdf_text = extract_pdf_text(path)
-        if len(direct_pdf_text.strip()) >= 300:
-            return direct_pdf_text, "ok"
+def failed_conversion(converter: str, error: object) -> dict:
+    return {
+        "converter": converter, "conversion_status": "failed", "text": "",
+        **text_metrics(""), "page_count": None, "image_page_count": None,
+        "table_count": None, "cell_count": None, "error": str(error),
+    }
+
+
+def extract_pdf_text(path: Path) -> str:
+    """Compatibility entry point for callers needing only the PDF text layer."""
+    return convert_pdf(path)["text"]
+
+
+def table_metrics(value: object) -> tuple[int, int]:
+    """Count IR table elements (including nested tables), never markdown pipes."""
+    tables = cells = 0
+    if isinstance(value, dict):
+        if value.get("type") == "table":
+            tables = 1
+            cells = sum(len(row) for row in value.get("table", {}).get("cells", []))
+        for child in value.values():
+            child_tables, child_cells = table_metrics(child)
+            tables += child_tables
+            cells += child_cells
+    elif isinstance(value, list):
+        for child in value:
+            child_tables, child_cells = table_metrics(child)
+            tables += child_tables
+            cells += child_cells
+    return tables, cells
+
+
+def convert_kordoc(
+    path: Path, kordoc: Path, cwd: Path, pdf_observation: dict | None = None,
+) -> dict:
     with tempfile.TemporaryDirectory(prefix="math_plan_batch_") as temp:
-        output = Path(temp) / "parsed.md"
+        output = Path(temp) / "parsed.json"
         try:
-            command = [str(kordoc), str(path), "--silent", "-o", str(output)]
+            command = [str(kordoc), str(path), "--silent", "--format", "json", "-o", str(output)]
             if kordoc.suffix.lower() in {".js", ".mjs"}:
                 command.insert(0, "node")
             elif kordoc.name.lower() == "kordoc-fixed.cmd":
                 local_cli = cwd / "node_modules" / "kordoc" / "dist" / "cli.js"
                 if not local_cli.exists():
-                    return f"[kordoc CLI missing: {local_cli}]", "failed"
+                    return failed_conversion("kordoc", f"CLI missing: {local_cli}")
                 command = [
                     "node",
                     str(local_cli),
                     str(path),
                     "--silent",
+                    "--format", "json",
                     "-o",
                     str(output),
                 ]
@@ -92,20 +157,158 @@ def extract(path: Path, kordoc: Path, cwd: Path) -> tuple[str, str]:
                 errors="replace",
                 timeout=180,
             )
-        except (OSError, subprocess.TimeoutExpired) as exc:
-            return f"[{type(exc).__name__}: {exc}]", "failed"
-        if completed.returncode or not output.exists():
+            if completed.returncode or not output.exists():
+                return failed_conversion(
+                    "kordoc", f"exit={completed.returncode}: {completed.stderr[:500]}",
+                )
+            parsed = json.loads(output.read_text(encoding="utf-8"))
+            if not parsed.get("success"):
+                return failed_conversion("kordoc", parsed.get("error", "unsuccessful parse"))
+            text = parsed["markdown"]
+            tables, cells = table_metrics(parsed["blocks"])
+            coverage = {}
+            status = "ok" if len(text.strip()) >= 300 else "short"
             if path.suffix.lower() == ".pdf":
-                fallback = extract_pdf_text(path)
-                if len(fallback.strip()) >= 300:
-                    return fallback, "ok"
-            return f"[kordoc exit={completed.returncode}: {completed.stderr[:500]}]", "failed"
-        text = output.read_text(encoding="utf-8", errors="replace")
-        if len(text.strip()) < 300 and path.suffix.lower() == ".pdf":
-            fallback = extract_pdf_text(path)
-            if len(fallback.strip()) > len(text.strip()):
-                text = fallback
-        return text, "ok" if len(text.strip()) >= 300 else "short"
+                observed = pdf_observation if pdf_observation is not None else convert_pdf(path)
+                status = observed["conversion_status"]
+                if status == "failed":
+                    status = "coverage_unknown"
+                coverage = {key: observed.get(key) for key in (
+                    "page_count", "image_page_count", "textless_page_count",
+                    "raster_image_page_count", "textless_raster_page_count",
+                )}
+                coverage["page_coverage_source"] = "pymupdf"
+            return {
+                "converter": "kordoc", "text": text, **text_metrics(text),
+                "conversion_status": status,
+                # HWP/HWPX pageCount means sections, not physical pages.
+                "page_count": parsed.get("pageCount") if path.suffix.lower() == ".pdf" else None,
+                "section_count": parsed.get("pageCount") if path.suffix.lower() != ".pdf" else None,
+                "image_page_count": None, "table_count": tables, "cell_count": cells,
+                "warnings": parsed.get("warnings", []), **coverage,
+            }
+        except (OSError, subprocess.TimeoutExpired, ValueError, KeyError, TypeError) as exc:
+            return failed_conversion("kordoc", exc)
+
+
+def source_provenance(path: Path, source: dict | None = None) -> dict:
+    source = source or {}
+    with path.open("rb") as handle:
+        digest = hashlib.file_digest(handle, "sha256").hexdigest()
+    if source.get("sha256") and source["sha256"] != digest:
+        raise ValueError(f"source hash mismatch: {path}")
+    return {
+        "sha256": digest, "original_path": source.get("saved_path", path.as_posix()),
+        "edition": {
+            key: source[key] for key in (
+                "candidate_name", "year", "disclosure_round", "file_seq", "collected_at",
+                "source_url", "final_url",
+            ) if key in source
+        },
+    }
+
+
+def extract_document(path: Path, kordoc: Path, cwd: Path, source: dict | None = None) -> dict:
+    """Safe reproduction with additive quality metadata and child provenance.
+
+    extract_status keeps the legacy ok/short/failed vocabulary. conversion_status
+    distinguishes PDF coverage and ZIP partial results. Neither certifies layout.
+    """
+    provenance = source_provenance(path, source)
+    if path.suffix.lower() == ".zip":
+        result = extract_zip(path, kordoc, cwd)
+    elif path.suffix.lower() == ".pdf":
+        result = convert_pdf(path)
+        structured = convert_kordoc(path, kordoc, cwd, pdf_observation=result)
+        result["kordoc"] = {key: value for key, value in structured.items() if key != "text"}
+        result["table_count"] = structured["table_count"]
+        result["cell_count"] = structured["cell_count"]
+        # Keep the existing low-text fallback selection. This threshold never
+        # decides PDF success, which is based on observed page coverage above.
+        if len(result["text"].strip()) < 300 and (
+            len(structured["text"].strip()) > len(result["text"].strip())
+        ):
+            result["text_layer_metrics"] = text_metrics(result["text"])
+            result["text"] = structured["text"]
+            result["converter"] = "kordoc"
+            result.update(text_metrics(result["text"]))
+            if result["conversion_status"] == "failed":
+                result["conversion_status"] = "coverage_unknown"
+    else:
+        result = convert_kordoc(path, kordoc, cwd)
+    status = result["conversion_status"]
+    legacy = "short" if status in {
+        "partial", "partial_image", "image_only", "coverage_unknown",
+    } else status
+    for child in result.get("children", []):
+        child["original_path"] = f"{provenance['original_path']}!/{child['member_name']}"
+        child["parent_sha256"] = provenance["sha256"]
+    return {**result, **provenance, "extract_status": legacy}
+
+
+def extract_zip(path: Path, kordoc: Path, cwd: Path) -> dict:
+    children = []
+    archive_error = None
+    with tempfile.TemporaryDirectory(prefix="math_plan_zip_") as temp:
+        try:
+            with zipfile.ZipFile(path) as archive:
+                members = [
+                    info for info in archive.infolist()
+                    if not info.is_dir()
+                    and Path(info.filename).suffix.lower() in {
+                        ".hwp", ".hwpx", ".pdf", ".docx", ".xlsx",
+                    }
+                ]
+                if len(members) > 400 or sum(info.file_size for info in members) > 512 * 1024**2:
+                    raise ValueError("zip extraction limit exceeded")
+                for index, info in enumerate(members):
+                    target = Path(temp) / f"{index:05}{Path(info.filename).suffix.lower()}"
+                    try:
+                        target.write_bytes(archive.read(info))
+                        child = extract_document(target, kordoc, cwd)
+                    except (
+                        OSError, RuntimeError, ValueError, NotImplementedError, zipfile.BadZipFile,
+                    ) as exc:
+                        child = failed_conversion("zip", exc)
+                        child["extract_status"] = "failed"
+                    child.update(
+                        original_path=f"{path.as_posix()}!/{info.filename}",
+                        member_name=info.filename, member_index=index,
+                        edition={"candidate_name": info.filename},
+                    )
+                    children.append(child)
+        except (OSError, RuntimeError, ValueError, zipfile.BadZipFile) as exc:
+            archive_error = str(exc)
+    parts = [
+        f"[zip:{child['member_name']}][{child['extract_status']}]\n{child['text']}"
+        for child in children if child["text"]
+    ]
+    status = "failed"
+    if parts:
+        status = "ok" if not archive_error and all(
+            child["conversion_status"] == "ok" for child in children
+        ) else "partial"
+    text = "\n\n".join(parts)
+    return {
+        "converter": "zip", "conversion_status": status,
+        "text": text, **text_metrics(text), "children": children,
+        "error": archive_error,
+    }
+
+
+def extract(path: Path, kordoc: Path, cwd: Path) -> tuple[str, str]:
+    """Preserve the tuple interface used by existing math extraction scripts."""
+    result = extract_document(path, kordoc, cwd)
+    return result["text"], result["extract_status"]
+
+
+def conversion_metadata(value):
+    """Remove text recursively for index-only output, including ZIP children."""
+    if isinstance(value, dict):
+        return {key: conversion_metadata(child) for key, child in value.items() if key != "text"}
+    if isinstance(value, list):
+        return [conversion_metadata(child) for child in value]
+    return value
 
 
 def main() -> None:
@@ -138,14 +341,16 @@ def main() -> None:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     def process(row: dict[str, str]) -> dict[str, object]:
         path = args.project_root / row["saved_path"]
+        result = {}
         if not path.exists():
             text, status, digest = f"[missing: {path}]", "missing", ""
         else:
-            text, status = extract(path, args.kordoc, args.project_root)
-            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            result = extract_document(path, args.kordoc, args.project_root, row)
+            text, status, digest = result["text"], result["extract_status"], result["sha256"]
         hits = subject_hits(text)
         codes = curriculum_from_codes(text)
         return {
+            **(conversion_metadata(result) if args.index_only else result),
             "source": row,
             "sha256": digest,
             "extract_status": status,

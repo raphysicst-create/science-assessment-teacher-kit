@@ -39,7 +39,7 @@ ITEM_PATH = "/ei/pp/Pneipp_b43_s0p.do"
 DOWNLOAD_FORM = re.compile(r'<form\b[^>]*\bid="eiFileDownForm"[^>]*>(.*?)</form>', re.I | re.S)
 ROUND_SELECTOR = re.compile(r'<select\b[^>]*\bid="select_trans_dt"[^>]*>(.*?)</select>', re.I | re.S)
 ROUND_OPTION = re.compile(r'<option\b[^>]*\bvalue="(\d+)"[^>]*\bselected\b[^>]*>', re.I)
-NON_PLAN = re.compile(r"학업\s*성적\s*관리\s*(?:규정|위원회)|협의록|회의록")
+NON_PLAN = re.compile(r"학업\s*성적\s*관리\s*(?:규정|위원회)|제?\s*규정집|협의록|회의록")
 PLAN = re.compile(r"평가\s*(?:계획|운영|안)|교수\s*[·ㆍ\-]?\s*학습")
 TERM = re.compile(r"([12])\s*학기")
 RETRYABLE = {"lookup_failed", "round_unconfirmed", "page_failed", "attachment_failed", "stopped"}
