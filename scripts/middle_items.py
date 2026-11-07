@@ -19,7 +19,7 @@ else:
     from middle_segments import digest_id, text_locator, visible
     from middle_subjects import classify_subject, table_spans
 
-RULE_VERSION = "middle-items-v4"
+RULE_VERSION = "middle-items-v5"
 IDENTITY_VERSION = "middle-items-v2"  # Field-only changes retain source identities.
 FIELDS = (
     "title",
@@ -43,6 +43,7 @@ LABELS = {
     "영역명": "assessment_area",
     "영역": "assessment_area",
     "평가/영역": "assessment_area",
+    "유형/평가영역": "assessment_area",
     "평가과제": "task",
     "평가과제명": "task",
     "수행과제": "task",
@@ -50,6 +51,7 @@ LABELS = {
     "수행평가명": "title",
     "수행평가과제명": "title",
     "제목": "title",
+    "평가제목": "title",
     "고사명/평가과제명": "task",
     "횟수/영역": "assessment_area",
     "과제번호": "task_no",
@@ -70,6 +72,7 @@ LABELS = {
     "반영비율": "weight",
     "비율": "weight",
     "영역별반영비율": "weight",
+    "영역반영비율": "weight",
     "성취기준": "standards",
     "교육과정성취기준": "standards",
     "평가준거성취기준": "criteria",
@@ -94,7 +97,8 @@ METHOD_BOX_RE = re.compile(BOX_RE.pattern + r"|\[[^\[\]\r\n]{0,5}\]|[\uFFFD\uF00
 NUMERIC_FIELDS = {"score", "points", "weight", "essay_weight"}
 COMPOUND_NUMBER_RE = re.compile(
     r"\s*(?:\d+(?:\.\d+)?\s*점)?(?:\s|<br\s*/?>)*"
-    r"(?:\(\s*\d+(?:\.\d+)?\s*%\s*\))?\s*", re.I
+    r"(?:\(\s*\d+(?:\.\d+)?\s*%\s*\))?\s*",
+    re.I,
 )
 FIELD_STATUSES = ("present", "source_absent", "unconfirmed", "conflict")
 ROLE_LABELS = {
@@ -390,7 +394,7 @@ def field_value(name: str, observations: list[dict]) -> dict:
         return result
     if len(unique) == 1:
         result.update(value=unique[0], reason="")
-    elif len(unique) > 1 and name in {"points", "rubric", "criteria", "elements"}:
+    elif len(unique) > 1 and name in {"points", "rubric", "criteria", "elements", "task_text"}:
         result.update(value=unique, reason="")
     elif len(unique) > 1:
         result["reason"] = "동일 항목 필드 값 충돌"
@@ -513,6 +517,8 @@ def form_structures(table: dict) -> list[dict]:
     for row in table["rows"]:
         for index, header in enumerate(row[:-1]):
             role = label_role(header["text"])
+            if role == "task" and "성취수준별" in row[index + 1]["text"]:
+                continue  # This is a column header, not a task value.
             if role and not label_role(row[index + 1]["text"]):
                 pairs.append((header, row[index + 1], role))
     starts = []
@@ -581,6 +587,20 @@ def form_structures(table: dict) -> list[dict]:
                 and not label_role(c["text"])
             )
         structure = new_structure(table, cells, claims, "form")
+        for header in cells:
+            if re.fullmatch(r"평가과제(?:\s*\(배점\))?", re.sub(r"\s+", "", header["text"])):
+                below = [
+                    c
+                    for c in cells
+                    if c["row"] == header["row"] + 1
+                    and c["col"] == header["col"]
+                    and c["rowspan"] > 1
+                ]
+                if len(below) == 1:
+                    claims["task"].append((below[0], header))
+                    amount = re.search(r"\(\s*(\d+(?:\.\d+)?\s*점)\s*\)\s*$", below[0]["raw"])
+                    if amount:
+                        claims["score"].append((cell_part(below[0], *amount.span(1)), header))
         for role in TITLE_ROLES:
             titles = {c["text"] for c, _ in claims.get(role, []) if c["text"]}
             if len(titles) > 1:
@@ -624,6 +644,11 @@ def row_structures(table: dict) -> list[dict]:
             if any(claims.get(r) for r in TITLE_ROLES):
                 structure = new_structure(table, cells, claims, "row")
                 structure["row"] = row_number
+                structure["table_role"] = (
+                    "summary"
+                    if ({"score", "weight"} <= roles or "score_weight" in roles)
+                    else "row_item"
+                )
                 output.append(structure)
         return output
     return []
@@ -739,11 +764,20 @@ def task_number(structure: dict) -> str:
 
 
 def connect_tables(
-    structures: list[dict], tables: list[dict], text: str, section: dict
+    structures: list[dict],
+    tables: list[dict],
+    text: str,
+    section: dict,
+    conversion: dict | None = None,
 ) -> list[dict]:
     """Join an immediately following rubric only with an explicit matching number."""
     used = {s["table"] for s in structures}
     pending = []
+    physical = (conversion or {}).get("physical", {})
+    if __package__:
+        from .middle_physical import continuation_proof
+    else:
+        from middle_physical import continuation_proof
     for table in tables:
         if not (
             section["locator"]["start"]
@@ -755,6 +789,24 @@ def connect_tables(
         if table["table"] in used:
             continue
         cells = table["cells"]
+        physical_owners = []
+        for s in structures:
+            if s["layout"] != "form":
+                continue
+            last = s["links"][-1]["table"] if s["links"] else s["table"]
+            if last + 1 == table["table"]:
+                proof = continuation_proof(tables[last], table, text, physical)
+                if proof:
+                    physical_owners.append((s, proof))
+        if len(physical_owners) == 1:
+            owner, proof = physical_owners[0]
+            owner["cells"].extend(cells)
+            owner["links"].append(
+                {"table": table["table"], "start": table["start"], "end": table["end"], **proof}
+            )
+            continuation_claims(owner, table)
+            used.add(table["table"])
+            continue
         if not cells or not any(label_role(c["text"]) in {"rubric", "standards"} for c in cells):
             continue
         numbers = {
@@ -803,6 +855,63 @@ def connect_tables(
     return pending
 
 
+def continuation_claims(owner: dict, table: dict) -> None:
+    """Read cells only after physical ownership is established."""
+    claims = owner["claims"]
+    for row in table["rows"]:
+        for n, header in enumerate(row[:-1]):
+            role = label_role(header["text"])
+            if role and role not in TITLE_ROLES and not label_role(row[n + 1]["text"]):
+                claims[role].append((row[n + 1], header))
+    if claims.get("standards"):
+        claims["standards"].extend((c, None) for c in table["cells"] if CODE_RE.search(c["raw"]))
+    else:
+        headers = [
+            c
+            for c in table["cells"]
+            if label_role(c["text"]) == "standards"
+            or re.fullmatch(r"성취기준\s+성취기준별\s*성취수준", c["text"])
+        ]
+        if headers:
+            first = min(c["row"] for c in headers)
+            stop = min(
+                (
+                    c["row"]
+                    for c in table["cells"]
+                    if c["row"] > first
+                    and label_role(c["text"]) in {"method", "elements", "rubric"}
+                ),
+                default=len(table["rows"]),
+            )
+            claims["standards"].extend(
+                (c, headers[0])
+                for c in table["cells"]
+                if first < c["row"] < stop and CODE_RE.search(c["raw"])
+            )
+    for c in table["cells"]:
+        match = re.fullmatch(
+            r"(영역\s*만점)\s*\((반영\s*비율)\)\s*(\d+)\s*\((\d+%)\)\s*기본\s*점수",
+            c["raw"],
+        )
+        if match:
+            claims["score"].append((cell_part(c, *match.span(3)), cell_part(c, *match.span(1))))
+            claims["weight"].append((cell_part(c, *match.span(4)), cell_part(c, *match.span(2))))
+        wrap = re.fullmatch(
+            r"영역\s*<br\s*/?>\s*(\d+)\s*\((\d+%)\)\s*<br\s*/?>\s*"
+            r"(만점)\s*\((반영\s*비율)\)",
+            c["raw"],
+            re.I,
+        )
+        if wrap:
+            claims["score"].append((cell_part(c, *wrap.span(1)), cell_part(c, *wrap.span(3))))
+            claims["weight"].append((cell_part(c, *wrap.span(2)), cell_part(c, *wrap.span(4))))
+    # The fragment preserves all original level/criterion rows as a rubric. It
+    # does not turn qualitative scales into points or sum numeric row maxima.
+    claims["rubric"].extend(
+        (c, None) for c in table["cells"] if c["text"] and not label_role(c["text"])
+    )
+
+
 def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     claims = structure["claims"]
     observations = {name: [] for name in FIELDS}
@@ -817,8 +926,10 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
             seen.add(cell["start"])
             obs = evidence(cell, conversion, header)
             compound = role == "score_weight" or (
-                role in {"score", "weight"} and "점" in cell["raw"]
-                and "%" in cell["raw"] and COMPOUND_NUMBER_RE.fullmatch(cell["raw"])
+                role in {"score", "weight"}
+                and "점" in cell["raw"]
+                and "%" in cell["raw"]
+                and COMPOUND_NUMBER_RE.fullmatch(cell["raw"])
             )
             if compound:
                 obs["compound_numeric"] = True
@@ -839,16 +950,20 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
         observations["title"] = [title]
     fields = {name: field_value(name, obs) for name, obs in observations.items()}
     checks = [
-        row for row in conversion.get("method_check_comparison", {}).get("rows", [])
+        row
+        for row in conversion.get("method_check_comparison", {}).get("rows", [])
         if row.get("source_sha256") == conversion.get("sha256")
         and conversion.get("method_check_comparison", {}).get("structured_text_sha256")
         == conversion.get("text_sha256")
-        and any(row.get("start") == obs["locator"]["start"]
-                and row.get("end") == obs["locator"]["end"] for obs in observations["method"])
+        and any(
+            row.get("start") == obs["locator"]["start"] and row.get("end") == obs["locator"]["end"]
+            for obs in observations["method"]
+        )
     ]
-    fields["method"] = method_values(observations["method"], conversion_loss=bool(
-        any(row["status"] in {"loss", "conflict"} for row in checks)
-    ))
+    fields["method"] = method_values(
+        observations["method"],
+        conversion_loss=bool(any(row["status"] in {"loss", "conflict"} for row in checks)),
+    )
     fields["method"]["conversion_comparison"] = checks
     fields["standards"] = standard_values(observations["standards"])
     if not fields["task_no"]["value"] and task_number(structure):
@@ -869,7 +984,8 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
         reasons.append("PDF 평문 폴백·표 구조 미보존")
     if any(
         re.search(r"(?:영역\s*만점|반영\s*비율|평가\s*시기)\s*[:：]?\s*\d", c["text"])
-        for role in TITLE_ROLES for c, _ in claims.get(role, [])
+        for role in TITLE_ROLES
+        for c, _ in claims.get(role, [])
     ):
         reasons.append("제목 셀에 필드 라벨 혼입·경계 미확정")
     if not title:
@@ -929,6 +1045,14 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
         "semester": section.get("semester"),
         "rule_version": RULE_VERSION,
         "layout": structure["layout"],
+        "table_role": structure.get(
+            "table_role",
+            "summary"
+            if structure["layout"] == "column"
+            else "detail"
+            if structure["layout"] == "form"
+            else "unresolved",
+        ),
         "candidate_role": structure.get("candidate_role", "other"),
         "role_basis": structure.get("role_basis", "표 역할 미확인"),
         "layout_position": {
@@ -956,6 +1080,9 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
         "title_specificity_score": title_gate(title["text"])["specificity_score"] if title else 0,
         "title_generated": False,
         "links": structure["links"],
+        "completeness_status": "continuation_linked_not_certified_complete"
+        if structure["links"]
+        else "completion_unconfirmed",
         "owned_ranges": [evidence(c, conversion)["locator"] for c in cells],
         "shared_fields": [
             {
@@ -972,66 +1099,12 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     }
 
 
-def apply_confirmed_relations(
-    items: list[dict], conversion: dict, relations: tuple[dict, ...]
-) -> None:
-    """Compare only externally reviewed identities. Do not discover new matches."""
-    for relation in relations:
-        if relation["source_sha256"] != conversion.get("sha256"):
-            continue
-        if relation.get("text_sha256") and relation["text_sha256"] != conversion.get("text_sha256"):
-            raise ValueError("검수로 고정한 변환 본문 해시가 달라 관계 적용 보류")
-        details = [i for i in items if i["item_id"] == relation["detail_item_id"]]
-        if not details:
-            continue
-        summaries = [
-            i
-            for i in items
-            if i["layout"] == "column"
-            and i["layout_position"]["table"] == relation["summary_table"]
-            and i["layout_position"]["col"] == relation["summary_col"]
-        ]
-        if len(details) != 1 or len(summaries) != 1:
-            raise ValueError("검수로 고정한 요약·상세 관계를 재현하지 못함")
-        detail, summary = details[0], summaries[0]
-        summary["candidate_role"] = "summary_duplicate"
-        summary["role_basis"] = relation["basis"]
-        for name in relation["fields"]:
-            fields = [summary["fields"][name], detail["fields"][name]]
-            snapshots = [
-                {
-                    "source_role": role,
-                    "source_item_id": item["item_id"],
-                    "value": field["value"],
-                    "evidence": field["evidence"],
-                    "occurrences": field.get("occurrences", []),
-                }
-                for role, item, field in zip(
-                    ("summary", "detail"), (summary, detail), fields, strict=True
-                )
-            ]
-            values = [field["value"] for field in fields]
-            comparable = all(v not in ("", [], None) for v in values)
-            conflict = comparable and (
-                set(values[0]) != set(values[1]) if name == "standards" else values[0] != values[1]
-            )
-            for item, field in zip((summary, detail), fields, strict=True):
-                field["source_observations"] = snapshots
-                if conflict:
-                    field.update(
-                        value=[] if name == "standards" else "",
-                        status="conflict",
-                        reason="요약·상세 원문 관측값 충돌·확정 보류",
-                    )
-                    item["extraction_status"] = "review"
-                    item["review_reasons"].append(f"원문 내부 충돌 ({name})")
-                item.setdefault("confirmed_relations", []).append(relation)
-
-
 def ownership_errors(items: list[dict]) -> list[dict]:
     owners = defaultdict(set)
     field_names = defaultdict(set)
     for item in items:
+        if item.get("candidate_role") == "summary_duplicate" and item.get("identity_relation"):
+            continue  # Alias of its detail, not an independent source owner.
         for name, field in item["fields"].items():
             for obs in field["evidence"]:
                 loc = obs["locator"]
@@ -1046,8 +1119,10 @@ def ownership_errors(items: list[dict]) -> list[dict]:
 
 
 def extract_middle_items(
-    text: str, section: dict, conversion: dict | None = None, title_hints: tuple[str, ...] = (),
-    *, confirmed_relations: tuple[dict, ...] = (),
+    text: str,
+    section: dict,
+    conversion: dict | None = None,
+    title_hints: tuple[str, ...] = (),
 ) -> list[dict]:
     """Explicit science entry point. Existing math parser callers are unchanged."""
     conversion = conversion or {"text": text, "converter": "synthetic"}
@@ -1080,12 +1155,29 @@ def extract_middle_items(
         if not start <= table["start"] < table["end"] <= end:
             continue
         found = row_structures(table) or form_structures(split_form_labels(table, conversion))
+        external = conversion.get("physical", {}).get("titles", {}).get(str(table["table"]))
+        if (
+            external
+            and not found
+            and all(label_role(c["text"]) not in TITLE_ROLES for c in table["cells"])
+        ):
+            # A virtual label supplies structure only; the title value and all
+            # locators still address literal converter text verified in the PDF.
+            claims = defaultdict(list)
+            claims["title"].append((external, None))
+            structure = new_structure(table, [external, *table["cells"]], claims, "form")
+            continuation_claims(structure, table)
+            found = [structure]
+        elif external and len(found) == 1:
+            found[0]["cells"].append(external)
+            found[0]["external_task"] = external
+            found[0]["claims"]["task"].append((external, None))
         for structure in found:
             title_roles = set(structure["claims"]) & TITLE_ROLES
             if title_roles == {"task_no"}:
                 continue
             structures.append(structure)
-    structures.extend(connect_tables(structures, all_tables, text, section))
+    structures.extend(connect_tables(structures, all_tables, text, section, conversion))
     # A summary row and a detailed form can repeat a numbered task. Without
     # explicit row continuity they remain separate review candidates.
     by_number = defaultdict(list)
@@ -1150,7 +1242,6 @@ def extract_middle_items(
         item = finalize(structure, section, conversion)
         by_identity.setdefault(item["item_id"], item)
     results = list(by_identity.values())
-    apply_confirmed_relations(results, conversion, confirmed_relations)
     errors = ownership_errors(results)
     invalid = {i for e in errors for i in e["item_ids"]}
     for item in results:

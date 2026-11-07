@@ -64,14 +64,36 @@ def audit(input_path: Path) -> dict:
         text_sha = hashlib.sha256(text.encode("utf-8")).hexdigest()
         if text_sha != document["text_sha256"]:
             raise ValueError(f"S4 text hash mismatch: {path}")
+        physical_path = None
+        if Path(document["original_path"]).suffix.lower() == ".pdf":
+            from middle_physical import add_column_geometry, physical_index
+
+            physical = physical_index(text, conversion, ROOT / document["original_path"])
+            add_column_geometry(physical, ROOT / document["original_path"])
+            conversion["physical"] = physical
+            physical_path = f"data/derived/subjects/physical/{document['sha256']}.json"
+            atomic_write(
+                ROOT / physical_path,
+                json.dumps(
+                    {"source_sha256": document["sha256"], "text_sha256": text_sha, **physical},
+                    ensure_ascii=False,
+                ),
+            )
         prefix_counts.update(c["prefix"] for c in code_evidence(text))
         decisions = subject_sections(text, document["segments"], conversion)
         pre_grade_conflicts.extend(
-            {"converted_path": document["converted_path"], "section_id": s["section_id"],
-             "grade": s["grade"], "locator": s["locator"], "header": s["header"],
-             "codes": s["codes"], "appendix_boundary_evidence": s.get("appendix_boundary_evidence"),
-             "appendix_review": s.get("appendix_review")}
-            for s in decisions if "heading_code_conflict" in s["reasons"]
+            {
+                "converted_path": document["converted_path"],
+                "section_id": s["section_id"],
+                "grade": s["grade"],
+                "locator": s["locator"],
+                "header": s["header"],
+                "codes": s["codes"],
+                "appendix_boundary_evidence": s.get("appendix_boundary_evidence"),
+                "appendix_review": s.get("appendix_review"),
+            }
+            for s in decisions
+            if "heading_code_conflict" in s["reasons"]
         )
         source_tables = table_spans(text)
         metadata = {
@@ -83,6 +105,7 @@ def audit(input_path: Path) -> dict:
             "original_path": document["original_path"],
             "text_sha256": text_sha,
             "version_status": document.get("version_status", "single"),
+            "physical_path": physical_path,
         }
         documents.append(metadata)
         for section in decisions:

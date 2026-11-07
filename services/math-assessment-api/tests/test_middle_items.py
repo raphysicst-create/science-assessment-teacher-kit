@@ -540,26 +540,22 @@ def test_column_compound_rowspan_and_essay_part(overall, partial):
         ("standards", "[9과05-01] [9과05-02] [9과05-04]", "[9과05-02] [9과05-04]"),
     ],
 )
-def test_only_reviewed_summary_detail_identity_preserves_both_conflicting_values(name, a, b):
+def test_general_summary_detail_identity_preserves_both_conflicting_values(name, a, b):
+    from scripts.middle_identity import reconcile_items
+
     label = "반영비율" if name == "weight" else "성취기준"
     text = (
         "<table><tr><td>구분</td><td>수행평가</td></tr>"
         "<tr><td>평가영역</td><td>합성 탐구</td></tr>"
-        f"<tr><td>{label}</td><td>{a}</td></tr></table>" + form("합성 탐구", extra=[(label, b)])
+        "<tr><td>만점</td><td>100점</td></tr>"
+        "<tr><td>평가시기</td><td>10월</td></tr>"
+        f"<tr><td>{label}</td><td>{a}</td></tr></table>"
+        + form("합성 탐구", extra=[("만점", "100점"), ("평가시기", "10월"), (label, b)])
     )
     conversion = {"text": text, "converter": "synthetic", "sha256": "source-digest"}
     prior = extract_middle_items(text, section(text), conversion)
-    detail = next(i for i in prior if i["layout"] == "form")
     original_values = [i["fields"][name]["value"] for i in prior]
-    relation = {
-        "source_sha256": "source-digest",
-        "detail_item_id": detail["item_id"],
-        "summary_table": 0,
-        "summary_col": 1,
-        "fields": (name,),
-        "basis": "synthetic review",
-    }
-    items = extract_middle_items(text, section(text), conversion, confirmed_relations=(relation,))
+    items = reconcile_items(prior)
     assert ownership_errors(items) == []
     for item in items:
         field = item["fields"][name]
@@ -571,9 +567,9 @@ def test_only_reviewed_summary_detail_identity_preserves_both_conflicting_values
             for obs in source["evidence"]:
                 loc = obs["locator"]
                 assert text[loc["start"] : loc["end"]] == obs["raw"]
-    wrong_edition = extract_middle_items(
-        text, section(text), {**conversion, "sha256": "different"}, confirmed_relations=(relation,)
-    )
+    wrong_edition = extract_middle_items(text, section(text), conversion)
+    wrong_edition[0]["source_sha256"] = "different"
+    reconcile_items(wrong_edition)
     assert all(i["fields"][name]["status"] != "conflict" for i in wrong_edition)
 
 

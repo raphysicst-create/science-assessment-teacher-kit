@@ -1,7 +1,8 @@
-"""Reviewed identities from review2 section 2. No field values or source fixtures.
+"""Human-confirmed identities from review2 section 2, retained for audit only.
 
 These bindings apply only to this immutable source edition and existing S6 ID.
-General summary/detail identity discovery is deferred to the next work package.
+S6c-3 reproduces these three bindings with general source-scoped identity rules.
+This ledger is not imported by the production audit/identity decision path.
 """
 
 CONFIRMED_RELATIONS = (

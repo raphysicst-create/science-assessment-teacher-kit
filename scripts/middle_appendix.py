@@ -159,3 +159,28 @@ def recover_appendix_sections(text: str, sections: list[dict], conversion: dict)
             boundary_method="summary_correspondence_detached_form",
             appendix_review="" if number_verified else "task_number_absent",
         )
+        # Only a physically proven continuation can extend a detached form
+        # beyond the code-delimited S5 slice. The inherited grade is never used
+        # as evidence for the extension.
+        if __package__:
+            from .middle_physical import continuation_proof
+        else:
+            from middle_physical import continuation_proof
+        last = table
+        proofs = []
+        for following in tables[table["table"] + 1 :]:
+            proof = continuation_proof(last, following, text, conversion.get("physical", {}))
+            if not proof:
+                break
+            proofs.append(proof)
+            last = following
+        if proofs:
+            old_end = section["locator"]["end"]
+            section["locator"] = {**section["locator"], "end": last["end"]}
+            section["continuation_boundary_evidence"] = proofs
+            for other in sections:
+                if other is not section and old_end <= other["locator"]["start"] < last["end"]:
+                    other["locator"] = {
+                        **other["locator"],
+                        "start": min(last["end"], other["locator"]["end"]),
+                    }

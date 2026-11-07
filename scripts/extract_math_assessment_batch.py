@@ -76,23 +76,38 @@ def convert_pdf(path: Path) -> dict:
                 has_image = bool(page.get_image_info())
                 texts.append(text)
                 method_rows.extend(pdf_method_rows(page, number))
-                pages.append({
-                    "page": number, **text_metrics(text),
-                    "textless": not text.strip(), "has_raster_image": has_image,
-                })
+                pages.append(
+                    {
+                        "page": number,
+                        **text_metrics(text),
+                        "textless": not text.strip(),
+                        "has_raster_image": has_image,
+                    }
+                )
+            if __package__:
+                from .middle_physical import pdf_surfaces
+            else:
+                from middle_physical import pdf_surfaces
+            surfaces = pdf_surfaces(document)
         text = "\n\n".join(texts)
         textless = sum(page["textless"] for page in pages)
         return {
-            "converter": "pymupdf", "text": text, **text_metrics(text),
+            "converter": "pymupdf",
+            "text": text,
+            **text_metrics(text),
             "conversion_status": pdf_conversion_status(len(pages), textless),
-            "page_count": len(pages), "image_page_count": textless,
+            "page_count": len(pages),
+            "image_page_count": textless,
             "textless_page_count": textless,
             "raster_image_page_count": sum(page["has_raster_image"] for page in pages),
             "textless_raster_page_count": sum(
                 page["textless"] and page["has_raster_image"] for page in pages
             ),
-            "table_count": None, "cell_count": None, "pages": pages,
+            "table_count": None,
+            "cell_count": None,
+            "pages": pages,
             "method_rows": method_rows,
+            "surfaces": surfaces,
             "warnings": fitz.TOOLS.mupdf_warnings(reset=True),
         }
     except Exception as exc:

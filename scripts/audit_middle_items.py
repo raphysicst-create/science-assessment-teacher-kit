@@ -9,7 +9,7 @@ from collections import Counter
 from pathlib import Path
 
 from audit_middle_subjects import atomic_write, escape, location
-from middle_item_review_cases import CONFIRMED_RELATIONS
+from middle_identity import reconcile_items
 from middle_items import (
     FIELDS,
     ROLE_LABELS,
@@ -32,10 +32,12 @@ def audit(input_path: Path) -> dict:
     comparison_path = ROOT / "data/derived/conversion_audit/2026-round-3.json"
     comparison_report = (
         json.loads(comparison_path.read_text(encoding="utf-8"))
-        if comparison_path.exists() else {"documents": []}
+        if comparison_path.exists()
+        else {"documents": []}
     )
     method_checks = {
-        d["sha256"]: d["method_check_comparison"] for d in comparison_report["documents"]
+        d["sha256"]: d["method_check_comparison"]
+        for d in comparison_report["documents"]
         if "method_check_comparison" in d
     }
     matched_comparison_documents = 0
@@ -55,6 +57,17 @@ def audit(input_path: Path) -> dict:
             conversion["method_check_comparison"] = comparison
             matched_comparison_documents += 1
         text = conversion["text"]
+        if document.get("physical_path"):
+            from middle_physical import RULE_VERSION as PHYSICAL_RULE_VERSION
+
+            physical = json.loads((ROOT / document["physical_path"]).read_text(encoding="utf-8"))
+            if (
+                physical["source_sha256"] != source_document["sha256"]
+                or physical["text_sha256"] != document["text_sha256"]
+                or physical.get("rule_version") != PHYSICAL_RULE_VERSION
+            ):
+                raise ValueError("physical correspondence hash mismatch")
+            conversion["physical"] = physical
         if Path(document["original_path"]).suffix.lower() == ".pdf":
             conversion["verified_cell_splits"] = verified_title_splits(
                 text, ROOT / document["original_path"]
@@ -81,15 +94,18 @@ def audit(input_path: Path) -> dict:
                 "semester": parent["semester"],
                 "semester_evidence": parent["semester_evidence"],
             }
-            found = extract_middle_items(
-                text, section, conversion, confirmed_relations=CONFIRMED_RELATIONS
-            )
+            found = extract_middle_items(text, section, conversion)
             for item in found:
                 for name, field in item["fields"].items():
                     observations = (
-                        field["evidence"] + field.get("options", []) + field.get("occurrences", [])
-                        + [o for source in field.get("source_observations", [])
-                           for o in source["evidence"] + source.get("occurrences", [])]
+                        field["evidence"]
+                        + field.get("options", [])
+                        + field.get("occurrences", [])
+                        + [
+                            o
+                            for source in field.get("source_observations", [])
+                            for o in source["evidence"] + source.get("occurrences", [])
+                        ]
                     )
                     for obs in observations:
                         loc = obs["locator"]
@@ -129,6 +145,7 @@ def audit(input_path: Path) -> dict:
                 }
                 for i in found
             )
+    reconcile_items(items)
     errors = ownership_errors(items)
     # Cross-section checks also guard repeated source cells in S4 table fragments.
     conflict_ids = {key for error in errors for key in error["item_ids"]}
@@ -141,12 +158,17 @@ def audit(input_path: Path) -> dict:
         if item["item_id"] in trace_ids or item["title_generated"]:
             item["extraction_status"] = "review"
             item["review_reasons"].append("근거 오프셋·제목 원문 불일치")
-    bounded = [i for i in items if i["extraction_status"] == "bounded"]
-    review = [i for i in items if i["extraction_status"] != "bounded"]
+    independent = [
+        i
+        for i in items
+        if not (i["candidate_role"] == "summary_duplicate" and i.get("identity_relation"))
+    ]
+    bounded = [i for i in independent if i["extraction_status"] == "bounded"]
+    review = [i for i in independent if i["extraction_status"] != "bounded"]
     school_grades = []
     for school in sorted({d["school"] for d in documents}):
         for grade in (1, 2):
-            selected = [i for i in items if i["school"] == school and i["grade"] == grade]
+            selected = [i for i in independent if i["school"] == school and i["grade"] == grade]
             school_grades.append(
                 {
                     "school": school,
@@ -183,16 +205,24 @@ def audit(input_path: Path) -> dict:
             "ownership_errors": len(errors),
             "source_trace_errors": len(trace_errors),
             "field_filled": field_counts,
-            "field_states": field_state_counts(items),
+            "field_states": field_state_counts(independent),
+            "summary_duplicates": len(items) - len(independent),
+            "performance_candidates": sum(
+                i["candidate_role"] == "performance" for i in independent
+            ),
+            "independent_candidates": len(independent),
             "bounded_field_states": field_state_counts(bounded),
             "review_roles": dict(Counter(i["candidate_role"] for i in review)),
-            "unlinked_table_roles": dict(Counter(
-                i["candidate_role"] for i in items if i["layout"] == "unlinked_table"
-            )),
+            "unlinked_table_roles": dict(
+                Counter(i["candidate_role"] for i in items if i["layout"] == "unlinked_table")
+            ),
             "source_conflicts": sum(
-                any(f["status"] == "conflict" and f.get("source_observations")
-                    for f in i["fields"].values())
-                for i in items if i["candidate_role"] != "summary_duplicate"
+                any(
+                    f["status"] == "conflict" and f.get("source_observations")
+                    for f in i["fields"].values()
+                )
+                for i in items
+                if i["candidate_role"] != "summary_duplicate"
             ),
             "precision": "미측정",
             "recall": "미측정",
@@ -200,14 +230,20 @@ def audit(input_path: Path) -> dict:
             "method_check_comparison": {
                 "documents_with_metadata": len(method_checks),
                 "documents_with_matching_text_hash": matched_comparison_documents,
-                "all_pdf_rows": dict(Counter(
-                    row["status"] for comparison in method_checks.values()
-                    for row in comparison["rows"]
-                )),
-                "item_rows": dict(Counter(
-                    row["status"] for i in items
-                    for row in i["fields"]["method"].get("conversion_comparison", [])
-                )),
+                "all_pdf_rows": dict(
+                    Counter(
+                        row["status"]
+                        for comparison in method_checks.values()
+                        for row in comparison["rows"]
+                    )
+                ),
+                "item_rows": dict(
+                    Counter(
+                        row["status"]
+                        for i in items
+                        for row in i["fields"]["method"].get("conversion_comparison", [])
+                    )
+                ),
             },
             "field_fill_rates": {
                 k: round(v / len(bounded), 4) if bounded else 0 for k, v in field_counts.items()
@@ -260,10 +296,15 @@ def values(item: dict) -> str:
             checks = " / ".join(o["raw"] for o in field["options"])
             value = f"{value} ({field['state']}) {checks}"
         if field.get("status") == "conflict":
-            observed = [(o['source_role'], o['value'])
-                        for o in field.get('source_observations', [])]
+            observed = [
+                (o["source_role"], o["value"]) for o in field.get("source_observations", [])
+            ]
             value = f"확정 보류 · 출처별 관측 {observed}"
-        has_evidence = "근거 있음" if field["evidence"] else "근거 없음"
+        has_evidence = (
+            "근거 있음"
+            if field["evidence"]
+            else ("요약 출처 참조" if field.get("value_source") == "summary" else "근거 없음")
+        )
         output.append(
             f"{labels[name]}={value if value != '' and value != [] else '빈값'} "
             f"[{has_evidence}]{' · ' + field['reason'] if field['reason'] else ''}"
@@ -294,6 +335,8 @@ def markdown(report: dict) -> str:
         f"제목 생성 {summary['title_generated']}개, 소유 충돌 {summary['ownership_errors']}개·"
         f"근거 불일치 {summary['source_trace_errors']}개 (의미 검증 아님). "
         f"원문 내부 충돌 {summary['source_conflicts']}항목.",
+        f"동일성이 확정된 요약 별칭 {summary['summary_duplicates']}개는 "
+        "독립 항목·검토 수에서 제외하며 원문 관측은 JSON에 보존한다.",
         "",
         "## 학교·학년별 항목 수",
         "",
@@ -302,34 +345,56 @@ def markdown(report: dict) -> str:
     ]
     for row in report["school_grades"]:
         lines.append(f"| {row['school']} | 중{row['grade']} | {row['bounded']} | {row['review']} |")
-    lines.extend([
-        "", "## 검토 후보 역할별 분해", "",
-        "후보는 검토 작업 단위다. 실제 수행 항목 역할도 독립 항목 정답 수를 뜻하지 않는다. "
-        "요약 중복과 미확인 표를 포함하므로 이 수로 재현율을 계산하지 않는다.", "",
-        "| 역할 | 전체 검토 후보 | 별도 표 |", "|---|---:|---:|",
-    ])
+    lines.extend(
+        [
+            "",
+            "## 검토 후보 역할별 분해",
+            "",
+            "후보는 검토 작업 단위다. 실제 수행 항목 역할도 독립 항목 정답 수를 뜻하지 않는다. "
+            "요약 중복과 미확인 표를 포함하므로 이 수로 재현율을 계산하지 않는다.",
+            "",
+            "| 역할 | 전체 검토 후보 | 별도 표 |",
+            "|---|---:|---:|",
+        ]
+    )
     for role, label in ROLE_LABELS.items():
-        lines.append(f"| {label} | {summary['review_roles'].get(role, 0)} | "
-                     f"{summary['unlinked_table_roles'].get(role, 0)} |")
-    lines.extend([
-        "", "일반 성취기준·성취수준표의 전체 코드는 항목으로 복사하지 않는다. "
-        "정의적·비수치 평가는 별도 검토를 유지한다.", "",
-        "## 필드별 확인 상태", "",
-        "분모는 모든 후보이며 역할별 중복이 포함된다. 원문 미기재는 명시적인 부재 근거가 "
-        "있을 때만 기록한다. 빈값·연속표 완결성·판독 미확인은 추출 실패·미확인으로 둔다.", "",
-        "| 필드 | 값 있음 | 원문 미기재 | 추출 실패·미확인 | 충돌 |",
-        "|---|---:|---:|---:|---:|",
-    ])
+        lines.append(
+            f"| {label} | {summary['review_roles'].get(role, 0)} | "
+            f"{summary['unlinked_table_roles'].get(role, 0)} |"
+        )
+    lines.extend(
+        [
+            "",
+            "일반 성취기준·성취수준표의 전체 코드는 항목으로 복사하지 않는다. "
+            "정의적·비수치 평가는 별도 검토를 유지한다.",
+            "",
+            "## 필드별 확인 상태",
+            "",
+            "분모는 동일성 확정 요약 별칭을 제외한 독립 후보다. 원문 미기재는 명시적인 부재 근거가 "
+            "있을 때만 기록한다. 빈값·연속표 완결성·판독 미확인은 추출 실패·미확인으로 둔다.",
+            "",
+            "| 필드 | 값 있음 | 원문 미기재 | 추출 실패·미확인 | 충돌 |",
+            "|---|---:|---:|---:|---:|",
+        ]
+    )
     for name, counts in summary["field_states"].items():
-        lines.append(f"| {name} | {counts['present']} | {counts['source_absent']} | "
-                     f"{counts['unconfirmed']} | {counts['conflict']} |")
-    lines.extend([
-        "", "## S3 방법 행 대조 전달", "",
-        escape(summary["method_check_comparison"]), "",
-        "matched는 같은 해시·물리 페이지·방법 행의 선택지 일대일 대응이다. "
-        "unmapped는 대응 미확인이다. loss·conflict는 출처 관측을 보존하고 방법 확정을 보류한다. "
-        "전체 기호 수 차이는 방법 보충의 근거로 사용하지 않는다.",
-    ])
+        lines.append(
+            f"| {name} | {counts['present']} | {counts['source_absent']} | "
+            f"{counts['unconfirmed']} | {counts['conflict']} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## S3 방법 행 대조 전달",
+            "",
+            escape(summary["method_check_comparison"]),
+            "",
+            "matched는 같은 해시·물리 페이지·방법 행의 선택지 일대일 대응이다. "
+            "unmapped는 대응 미확인이다. loss·conflict는 출처 관측을 보존하고 "
+            "방법 확정을 보류한다. "
+            "전체 기호 수 차이는 방법 보충의 근거로 사용하지 않는다.",
+        ]
+    )
     lines.extend(
         [
             "",
