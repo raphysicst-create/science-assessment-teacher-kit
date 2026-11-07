@@ -17,8 +17,8 @@ SEARCH_URL: Final = f"{BASE_URL}/ei/ss/pneiss_a04_s0/getSchoolList.do"
 SEARCH_PAGE_URL: Final = f"{BASE_URL}/ei/ss/pneiss_a03_s0.do"
 HANGMOK_URL: Final = f"{BASE_URL}/ei/ss/pneiss_a03_s0_hangmok_json.do"
 # SCHUL_KIND is supplied by the Schoolinfo autocomplete response.
-# High school "04" preserves the existing code; middle school "03" is inferred
-# and has NOT yet been verified with a live response.
+# High school "04" preserves the existing code. Middle school "03" was verified
+# with live responses on 2026-11-07 (Daechi MS, Cheonan Buldang MS; 4-가 item path unchanged).
 SCHOOL_KIND_CODES: Final = {"고등학교": "04", "중학교": "03"}
 
 
