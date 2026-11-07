@@ -18,11 +18,13 @@ import tempfile
 from pathlib import Path
 
 if __package__:
+    from .assessment_symbols import BOX_RE, SELECTED_BOXES, UNSELECTED_BOXES
     from .math_subject_aliases import SUBJECT_PATTERNS
     from .math_subject_aliases import subject_hits as detect_subject_hits
     from .middle_segments import segment_document
     from .middle_subjects import subject_sections
 else:
+    from assessment_symbols import BOX_RE, SELECTED_BOXES, UNSELECTED_BOXES
     from math_subject_aliases import SUBJECT_PATTERNS
     from math_subject_aliases import subject_hits as detect_subject_hits
     from middle_segments import segment_document
@@ -50,8 +52,6 @@ TASK_CONTEXT = re.compile(
     r"수행\s*평가|평가\s*(?:영역|과제|내용|방법)|영역\s*명|과제\s*명|활동\s*명|채점\s*기준",
     re.IGNORECASE,
 )
-SELECTED_BOXES = {"■", "☑", "☒", "✓", "✔"}
-UNSELECTED_BOXES = {"□", "☐"}
 COURSE_HEADER = re.compile(
     r"(?im)^(?:#{1,6}\s*)?\d{4}\s*학년도[^\n]{0,180}"
     r"(?:교수\s*[·ㆍ‧/\-]?\s*학습|교수학습)[^\n]{0,100}평가\s*계획[^\n]*$"
@@ -90,12 +90,12 @@ def detected_action_tags(text: str, *, assume_task_context: bool = False) -> lis
         for match in pattern.finditer(text):
             line_start = text.rfind("\n", 0, match.start()) + 1
             before_on_line = text[line_start:match.start()]
-            boxes = re.findall(r"[■☑☒✓✔□☐]", before_on_line)
+            boxes = BOX_RE.findall(before_on_line)
             if boxes:
-                if boxes[-1] in SELECTED_BOXES:
+                if boxes[-1] in SELECTED_BOXES or boxes[-1].lower() == "gfedcb":
                     detected.append(name)
                     break
-                if boxes[-1] in UNSELECTED_BOXES:
+                if boxes[-1] in UNSELECTED_BOXES or boxes[-1].lower() == "gfedc":
                     continue
             context = text[max(0, match.start() - 320):min(len(text), match.end() + 320)]
             if assume_task_context or TASK_CONTEXT.search(context):

@@ -16,6 +16,7 @@ from functools import lru_cache
 from html.parser import HTMLParser as StdlibHTMLParser
 from pathlib import Path
 
+from scripts.assessment_symbols import BOX_CHARACTERS, BOX_RE, SELECTED_MARKER
 from scripts.build_math_assessment_publish_db import html_tables
 from scripts.middle_subjects import classify_subject
 
@@ -1598,6 +1599,7 @@ def _unique_values(values: list[str], limit: int = 8) -> list[str]:
 
 
 METHOD_TERMS = (
+    "서·논술", "서ㆍ논술", "서･논술", "서・논술",
     "서술·논술", "서술ㆍ논술", "서술･논술", "구술·발표", "구술ㆍ발표",
     "구술･발표", "토의·토론", "토의ㆍ토론", "토의･토론", "조사·관찰보고서",
     "조사ㆍ관찰보고서", "조사･관찰보고서", "실험·실습", "실험ㆍ실습",
@@ -1627,12 +1629,12 @@ METHOD_TERM_RE = (
     r"포트폴리오|프로젝트|선택형|서술형|논술형|논술|보고서|발표|토론|실습|에세이|기타|교사)"
 )
 CHECKED_METHOD_RE = re.compile(
-    r"(?:gfedcb|[■☑✅✓✔þ▣☒●])[\s\uF000-\uF8FF]*(" + METHOD_TERM_RE + r")",
+    SELECTED_MARKER + r"[\s\uF000-\uF8FF]*(" + METHOD_TERM_RE + r")",
     re.I,
 )
 CHECKED_CUSTOM_METHOD_RE = re.compile(
-    r"(?:gfedcb|[■☑✅✓✔þ▣☒●])[\s\uF000-\uF8FF]*"
-    r"([^□☐○■☑✅✓✔þ▣☒●]{2,80}?)(?=(?:gfedc|[□☐○■☑✅✓✔þ▣☒●])|$)",
+    SELECTED_MARKER + r"[\s\uF000-\uF8FF]*"
+    r"([^" + BOX_CHARACTERS + r"]{2,80}?)(?=(?:gfedc|[" + BOX_CHARACTERS + r"])|$)",
     re.I,
 )
 TIMING_VALUE_RE = re.compile(
@@ -1711,7 +1713,7 @@ def _first_value_after_label(
     return ""
 
 
-def _exact_fields(segment: str) -> dict[str, object]:
+def _exact_fields(segment: str, *, subject_family: str = "math") -> dict[str, object]:
     """Extract only source-labelled, field-shaped values from one item segment.
 
     Expanded HTML tables repeat cells for rowspans and colspans.  The former
@@ -1824,14 +1826,18 @@ def _exact_fields(segment: str) -> dict[str, object]:
                     if value:
                         found[key].append(value)
 
-    standards = _unique_values(
-        re.findall(r"\[(?:10|12)[^\]\s]{2,24}\]", visible_text(segment)), 24
+    if subject_family not in {"math", "science"}:
+        raise ValueError(f"unsupported subject family: {subject_family}")
+    standard_pattern = (
+        r"\[\s*9\s*과\s*\d{2}\s*-\s*\d{2}\s*\]"
+        if subject_family == "science" else r"\[(?:10|12)[^\]\s]{2,24}\]"
     )
+    standards = _unique_values(re.findall(standard_pattern, visible_text(segment)), 24)
     unique_overview = _unique_values(found["overview"], 2)
     unique_methods = [
         value for value in _unique_values(found["method"], 16)
         if compact_text(value) not in METHOD_SUBLABELS
-        and not re.search(r"gfedc|[□☐○■☑✅✓✔þ▣☒●]", value, re.I)
+        and not BOX_RE.search(value)
     ]
     recognised_method_keys = {compact_text(value) for value in METHOD_TERMS}
     recognised_methods = [

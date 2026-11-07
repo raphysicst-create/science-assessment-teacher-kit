@@ -675,7 +675,13 @@ def normalize_task_name(raw: object) -> str:
     return repair_title_spacing(name).strip(" |#:-▪∙•·")
 
 
-def task_name_is_rejected(name: str, subject_family: str = "math") -> bool:
+def task_name_is_rejected(
+    name: str, subject_family: str = "math", *, source_title: bool = False
+) -> bool:
+    if subject_family == "science" and source_title:
+        from scripts.middle_items import title_gate
+
+        return not title_gate(name)["accepted"]
     other_subject_re, context_re = subject_context_patterns(subject_family)
     method_options = TASK_METHOD_OPTION_RE.findall(name)
     return bool(
