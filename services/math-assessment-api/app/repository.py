@@ -12,6 +12,7 @@ from typing import Any
 from app.source_html import restore_escaped_table_rows, rubric_tables_from_source_html
 
 SUBJECT_ORDER = {
+    "과학": 21,
     "수학": 1,
     "공통수학1": 2,
     "공통수학2": 3,

@@ -39,6 +39,14 @@ SUBJECTS: dict[str, tuple[str, ...]] = {
 SHARED_SUBJECTS = set(SUBJECTS["2015"]) & set(SUBJECTS["2022"])
 
 
+def subjects_for(subject_family: str = "math") -> dict[str, tuple[str, ...]]:
+    if subject_family == "science":
+        return {"2015": ("과학",), "2022": ("과학",)}
+    if subject_family != "math":
+        raise ValueError(f"unsupported subject family: {subject_family}")
+    return SUBJECTS
+
+
 def atomic_text_path(target: Path) -> tuple[Path, int]:
     target.parent.mkdir(parents=True, exist_ok=True)
     fd, name = tempfile.mkstemp(prefix=target.stem + "_", suffix=".partial", dir=target.parent)
@@ -75,10 +83,14 @@ def transition_curriculum(year: int, grade: int | None) -> str | None:
     return None
 
 
-def resolve_curriculum(record: dict[str, object], years: list[int], grades: list[int]) -> tuple[str, str]:
+def resolve_curriculum(
+    record: dict[str, object], years: list[int], grades: list[int], subject_family: str = "math",
+) -> tuple[str, str]:
     subject = str(record.get("subject") or "")
     hint = str(record.get("curriculum_hint") or "")
-    allowed = [curriculum for curriculum, names in SUBJECTS.items() if subject in names]
+    allowed = [
+        curriculum for curriculum, names in subjects_for(subject_family).items() if subject in names
+    ]
     if len(allowed) == 1:
         return allowed[0], "subject_unique_to_curriculum"
     if hint in {"2015", "2022"} and hint in allowed:
@@ -119,8 +131,11 @@ def main() -> None:
     parser.add_argument("--catalog-output", type=Path, required=True)
     parser.add_argument("--coverage-output", type=Path, required=True)
     parser.add_argument("--summary-output", type=Path, required=True)
+    parser.add_argument("--subject-family", choices=("math", "science"), default="math")
     parser.add_argument("--incomplete-schools", type=Path, help="JSON list of school keys with unresolved source coverage")
     args = parser.parse_args()
+    subjects_by_curriculum = subjects_for(args.subject_family)
+    shared_subjects = set(subjects_by_curriculum["2015"]) & set(subjects_by_curriculum["2022"])
     incomplete_schools = set(json.loads(args.incomplete_schools.read_text(encoding="utf-8"))) if args.incomplete_schools else set()
 
     for output in (args.catalog_output, args.coverage_output, args.summary_output):
@@ -169,7 +184,7 @@ def main() -> None:
         grades = extract_grades(name)
         confirmed_semester = source.get("confirmed_semester")
         semesters = [confirmed_semester] if confirmed_semester in (1, 2) else extract_semesters(name)
-        curriculum, basis = resolve_curriculum(record, years, grades)
+        curriculum, basis = resolve_curriculum(record, years, grades, args.subject_family)
         enriched = dict(record)
         enriched.update({
             "resolved_curriculum": curriculum,
@@ -215,10 +230,13 @@ def main() -> None:
         writer.writeheader()
         for school, metadata in sorted(schools.items(), key=lambda item: (item[1].get("region_sido", ""), item[1].get("school_name", ""), item[0])):
             school_status = school_source_status.get(school, collections.Counter())
-            for curriculum, subjects in SUBJECTS.items():
+            for curriculum, subjects in subjects_by_curriculum.items():
                 for subject in subjects:
                     direct = found.get((school, curriculum, subject), [])
-                    ambiguous = ambiguous_found.get((school, subject), []) if subject in SHARED_SUBJECTS else []
+                    ambiguous = (
+                        ambiguous_found.get((school, subject), [])
+                        if subject in shared_subjects else []
+                    )
                     explicit = explicit_sources.get((school, subject), [])
                     incomplete = sum(source_status.get(key, "missing") in {"failed", "short", "missing", "unknown"} for key in explicit)
                     if direct:
@@ -253,7 +271,7 @@ def main() -> None:
                     })
 
     by_subject: dict[str, object] = {}
-    for curriculum, subjects in SUBJECTS.items():
+    for curriculum, subjects in subjects_by_curriculum.items():
         for subject in subjects:
             counter = subject_counts[(curriculum, subject)]
             key = f"{curriculum}:{subject}"
@@ -271,7 +289,9 @@ def main() -> None:
         "source_index_rows": sum(school_source_status[school].total() for school in school_source_status),
         "catalog_rows": len(catalog_rows),
         "catalog_schools": catalog_school_count,
-        "coverage_rows": len(schools) * sum(len(values) for values in SUBJECTS.values()),
+        "coverage_rows": len(schools) * sum(
+            len(values) for values in subjects_by_curriculum.values()
+        ),
         "coverage_status_counts": dict(status_counts),
         "by_subject": by_subject,
         "warning": "not_found_in_collected_plans does not mean the school did not offer the course",

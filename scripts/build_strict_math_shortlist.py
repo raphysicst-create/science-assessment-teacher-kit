@@ -10,7 +10,12 @@ import re
 import tempfile
 from pathlib import Path
 
-from math_subject_aliases import SUBJECT_PATTERNS
+if __package__:
+    from .math_subject_aliases import subject_patterns
+    from .middle_subjects import code_evidence, free_semester_markers, science_hits
+else:
+    from math_subject_aliases import subject_patterns
+    from middle_subjects import code_evidence, free_semester_markers, science_hits
 
 
 CODE_KEYS = {
@@ -24,16 +29,36 @@ CODE_KEYS = {
 }
 
 
-def subject_pattern(subject: str) -> str | None:
-    for _, name, pattern in SUBJECT_PATTERNS:
+def subject_pattern(subject: str, subject_family: str = "math") -> str | None:
+    for _, name, pattern in subject_patterns(subject_family):
         if name == subject:
             return pattern.removeprefix("(?m)")
     return None
 
 
-def evidence_strength(record: dict[str, object]) -> tuple[int, list[str]]:
+def evidence_strength(
+    record: dict[str, object], subject_family: str = "math",
+) -> tuple[int, list[str]]:
     subject = str(record.get("subject") or "")
-    pattern = subject_pattern(subject)
+    if subject_family == "science":
+        decision = record.get("subject_decision") or {}
+        if decision.get("status") in {"other", "mixed", "unknown"}:
+            return 0, ["subject_review_required"]
+        text = str(record.get("evidence_text") or "")
+        codes = code_evidence(text)
+        if any(c["prefix"] != "과" for c in codes):
+            return 0, ["subject_review_required"]
+        if subject == "과학" and (
+            any(c["prefix"] == "과" for c in codes)
+            or decision.get("code_counts", {}).get("과")
+        ):
+            return 5, ["achievement_code"]
+        if subject == "과학" and record.get("section_boundary_verified") and science_hits(text):
+            return 4, ["verified_science_heading"]
+        if subject == "과학" and decision.get("boundary_verified"):
+            return 4, ["verified_science_section"]
+        return 0, []
+    pattern = subject_pattern(subject, subject_family)
     if not pattern:
         return 0, []
     source = record.get("source") or {}
@@ -62,10 +87,27 @@ def evidence_strength(record: dict[str, object]) -> tuple[int, list[str]]:
     return strength, reasons
 
 
-def key(record: dict[str, object]) -> tuple[str, str, str]:
+def key(record: dict[str, object]) -> tuple[str, ...]:
     source = record.get("source") or {}
     source_key = str(record.get("sha256") or source.get("saved_path") or source.get("source_url") or "")
-    return source_key, str(record.get("curriculum_hint") or ""), str(record.get("subject") or "")
+    identity = (
+        source_key, str(record.get("curriculum_hint") or ""), str(record.get("subject") or ""),
+    )
+    return (*identity, str(record["section_id"])) if record.get("section_id") else identity
+
+
+def assessment_markers(record: dict) -> list[str]:
+    markers = record.get("marker_counts") or {}
+    retained = []
+    if int(markers.get("performance_assessment") or 0):
+        retained.append("performance_assessment")
+    if (
+        int(markers.get("free_semester") or 0)
+        or record.get("free_semester_markers")
+        or free_semester_markers(str(record.get("evidence_text") or ""))
+    ):
+        retained.append("free_semester_marker")
+    return retained
 
 
 def main() -> None:
@@ -75,6 +117,7 @@ def main() -> None:
     parser.add_argument("--shortlist-output", type=Path, required=True)
     parser.add_argument("--summary-output", type=Path, required=True)
     parser.add_argument("--per-subject", type=int, default=25)
+    parser.add_argument("--subject-family", choices=("math", "science"), default="math")
     args = parser.parse_args()
 
     raw_rows = 0
@@ -84,21 +127,22 @@ def main() -> None:
         for line in handle:
             raw_rows += 1
             record = json.loads(line)
-            strength, reasons = evidence_strength(record)
-            markers = record.get("marker_counts") or {}
+            strength, reasons = evidence_strength(record, args.subject_family)
             if strength < 4:
                 rejected["weak_subject_evidence"] += 1
                 continue
-            if int(markers.get("performance_assessment") or 0) == 0:
+            retention = assessment_markers(record)
+            if not retention:
                 rejected["no_performance_assessment_marker"] += 1
                 continue
             enriched = dict(record)
+            enriched["assessment_retention_reasons"] = retention
             enriched["subject_evidence_strength"] = strength
             enriched["subject_evidence_reasons"] = reasons
             enriched["review_score"] = int(record.get("evidence_score") or 0) + strength * 3
             valid_rows.append(enriched)
 
-    best: dict[tuple[str, str, str], dict[str, object]] = {}
+    best: dict[tuple[str, ...], dict[str, object]] = {}
     duplicates = 0
     for record in valid_rows:
         identity = key(record)

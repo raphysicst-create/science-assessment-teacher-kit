@@ -10,13 +10,23 @@ from __future__ import annotations
 import argparse
 import collections
 import glob
+import hashlib
 import json
 import os
 import re
 import tempfile
 from pathlib import Path
 
-from math_subject_aliases import SUBJECT_PATTERNS, subject_hits as detect_subject_hits
+if __package__:
+    from .math_subject_aliases import SUBJECT_PATTERNS
+    from .math_subject_aliases import subject_hits as detect_subject_hits
+    from .middle_segments import segment_document
+    from .middle_subjects import subject_sections
+else:
+    from math_subject_aliases import SUBJECT_PATTERNS
+    from math_subject_aliases import subject_hits as detect_subject_hits
+    from middle_segments import segment_document
+    from middle_subjects import subject_sections
 
 
 ASSESSMENT_ANCHORS = re.compile(
@@ -199,7 +209,74 @@ def selected_anchor_positions(text: str, subject_position_local: int) -> list[in
     return sorted(positions)
 
 
-def evidence_records(record: dict[str, object]) -> list[dict[str, object]]:
+def science_evidence_records(record: dict) -> list[dict]:
+    """Enumerate all S4-linked science candidates, including review-only spans."""
+    raw = str(record.get("text") or (record.get("conversion") or {}).get("text") or "")
+    conversion = record.get("conversion") or {"text": raw, "converter": "unknown"}
+    source = record.get("source") or {}
+    segments = record.get("segments")
+    if segments is None:
+        segments = segment_document(
+            {
+                **source,
+                "sha256": record.get("sha256") or hashlib.sha256(raw.encode()).hexdigest(),
+                "candidate_name": source.get("candidate_name") or "",
+            },
+            {**conversion, "text": raw},
+        )
+    text_sha = hashlib.sha256(raw.encode()).hexdigest()
+    if any(s.get("text_sha256") and s["text_sha256"] != text_sha for s in segments):
+        raise ValueError("S4 text hash mismatch")
+    results = []
+    for section in subject_sections(raw, segments, conversion):
+        if "과" not in section["code_counts"] and not (
+            section["header"] and section["header"]["key"] == "과학"
+        ):
+            continue
+        start, end = section["locator"]["start"], section["locator"]["end"]
+        local = raw[start:end]
+        markers = {
+            "performance_assessment": len(re.findall(r"수행\s*평가", local)),
+            "free_semester": len(section["free_semester_markers"]),
+            "achievement_standard": len(section["codes"]),
+        }
+        results.append({
+            "source": source,
+            "sha256": record.get("sha256", ""),
+            "extract_status": record.get("extract_status"),
+            "char_count": len(raw),
+            "subject_family": "science",
+            "subject": "과학",
+            "curriculum_hint": "undetermined",
+            "curriculum_code_hints": [],
+            "subject_decision": section,
+            "segment_id": section["segment_id"],
+            "section_id": section["section_id"],
+            "section_locator": section["locator"],
+            "section_char_count": len(local),
+            "section_boundary_method": section["boundary_method"],
+            "section_boundary_verified": section["boundary_verified"],
+            "task_section_char_count": len(local),
+            "task_section_boundary_method": "subject_section",
+            "task_name_candidates": [],
+            "marker_counts": markers,
+            "free_semester_markers": section["free_semester_markers"],
+            "action_tags": [],
+            "evidence_score": sum(markers.values()),
+            "evidence_text": mask_sensitive(local[:12000]),
+            "excerpt_truncated": len(local) > 12000,
+            "public_eligible": False,
+        })
+    return results
+
+
+def evidence_records(
+    record: dict[str, object], subject_family: str = "math",
+) -> list[dict[str, object]]:
+    if subject_family == "science":
+        return science_evidence_records(record)
+    if subject_family != "math":
+        raise ValueError(f"unsupported subject family: {subject_family}")
     text = mask_sensitive(str(record.get("text") or ""))
     # Re-run subject detection from the preserved full text so improvements to
     # the alias rules apply to every batch, including batches extracted before
@@ -231,6 +308,9 @@ def evidence_records(record: dict[str, object]) -> list[dict[str, object]]:
         action_tags = detected_action_tags(task_local, assume_task_context=task_boundary_method != "full_subject_section")
         marker_counts = {
             "performance_assessment": len(re.findall(r"수행\s*평가", local)),
+            "free_semester": len(re.findall(
+                r"자유\s*학기|과정\s*중심\s*평가|관찰\s*기록|(?<![A-Za-z])P(?![A-Za-z])", local,
+            )),
             "rubric": len(re.findall(r"평가\s*기준|채점\s*기준|루브릭", local)),
             "achievement_standard": len(re.findall(r"성취\s*기준", local)),
             "weight_or_points": len(re.findall(r"반영\s*비율|배점", local)),
@@ -282,6 +362,7 @@ def main() -> None:
     parser.add_argument("--derived-dir", type=Path, required=True)
     parser.add_argument("--limit", type=int, default=0, help="nonzero for a bounded test run")
     parser.add_argument("--output-prefix", default="math_assessment_evidence")
+    parser.add_argument("--subject-family", choices=("math", "science"), default="math")
     parser.add_argument("--input-jsonl", type=Path, action="append", default=[], help="explicit source batch; repeatable")
     parser.add_argument("--replacement-jsonl", type=Path, action="append", default=[], help="retry rows that replace weaker initial extraction; repeatable")
     args = parser.parse_args()
@@ -369,7 +450,7 @@ def main() -> None:
                         total += 1
                         count += 1
                         raw_out.write(json.dumps(record, ensure_ascii=False, separators=(",", ":")) + "\n")
-                        for evidence in evidence_records(record):
+                        for evidence in evidence_records(record, args.subject_family):
                             evidence_rows += 1
                             evidence_out.write(json.dumps(evidence, ensure_ascii=False, separators=(",", ":")) + "\n")
                             status[str(evidence["extract_status"])] += 1

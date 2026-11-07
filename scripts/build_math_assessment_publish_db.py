@@ -395,6 +395,18 @@ MATH_CONTEXT_RE = re.compile(
     r"행렬|지수|로그|삼각|다항식|실수|복소수|집합|명제|경우의\s*수|"
     r"이차곡선|좌표|연산|모델링|데이터|수치|그래프"
 )
+SCIENCE_OTHER_SUBJECT_RE = re.compile(
+    r"국어|문학|화법|작문|한국사|세계사|사회.?문화|윤리|영어|영미|한문|미술|음악|체육|기술.?가정"
+)
+SCIENCE_CONTEXT_RE = re.compile(r"과학|물리|화학|생명|생물|지구|천체|우주|실험|관찰")
+
+
+def subject_context_patterns(subject_family: str = "math") -> tuple[re.Pattern, re.Pattern]:
+    if subject_family == "science":
+        return SCIENCE_OTHER_SUBJECT_RE, SCIENCE_CONTEXT_RE
+    if subject_family != "math":
+        raise ValueError(f"unsupported subject family: {subject_family}")
+    return OTHER_SUBJECT_RE, MATH_CONTEXT_RE
 
 
 def sha256_file(path: Path) -> str:
@@ -663,7 +675,8 @@ def normalize_task_name(raw: object) -> str:
     return repair_title_spacing(name).strip(" |#:-▪∙•·")
 
 
-def task_name_is_rejected(name: str) -> bool:
+def task_name_is_rejected(name: str, subject_family: str = "math") -> bool:
+    other_subject_re, context_re = subject_context_patterns(subject_family)
     method_options = TASK_METHOD_OPTION_RE.findall(name)
     return bool(
         not name
@@ -690,7 +703,7 @@ def task_name_is_rejected(name: str) -> bool:
         or bool(re.search(r"(?:작성\s*내용|창의성|흥미도|이해도|연계성)$", name))
         or bool(re.search(r"(?:역량|능력\s*신장)$", name))
         or bool(MULTI_STEP_LIST_RE.search(name))
-        or bool(OTHER_SUBJECT_RE.search(name) and not MATH_CONTEXT_RE.search(name))
+        or bool(other_subject_re.search(name) and not context_re.search(name))
         or bool(re.fullmatch(r"수학\s*과제\s*탐구", name))
         or bool(re.search(r"수학\s*과제\s*탐구의\s*(?:이해|실행과\s*평가)", name))
         or bool(re.fullmatch(r"교수\s*학습\s*활동", name))

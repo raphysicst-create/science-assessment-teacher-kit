@@ -4,6 +4,11 @@ from __future__ import annotations
 
 import re
 
+if __package__:
+    from .middle_subjects import SCIENCE_WORD_RE, code_evidence, science_hits
+else:
+    from middle_subjects import SCIENCE_WORD_RE, code_evidence, science_hits
+
 
 SUBJECT_PATTERNS: tuple[tuple[str, str, str], ...] = (
     ("2022", "공통수학1", r"공통\s*수학\s*[1ⅠI]"),
@@ -29,8 +34,24 @@ SUBJECT_PATTERNS: tuple[tuple[str, str, str], ...] = (
 )
 
 
-def subject_hits(text: str) -> list[dict[str, str]]:
+SCIENCE_SUBJECT_PATTERNS = (
+    ("undetermined", "과학", SCIENCE_WORD_RE.pattern),
+)
+
+
+def subject_patterns(subject_family: str = "math") -> tuple[tuple[str, str, str], ...]:
+    if subject_family == "science":
+        return SCIENCE_SUBJECT_PATTERNS
+    if subject_family != "math":
+        raise ValueError(f"unsupported subject family: {subject_family}")
+    return SUBJECT_PATTERNS
+
+
+def subject_hits(text: str, subject_family: str = "math") -> list[dict[str, str]]:
     """Return de-duplicated subject hits with a small evidence window."""
+    if subject_family == "science":
+        return science_hits(text)
+    subject_patterns(subject_family)
     normalized = re.sub(r"[ \t]+", " ", text)
     hits: list[dict[str, str]] = []
     seen: set[str] = set()
@@ -80,7 +101,11 @@ def subject_hits(text: str) -> list[dict[str, str]]:
     return hits
 
 
-def curriculum_from_codes(text: str) -> list[str]:
+def curriculum_from_codes(text: str, subject_family: str = "math") -> list[str]:
+    if subject_family == "science":
+        # The same prefix occurs in multiple curricula. S7 resolves the year.
+        return ["undetermined"] if any(c["prefix"] == "과" for c in code_evidence(text)) else []
+    subject_patterns(subject_family)
     codes = re.findall(
         r"\[(?:10|12)(공수[12]|기수[12]|미적[ⅠⅡ12]|대수|확통|기하|경수|인수|직수|수문|실통|수과|수학[ⅠⅡ12]|미적분|실수)-?\d{2}-\d{2}\]",
         text,

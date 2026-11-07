@@ -17,6 +17,7 @@ from html.parser import HTMLParser as StdlibHTMLParser
 from pathlib import Path
 
 from scripts.build_math_assessment_publish_db import html_tables
+from scripts.middle_subjects import classify_subject
 
 CONTEXT_JUMP_MARKERS = ("[...문맥 전환...]", "[…문맥 전환…]")
 COURSE_HEADING_MARKERS = (
@@ -714,6 +715,8 @@ def heading_title_is_structural(title: str) -> bool:
 def segment_subject_alignment(segment: str, subject: str) -> str:
     """Classify achievement-code evidence for a short-name subject boundary."""
 
+    if subject == "과학":
+        return classify_subject(segment)["status"]
     prefixes = EXPECTED_STANDARD_PREFIXES.get(subject)
     if not prefixes:
         return "unknown"
@@ -1041,7 +1044,7 @@ def _expected_code_table_items(full_text: str, subject: str) -> list[ParsedAsses
     output: list[ParsedAssessmentItem] = []
     seen: set[str] = set()
     for start, end, fragment in _table_fragments_with_spans(full_text):
-        if segment_subject_alignment(fragment, subject) != "expected":
+        if segment_subject_alignment(fragment, subject) not in {"expected", "target"}:
             continue
         title = explicit_segment_title(fragment)
         if not title:
@@ -1095,7 +1098,7 @@ def _explicit_local_table_items(
     seen: set[str] = set()
     for start, end, fragment in _table_fragments_with_spans(subject_markdown):
         alignment = segment_subject_alignment(fragment, subject)
-        if alignment == "other":
+        if alignment in {"other", "mixed"} or (subject == "과학" and alignment == "unknown"):
             continue
         compact_fragment = compact_text(visible_text(fragment))
         strong_label = any(
@@ -1222,7 +1225,9 @@ def _matrix_table_items(
                 for label, cell_value in pairs
             ) + "</tbody></table>"
             alignment = segment_subject_alignment(matrix_html, subject)
-            if alignment == "other" or (alignment == "unknown" and not boundary_reliable):
+            if alignment in {"other", "mixed"} or (
+                alignment == "unknown" and (subject == "과학" or not boundary_reliable)
+            ):
                 continue
             title = _source_spelling_for_table_value(fragment, candidate)
             fields = _exact_fields(matrix_html)
@@ -1301,7 +1306,9 @@ def _hinted_table_items(
         if evidence_markers < 2:
             continue
         alignment = segment_subject_alignment(fragment, subject)
-        if alignment == "other" or (alignment == "unknown" and not boundary_reliable):
+        if alignment in {"other", "mixed"} or (
+            alignment == "unknown" and (subject == "과학" or not boundary_reliable)
+        ):
             continue
         for hint in usable_hints:
             key = compact_text(hint)
@@ -1438,8 +1445,10 @@ def _summary_table_items(
                         continue
                     row_html = _row_table_html(header, source_row)
                     alignment = segment_subject_alignment(row_html, subject)
-                    if alignment == "other" or (
-                        alignment == "unknown" and not subject_boundary_reliable
+                    if alignment in {"other", "mixed"} or (
+                        alignment == "unknown" and (
+                            subject == "과학" or not subject_boundary_reliable
+                        )
                     ):
                         continue
                     populated_other = sum(
@@ -2036,7 +2045,8 @@ def parse_assessment_section(
             structural_heading = heading_title_is_structural(title)
             subject_alignment = segment_subject_alignment(segment, subject)
             subject_boundary_reliable = not (
-                subject_alignment == "other"
+                subject_alignment in {"other", "mixed"}
+                or (subject == "과학" and subject_alignment == "unknown")
                 or (subject_status == "subject_mention_only" and subject_alignment == "unknown")
             )
             # An explicit source-table label outranks every numbered heading,

@@ -15,6 +15,11 @@ import re
 import tempfile
 from pathlib import Path
 
+if __package__:
+    from .middle_subjects import SCIENCE_WORD_RE
+else:
+    from middle_subjects import SCIENCE_WORD_RE
+
 
 ALIASES: list[tuple[str, str, str]] = [
     ("미적분Ⅱ", "미적분Ⅱ", r"미적분\s*[ⅡII2]") ,
@@ -42,7 +47,13 @@ ALIASES: list[tuple[str, str, str]] = [
 ]
 
 
-def classify(name: str) -> tuple[str, str, str]:
+def classify(name: str, subject_family: str = "math") -> tuple[str, str, str]:
+    if subject_family == "science":
+        if SCIENCE_WORD_RE.search(name):
+            return "과학", "과학", "filename_alias"
+        return "unknown", "unknown", "needs_text_scan"
+    if subject_family != "math":
+        raise ValueError(f"unsupported subject family: {subject_family}")
     for label, canonical, pattern in ALIASES:
         if re.search(pattern, name, flags=re.IGNORECASE):
             return label, canonical, "filename_alias"
@@ -69,6 +80,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--log", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--subject-family", choices=("math", "science"), default="math")
     args = parser.parse_args()
 
     rows: list[dict[str, str]] = []
@@ -92,7 +104,7 @@ def main() -> None:
             continue
         seen.add(key)
         name = row.get("candidate_name", "")
-        raw, canonical, match_type = classify(name)
+        raw, canonical, match_type = classify(name, args.subject_family)
         cur = curriculum(
             " ".join(
                 (
