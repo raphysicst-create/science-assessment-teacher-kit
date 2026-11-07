@@ -8,6 +8,7 @@ import json
 from collections import Counter
 from pathlib import Path
 
+from assessment_method_checks import compare_method_rows
 from collect_schoolinfo_4ga_historical import atomic_bytes, atomic_json
 from collect_schoolinfo_4ga_round import plan_status
 from extract_math_assessment_batch import (
@@ -72,6 +73,9 @@ def audit_document(row: dict, root: Path, kordoc: Path) -> dict:
     if record["format"] == "pdf":
         direct, structured = converters["pymupdf"], converters["kordoc"]
         record["pdf_comparison"] = compare_pdf(direct, structured)
+        record["method_check_comparison"] = compare_method_rows(
+            direct, structured, provenance["sha256"],
+        )
     record["converters"] = {
         name: {key: value for key, value in result.items() if key != "text"}
         for name, result in converters.items()
@@ -208,7 +212,20 @@ def markdown_report(report: dict) -> str:
         "PDF 텍스트층과 kordoc 사이의 감소는 손실 의심 신호다. "
         "같은 개수도 위치·의미 보존을 입증하지 않는다.",
         "HWP/HWPX는 독립 원문 텍스트 기준이 없어 체크·코드의 보존 여부를 확정할 수 없다.",
+        "", "## 평가방법 행 대조", "",
+        "같은 원문 해시·물리 페이지·방법 행에서 선택지 라벨을 일대일 대조한다. "
+        "대응 불가·소실·선택 충돌을 구별해 JSON의 method_check_comparison으로 S6에 전달한다. "
+        "전체 기호 수로 선택값을 보충하지 않는다.", "",
+        "| 학교·파일 | PyMuPDF 방법 행 | kordoc 방법 셀 | 대조 상태 |",
+        "|---|---:|---:|---|",
     ])
+    for document in report["documents"]:
+        checks = document.get("method_check_comparison")
+        if checks:
+            lines.append(
+                f"| {document['school_name']} · {document['filename']} | "
+                f"{checks['source_rows']} | {checks['target_rows']} | {checks['statuses']} |"
+            )
     return "\n".join(lines) + "\n"
 
 

@@ -18,6 +18,7 @@ import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from assessment_method_checks import compare_method_rows, pdf_method_rows, structured_method_rows
 from math_subject_aliases import curriculum_from_codes, subject_hits
 
 CHECKED_SYMBOLS = frozenset("■☑☒✓✔✅þ▣●√")
@@ -68,11 +69,13 @@ def convert_pdf(path: Path) -> dict:
         fitz.TOOLS.mupdf_warnings(reset=True)
         pages = []
         texts = []
+        method_rows = []
         with fitz.open(path) as document:
             for number, page in enumerate(document, 1):
                 text = page.get_text("text")
                 has_image = bool(page.get_image_info())
                 texts.append(text)
+                method_rows.extend(pdf_method_rows(page, number))
                 pages.append({
                     "page": number, **text_metrics(text),
                     "textless": not text.strip(), "has_raster_image": has_image,
@@ -89,6 +92,7 @@ def convert_pdf(path: Path) -> dict:
                 page["textless"] and page["has_raster_image"] for page in pages
             ),
             "table_count": None, "cell_count": None, "pages": pages,
+            "method_rows": method_rows,
             "warnings": fitz.TOOLS.mupdf_warnings(reset=True),
         }
     except Exception as exc:
@@ -187,6 +191,8 @@ def convert_kordoc(
                 "section_count": parsed.get("pageCount") if path.suffix.lower() != ".pdf" else None,
                 "image_page_count": None, "table_count": tables, "cell_count": cells,
                 "warnings": parsed.get("warnings", []), **coverage,
+                "method_rows": structured_method_rows(text, parsed["blocks"])
+                if path.suffix.lower() == ".pdf" else [],
             }
         except (OSError, subprocess.TimeoutExpired, ValueError, KeyError, TypeError) as exc:
             return failed_conversion("kordoc", exc)
@@ -226,10 +232,14 @@ def extract_document(
     elif path.suffix.lower() == ".pdf":
         result = convert_pdf(path)
         structured = convert_kordoc(path, kordoc, cwd, pdf_observation=result)
+        source_provenance(path, {"sha256": provenance["sha256"]})
         if pdf_converter == "kordoc":
             if structured["conversion_status"] != "failed":
                 result = {
                     **structured, "pymupdf": result,
+                    "method_check_comparison": compare_method_rows(
+                        result, structured, provenance["sha256"],
+                    ),
                     "table_structure": "html_or_markdown" if structured["table_count"] else (
                         "not_detected"
                     ),

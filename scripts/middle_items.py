@@ -6,19 +6,21 @@ flattened PDF text remain review candidates. No curriculum or activity inference
 
 from __future__ import annotations
 
+import hashlib
 import re
 from collections import defaultdict
 
 if __package__:
-    from .assessment_symbols import BOX_RE, SELECTED_BOXES, UNSELECTED_BOXES
+    from .assessment_symbols import BOX_RE, marker_state
     from .middle_segments import digest_id, text_locator, visible
     from .middle_subjects import classify_subject, table_spans
 else:
-    from assessment_symbols import BOX_RE, SELECTED_BOXES, UNSELECTED_BOXES
+    from assessment_symbols import BOX_RE, marker_state
     from middle_segments import digest_id, text_locator, visible
     from middle_subjects import classify_subject, table_spans
 
-RULE_VERSION = "middle-items-v2"
+RULE_VERSION = "middle-items-v3"
+IDENTITY_VERSION = "middle-items-v2"  # Field-only changes retain source identities.
 FIELDS = (
     "title",
     "assessment_area",
@@ -29,6 +31,7 @@ FIELDS = (
     "score",
     "points",
     "weight",
+    "essay_weight",
     "standards",
     "rubric",
     "criteria",
@@ -63,6 +66,7 @@ LABELS = {
     "영역별만점": "score",
     "배점": "points",
     "세부배점": "points",
+    "기본점수": "base_score",
     "반영비율": "weight",
     "비율": "weight",
     "영역별반영비율": "weight",
@@ -86,12 +90,30 @@ CODE_RE = re.compile(
 )
 ROW_RE = re.compile(r"<tr\b[^>]*>(.*?)</tr\s*>", re.S | re.I)
 CELL_RE = re.compile(r"<(?:td|th)\b([^>]*)>(.*?)</(?:td|th)\s*>", re.S | re.I)
-METHOD_BOX_RE = re.compile(BOX_RE.pattern + r"|[\uFFFD\uF000-\uF8FF]", re.I)
+METHOD_BOX_RE = re.compile(BOX_RE.pattern + r"|\[[^\[\]\r\n]{0,5}\]|[\uFFFD\uF000-\uF8FF]", re.I)
+NUMERIC_FIELDS = {"score", "points", "weight", "essay_weight"}
+COMPOUND_NUMBER_RE = re.compile(
+    r"\s*(?:\d+(?:\.\d+)?\s*점)?(?:\s|<br\s*/?>)*"
+    r"(?:\(\s*\d+(?:\.\d+)?\s*%\s*\))?\s*", re.I
+)
+FIELD_STATUSES = ("present", "source_absent", "unconfirmed", "conflict")
+ROLE_LABELS = {
+    "performance": "실제 수행 항목",
+    "summary_duplicate": "요약표의 중복 행",
+    "teaching_plan": "교수학습 운영표",
+    "general_standards": "일반 성취기준·성취수준표",
+    "affective": "정의적·비수치 평가표",
+    "other": "기타",
+}
 
 
 def label_role(text: str) -> str | None:
     key = re.sub(r"\s+", "", text)
-    key = re.sub(r"\((?:점|%|퍼센트)\)", "", key)
+    if key in {"영역만점(반영비율)", "만점(반영비율)"}:
+        return "score_weight"
+    if "반영비율" in key and re.search(r"논술", key):
+        return "essay_weight"
+    key = re.sub(r"\((?:점|(?:100)?%|퍼센트)\)", "", key)
     return LABELS.get(key)
 
 
@@ -217,8 +239,6 @@ def method_values(observations: list[dict], *, conversion_loss: bool = False) ->
             end = markers[index + 1].start() if index + 1 < len(markers) else len(raw)
             option_raw = raw[marker.start() : end]
             text = visible(raw[marker.end() : end]).strip()
-            checked = marker.group().lower() == "gfedcb" or marker.group() in SELECTED_BOXES
-            unchecked = marker.group().lower() == "gfedc" or marker.group() in UNSELECTED_BOXES
             normalized = re.sub(r"[ㆍ･・‧]", "·", re.sub(r"\s+", "", text))
             normalized = re.sub(r"^서술·논술", "서·논술", normalized)
             other = re.search(r"기타\s*\((.*?)\)", text, re.S)
@@ -232,7 +252,7 @@ def method_values(observations: list[dict], *, conversion_loss: bool = False) ->
                     "raw": option_raw,
                     "option_text": text,
                     "marker": marker.group(),
-                    "state": "checked" if checked else "unchecked" if unchecked else "unknown",
+                    "state": marker_state(marker.group()),
                     "other_content": other[1] if other else None,
                     "normalized": "기타" if other else normalized,
                     "locator": loc,
@@ -242,7 +262,7 @@ def method_values(observations: list[dict], *, conversion_loss: bool = False) ->
     if conversion_loss:
         state, reason, selected = "conversion_loss", "변환 손실", []
     elif any(o["state"] == "unknown" for o in options):
-        state, reason = "unknown", "체크 상태 불명"
+        state, reason, selected = "unknown", "체크 상태 불명", []
     elif selected:
         state, reason = "checked", ""
     elif options:
@@ -292,22 +312,51 @@ def standard_values(observations: list[dict]) -> dict:
         "evidence": observations,
         "reason": ""
         if expanded
-        else ("코드 범위 펼침 미확정" if occurrences else "소유 범위 내 코드 미기재"),
+        else ("코드 범위 펼침 미확정" if occurrences else "코드 추출·원문 기재 여부 미확인"),
         "curriculum_status": "undetermined",
         "validity": "S7 미검증",
     }
 
 
+def numeric_spans(name: str, obs: dict) -> list[dict]:
+    """Split only explicit compound numeric cells, preserving immutable offsets."""
+    if not obs.get("compound_numeric"):
+        return [obs]
+    unit = "%" if name == "weight" else "점"
+    # A compound header can span two rows, one containing points and one percent.
+    pattern = re.compile(r"\d+(?:\.\d+)?\s*" + unit)
+    if not COMPOUND_NUMBER_RE.fullmatch(obs["raw"]):
+        return [obs]
+    return [
+        {
+            **obs,
+            "raw": match.group(),
+            "text": visible(match.group()),
+            "locator": {
+                **obs["locator"],
+                "start": obs["locator"]["start"] + match.start(),
+                "end": obs["locator"]["start"] + match.end(),
+            },
+            "cell_raw": obs["raw"],
+            "cell_locator": obs["locator"],
+            "header_unit": unit,
+        }
+        for match in pattern.finditer(obs["raw"])
+    ]
+
+
 def field_value(name: str, observations: list[dict]) -> dict:
-    result = {"value": "", "evidence": observations, "reason": "소유 범위 내 원문 미기재"}
+    if name in NUMERIC_FIELDS:
+        observations = [part for obs in observations for part in numeric_spans(name, obs)]
+    result = {"value": "", "evidence": observations, "reason": "필드 추출·원문 기재 여부 미확인"}
     values = []
     for obs in observations:
         value = obs["text"]
-        if name in {"score", "points", "weight"}:
+        if name in NUMERIC_FIELDS:
             numeric = re.fullmatch(r"\s*(\d+(?:\.\d+)?)\s*(점|%)?\s*", value)
             obs["value_unit"] = numeric[2] or "" if numeric else ""
             if numeric:
-                expected_unit = "%" if name == "weight" else "점"
+                expected_unit = "%" if name in {"weight", "essay_weight"} else "점"
                 units = {u for u in (numeric[2], obs.get("header_unit")) if u}
                 if units - {expected_unit}:
                     obs["normalization_status"] = "unit_conflict"
@@ -342,6 +391,8 @@ def field_value(name: str, observations: list[dict]) -> dict:
         result.update(value=unique, reason="")
     elif len(unique) > 1:
         result["reason"] = "동일 항목 필드 값 충돌"
+        result["status"] = "conflict"
+        result["observed_values"] = unique
     elif observations and result["reason"] != "원문 값·머리글 단위 충돌":
         result["reason"] = "원문 값 판독·단위 확인 필요"
     return result
@@ -357,6 +408,63 @@ def new_structure(table: dict, cells: list[dict], claims: dict, layout: str) -> 
         "review_reasons": [],
         "shared_fields": [],
     }
+
+
+def candidate_role(structure: dict, tables: list[dict], text: str) -> tuple[str, str]:
+    if structure["layout"] in {"row", "column", "form"}:
+        return "performance", "수행평가 그룹 또는 항목 라벨 구조"
+    number = structure["table"]
+    if number is None:
+        return "other", "표 역할 미확인"
+    table = tables[number]
+    labels = [re.sub(r"\s+", "", c["text"]) for c in table["cells"]]
+    gap_start = tables[number - 1]["end"] if number else 0
+    context = text[gap_start : table["start"]]
+    if any(v in {"정의적영역", "정의적능력평가요소"} for v in labels) or re.search(
+        r"(?m)^\s*(?:#{1,6}\s*)?\d*\s*정의적\s*(?:능력|평가)", context
+    ):
+        return "affective", "정의적 평가 머리글·절 문맥"
+    if any("단원명" in v for v in labels[:8]) and any(
+        re.search(r"시기|시수|^월|^주", v) for v in labels[:8]
+    ):
+        return "teaching_plan", "단원·시기·시수 운영 머리글"
+    if any(v in {"평가요소", "채점기준"} or v.startswith("수행과제") for v in labels):
+        return "performance", "항목 평가요소·채점기준 또는 수행과제 라벨"
+    if any(v in {"성취기준", "성취기준별성취수준", "성취수준"} for v in labels[:4]):
+        return "general_standards", "일반 성취기준·수준 머리글, 항목별 연결 근거 없음"
+    return "other", "표 역할 미확인"
+
+
+def field_status(field: dict) -> str:
+    """Absence requires positive source evidence. Missing extraction is unknown."""
+    if field.get("status") == "conflict":
+        return "conflict"
+    if field.get("state") in {"unknown", "conversion_loss"}:
+        return "unconfirmed"
+    if field["value"] not in ("", [], None):
+        return "present"
+    if field.get("state") == "all_unselected" or (
+        field["evidence"]
+        and all(
+            o["text"].strip() in {"미기재", "없음", "해당 없음", "해당없음", "미실시"}
+            for o in field["evidence"]
+        )
+    ):
+        return "source_absent"
+    return "unconfirmed"
+
+
+def field_state_counts(items: list[dict], *, legacy: bool = False) -> dict:
+    counts = {name: dict.fromkeys(FIELD_STATUSES, 0) for name in FIELDS}
+    for item in items:
+        for name, field in item["fields"].items():
+            status = field.get("status")
+            if not status:
+                status = field_status(field)
+                if legacy and status == "unconfirmed" and "미기재" in field.get("reason", ""):
+                    status = "source_absent"
+            counts[name][status] += 1
+    return counts
 
 
 def form_structures(table: dict) -> list[dict]:
@@ -532,10 +640,24 @@ def column_structures(table: dict, section: dict) -> list[dict]:
                 if cell is title or cell["row"] <= group["row"]:
                     continue
                 left = [c for c in table["rows"][cell["row"]] if c["col"] < group["col"]]
+                # Only numeric rowspans are in this work package. Inheriting a
+                # method label can misread a following teacher/subject row.
+                inherited = [
+                    c for (r, col), c in table["grid"].items()
+                    if r == cell["row"] and col < group["col"]
+                    and label_role(c["text"]) in {"score_weight", "score", "weight", "essay_weight"}
+                ]
+                left = sorted({c["start"]: c for c in inherited + left}.values(),
+                              key=lambda c: c["col"])
                 headers = [h for h in left if label_role(h["text"])]
                 if headers:
                     header = headers[-1]
                     role = label_role(header["text"])
+                    essay_headers = [h for h in left if re.fullmatch(
+                        r"서[·ㆍ･・]?논술형?|논술형", re.sub(r"\s+", "", h["text"])
+                    )]
+                    if role == "weight" and essay_headers:
+                        role, header = "essay_weight", essay_headers[-1]
                     if cell["colspan"] == 1:
                         claims[role].append((cell, header))
                     else:
@@ -629,13 +751,24 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     observations = {name: [] for name in FIELDS}
     for role, pairs in claims.items():
         field = "task_text" if role == "task" else role
-        if field not in observations:
+        if field not in observations and role != "score_weight":
             continue
         seen = set()
         for cell, header in pairs:
-            if cell["start"] not in seen:
-                observations[field].append(evidence(cell, conversion, header))
-                seen.add(cell["start"])
+            if cell["start"] in seen:
+                continue
+            seen.add(cell["start"])
+            obs = evidence(cell, conversion, header)
+            compound = role == "score_weight" or (
+                role in {"score", "weight"} and "점" in cell["raw"]
+                and "%" in cell["raw"] and COMPOUND_NUMBER_RE.fullmatch(cell["raw"])
+            )
+            if compound:
+                obs["compound_numeric"] = True
+                observations["score"].append(obs)
+                observations["weight"].append(dict(obs))
+            else:
+                observations[field].append(obs)
     title = None
     title_role = None
     for role in ("title", "assessment_area", "task", "task_no"):
@@ -648,9 +781,18 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     if title:
         observations["title"] = [title]
     fields = {name: field_value(name, obs) for name, obs in observations.items()}
-    fields["method"] = method_values(
-        observations["method"], conversion_loss=bool(conversion.get("method_check_loss"))
-    )
+    checks = [
+        row for row in conversion.get("method_check_comparison", {}).get("rows", [])
+        if row.get("source_sha256") == conversion.get("sha256")
+        and conversion.get("method_check_comparison", {}).get("structured_text_sha256")
+        == conversion.get("text_sha256")
+        and any(row.get("start") == obs["locator"]["start"]
+                and row.get("end") == obs["locator"]["end"] for obs in observations["method"])
+    ]
+    fields["method"] = method_values(observations["method"], conversion_loss=bool(
+        any(row["status"] in {"loss", "conflict"} for row in checks)
+    ))
+    fields["method"]["conversion_comparison"] = checks
     fields["standards"] = standard_values(observations["standards"])
     if not fields["task_no"]["value"] and task_number(structure):
         fields["task_no"] = field_value(
@@ -702,7 +844,7 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
         title["locator"]["start"] if title else left,
         structure.get("row"),
         structure.get("column"),
-        RULE_VERSION,
+        IDENTITY_VERSION,
     )
     for field in fields.values():
         for obs in field["evidence"]:
@@ -714,6 +856,12 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     for role, _, _ in structure["shared_fields"]:
         if role in fields and not fields[role]["value"]:
             fields[role]["reason"] = "다항목 병합셀 공통값·항목별 배분 불가"
+    for field in fields.values():
+        field["status"] = field_status(field)
+        if field["status"] == "source_absent":
+            field["reason"] = "원문에 부재·미선택 명시"
+    if any(field["status"] == "conflict" for field in fields.values()):
+        reasons.append("동일 항목 필드 복수 관측값·확정 보류")
     return {
         "item_id": item_id,
         "document_id": section.get("document_id"),
@@ -724,6 +872,8 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
         "semester": section.get("semester"),
         "rule_version": RULE_VERSION,
         "layout": structure["layout"],
+        "candidate_role": structure.get("candidate_role", "other"),
+        "role_basis": structure.get("role_basis", "표 역할 미확인"),
         "layout_position": {
             "table": structure["table"],
             "row": structure.get("row"),
@@ -764,6 +914,62 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     }
 
 
+def apply_confirmed_relations(
+    items: list[dict], conversion: dict, relations: tuple[dict, ...]
+) -> None:
+    """Compare only externally reviewed identities. Do not discover new matches."""
+    for relation in relations:
+        if relation["source_sha256"] != conversion.get("sha256"):
+            continue
+        if relation.get("text_sha256") and relation["text_sha256"] != conversion.get("text_sha256"):
+            raise ValueError("검수로 고정한 변환 본문 해시가 달라 관계 적용 보류")
+        details = [i for i in items if i["item_id"] == relation["detail_item_id"]]
+        if not details:
+            continue
+        summaries = [
+            i
+            for i in items
+            if i["layout"] == "column"
+            and i["layout_position"]["table"] == relation["summary_table"]
+            and i["layout_position"]["col"] == relation["summary_col"]
+        ]
+        if len(details) != 1 or len(summaries) != 1:
+            raise ValueError("검수로 고정한 요약·상세 관계를 재현하지 못함")
+        detail, summary = details[0], summaries[0]
+        summary["candidate_role"] = "summary_duplicate"
+        summary["role_basis"] = relation["basis"]
+        for name in relation["fields"]:
+            fields = [summary["fields"][name], detail["fields"][name]]
+            snapshots = [
+                {
+                    "source_role": role,
+                    "source_item_id": item["item_id"],
+                    "value": field["value"],
+                    "evidence": field["evidence"],
+                    "occurrences": field.get("occurrences", []),
+                }
+                for role, item, field in zip(
+                    ("summary", "detail"), (summary, detail), fields, strict=True
+                )
+            ]
+            values = [field["value"] for field in fields]
+            comparable = all(v not in ("", [], None) for v in values)
+            conflict = comparable and (
+                set(values[0]) != set(values[1]) if name == "standards" else values[0] != values[1]
+            )
+            for item, field in zip((summary, detail), fields, strict=True):
+                field["source_observations"] = snapshots
+                if conflict:
+                    field.update(
+                        value=[] if name == "standards" else "",
+                        status="conflict",
+                        reason="요약·상세 원문 관측값 충돌·확정 보류",
+                    )
+                    item["extraction_status"] = "review"
+                    item["review_reasons"].append(f"원문 내부 충돌 ({name})")
+                item.setdefault("confirmed_relations", []).append(relation)
+
+
 def ownership_errors(items: list[dict]) -> list[dict]:
     owners = defaultdict(set)
     field_names = defaultdict(set)
@@ -782,10 +988,12 @@ def ownership_errors(items: list[dict]) -> list[dict]:
 
 
 def extract_middle_items(
-    text: str, section: dict, conversion: dict | None = None, title_hints: tuple[str, ...] = ()
+    text: str, section: dict, conversion: dict | None = None, title_hints: tuple[str, ...] = (),
+    *, confirmed_relations: tuple[dict, ...] = (),
 ) -> list[dict]:
     """Explicit science entry point. Existing math parser callers are unchanged."""
     conversion = conversion or {"text": text, "converter": "synthetic"}
+    conversion = {**conversion, "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest()}
     start, end = section["locator"]["start"], section["locator"]["end"]
     if not 0 <= start <= end <= len(text):
         raise ValueError("S4/S5 locator outside converter text")
@@ -875,9 +1083,16 @@ def extract_middle_items(
         structures.append(structure)
     by_identity = {}
     for structure in structures:
+        structure["candidate_role"], structure["role_basis"] = candidate_role(
+            structure, all_tables, text
+        )
+        if "동일 과제번호 상세표와 동일성·연속성 확인 필요" in structure["review_reasons"]:
+            structure["candidate_role"] = "summary_duplicate"
+            structure["role_basis"] = "동일 과제번호 상세와 반복되는 요약행·동일성 추가 검토"
         item = finalize(structure, section, conversion)
         by_identity.setdefault(item["item_id"], item)
     results = list(by_identity.values())
+    apply_confirmed_relations(results, conversion, confirmed_relations)
     errors = ownership_errors(results)
     invalid = {i for e in errors for i in e["item_ids"]}
     for item in results:

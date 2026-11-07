@@ -224,6 +224,7 @@ def test_no_checkbox_no_invented_method_and_separate_levels_table():
     assert value(item, "standards") == []
     assert not item["links"]
     assert items[1]["extraction_status"] == "review"
+    assert items[1]["candidate_role"] == "general_standards"
 
 
 def test_method_state_and_plain_text_are_separate():
@@ -463,3 +464,169 @@ def test_numeric_unit_conflict_is_blank_with_raw_evidence():
     assert value(item, "score") == value(item, "weight") == ""
     assert item["fields"]["weight"]["reason"] == "원문 값·머리글 단위 충돌"
     assert item["fields"]["weight"]["evidence"][0]["raw"] == "100점"
+
+
+@pytest.mark.parametrize("marker", ["[V]", "[v]", "[Ⅴ]", "[ⅴ]", "[ V ]"])
+def test_bracket_method_options_preserve_source_and_selection(marker):
+    text = form(extra=[("평가방법", f"[ ] 프로젝트 {marker} 논술형 [ ] 실험·실습")])
+    item = extract(text)[0]
+    method = item["fields"]["method"]
+    assert method["value"] == ["논술형"]
+    assert [o["state"] for o in method["options"]] == ["unchecked", "checked", "unchecked"]
+    assert method["options"][1]["marker"] == marker
+    for option in method["options"]:
+        loc = option["locator"]
+        assert text[loc["start"] : loc["end"]] == option["raw"]
+
+
+@pytest.mark.parametrize("marker", ["[?]", "[X]", "[Ⅳ]", "�"])
+def test_unrecognized_bracket_check_never_confirms_plain_method(marker):
+    item = extract(form(extra=[("평가방법", f"{marker} 논술형 [ ] 실험·실습")]))[0]
+    assert item["fields"]["method"]["state"] == "unknown"
+    assert value(item, "method") == []
+    assert item["extraction_status"] == "review"
+
+
+@pytest.mark.parametrize("weight", [20, 30])
+@pytest.mark.parametrize("gap", ["", "<br>"])
+def test_compound_score_and_weight_have_separate_exact_spans(weight, gap):
+    text = form(extra=[("영역만점(반영비율)", f"100점{gap}({weight}%)", "기본점수", "40점")])
+    item = extract(text)[0]
+    assert value(item, "score") == 100
+    assert value(item, "weight") == weight
+    score, ratio = [item["fields"][name]["evidence"][0] for name in ("score", "weight")]
+    assert score["locator"]["end"] <= ratio["locator"]["start"]
+    assert score["cell_locator"] == ratio["cell_locator"]
+    for obs in (score, ratio):
+        loc = obs["locator"]
+        assert text[loc["start"] : loc["end"]] == obs["raw"]
+    assert item["extraction_status"] == "bounded"
+
+
+def test_weight_denominator_header_and_partial_essay_weight_are_distinct():
+    text = table(
+        [
+            ("평가영역", "영역만점(반영비율)", "반영비율(100%)", "논술형 평가반영비율"),
+            ("합성 전기 탐구", "100점(20%)", "20", "14%"),
+        ]
+    )
+    item = extract(text)[0]
+    assert value(item, "score") == 100
+    assert value(item, "weight") == 20
+    assert value(item, "essay_weight") == 14
+    assert item["fields"]["weight"]["status"] == "present"
+
+
+@pytest.mark.parametrize("overall,partial", [(20, 14), (35, 17)])
+def test_column_compound_rowspan_and_essay_part(overall, partial):
+    text = (
+        "<table><tr><td>구분</td><td>수행평가</td></tr>"
+        "<tr><td>평가영역</td><td>합성 탐구</td></tr>"
+        '<tr><td rowspan="2">영역 만점(반영비율)</td><td>100점</td></tr>'
+        f"<tr><td>({overall}%)</td></tr>"
+        f"<tr><td>논술형 평가반영비율</td><td>{partial}%</td></tr></table>"
+    )
+    item = extract(text)[0]
+    assert value(item, "score") == 100
+    assert value(item, "weight") == overall
+    assert value(item, "essay_weight") == partial
+
+
+@pytest.mark.parametrize(
+    "name,a,b",
+    [
+        ("weight", "10%", "20%"),
+        ("standards", "[9과14-01]", "[9과14-02]"),
+        ("standards", "[9과05-01] [9과05-02] [9과05-04]", "[9과05-02] [9과05-04]"),
+    ],
+)
+def test_only_reviewed_summary_detail_identity_preserves_both_conflicting_values(name, a, b):
+    label = "반영비율" if name == "weight" else "성취기준"
+    text = (
+        "<table><tr><td>구분</td><td>수행평가</td></tr>"
+        "<tr><td>평가영역</td><td>합성 탐구</td></tr>"
+        f"<tr><td>{label}</td><td>{a}</td></tr></table>" + form("합성 탐구", extra=[(label, b)])
+    )
+    conversion = {"text": text, "converter": "synthetic", "sha256": "source-digest"}
+    prior = extract_middle_items(text, section(text), conversion)
+    detail = next(i for i in prior if i["layout"] == "form")
+    original_values = [i["fields"][name]["value"] for i in prior]
+    relation = {
+        "source_sha256": "source-digest",
+        "detail_item_id": detail["item_id"],
+        "summary_table": 0,
+        "summary_col": 1,
+        "fields": (name,),
+        "basis": "synthetic review",
+    }
+    items = extract_middle_items(text, section(text), conversion, confirmed_relations=(relation,))
+    assert ownership_errors(items) == []
+    for item in items:
+        field = item["fields"][name]
+        assert field["status"] == "conflict"
+        assert field["value"] in ("", [])
+        assert [o["value"] for o in field["source_observations"]] == original_values
+        assert item["extraction_status"] == "review"
+        for source in field["source_observations"]:
+            for obs in source["evidence"]:
+                loc = obs["locator"]
+                assert text[loc["start"] : loc["end"]] == obs["raw"]
+    wrong_edition = extract_middle_items(
+        text, section(text), {**conversion, "sha256": "different"}, confirmed_relations=(relation,)
+    )
+    assert all(i["fields"][name]["status"] != "conflict" for i in wrong_edition)
+
+
+def test_missing_field_is_unconfirmed_and_explicit_absence_is_separate():
+    item = extract(form(extra=[("만점", "미기재")]))[0]
+    assert item["fields"]["score"]["status"] == "source_absent"
+    assert item["fields"]["weight"]["status"] == "unconfirmed"
+    assert item["fields"]["method"]["status"] == "unconfirmed"
+
+
+def test_hierarchical_weight_header_does_not_promote_essay_part_to_overall():
+    text = (
+        '<table><tr><td colspan="2">구분</td><td>수행평가</td></tr>'
+        '<tr><td colspan="2">평가영역</td><td>합성 탐구</td></tr>'
+        '<tr><td rowspan="2">반영비율</td><td>영역만점</td><td>100점(10%)</td></tr>'
+        '<tr><td>서·논술형</td><td>2%</td></tr></table>'
+    )
+    item = extract(text)[0]
+    assert value(item, "score") == 100
+    assert value(item, "weight") == 10
+    assert value(item, "essay_weight") == 2
+
+
+def test_shared_compound_score_weight_is_never_distributed():
+    text = (
+        '<table><tr><td>구분</td><td colspan="2">수행평가</td></tr>'
+        '<tr><td>평가영역</td><td>합성 탐구 하나</td><td>합성 탐구 둘</td></tr>'
+        '<tr><td>영역만점(반영비율)</td><td colspan="2">100점(40%)</td></tr></table>'
+    )
+    items = extract(text)
+    assert len(items) == 2
+    assert all(value(item, "score") == value(item, "weight") == "" for item in items)
+    assert all(item["shared_fields"][0]["raw"] == "100점(40%)" for item in items)
+
+
+@pytest.mark.parametrize("body,role", [
+    (table([("월", "단원명", "성취기준"), ("9", "합성 단원", "[9과01-01]")]), "teaching_plan"),
+    (table([("정의적 능력 평가 요소", "성취기준"), ("태도", "합성 관찰")]), "affective"),
+    (table([("성취기준", "성취수준"), ("[9과01-01]", "A 합성 수준")]), "general_standards"),
+    (table([("성취기준", "[9과01-01]"), ("평가요소", "합성 수행 관찰")]), "performance"),
+])
+def test_separate_table_roles_never_copy_general_codes_to_an_item(body, role):
+    items = extract(form() + body)
+    assert items[-1]["candidate_role"] == role
+    assert value(items[0], "standards") == []
+    assert not items[0]["links"]
+
+
+def test_numeric_header_inheritance_does_not_expand_method_row_ownership():
+    text = (
+        '<table><tr><td>구분</td><td>수행평가</td></tr>'
+        '<tr><td>평가영역</td><td>합성 탐구</td></tr>'
+        '<tr><td rowspan="2">평가방법</td><td>실험</td></tr>'
+        '<tr><td>과학A</td></tr></table>'
+    )
+    assert value(extract(text)[0], "method") == ["실험"]

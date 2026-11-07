@@ -392,3 +392,125 @@ def test_cached_child_provenance_rebound_per_source(tmp_path, modules):
     assert result["children"][0]["sha256"] == "child-digest"
     assert result["edition"]["file_seq"] == "99"
     assert cached["children"][0]["original_path"] == "other.zip!/plan.pdf"
+
+
+@pytest.mark.parametrize(
+    "converted_marker,status", [("", "loss"), ("[ ]", "conflict"), ("[V]", "matched")]
+)
+def test_pdf_method_comparison_reaches_s6_through_normal_conversion(
+    tmp_path,
+    modules,
+    monkeypatch,
+    converted_marker,
+    status,
+):
+    path = tmp_path / "method.pdf"
+    with fitz.open() as document:
+        page = document.new_page()
+        page.insert_text((40, 60), "평가방법", fontname="korea", fontsize=10)
+        page.insert_text((100, 60), "[V] 논술형 [ ] 프로젝트", fontname="korea", fontsize=10)
+        page.insert_text((40, 100), "평가시기", fontname="korea", fontsize=10)
+        document.save(path)
+    rows = [
+        ["평가영역", "합성 탐구"],
+        ["평가방법", f"{converted_marker} 논술형 [ ] 프로젝트"],
+        ["평가시기", "10월"],
+    ]
+    html = (
+        "<table>"
+        + "".join("<tr>" + "".join(f"<td>{cell}</td>" for cell in row) + "</tr>" for row in rows)
+        + "</table>"
+    )
+
+    def run(command, **kwargs):
+        Path(command[command.index("-o") + 1]).write_text(
+            json.dumps(
+                {
+                    "success": True,
+                    "markdown": html,
+                    "pageCount": 1,
+                    "blocks": [
+                        {
+                            "type": "table",
+                            "pageNumber": 1,
+                            "table": {
+                                "cells": [[{"text": cell} for cell in row] for row in rows],
+                            },
+                        }
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+        return SimpleNamespace(returncode=0, stderr="")
+
+    monkeypatch.setattr(modules.extract.subprocess, "run", run)
+    converted = modules.extract.extract_document(
+        path, Path("cli.js"), tmp_path, pdf_converter="kordoc"
+    )
+    comparison = converted["method_check_comparison"]
+    assert comparison["rows"][0]["status"] == status
+    assert comparison["rows"][0]["one_to_one"]
+    assert comparison["rows"][0]["source_sha256"] == hashlib.sha256(path.read_bytes()).hexdigest()
+    stored = tmp_path / "conversion.json"
+    stored.write_text(json.dumps(converted), encoding="utf-8")
+    middle = importlib.import_module("scripts.middle_items")
+    section = {
+        "document_id": "doc_synthetic",
+        "segment_id": "seg_synthetic",
+        "section_id": "subj_synthetic",
+        "grade": 1,
+        "semester": 2,
+        "status": "target",
+        "boundary_verified": True,
+        "header": {"key": "과학", "raw": "과학"},
+        "locator": {"start": 0, "end": len(html)},
+    }
+    item = middle.extract_middle_items(html, section, json.loads(stored.read_text("utf-8")))[0]
+    method = item["fields"]["method"]
+    assert method["conversion_comparison"][0]["status"] == status
+    if status == "matched":
+        assert method["value"] == ["논술형"]
+        assert item["extraction_status"] == "bounded"
+    else:
+        assert method["state"] == "conversion_loss"
+        assert method["value"] == []
+        assert method["status"] == "unconfirmed"
+        assert item["extraction_status"] == "review"
+
+
+@pytest.mark.parametrize("problem", ["page", "duplicate_row", "duplicate_label", "label_conflict"])
+def test_method_comparison_requires_unambiguous_same_page_labels(modules, problem):
+    checks = importlib.import_module("assessment_method_checks")
+    options = checks.row_options("[V] 논술형 [ ] 프로젝트")
+    source = {"page": 1, "raw": "[V] 논술형 [ ] 프로젝트", "options": options}
+    target = {
+        "page": 1,
+        "raw": "논술형 프로젝트",
+        "options": checks.row_options("논술형 프로젝트"),
+        "locator": {"start": 10, "end": 20},
+    }
+    sources = [source]
+    if problem == "page":
+        target["page"] = 2
+    elif problem == "duplicate_row":
+        sources = [source, dict(source)]
+    elif problem == "duplicate_label":
+        source["options"] = options + options
+        target["options"] = options + options
+    else:
+        target["options"] = checks.row_options("논술형 실험·실습")
+    comparison = checks.compare_method_rows(
+        {"method_rows": sources}, {"method_rows": [target]}, "digest"
+    )
+    row = comparison["rows"][0]
+    assert not row["one_to_one"]
+    assert row["status"] in {"unmapped", "conflict"}
+    assert row["action"] != "supplement"
+
+
+def test_document_symbol_delta_does_not_create_method_loss(modules):
+    checks = importlib.import_module("assessment_method_checks")
+    direct = {**modules.extract.text_metrics("■" * 100), "method_rows": []}
+    structured = {**modules.extract.text_metrics(""), "method_rows": []}
+    assert checks.compare_method_rows(direct, structured, "digest")["rows"] == []

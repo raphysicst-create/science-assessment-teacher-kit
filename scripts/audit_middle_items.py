@@ -9,7 +9,16 @@ from collections import Counter
 from pathlib import Path
 
 from audit_middle_subjects import atomic_write, escape, location
-from middle_items import FIELDS, RULE_VERSION, extract_middle_items, ownership_errors, visible
+from middle_item_review_cases import CONFIRMED_RELATIONS
+from middle_items import (
+    FIELDS,
+    ROLE_LABELS,
+    RULE_VERSION,
+    extract_middle_items,
+    field_state_counts,
+    ownership_errors,
+    visible,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -19,6 +28,16 @@ def audit(input_path: Path) -> dict:
     s4 = json.loads((ROOT / "data/derived/segments/2026-round-3.json").read_text(encoding="utf-8"))
     parents = {s["segment_id"]: s for d in s4["documents"] for s in d["segments"]}
     source_documents = {d["converted_path"]: d for d in s4["documents"]}
+    comparison_path = ROOT / "data/derived/conversion_audit/2026-round-3.json"
+    comparison_report = (
+        json.loads(comparison_path.read_text(encoding="utf-8"))
+        if comparison_path.exists() else {"documents": []}
+    )
+    method_checks = {
+        d["sha256"]: d["method_check_comparison"] for d in comparison_report["documents"]
+        if "method_check_comparison" in d
+    }
+    matched_comparison_documents = 0
     items, documents, excluded, sections = [], [], [], []
     trace_errors = []
     for document in subjects["documents"]:
@@ -29,6 +48,11 @@ def audit(input_path: Path) -> dict:
             continue
         conversion = json.loads((ROOT / document["converted_path"]).read_text(encoding="utf-8"))
         source_document = source_documents[document["converted_path"]]
+        conversion["sha256"] = source_document["sha256"]
+        comparison = method_checks.get(source_document["sha256"])
+        if comparison and comparison["structured_text_sha256"] == document["text_sha256"]:
+            conversion["method_check_comparison"] = comparison
+            matched_comparison_documents += 1
         text = conversion["text"]
         if hashlib.sha256(text.encode("utf-8")).hexdigest() != document["text_sha256"]:
             raise ValueError(f"S4 text hash mismatch: {document['converted_path']}")
@@ -52,11 +76,15 @@ def audit(input_path: Path) -> dict:
                 "semester": parent["semester"],
                 "semester_evidence": parent["semester_evidence"],
             }
-            found = extract_middle_items(text, section, conversion)
+            found = extract_middle_items(
+                text, section, conversion, confirmed_relations=CONFIRMED_RELATIONS
+            )
             for item in found:
                 for name, field in item["fields"].items():
                     observations = (
                         field["evidence"] + field.get("options", []) + field.get("occurrences", [])
+                        + [o for source in field.get("source_observations", [])
+                           for o in source["evidence"] + source.get("occurrences", [])]
                     )
                     for obs in observations:
                         loc = obs["locator"]
@@ -150,6 +178,32 @@ def audit(input_path: Path) -> dict:
             "ownership_errors": len(errors),
             "source_trace_errors": len(trace_errors),
             "field_filled": field_counts,
+            "field_states": field_state_counts(items),
+            "bounded_field_states": field_state_counts(bounded),
+            "review_roles": dict(Counter(i["candidate_role"] for i in review)),
+            "unlinked_table_roles": dict(Counter(
+                i["candidate_role"] for i in items if i["layout"] == "unlinked_table"
+            )),
+            "source_conflicts": sum(
+                any(f["status"] == "conflict" and f.get("source_observations")
+                    for f in i["fields"].values())
+                for i in items if i["candidate_role"] != "summary_duplicate"
+            ),
+            "precision": "미측정",
+            "recall": "미측정",
+            "structural_checks_meaning": "의미 검증 아님",
+            "method_check_comparison": {
+                "documents_with_metadata": len(method_checks),
+                "documents_with_matching_text_hash": matched_comparison_documents,
+                "all_pdf_rows": dict(Counter(
+                    row["status"] for comparison in method_checks.values()
+                    for row in comparison["rows"]
+                )),
+                "item_rows": dict(Counter(
+                    row["status"] for i in items
+                    for row in i["fields"]["method"].get("conversion_comparison", [])
+                )),
+            },
             "field_fill_rates": {
                 k: round(v / len(bounded), 4) if bounded else 0 for k, v in field_counts.items()
             },
@@ -180,6 +234,7 @@ def values(item: dict) -> str:
         "score": "만점",
         "points": "배점",
         "weight": "비율",
+        "essay_weight": "논술형 부분 비율",
         "standards": "코드",
         "rubric": "채점기준",
         "criteria": "평가준거",
@@ -191,7 +246,7 @@ def values(item: dict) -> str:
         field = fields[name]
         value = field["value"]
         if name == "standards":
-            value = " / ".join(o["raw"] for o in field["occurrences"])
+            value = field["value"]
         if name in {"rubric", "criteria"} and value:
             value = f"근거 {len(field['evidence'])}개"
         elif name == "elements" and value:
@@ -199,6 +254,10 @@ def values(item: dict) -> str:
         if name == "method":
             checks = " / ".join(o["raw"] for o in field["options"])
             value = f"{value} ({field['state']}) {checks}"
+        if field.get("status") == "conflict":
+            observed = [(o['source_role'], o['value'])
+                        for o in field.get('source_observations', [])]
+            value = f"확정 보류 · 출처별 관측 {observed}"
         has_evidence = "근거 있음" if field["evidence"] else "근거 없음"
         output.append(
             f"{labels[name]}={value if value != '' and value != [] else '빈값'} "
@@ -227,7 +286,9 @@ def markdown(report: dict) -> str:
         "코드 범위는 문법적으로만 펼치며 87개 유효성·교육과정은 S7 미검증이다.",
         "",
         f"bounded {summary['bounded']}개, 검토 후보 {summary['review']}개, "
-        f"제목 생성 {summary['title_generated']}개, 소유 충돌 {summary['ownership_errors']}개.",
+        f"제목 생성 {summary['title_generated']}개, 소유 충돌 {summary['ownership_errors']}개·"
+        f"근거 불일치 {summary['source_trace_errors']}개 (의미 검증 아님). "
+        f"원문 내부 충돌 {summary['source_conflicts']}항목.",
         "",
         "## 학교·학년별 항목 수",
         "",
@@ -236,6 +297,34 @@ def markdown(report: dict) -> str:
     ]
     for row in report["school_grades"]:
         lines.append(f"| {row['school']} | 중{row['grade']} | {row['bounded']} | {row['review']} |")
+    lines.extend([
+        "", "## 검토 후보 역할별 분해", "",
+        "후보는 검토 작업 단위다. 실제 수행 항목 역할도 독립 항목 정답 수를 뜻하지 않는다. "
+        "요약 중복과 미확인 표를 포함하므로 이 수로 재현율을 계산하지 않는다.", "",
+        "| 역할 | 전체 검토 후보 | 별도 표 |", "|---|---:|---:|",
+    ])
+    for role, label in ROLE_LABELS.items():
+        lines.append(f"| {label} | {summary['review_roles'].get(role, 0)} | "
+                     f"{summary['unlinked_table_roles'].get(role, 0)} |")
+    lines.extend([
+        "", "일반 성취기준·성취수준표의 전체 코드는 항목으로 복사하지 않는다. "
+        "정의적·비수치 평가는 별도 검토를 유지한다.", "",
+        "## 필드별 확인 상태", "",
+        "분모는 모든 후보이며 역할별 중복이 포함된다. 원문 미기재는 명시적인 부재 근거가 "
+        "있을 때만 기록한다. 빈값·연속표 완결성·판독 미확인은 추출 실패·미확인으로 둔다.", "",
+        "| 필드 | 값 있음 | 원문 미기재 | 추출 실패·미확인 | 충돌 |",
+        "|---|---:|---:|---:|---:|",
+    ])
+    for name, counts in summary["field_states"].items():
+        lines.append(f"| {name} | {counts['present']} | {counts['source_absent']} | "
+                     f"{counts['unconfirmed']} | {counts['conflict']} |")
+    lines.extend([
+        "", "## S3 방법 행 대조 전달", "",
+        escape(summary["method_check_comparison"]), "",
+        "matched는 같은 해시·물리 페이지·방법 행의 선택지 일대일 대응이다. "
+        "unmapped는 대응 미확인이다. loss·conflict는 출처 관측을 보존하고 방법 확정을 보류한다. "
+        "전체 기호 수 차이는 방법 보충의 근거로 사용하지 않는다.",
+    ])
     lines.extend(
         [
             "",
@@ -290,7 +379,7 @@ def markdown(report: dict) -> str:
             "1. 항목 구조 미식별·변환 셀 병합 의심 구간. 실제 항목 수·경계를 전수 대조한다.",
             "2. 번호형 요약행·상세표 중복 후보와 연결되지 않은 루브릭·성취수준 표.",
             "3. S5 경계 미확정 공주중1, 신목중 학년 경계 및 공통 비율 병합셀.",
-            "4. 체크 선택지·기타 괄호·코드 범위와 빈 필드. 미기재 사유는 소유 범위 내 관찰이다.",
+            "4. 체크 선택지·기타 괄호·코드 범위와 빈 필드. 빈값은 원문 미기재를 입증하지 않는다.",
             "",
             "## 원문 대조 확인표",
             "",

@@ -1,4 +1,4 @@
-"""Compare the preserved PyMuPDF run with the offline S6b run (no originals copied)."""
+"""Compare S6c-1 with the preserved abb1447 S6b run, entirely offline."""
 
 from __future__ import annotations
 
@@ -6,39 +6,41 @@ import json
 from collections import Counter
 from pathlib import Path
 
-from audit_middle_subjects import atomic_write
+from audit_middle_subjects import atomic_write, escape
+from middle_items import FIELD_STATUSES, FIELDS, ROLE_LABELS, field_state_counts
 
 ROOT = Path(__file__).resolve().parents[1]
 ROUND = "2026-round-3"
 
 
-def read(stage: str, previous: bool = False) -> dict:
-    suffix = ".prev-pymupdf" if previous else ""
+def read(previous: bool = False) -> dict:
+    suffix = ".prev-s6b" if previous else ""
     return json.loads(
-        (ROOT / f"data/derived/{stage}/{ROUND}{suffix}.json").read_text(encoding="utf-8")
+        (ROOT / f"data/derived/items/{ROUND}{suffix}.json").read_text(encoding="utf-8")
     )
 
 
-def safety_counts(report: dict, previous: bool) -> dict:
-    counts = Counter({
-        "제목 생성": report["summary"]["title_generated"],
-        "항목 간 필드 소유 충돌": report["summary"]["ownership_errors"],
-        "기존 근거 추적 오류": report["summary"]["source_trace_errors"],
-        "변환본 범위 밖 locator": 0,
-        "근거·머리글 원문 슬라이스 불일치": 0,
-        "bounded 필드의 소유 범위 이탈": 0,
-        "bounded 경계 미입증·검토 사유 잔존": 0,
-        "bounded 타 교과·대상 외 학년": 0,
-        "평문 폴백 bounded": 0,
-    })
-    texts = {}
+def safety_counts(report: dict) -> dict:
+    counts = Counter(
+        {
+            "제목 생성": report["summary"]["title_generated"],
+            "항목 간 필드 소유 충돌": report["summary"]["ownership_errors"],
+            "기존 근거 추적 오류": report["summary"]["source_trace_errors"],
+            "변환본 범위 밖 locator": 0,
+            "근거·머리글 원문 슬라이스 불일치": 0,
+            "bounded 필드의 소유 범위 이탈": 0,
+            "bounded 경계 미입증·검토 사유 잔존": 0,
+            "bounded 타 교과·대상 외 학년": 0,
+            "평문 폴백 bounded": 0,
+            "충돌 필드 값 확정": 0,
+        }
+    )
+    conversions = {}
     for item in report["items"]:
-        path = Path(item["converted_path"])
-        if previous:
-            path = path.parent.parent / f"{ROUND}.prev-pymupdf.conversions" / path.name
-        if path not in texts:
-            texts[path] = json.loads((ROOT / path).read_text(encoding="utf-8"))
-        conversion = texts[path]
+        path = item["converted_path"]
+        if path not in conversions:
+            conversions[path] = json.loads((ROOT / path).read_text(encoding="utf-8"))
+        conversion = conversions[path]
         text = conversion["text"]
         bounded = item["extraction_status"] == "bounded"
         if bounded:
@@ -53,149 +55,175 @@ def safety_counts(report: dict, previous: bool) -> dict:
             )
         locators = [item["locator"], *item["owned_ranges"]]
         for field in item["fields"].values():
-            for obs in field["evidence"] + field.get("options", []) + field.get("occurrences", []):
+            counts["충돌 필드 값 확정"] += field.get("status") == "conflict" and field[
+                "value"
+            ] not in ("", [], None)
+            local = field["evidence"] + field.get("options", []) + field.get("occurrences", [])
+            related = [
+                obs
+                for source in field.get("source_observations", [])
+                for obs in source["evidence"] + source.get("occurrences", [])
+            ]
+            for obs in local + related:
                 loc = obs["locator"]
                 locators.append(loc)
                 counts["근거·머리글 원문 슬라이스 불일치"] += (
-                    text[loc["start"]:loc["end"]] != obs["raw"]
+                    text[loc["start"] : loc["end"]] != obs["raw"]
                 )
+                if "header_locator" in obs:
+                    header = obs["header_locator"]
+                    locators.append(header)
+                    counts["근거·머리글 원문 슬라이스 불일치"] += (
+                        text[header["start"] : header["end"]] != obs["header_raw"]
+                    )
+            for obs in local:
+                loc = obs["locator"]
                 if bounded and not any(
                     r["start"] <= loc["start"] <= loc["end"] <= r["end"]
                     for r in item["owned_ranges"]
                 ):
                     counts["bounded 필드의 소유 범위 이탈"] += 1
-                if "header_locator" in obs:
-                    header = obs["header_locator"]
-                    locators.append(header)
-                    counts["근거·머리글 원문 슬라이스 불일치"] += (
-                        text[header["start"]:header["end"]] != obs["header_raw"]
-                    )
         counts["변환본 범위 밖 locator"] += sum(
             not 0 <= loc["start"] <= loc["end"] <= len(text) for loc in locators
         )
     return dict(counts)
 
 
+def state_comparison(old: dict, new: dict) -> tuple[dict, dict]:
+    before = field_state_counts(old["items"], legacy=True)
+    after = field_state_counts(new["items"])
+    for name in FIELDS:
+        if not any(name in item["fields"] for item in old["items"]):
+            before[name]["unconfirmed"] = len(old["items"])
+    return before, after
+
+
 def markdown() -> str:
-    old, new = read("items", True), read("items")
+    old, new = read(True), read()
     before, after = old["summary"], new["summary"]
     lines = [
-        "# S6b PDF 표 구조 복원 전후 비교", "",
-        f"bounded {before['bounded']}→{after['bounded']}, "
-        f"검토 후보 {before['review']}→{after['review']}.", "",
-        "개발 표본 관찰치다. 원문 정답 세트와 대조한 정확도·재현율이 아니다. "
-        "표 전체·분리된 루브릭도 검토 후보로 집계하므로 후보 증가는 실제 항목 증가가 아니다.",
-        "과학 S4는 kordoc(pdfjs 4.10.38) 본문을 사용하고 PyMuPDF 본문·페이지 관찰을 함께 저장한다. "
-        "수학 기본 변환·저문자 폴백은 유지했다. 과학 실패 폴백은 fallback_text_only로 남긴다.",
-        "이전 S3~S6 JSON/MD는 각 단계의 2026-round-3.prev-pymupdf.*에 보관했다. "
-        "이전 locator 본문은 segments/2026-round-3.prev-pymupdf.conversions/에 보관했다. "
-        "변환본이 달라져 ID·locator는 재생성했으며 문자 오프셋으로 전후 항목을 결합하지 않았다.",
-        "", "## S3 변환 대조", "",
+        "# S6c-1 2차 검수 반영 전후 비교",
+        "",
+        f"직전 abb1447 실측 대비 bounded {before['bounded']}→{after['bounded']}, "
+        f"검토 후보 {before['review']}→{after['review']}.",
+        "",
+        "정밀도·재현율은 미측정이다. 후보 수는 검토 작업 단위이며 독립 수행평가 수가 아니다. "
+        "소유 충돌·근거 불일치 검사는 의미 검증 아님.",
+        "",
+        "기준선은 items/2026-round-3.prev-s6b.json·md·compare.md에 보관했다. "
+        "S4/S5 본문·경계·위치와 항목 ID를 유지하고 필드 규칙 버전을 갱신했다.",
+        "",
+        "## 검토 후보 역할별 분해",
+        "",
+        "이전 실행의 역할은 당시 미측정이다. 별도 표 분해는 보존한 같은 101개 범위에서 비교한다.",
+        "",
+        "| 역할 | 현재 검토 후보 | 별도 표 | 검수 별도 표 기준 |",
+        "|---|---:|---:|---:|",
     ]
-    conversion = read("conversion_audit")
-    pdfs = [d for d in conversion["documents"] if "pdf_comparison" in d]
-    lines.append(
-        f"PDF 비교 {conversion['pdf_comparisons_available']}/{len(pdfs)}, "
-        f"버전 {conversion['versions']}. 원문 해시·크기는 S3/S4에서 재확인했다."
-    )
-    lines.extend(["", "| 관찰값 | PyMuPDF | kordoc | 차이 |", "|---|---:|---:|---:|"])
-    for name in ("check_count", "empty_check_count", "science_code_count", "char_count"):
-        a, b = [sum(d["converters"][c][name] for d in pdfs) for c in ("pymupdf", "kordoc")]
-        lines.append(f"| {name} | {a} | {b} | {b-a:+d} |")
-    tables = sum(d["converters"]["kordoc"]["table_count"] for d in pdfs)
-    lines.extend([
-        f"| IR 표 수 | 미측정 | {tables} | 미측정 |", "",
-        "PyMuPDF 평문은 표 수를 측정하지 않아 0으로 대체하지 않았다. "
-        "kordoc IR 표 수는 HTML 표와 단순 Markdown 표를 포함한다. "
-        "글자 수에는 HTML 태그도 포함된다.",
-        "빈 체크 수는 16개 모두 같고 `[9과` 수는 감소 0개, 판교 중1 문서만 71→72다. "
-        "전체 문자 출현 수가 같아도 위치·의미 보존을 보장하지 않는다.", "",
-        "손실 의심 문서(모두 ■ 감소, 원문 확인 전에는 실제 선택 표시 소실 여부 미확정):", "",
-    ])
-    for d in pdfs:
-        if d["pdf_comparison"]["suspected_loss"]:
-            delta = d["pdf_comparison"]["check_symbol_delta"]
-            lines.append(f"- {d['school_name']} · {d['filename']} — ■ {delta['■']:+d}")
-    lines.extend(["", "## S4·S5 전후", "", "| 단계·관찰값 | 이전 | 이후 |", "|---|---:|---:|"])
-    for stage, keys in (
-        ("segments", ("segment_count", "grades", "statuses", "versions")),
-        ("subjects", ("section_states", "science_candidate_states", "science_parent_segments")),
-    ):
-        a, b = read(stage, True)["summary"], read(stage)["summary"]
-        for key in keys:
-            lines.append(f"| {stage}/{key} | {a[key]} | {b[key]} |")
-    lines.extend([
-        "", "S4에서 제목과 학교명이 붙은 줄, 제목·대상 학년 합침, 제목 앞 학교 메타데이터 표를 "
-        "구조 근거로 인식한다. S5는 기존 HTML/Markdown 표 경로를 그대로 사용한다. "
-        "영통 수정/최종 판본 충돌은 유지하고 S6 개발에는 기존 결정대로 최종만 선택했다.",
-        "S4 학년 미확정은 7→10으로 늘었다. 휘문 타 교과의 제목 앞 메타데이터·학년 충돌 구간을 "
-        "보류한 결과이며 과학 부모 구간 30개와 S5 target 34개는 유지됐다.",
-        "", "## 학교·학년별 S6", "",
-        "| 학교 | 학년 | bounded 전 | 후 | 검토 전 | 후 |", "|---|---:|---:|---:|---:|---:|",
-    ])
-    prior = {(r["school"], r["grade"]): r for r in old["school_grades"]}
-    for r in new["school_grades"]:
-        p = prior[(r["school"], r["grade"])]
-        lines.append(f"| {r['school']} | {r['grade']} | {p['bounded']} | {r['bounded']} | "
-                     f"{p['review']} | {r['review']} |")
-    lines.extend([
-        "", "## 필드 채움률", "", "분모는 각 실행의 bounded 항목이다. 정확도와 다르다.", "",
-        "| 필드 | 이전 수/분모 | 이전 | 이후 수/분모 | 이후 |", "|---|---:|---:|---:|---:|",
-    ])
-    for name in before["field_filled"]:
+    expected = {"teaching_plan": 50, "general_standards": 41, "affective": 5, "performance": 5}
+    for role, label in ROLE_LABELS.items():
         lines.append(
-            f"| {name} | {before['field_filled'][name]}/{before['bounded']} | "
-            f"{before['field_fill_rates'][name]:.1%} | "
-            f"{after['field_filled'][name]}/{after['bounded']} | "
-            f"{after['field_fill_rates'][name]:.1%} |"
+            f"| {label} | {after['review_roles'].get(role, 0)} | "
+            f"{after['unlinked_table_roles'].get(role, 0)} | {expected.get(role, 0)} |"
         )
-    for label, key in (("검토 사유", "review_reasons"), ("bounded 빈 필드 사유", "empty_reasons")):
-        lines.extend(["", f"## {label}", "", "후보 하나에 여러 사유가 있을 수 있다.", "",
-                      "| 사유 | 이전 | 이후 |", "|---|---:|---:|"])
-        for reason in sorted(set(before[key]) | set(after[key])):
-            lines.append(
-                f"| {reason} | {before[key].get(reason, 0)} | {after[key].get(reason, 0)} |"
-            )
-    lines.extend([
-        "", "## 0이어야 하는 구조·근거 지표", "",
-        "자동 구조 검사이며 원문 PDF의 시각적 경계 정답 검수가 아니다. "
-        "필드 소유 이탈은 입증된 owned_ranges와 대조한다. "
-        "신목형 공통 표 머리글 참조는 같은 표의 학년 앵커가 허용하므로 "
-        "단순 S5 밖 여부로 세지 않는다.",
-        "", "| 지표 | 이전 | 이후 |", "|---|---:|---:|",
-    ])
-    safe_before, safe_after = safety_counts(old, True), safety_counts(new, False)
-    lines.extend(f"| {k} | {safe_before[k]} | {v} |" for k, v in safe_after.items())
-    lines.extend([
-        "", "## 새로 드러난 문제와 보류", "",
-        "- 서산 중2: 정기시험·수행평가 그룹 머리글이 한 셀로 합쳐진 표가 "
-        "단일 양식으로 오인될 수 있었다. "
-        "같은 제목 라벨에 복수 값이 있으면 검토로 남겼다. 지필 제목을 bounded로 올리지 않는다.",
-        "- 판교 중2: 제목 셀에 ‘영역 만점 30’이 붙었다. "
-        "제목을 임의로 자르거나 점수를 복원하지 않고 검토로 남겼다.",
-        "- 휘문: 관련단원·평가주체·평가방식 라벨을 보조 필드 경계로 인식해 "
-        "제목·방법에 섞이지 않게 했다. "
-        "여전히 복수 제목 값이 남은 표는 검토다.",
-        "- kordoc PDF 본문에는 PyMuPDF 페이지 길이를 적용하지 않았다. "
-        "PDF 페이지별 HTML 문자 대응은 미측정이며 "
-        "새 locator는 보존한 kordoc 본문의 문자/표/행/열 기준이다.",
-        "", "## 아직 bounded가 안 되는 큰 덩어리", "",
-    ])
-    for school in sorted({i["school"] for i in new["items"]}):
-        rows = [
-            i for i in new["items"]
-            if i["school"] == school and i["extraction_status"] != "bounded"
+    lines.extend(
+        [
+            "",
+            "## 필드별 상태 전후",
+            "",
+            f"분모는 같은 후보 {len(old['items'])}→{len(new['items'])}개다. "
+            "순서는 값 있음 / 원문 미기재 / 추출 실패·미확인 / 충돌이다. "
+            "이전 상태는 기존 reason의 미기재 주장을 그대로 집계하며 원문 검증을 뜻하지 않는다. "
+            "새 빈 필드는 명시적 부재 근거가 있어야 원문 미기재로 기록한다. "
+            "신설 essay_weight의 이전 상태는 미측정·미확인으로 표시한다.",
+            "",
+            "| 필드 | 이전 | 이후 |",
+            "|---|---|---|",
         ]
-        reasons = Counter(r for i in rows for r in i["review_reasons"])
-        if rows:
-            lines.append(f"- {school}: 검토 {len(rows)}. "
-                         + "; ".join(f"{k} {v}" for k, v in reasons.most_common(3)))
-    lines.extend([
-        "", "## 총괄 판단 필요", "",
-        "원문에서 별도 루브릭·요약표·상세표의 동일성과 연속성을 확인하는 다음 범위, "
-        "■ 감소 9개 문서의 대조 우선순위 결정이 필요하다. "
-        "교육과정·성취기준 매핑은 확정하지 않았다. 모든 항목은 비공개 상태다.", "",
-    ])
+    )
+    prior_states, current_states = state_comparison(old, new)
+    for name in FIELDS:
+        a, b = (
+            " / ".join(str(counts[name][status]) for status in FIELD_STATUSES)
+            for counts in (prior_states, current_states)
+        )
+        lines.append(f"| {name} | {a} | {b} |")
+    lines.extend(
+        [
+            "",
+            "## 고정 검수 사례",
+            "",
+            "| 항목 ID | 필드 | 이전 | 이후 | 상태·관측 |",
+            "|---|---|---|---|---|",
+        ]
+    )
+    previous_items = {i["item_id"]: i for i in old["items"]}
+    methods = ("b0782a73837c", "b79528092d4f", "36da860582a9", "69d565483e09")
+    scores = ("4b43368e466e", "c4fd958a26bf", "5d4d4efa3a74", "deda0ccfa743", "68b50ae03138")
+    conflicts = {"67aec267aca1": "weight", "871f7d46cc66": "standards", "ba157fe5ff0c": "standards"}
+    for item in new["items"]:
+        prefix = item["item_id"][5:17]
+        name = (
+            "method"
+            if prefix in methods
+            else "score"
+            if prefix in scores
+            else conflicts.get(prefix)
+        )
+        if not name:
+            continue
+        field = item["fields"][name]
+        observed = [(o["source_role"], o["value"]) for o in field.get("source_observations", [])]
+        prior = previous_items[item["item_id"]]["fields"][name]["value"]
+        lines.append(
+            "| "
+            + " | ".join(
+                map(
+                    escape,
+                    (
+                        prefix,
+                        name,
+                        prior,
+                        field["value"],
+                        f"{field['status']} {observed}",
+                    ),
+                )
+            )
+            + " |"
+        )
+    lines.extend(
+        [
+            "",
+            "## 구조·근거 지표",
+            "",
+            "의미 검증 아님. 출처별 관측 근거도 원문 슬라이스와 대조한다.",
+            "",
+            "| 지표 | 이전 | 이후 |",
+            "|---|---:|---:|",
+        ]
+    )
+    safe_before, safe_after = safety_counts(old), safety_counts(new)
+    lines.extend(f"| {key} | {safe_before[key]} | {value} |" for key, value in safe_after.items())
+    lines.extend(
+        [
+            "",
+            "## 체크 손실 전달",
+            "",
+            escape(after["method_check_comparison"]),
+            "",
+            "S3는 같은 원문 SHA-256·물리 페이지·방법 행의 라벨과 glyph를 대조한다. "
+            "S6는 원문 해시와 kordoc 본문 해시가 같은 대조 결과만 읽는다. "
+            "소실·선택 충돌은 출처 관측을 보존하고 확정을 보류한다. "
+            "위치 대응 불가는 unmapped로 남기며 전체 기호 수 차이로 보충하지 않는다.",
+            "",
+            "## 다음 묶음에 남은 범위",
+            "",
+            "S4/S5 경계, 제목 머리글·병합 셀, 지면·연속표, 요약·상세 동일성 확장은 후속 범위다. "
+            "이번 동일성 적용은 2차 검수에서 확인된 3쌍으로 한정했다. "
+            "확인하지 못한 빈 필드는 추출 실패·미확인으로 유지한다.",
+            "",
+        ]
+    )
     return "\n".join(lines)
 
 
