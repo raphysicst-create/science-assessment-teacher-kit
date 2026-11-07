@@ -13,7 +13,6 @@ from collect_schoolinfo_4ga_historical import atomic_bytes, atomic_json
 from collect_schoolinfo_4ga_round import plan_status
 from extract_math_assessment_batch import (
     convert_kordoc,
-    convert_pdf,
     extract_document,
     source_provenance,
 )
@@ -35,10 +34,8 @@ def audit_document(source: dict, root: Path, output: Path) -> dict:
     if path.stat().st_size != source["size_bytes"]:
         raise ValueError(f"original size mismatch: {path}")
     kordoc = root / "node_modules/kordoc/dist/cli.js"
-    if path.suffix.lower() == ".pdf":
-        conversion = convert_pdf(path)
-    elif path.suffix.lower() == ".zip":
-        conversion = extract_document(path, kordoc, root, source)
+    if path.suffix.lower() in {".pdf", ".zip"}:
+        conversion = extract_document(path, kordoc, root, source, pdf_converter="kordoc")
     else:
         conversion = convert_kordoc(path, kordoc, root)
     text_path = output / f"{source['sha256']}.json"
@@ -156,7 +153,8 @@ def markdown_report(report: dict) -> str:
         "과목 머리글 후보의 원문 표기를 기록했다. "
         "모든 구간은 S5 이후 검토 대기이며 공개 상태는 비공개다.",
         "시작·끝은 저장한 변환 JSON의 text에 대한 Unicode 문자 오프셋이며 끝은 배타적이다. "
-        "PDF 페이지는 1부터 센다. HWP/HWPX의 물리 페이지는 미측정이다.",
+        "PyMuPDF 페이지는 대조용 변환 메타데이터에 보존한다. "
+        "kordoc 본문 문자와 PDF 페이지의 대응은 미측정이다. HWP/HWPX 물리 페이지도 미측정이다.",
         "본문 머리글·표 셀·다음 구조 머리글로 경계를 잡았다. 경계는 candidate 상태이며 "
         "공통 표 머리글은 학년 구간 앞에 있을 수 있다. subject_heading_locator로 함께 찾는다.",
         "동일 과목에서 학년이 반복되면 위치별 별도 구간으로 남긴다. "

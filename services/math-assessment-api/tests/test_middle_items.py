@@ -58,6 +58,54 @@ def form(title="달의 위상 변화 관찰", number="실험1", extra=()):
     return table([("평가영역", title), ("평가과제", number), *extra])
 
 
+def test_pdf_collapsed_exam_and_performance_group_cannot_be_single_bounded_form():
+    text = table([
+        ("평가 종류 정기시험 수행평가 합계",),
+        ("횟수/영역", "1회고사", "2회고사", "전류 탐구 보고서", "소화 탐구 보고서"),
+        ("평가 시기", "10월", "12월", "9월", "11월"),
+    ])
+    items = extract(text)
+    assert items and all(i["extraction_status"] == "review" for i in items)
+    assert "동일 제목 라벨 복수 값·항목 경계 미확정" in items[0]["review_reasons"]
+
+
+def test_pdf_title_and_score_in_same_cell_stays_raw_and_requires_review():
+    text = table([
+        ("평가 영역명", "합성 물질 탐구 영역 만점 30"),
+        ("수행과제", "원자 모형 탐구"),
+        ("평가방법", "☑ 실험·실습"),
+    ])
+    item = extract(text)[0]
+    assert item["extraction_status"] == "review"
+    assert item["fields"]["title"]["value"] == "합성 물질 탐구 영역 만점 30"
+    assert item["fields"]["score"]["value"] == ""
+    assert "제목 셀에 필드 라벨 혼입·경계 미확정" in item["review_reasons"]
+
+
+def test_text_only_fallback_cannot_certify_table_shaped_source_text():
+    text = form()
+    item = extract_middle_items(text, section(text), {
+        "text": text, "converter": "pymupdf", "conversion_status": "fallback_text_only",
+    })[0]
+    assert item["extraction_status"] == "review"
+    assert "PDF 평문 폴백·표 구조 미보존" in item["review_reasons"]
+
+
+def test_pdf_auxiliary_labels_stop_title_and_method_cell_ownership():
+    text = table([
+        ("평가 영역", "합성 힘 탐구", "관련단원", "힘의 작용", "평가시기", "9월"),
+        ("평가유형", "☑ 실험·실습"),
+        ("평가주체", "☑ 교사평가"),
+        ("평가방식", "☑ 개인별 수행"),
+    ])
+    item = extract(text)[0]
+    assert item["extraction_status"] == "bounded"
+    assert value(item, "title") == "합성 힘 탐구"
+    assert value(item, "assessment_area") == "합성 힘 탐구"
+    assert value(item, "method") == ["실험·실습"]
+    assert value(item, "timing") == "9월"
+
+
 def test_one_form_one_item_and_all_field_evidence():
     text = form(
         extra=[

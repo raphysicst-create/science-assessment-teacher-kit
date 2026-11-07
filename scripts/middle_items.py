@@ -18,7 +18,7 @@ else:
     from middle_segments import digest_id, text_locator, visible
     from middle_subjects import classify_subject, table_spans
 
-RULE_VERSION = "middle-items-v1"
+RULE_VERSION = "middle-items-v2"
 FIELDS = (
     "title",
     "assessment_area",
@@ -52,6 +52,9 @@ LABELS = {
     "과제번호": "task_no",
     "평가방법": "method",
     "평가유형": "method",
+    "관련단원": "unit",
+    "평가주체": "evaluator",
+    "평가방식": "organization",
     "평가시기": "timing",
     "시기": "timing",
     "만점": "score",
@@ -429,7 +432,13 @@ def form_structures(table: dict) -> list[dict]:
                 and c["colspan"] == header["colspan"]
                 and not label_role(c["text"])
             )
-        output.append(new_structure(table, cells, claims, "form"))
+        structure = new_structure(table, cells, claims, "form")
+        for role in TITLE_ROLES:
+            titles = {c["text"] for c, _ in claims.get(role, []) if c["text"]}
+            if len(titles) > 1:
+                structure["review_reasons"].append("동일 제목 라벨 복수 값·항목 경계 미확정")
+                break
+        output.append(structure)
     return output
 
 
@@ -657,6 +666,13 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     anchor = structure.get("anchor") or (cells[0] if cells else section["locator"])
     left, right = min(c["start"] for c in cells), max(c["end"] for c in cells)
     reasons = list(structure["review_reasons"])
+    if conversion.get("conversion_status") == "fallback_text_only":
+        reasons.append("PDF 평문 폴백·표 구조 미보존")
+    if any(
+        re.search(r"(?:영역\s*만점|반영\s*비율|평가\s*시기)\s*[:：]?\s*\d", c["text"])
+        for role in TITLE_ROLES for c, _ in claims.get(role, [])
+    ):
+        reasons.append("제목 셀에 필드 라벨 혼입·경계 미확정")
     if not title:
         reasons.append("원문 제목 셀 미확정")
     if structure["layout"] in {"text_candidate", "unlinked_table"}:

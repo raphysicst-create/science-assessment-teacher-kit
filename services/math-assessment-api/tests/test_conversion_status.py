@@ -160,6 +160,79 @@ def test_pdf_preserves_kordoc_low_text_fallback(tmp_path, modules, monkeypatch):
     assert result["extract_status"] == "short"
 
 
+def test_science_pdf_prefers_tables_and_keeps_text_layer(tmp_path, modules, monkeypatch):
+    path = tmp_path / "science.pdf"
+    make_pdf(path, ["text"])
+    html = '<table><tr><td>☑ 실험</td><td>[9과01-01]</td></tr></table>'
+
+    def run(command, **kwargs):
+        Path(command[command.index("-o") + 1]).write_text(json.dumps({
+            "success": True, "markdown": html, "pageCount": 1,
+            "blocks": [{"type": "table", "table": {"cells": [[{}, {}]]}}],
+        }), encoding="utf-8")
+        return SimpleNamespace(returncode=0, stderr="")
+
+    monkeypatch.setattr(modules.extract.subprocess, "run", run)
+    result = modules.extract.extract_document(
+        path, Path("cli.js"), tmp_path, pdf_converter="kordoc",
+    )
+    assert result["text"] == html
+    assert result["converter"] == "kordoc"
+    assert result["conversion_status"] == "ok"
+    assert result["table_count"] == 1
+    assert result["cell_count"] == 2
+    assert result["pymupdf"]["text"].startswith("Synthetic")
+    assert result["pymupdf"]["pages"][0]["page"] == 1
+    assert result["science_code_count"] == result["check_count"] == 1
+    # Above the legacy 300-character threshold math keeps the text layer.
+    direct = {**result["pymupdf"], "text": "Synthetic assessment plan " * 20}
+    direct.update(modules.extract.text_metrics(direct["text"]))
+    monkeypatch.setattr(modules.extract, "convert_pdf", lambda *a: dict(direct))
+    legacy = modules.extract.extract_document(path, Path("cli.js"), tmp_path)
+    assert legacy["converter"] == "pymupdf"
+    assert legacy["text"] == direct["text"]
+
+
+@pytest.mark.parametrize("corrupt", [False, True])
+def test_science_pdf_fallback_distinguishes_flat_text_and_total_failure(
+    tmp_path, modules, monkeypatch, corrupt,
+):
+    path = tmp_path / "science.pdf"
+    if corrupt:
+        path.write_bytes(b"synthetic corrupt PDF")
+    else:
+        make_pdf(path, ["text"])
+    monkeypatch.setattr(modules.extract.subprocess, "run", lambda *a, **kw: (
+        SimpleNamespace(returncode=1, stderr="synthetic kordoc failure")
+    ))
+    result = modules.extract.extract_document(
+        path, Path("cli.js"), tmp_path, pdf_converter="kordoc",
+    )
+    assert result["converter"] == "pymupdf"
+    assert result["conversion_status"] == ("failed" if corrupt else "fallback_text_only")
+    assert result["extract_status"] == ("failed" if corrupt else "short")
+    assert result["table_structure"] == "unavailable"
+    assert result["table_count"] is None
+    assert "synthetic kordoc failure" in result["kordoc"]["error"]
+
+
+def test_science_pdf_selection_propagates_into_zip(tmp_path, modules, monkeypatch):
+    path = tmp_path / "science.pdf"
+    make_pdf(path, ["text"])
+    archive = tmp_path / "science.zip"
+    with zipfile.ZipFile(archive, "w") as output:
+        output.writestr("science.pdf", path.read_bytes())
+    mock_kordoc(monkeypatch, modules)
+    result = modules.extract.extract_document(
+        archive, Path("cli.js"), tmp_path, pdf_converter="kordoc",
+    )
+    child = result["children"][0]
+    assert child["converter"] == "kordoc"
+    assert child["pymupdf"]["text"]
+    assert child["original_path"].endswith("!/science.pdf")
+    assert child["parent_sha256"] == result["sha256"]
+
+
 def test_hash_mismatch_rejected_before_conversion(tmp_path, modules):
     path = tmp_path / "synthetic.hwp"
     path.write_bytes(b"synthetic")

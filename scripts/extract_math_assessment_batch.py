@@ -32,6 +32,7 @@ STATUS_DEFINITIONS = {
     "partial": "ZIP에서 일부 자식만 ok. 정상 자식 본문과 개별 상태를 보존",
     "short": "비PDF 변환 결과의 비공백 글자 수가 300 미만(기존 호환 상태)",
     "coverage_unknown": "kordoc PDF 변환은 완료됐으나 PyMuPDF 페이지층 검사가 실패",
+    "fallback_text_only": "kordoc PDF 실패 후 PyMuPDF 평문 사용. 표 구조 없음·경계 검토 필요",
     "failed": "원문 읽기 또는 변환 실패. 오류는 error에 기록",
 }
 
@@ -208,18 +209,43 @@ def source_provenance(path: Path, source: dict | None = None) -> dict:
     }
 
 
-def extract_document(path: Path, kordoc: Path, cwd: Path, source: dict | None = None) -> dict:
+def extract_document(
+    path: Path, kordoc: Path, cwd: Path, source: dict | None = None,
+    *, pdf_converter: str = "pymupdf",
+) -> dict:
     """Safe reproduction with additive quality metadata and child provenance.
 
     extract_status keeps the legacy ok/short/failed vocabulary. conversion_status
     distinguishes PDF coverage and ZIP partial results. Neither certifies layout.
     """
+    if pdf_converter not in {"pymupdf", "kordoc"}:
+        raise ValueError(f"unknown PDF converter: {pdf_converter}")
     provenance = source_provenance(path, source)
     if path.suffix.lower() == ".zip":
-        result = extract_zip(path, kordoc, cwd)
+        result = extract_zip(path, kordoc, cwd, pdf_converter=pdf_converter)
     elif path.suffix.lower() == ".pdf":
         result = convert_pdf(path)
         structured = convert_kordoc(path, kordoc, cwd, pdf_observation=result)
+        if pdf_converter == "kordoc":
+            if structured["conversion_status"] != "failed":
+                result = {
+                    **structured, "pymupdf": result,
+                    "table_structure": "html_or_markdown" if structured["table_count"] else (
+                        "not_detected"
+                    ),
+                }
+            else:
+                result["kordoc"] = structured
+                result["text_layer_status"] = result["conversion_status"]
+                if result["conversion_status"] != "failed":
+                    result["conversion_status"] = "fallback_text_only"
+                result["table_structure"] = "unavailable"
+            return {
+                **result, **provenance,
+                "extract_status": "ok" if result["conversion_status"] == "ok" else (
+                    "failed" if result["conversion_status"] == "failed" else "short"
+                ),
+            }
         result["kordoc"] = {key: value for key, value in structured.items() if key != "text"}
         result["table_count"] = structured["table_count"]
         result["cell_count"] = structured["cell_count"]
@@ -246,7 +272,9 @@ def extract_document(path: Path, kordoc: Path, cwd: Path, source: dict | None = 
     return {**result, **provenance, "extract_status": legacy}
 
 
-def extract_zip(path: Path, kordoc: Path, cwd: Path) -> dict:
+def extract_zip(
+    path: Path, kordoc: Path, cwd: Path, *, pdf_converter: str = "pymupdf",
+) -> dict:
     children = []
     archive_error = None
     with tempfile.TemporaryDirectory(prefix="math_plan_zip_") as temp:
@@ -265,7 +293,7 @@ def extract_zip(path: Path, kordoc: Path, cwd: Path) -> dict:
                     target = Path(temp) / f"{index:05}{Path(info.filename).suffix.lower()}"
                     try:
                         target.write_bytes(archive.read(info))
-                        child = extract_document(target, kordoc, cwd)
+                        child = extract_document(target, kordoc, cwd, pdf_converter=pdf_converter)
                     except (
                         OSError, RuntimeError, ValueError, NotImplementedError, zipfile.BadZipFile,
                     ) as exc:
@@ -319,9 +347,16 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--offset", type=int, default=0)
     parser.add_argument("--limit", type=int, default=50)
-    parser.add_argument("--include-generic", action="store_true", help="include generic all-subject/grade plan filenames")
+    parser.add_argument(
+        "--include-generic", action="store_true",
+        help="include generic all-subject/grade plan filenames",
+    )
     parser.add_argument("--workers", type=int, default=1)
-    parser.add_argument("--index-only", action="store_true", help="store subject/status metadata without full text")
+    parser.add_argument("--pdf-converter", choices=("pymupdf", "kordoc"), default="pymupdf")
+    parser.add_argument(
+        "--index-only", action="store_true",
+        help="store subject/status metadata without full text",
+    )
     args = parser.parse_args()
 
     candidates: list[dict[str, str]] = []
@@ -330,7 +365,9 @@ def main() -> None:
             if row.get("subject_canonical") in {"unknown", "수학"}:
                 if not args.include_generic:
                     continue
-                if not re.search(r"교수|평가.?계획|전과목|교과별|학년별", row.get("candidate_name", "")):
+                if not re.search(
+                    r"교수|평가.?계획|전과목|교과별|학년별", row.get("candidate_name", ""),
+                ):
                     continue
             if not args.include_generic and row.get("match_type") != "filename_alias":
                 continue
@@ -345,7 +382,9 @@ def main() -> None:
         if not path.exists():
             text, status, digest = f"[missing: {path}]", "missing", ""
         else:
-            result = extract_document(path, args.kordoc, args.project_root, row)
+            result = extract_document(
+                path, args.kordoc, args.project_root, row, pdf_converter=args.pdf_converter,
+            )
             text, status, digest = result["text"], result["extract_status"], result["sha256"]
         hits = subject_hits(text)
         codes = curriculum_from_codes(text)

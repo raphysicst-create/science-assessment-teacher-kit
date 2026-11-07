@@ -38,6 +38,10 @@ def compare_pdf(direct: dict, structured: dict) -> dict:
     }
     return {
         "available": True, "delta": delta,
+        "char_count_delta": structured["char_count"] - direct["char_count"],
+        "table_counts": {"pymupdf": direct.get("table_count"),
+                         "kordoc": structured.get("table_count")},
+        "table_count_delta": None,  # PyMuPDF text reader does not measure tables.
         "check_symbol_delta": symbol_delta, "empty_check_symbol_delta": empty_delta,
         "suspected_loss": any(value < 0 for value in (
             *delta.values(), *symbol_delta.values(), *empty_delta.values(),
@@ -129,7 +133,8 @@ def markdown_report(report: dict) -> str:
         *[f"- `{name}` — {definition}" for name, definition in STATUS_DEFINITIONS.items()],
         "", "## 문서별 결과", "",
         "변환기 칸 순서는 상태/글자/페이지/이미지페이지/표/체크/빈체크/[9과/과학이다.",
-        "차이는 kordoc − PyMuPDF이며 체크·빈체크·코드 순서다.", "",
+        "차이는 kordoc − PyMuPDF이며 체크·빈체크·코드·글자 순서다. "
+        "글자 수는 HTML 태그를 포함한다. PyMuPDF 표 수는 미측정이므로 표 수 차이도 미측정이다.", "",
         "| 학교 | 파일명 | 형식 | bytes | SHA-256 앞 12자 | PyMuPDF | kordoc | 차이/검수 |",
         "|---|---|---|---:|---|---|---|---|",
     ]
@@ -145,6 +150,7 @@ def markdown_report(report: dict) -> str:
         if comparison:
             if comparison["available"]:
                 decision = "/".join(str(comparison["delta"][key]) for key in COMPARISON_FIELDS)
+                decision += f"/{comparison['char_count_delta']} (표 차이 미측정)"
                 if comparison["suspected_loss"]:
                     direct, structured = converters["pymupdf"], converters["kordoc"]
                     evidence = ", ".join(
@@ -245,6 +251,9 @@ def main() -> None:
             "pymupdf": fitz.VersionBind,
             "kordoc": json.loads(
                 (ROOT / "node_modules/kordoc/package.json").read_text(encoding="utf-8"),
+            )["version"],
+            "pdfjs-dist": json.loads(
+                (ROOT / "node_modules/pdfjs-dist/package.json").read_text(encoding="utf-8"),
             )["version"],
         },
         "status_definitions": STATUS_DEFINITIONS,

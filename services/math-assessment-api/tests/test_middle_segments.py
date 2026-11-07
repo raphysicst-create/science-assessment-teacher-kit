@@ -92,6 +92,47 @@ def test_subject_then_three_grade_tables_and_ids(module):
     )
 
 
+@pytest.mark.parametrize("html", [False, True])
+def test_pdf_title_with_school_footer_keeps_exact_span(module, html):
+    title = "2026학년도 1학년 2학기 과학과 교수·학습 및 평가 계획가상중학교"
+    if html:
+        title = f'<tr><th colspan="6">{title}</th></tr>'
+    text = title + "\n합성 과학\n2026학년도 1학년 2학기 국어과 평가 계획가상중학교\n국어"
+    segments = science_segments(module, text, "2026학년도 1학년 2학기 평가계획.pdf")
+    assert len(segments) == 1
+    assert segments[0]["grade"] == 1
+    assert text[:segments[0]["subject_heading_locator"]["end"]] == title
+    assert "국어" not in text[segments[0]["locator"]["start"]:segments[0]["locator"]["end"]]
+
+
+def test_pdf_combined_cover_target_and_teacher(module):
+    text = ("과학과 교과교육과정 대상 : 1학년 담당교사 : ***(인)\n합성 과학\n"
+            "국어과 교과교육과정 대상 : 1학년 담당교사 : ***(인)\n합성 국어")
+    segments = science_segments(module, text, "2026학년도 2학기 평가계획.pdf")
+    assert len(segments) == 1
+    assert segments[0]["grade"] == 1
+    assert segments[0]["subject_heading_raw"] == text.splitlines()[0]
+    # Policy prose containing target/teacher terms is not a title.
+    assert module.subject_heading_key(
+        "과학과 평가는 계획에 따라 대상 : 1학년 담당교사 : ***",
+    ) is None
+
+
+def test_pdf_metadata_before_subject_heading_resets_grade_at_cover(module):
+    def cover(grade, subject):
+        return ("| 학교명 | 학년 | 학기 | 과목 | 학급 | 지도교사 |\n"
+                "| --- | --- | --- | --- | --- | --- |\n"
+                f"| 가상중 | {grade}학년 | 2학기 | {subject} | 1반 | *** |\n\n"
+                f"# 1 {subject}과 교수학습 운영 계획\n합성 {subject}\n")
+    text = cover(3, "수학") + cover(1, "과학") + cover(2, "과학") + cover(3, "국어")
+    segments = science_segments(module, text, "2026학년도 2학기 평가계획.pdf")
+    assert [s["grade"] for s in segments] == [1, 2]
+    for s in segments:
+        raw = text[s["locator"]["start"]:s["locator"]["end"]]
+        assert "| 수학 |" not in raw and "| 국어 |" not in raw
+    assert segments[0]["locator"]["end"] == segments[1]["locator"]["start"]
+
+
 def test_grade_then_subject_order(module):
     text = "\n".join(
         f"{g}학년\n국어과 평가 계획\n합성 국어\n과학과 교수학습 및 평가 계획\n합성 과학"

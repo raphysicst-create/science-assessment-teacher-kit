@@ -13,7 +13,7 @@ import re
 from collections import defaultdict
 from difflib import SequenceMatcher
 
-RULE_VERSION = "middle-segments-v1"
+RULE_VERSION = "middle-segments-v2"
 STATUS_DEFINITIONS = {
     "normal": "중1·중2 학년 식별. 과목·교육과정·공개 여부는 후속 단계 검토",
     "grade3_quarantined": "중3 구간 격리",
@@ -115,6 +115,12 @@ def visible(value: str) -> str:
 
 def subject_heading_key(clean: str) -> str | None:
     """Require a title-shaped complete line, including subjects without 과 suffix."""
+    # PDF layout can concatenate a school footer or explicit cover metadata
+    # onto the title. Recognition strips these only; raw text/offsets stay intact.
+    clean = re.sub(r"(?<=계획)\s*[가-힣]{2,20}중학교$", "", clean)
+    clean = re.sub(
+        r"\s*대상\s*[:：]\s*[123]\s*학년(?:\s+담당\s*교사\s*[:：].*)?$", "", clean,
+    )
     plan = PLAN_RE.search(clean)
     if (
         not plan
@@ -140,6 +146,37 @@ def subject_heading_key(clean: str) -> str | None:
         return None
     label = re.sub(r"(?:\[[ABC]\]|[ABC])(?=과?$)", "", label)
     return re.sub(r"\s+", "", label).removesuffix("과")
+
+
+def metadata_events(text: str) -> tuple[list[dict], list[dict]]:
+    """Use explicit school/grade/term/subject columns as cover boundaries."""
+    headings, grades = [], []
+    pattern = re.compile(
+        r"(?m)^\|[^\n]*학교명[^\n]*\|[^\n]*\n"
+        r"\|[ :|\-]+\n\|[^\n]*\|[^\S\n]*(?:\n|$)"
+    )
+    for match in pattern.finditer(text):
+        lines = match.group().splitlines()
+        headers = [visible(c) for c in lines[0].strip().strip("|").split("|")]
+        values = [visible(c) for c in lines[2].strip().strip("|").split("|")]
+        if len(headers) != len(values) or not {"학교명", "학년", "학기", "과목"} <= set(headers):
+            continue
+        row = dict(zip(headers, values, strict=True))
+        if not re.fullmatch(r"[123]\s*학년", row["학년"]):
+            continue
+        if not re.fullmatch(r"[12]\s*학기", row["학기"]):
+            continue
+        if not re.fullmatch(r"[가-힣·ㆍ･\s]{1,20}", row["과목"]):
+            continue
+        headings.append({
+            "start": match.start(), "end": match.end(), "raw": match.group(),
+            "key": re.sub(r"\s+", "", row["과목"]).removesuffix("과"),
+        })
+        grades.extend(
+            {**g, "role": "subject_heading", "boundary_start": match.start()}
+            for g in extract_grade_evidence(match.group(), "table_cell", "middle", match.start())
+        )
+    return headings, grades
 
 
 def structural_events(text: str) -> tuple[list[dict], list[dict]]:
@@ -236,7 +273,14 @@ def structural_events(text: str) -> tuple[list[dict], list[dict]]:
         if clean:
             previous_lines.append({"clean": clean, "start": offset})
         offset += len(line)
-    return sorted(headings, key=lambda h: h["start"]), sorted(grades, key=lambda g: g["start"])
+    metadata_heads, metadata_grades = metadata_events(text)
+    grades = [g for g in grades if not any(
+        h["start"] <= g["start"] < h["end"] for h in metadata_heads
+    )]
+    return (
+        sorted(headings + metadata_heads, key=lambda h: h["start"]),
+        sorted(grades + metadata_grades, key=lambda g: g["start"]),
+    )
 
 
 def text_locator(start: int, end: int, conversion: dict) -> dict:
@@ -272,7 +316,9 @@ def split_subject_run(start: int, end: int, grades: list[dict]) -> list[dict]:
         elif current["grade"] != grade["grade"]:
             previous = current["grade_evidence"][-1]
             if previous.get("boundary_start") == grade.get("boundary_start") or (
-                grade["source"] == "table_cell" and previous.get("role") == "subject_heading"
+                grade["source"] == "table_cell"
+                and grade.get("role") != "subject_heading"
+                and previous.get("role") == "subject_heading"
             ):
                 current["grade_evidence"].append(grade)
                 continue
