@@ -19,6 +19,10 @@ import tempfile
 from pathlib import Path
 from typing import Iterable
 
+if __package__:
+    from .middle_segments import extract_grades  # noqa: F401 - compatibility export
+else:
+    from middle_segments import extract_grades  # noqa: F401 - compatibility export
 
 SUBJECTS: dict[str, tuple[str, ...]] = {
     "2015": (
@@ -51,12 +55,6 @@ def school_key(source: dict[str, object]) -> str:
 
 def extract_years(text: str) -> list[int]:
     return sorted({int(value) for value in re.findall(r"(?<!\d)(20(?:2[2-9]|3\d))\s*학년도", text)})
-
-
-def extract_grades(text: str) -> list[int]:
-    values = {int(value) for value in re.findall(r"(?<!\d)([123])\s*학년", text)}
-    values.update(int(value) for value in re.findall(r"(?:고등학교|고)\s*([123])(?!\d)", text))
-    return sorted(values)
 
 
 def extract_semesters(text: str) -> list[int]:
