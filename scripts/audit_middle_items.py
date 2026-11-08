@@ -140,7 +140,8 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
                     and (
                         not title["evidence"]
                         or any(
-                            visible(obs["raw"]) not in title.get("aliases", [title["value"]])
+                            visible(obs["raw"]) not in title.get(
+                                "observed_values", title.get("aliases", [title["value"]]))
                             or text[obs["locator"]["start"] : obs["locator"]["end"]] != obs["raw"]
                             for obs in title["evidence"]
                         )
@@ -181,7 +182,8 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
             title = item["fields"]["title"]
             item["title_generated"] = bool(title["value"] and (
                 not title["evidence"] or any(visible(o["raw"]) not in title.get(
-                    "aliases", [title["value"]]) for o in title["evidence"])))
+                    "observed_values", title.get("aliases", [title["value"]]))
+                    for o in title["evidence"])))
             item.update(document, edition=source_document["edition"],
                         source_sha256=source_document["sha256"])
             item.setdefault("semester_evidence", next(

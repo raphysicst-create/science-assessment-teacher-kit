@@ -143,7 +143,12 @@ def enrich_claims(structure):
                           for v in values for h in point_headers
                           if h["col"] <= v["col"] < h["col"] + h["colspan"]
                           and re.fullmatch(r"\d+(?:\.\d+)?\s*점?", v["text"])]
-                if scores:
+                # A numbered checklist is one holistic scale, without an
+                # allocation to each listed element.
+                holistic = len(re.findall(
+                    r"(?:^|<br\s*/?>|\n)\s*\d+[.)]", cell["raw"], re.I
+                )) > 1
+                if scores and not holistic:
                     highest = max(float(re.sub(r"점|\s", "", v["text"])) for v in scores)
                     element_name = re.sub(
                         r"\s*\(\s*\d+(?:\.\d+)?\s*점?\s*\)\s*$", "", cell["text"]
@@ -289,6 +294,59 @@ def sub_score_field(entries, conversion):
                 "reason": "같은 평가요소의 배점 충돌·수준별 점수를 만점으로 추정하지 않음"}
     return {"value": values, "evidence": observations, "reason": "" if values else
             "요소·배점 쌍 미확인"}
+
+
+def mark_source_absence(fields, structure, conversion):
+    """Positive empty-cell or owned rubric evidence is required for absence."""
+    if __package__:
+        from .middle_items import evidence, label_role
+    else:
+        from middle_items import evidence, label_role
+    empty = {"", "-", "—", "없음", "미기재", "해당없음", "해당 없음"}
+    for name in ("score", "weight", "points", "timing"):
+        field = fields[name]
+        observations = field["evidence"]
+        if (field["value"] in ("", [], None) and field.get("status") != "conflict"
+                and observations and all(o["text"].strip() in empty for o in observations)):
+            field.update(source_absent=True, absence_basis="explicit_empty_cell",
+                         absence_evidence=observations)
+    if structure["layout"] != "form":
+        return
+    rubric = fields["rubric"]["evidence"]
+    elements = fields["elements"]["evidence"]
+    if not rubric:
+        return
+    cells = structure["cells"]
+    # Only the task's post-method rubric can prove a qualitative scale. Its
+    # curriculum achievement levels preceding the method cannot vote here.
+    scale_cells = []
+    for table in {c.get("table") for c in cells}:
+        local = [c for c in cells if c.get("table") == table and "row" in c]
+        headers = [c for c in local if label_role(c["text"]) == "elements"]
+        if not headers:
+            methods = [c["row"] for c in local if label_role(c["text"]) == "method"]
+            headers = [c for c in local if methods and c["row"] > min(methods)
+                       and label_role(c["text"]) in {"levels", "rubric"}]
+        if headers:
+            start = min(c["row"] for c in headers)
+            scale_cells.extend(c for c in local if c["row"] > start
+                               and LEVEL_RE.fullmatch(c["text"]))
+    qualitative = [c for c in scale_cells if not re.search(r"\d", c["text"])]
+    points_headers = any(label_role(c["text"]) in {"score", "points", "score_weight"}
+                         for c in cells)
+    level_only = (len({c["text"] for c in qualitative}) >= 2
+                  and len(qualitative) == len(scale_cells) and not points_headers)
+    holistic = any(len(re.findall(
+        r"(?:^|<br\s*/?>|\n)\s*\d+[.)]", o["raw"], re.I
+    )) > 1 for o in elements)
+    proof = [evidence(c, conversion) for c in qualitative] if level_only else []
+    for name in (("score", "weight", "sub_scores") if level_only else ("sub_scores",)):
+        field = fields[name]
+        if (field["value"] in ("", [], None) and field.get("status") != "conflict"
+                and (level_only or holistic)):
+            field.update(source_absent=True, absence_basis=(
+                "qualitative_task_scale" if level_only else "holistic_checklist_scale"
+            ), absence_evidence=proof or elements + rubric)
 
 
 def free_semester_field(structure, section, conversion):

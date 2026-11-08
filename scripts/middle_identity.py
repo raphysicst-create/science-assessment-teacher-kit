@@ -159,6 +159,8 @@ def merge_pair(summary, detail, proof):
                 status=f["status"],
                 evidence=copy.deepcopy(f["evidence"]),
                 occurrences=copy.deepcopy(f.get("occurrences", [])),
+                absence_basis=f.get("absence_basis"),
+                absence_evidence=copy.deepcopy(f.get("absence_evidence", [])),
             )
             for role, i, f in (("summary", summary, source), ("detail", detail, target))
         ]
@@ -188,10 +190,15 @@ def merge_pair(summary, detail, proof):
         if present_a and present_b and not equal_value(name, av, bv):
             for f in (source, target):
                 f.update(
-                    value=[] if isinstance(f["value"], list) else "",
+                    value=f["value"] if name == "title" else (
+                        [] if isinstance(f["value"], list) else ""
+                    ),
                     status="conflict",
                     reason="요약·상세 원문 관측값 충돌·확정 보류",
                 )
+                if name == "title":
+                    f.update(observed_values=[av, bv],
+                             selection_rule="task_area_number_source_order")
                 if name == "standards":
                     common = sorted(set(av) & set(bv))
                     f.update(value=common, confirmed_values=common,
@@ -213,6 +220,13 @@ def merge_pair(summary, detail, proof):
                 aliases = list(dict.fromkeys(source.get("aliases", [av])
                                              + target.get("aliases", [bv])))
                 source["aliases"] = target["aliases"] = aliases
+        elif source["status"] == "source_absent" and target["status"] == "unconfirmed":
+            target.update(status="source_absent", source_absent=True,
+                          absence_basis="summary_explicit_absence",
+                          absence_evidence=copy.deepcopy(source.get(
+                              "absence_evidence", source["evidence"])),
+                          value_source="summary", value_source_item_id=summary["item_id"],
+                          reason="원문 요약표의 명시적 부재 근거")
         else:
             target["comparison_status"] = "detail_only" if present_b else "unconfirmed"
 
@@ -259,6 +273,7 @@ def reconcile_items(items):
                 [i for i in local if i.get("table_role") == "summary"
                  and i["layout_position"]["table"] == summary["layout_position"]["table"]],
                 key=lambda i: (i["layout_position"]["table"],
+                               i["layout_position"].get("row") or 0,
                                i["layout_position"].get("col") or 0),
             )
             next_summary = min((i["locator"]["start"] for i in local
@@ -268,6 +283,7 @@ def reconcile_items(items):
             local_details = sorted(
                 [i for i in local if i["layout"] == "form"
                  and summary["locator"]["start"] < i["locator"]["start"] < next_summary
+                 and i["fields"]["title"]["value"]
                  and not any("학년 귀속 충돌" in r or "다른 프로그램" in r
                              for r in i["review_reasons"])],
                 key=lambda i: i["locator"]["start"],
@@ -278,6 +294,13 @@ def reconcile_items(items):
                        and local_summaries.index(summary) == local_details.index(detail))
             if ordered:
                 matched.append("column_detail_order")
+            equal_task_title = bool(
+                summary.get("title_role") == detail.get("title_role") == "task"
+                and title_key(summary["fields"]["title"]["value"])
+                == title_key(detail["fields"]["title"]["value"])
+            )
+            if ordered and equal_task_title:
+                matched.append("literal_task_title")
             containment = any(
                 min(len(a), len(b)) >= 4 and a != b and (a in b or b in a)
                 for a in titles(summary) for b in titles(detail)
@@ -287,7 +310,7 @@ def reconcile_items(items):
             # Preserve ordered area correspondence. Unordered generic labels
             # additionally require equal representative titles; concrete tasks
             # cannot be joined merely because both use the same method.
-            same_title |= bool(any(
+            area_match = bool(any(
                 sum(k in area_titles(i) for i in local_summaries) == 1
                 and sum(k in area_titles(i) for i in (
                     local_details if ordered else [i for i in local if i["layout"] == "form"]
@@ -299,6 +322,9 @@ def reconcile_items(items):
                 ))
                 for k in area_overlap
             ))
+            if area_match and not equal_task_title:
+                matched.append("unique_area_label")
+            same_title |= area_match
             structural_pair = ordered and "standards" in matched and len(matched) >= 2
             if not unique_number and not (
                 len(matched) >= 2 and (same_title or containment or structural_pair)

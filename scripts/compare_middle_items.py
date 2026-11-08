@@ -117,6 +117,10 @@ def safety_counts(report: dict) -> dict:
             counts["충돌 필드 값 확정"] += field.get("status") == "conflict" and field[
                 "value"
             ] not in ("", [], None) and not (
+                name == "title" and field.get("selection_rule")
+                == "task_area_number_source_order" and field.get("observed_values")
+                and field["value"] in field["observed_values"]
+            ) and not (
                 name == "standards"
                 and field.get("confirmed_values") == field["value"]
                 and field.get("conflict_values")

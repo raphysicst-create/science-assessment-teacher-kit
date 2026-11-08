@@ -225,7 +225,8 @@ def test_unique_number_preserves_conflicting_concrete_titles():
     reconcile_items(items)
     field = items[-1]["fields"]["title"]
     assert field["status"] == "conflict"
-    assert field["value"] == ""
+    # S6d-3c retains the concrete detail title without clearing the conflict.
+    assert field["value"] == "다른 행성 모형 만들기"
     assert {o["value"] for o in field["source_observations"]} == {
         "기체 부피 측정하기", "다른 행성 모형 만들기",
     }

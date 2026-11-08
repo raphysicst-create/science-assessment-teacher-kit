@@ -54,7 +54,8 @@ def test_title_alias_and_semantic_conflict():
     result = field_value("title", observations)
     assert result["aliases"] == [o["text"] for o in observations]
     result = field_value("title", observations + [{"text": "전류 측정하기"}])
-    assert result["status"] == "conflict" and result["value"] == ""
+    # S6d-3c retains a representative while preserving the source conflict.
+    assert result["status"] == "conflict" and result["value"] == "온도 측정하기"
     result = field_value("title", [{"text": s} for s in (
         "탐구가 됬는지 기록하기", "탐구가 됐는지 기록하기",
     )])
