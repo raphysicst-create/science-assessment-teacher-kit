@@ -1,0 +1,4164 @@
+{
+  "rounds": {
+    "2026-round-3": {
+      "before": {
+        "bounded": 55,
+        "review": 119,
+        "roles": {
+          "performance": 76,
+          "teaching_plan": 50,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "all_roles": {
+          "summary_duplicate": 31,
+          "performance": 76,
+          "teaching_plan": 50,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "review_reasons": {
+          "별도 표 연결 미확정": 96,
+          "원문 제목 셀 미확정": 105,
+          "행·열·셀 소유 범위 미입증": 98,
+          "요약표·상세표 항목 동일성 미확정": 9,
+          "원문 내부 충돌 (method)": 1,
+          "원문 내부 충돌 (standards)": 2,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 2,
+          "S5 과목 경계 미확정": 9,
+          "원문 내부 충돌 (weight)": 1,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 1,
+          "동일 항목 필드 복수 관측값·확정 보류": 1
+        },
+        "title_roles": {
+          "과제명": 20,
+          "영역": 49,
+          "번호": 0,
+          "미확정": 105
+        },
+        "bounded_title_roles": {
+          "과제명": 19,
+          "영역": 36,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "after": {
+        "bounded": 55,
+        "review": 125,
+        "roles": {
+          "teaching_plan": 56,
+          "performance": 76,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "all_roles": {
+          "teaching_plan": 56,
+          "summary_duplicate": 31,
+          "performance": 76,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 56,
+          "원문 제목 셀 미확정": 111,
+          "행·열·셀 소유 범위 미입증": 104,
+          "별도 표 연결 미확정": 46,
+          "동일 항목 필드 복수 관측값·확정 보류": 5,
+          "원문 내부 충돌 (method)": 1,
+          "원문 내부 충돌 (standards)": 2,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 2,
+          "S5 과목 경계 미확정": 9,
+          "원문 내부 충돌 (title)": 1,
+          "요약표·상세표 항목 동일성 미확정": 5,
+          "원문 내부 충돌 (weight)": 1,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 1
+        },
+        "title_roles": {
+          "과제명": 50,
+          "영역": 19,
+          "번호": 0,
+          "미확정": 111
+        },
+        "bounded_title_roles": {
+          "과제명": 38,
+          "영역": 17,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "school_grade_semesters": [
+        {
+          "school": "공주중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "공주중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 3,
+          "after": 3
+        },
+        {
+          "school": "공주중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "공주중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "공주중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 2,
+          "after": 2
+        },
+        {
+          "school": "공주중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "대치중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "대치중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 4,
+          "after": 4
+        },
+        {
+          "school": "대치중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "대치중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "대치중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 4,
+          "after": 4
+        },
+        {
+          "school": "대치중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "백석중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "백석중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 2,
+          "after": 2
+        },
+        {
+          "school": "백석중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "백석중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "백석중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 3,
+          "after": 3
+        },
+        {
+          "school": "백석중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서산중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서산중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 2,
+          "after": 2
+        },
+        {
+          "school": "서산중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서산중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서산중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 2,
+          "after": 2
+        },
+        {
+          "school": "서산중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "신목중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "신목중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 3,
+          "after": 3
+        },
+        {
+          "school": "신목중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "신목중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "신목중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 4,
+          "after": 4
+        },
+        {
+          "school": "신목중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "양평중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "양평중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 3,
+          "after": 3
+        },
+        {
+          "school": "양평중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "양평중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "양평중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 3,
+          "after": 4
+        },
+        {
+          "school": "양평중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "영통중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "영통중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 2,
+          "after": 2
+        },
+        {
+          "school": "영통중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "영통중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "영통중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 3,
+          "after": 3
+        },
+        {
+          "school": "영통중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "중계중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "중계중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "중계중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "중계중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "중계중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "중계중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "천안불당중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "천안불당중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 3,
+          "after": 3
+        },
+        {
+          "school": "천안불당중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "천안불당중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "천안불당중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 2,
+          "after": 2
+        },
+        {
+          "school": "천안불당중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "판교중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "판교중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 1,
+          "after": 1
+        },
+        {
+          "school": "판교중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "판교중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "판교중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 1,
+          "after": 0
+        },
+        {
+          "school": "판교중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "홍성중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "홍성중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 3,
+          "after": 3
+        },
+        {
+          "school": "홍성중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "홍성중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "홍성중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 2,
+          "after": 2
+        },
+        {
+          "school": "홍성중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "휘문중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "휘문중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 2,
+          "after": 2
+        },
+        {
+          "school": "휘문중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "휘문중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "휘문중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 1,
+          "after": 1
+        },
+        {
+          "school": "휘문중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        }
+      ],
+      "audit": {
+        "제목 생성": 0,
+        "항목 간 필드 소유 충돌": 0,
+        "기존 근거 추적 오류": 0,
+        "변환본 범위 밖 locator": 0,
+        "근거·머리글 원문 슬라이스 불일치": 0,
+        "bounded 필드의 소유 범위 이탈": 0,
+        "bounded 경계 미입증·검토 사유 잔존": 0,
+        "bounded 타 교과·대상 외 학년": 0,
+        "평문 폴백 bounded": 0,
+        "충돌 필드 값 확정": 0,
+        "재귀속 요약 근거·학년 추적 오류": 0,
+        "요약 참조 값·소유 출처 오류": 0,
+        "일반 동일성 독립 근거·문서 범위 오류": 0,
+        "열 필드 소유 범위 오류": 0,
+        "병합셀 공유 근거 오류": 0,
+        "참고표 bounded": 0
+      }
+    },
+    "2026-round-3-dev2": {
+      "before": {
+        "bounded": 31,
+        "review": 230,
+        "roles": {
+          "teaching_plan": 64,
+          "performance": 103,
+          "general_standards": 56,
+          "other": 38
+        },
+        "all_roles": {
+          "teaching_plan": 64,
+          "performance": 103,
+          "general_standards": 56,
+          "other": 38,
+          "summary_duplicate": 7
+        },
+        "review_reasons": {
+          "별도 표 연결 미확정": 153,
+          "원문 제목 셀 미확정": 210,
+          "행·열·셀 소유 범위 미입증": 187,
+          "중첩·불완전 표 구조 미확정": 9,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 25,
+          "요약표·상세표 항목 동일성 미확정": 19,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 4,
+          "동일 항목 필드 복수 관측값·확정 보류": 4,
+          "원문 내부 충돌 (method)": 5,
+          "원문 내부 충돌 (standards)": 5,
+          "S5 과목 경계 미확정": 7,
+          "항목 과목 판정 unknown": 7
+        },
+        "title_roles": {
+          "과제명": 15,
+          "영역": 36,
+          "번호": 0,
+          "미확정": 210
+        },
+        "bounded_title_roles": {
+          "과제명": 15,
+          "영역": 16,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "after": {
+        "bounded": 49,
+        "review": 222,
+        "roles": {
+          "teaching_plan": 71,
+          "performance": 105,
+          "general_standards": 58,
+          "other": 37
+        },
+        "all_roles": {
+          "teaching_plan": 71,
+          "performance": 105,
+          "general_standards": 58,
+          "other": 37,
+          "summary_duplicate": 6
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 71,
+          "원문 제목 셀 미확정": 211,
+          "행·열·셀 소유 범위 미입증": 195,
+          "중첩·불완전 표 구조 미확정": 9,
+          "별도 표 연결 미확정": 92,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 21,
+          "단원·성취기준·성취수준 머리글·항목 근거 제외": 2,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 4,
+          "동일 항목 필드 복수 관측값·확정 보류": 4,
+          "원문 내부 충돌 (method)": 1,
+          "원문 내부 충돌 (standards)": 4,
+          "S5 과목 경계 미확정": 7,
+          "항목 과목 판정 unknown": 7,
+          "요약표·상세표 항목 동일성 미확정": 2
+        },
+        "title_roles": {
+          "과제명": 34,
+          "영역": 26,
+          "번호": 0,
+          "미확정": 211
+        },
+        "bounded_title_roles": {
+          "과제명": 29,
+          "영역": 20,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "school_grade_semesters": [
+        {
+          "school": "갈산중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "갈산중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "갈산중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "갈산중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "갈산중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "갈산중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "광양마동중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "광양마동중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 1,
+          "after": 3
+        },
+        {
+          "school": "광양마동중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "광양마동중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "광양마동중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "광양마동중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "단성중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "단성중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 3,
+          "after": 3
+        },
+        {
+          "school": "단성중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "단성중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "단성중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "단성중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "대전대화중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "대전대화중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "대전대화중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "대전대화중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "대전대화중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 3
+        },
+        {
+          "school": "대전대화중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "두루중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "두루중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 1,
+          "after": 0
+        },
+        {
+          "school": "두루중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "두루중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "두루중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 1,
+          "after": 0
+        },
+        {
+          "school": "두루중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "보문중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "보문중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "보문중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "보문중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "보문중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "보문중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "상북중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "상북중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 2,
+          "after": 4
+        },
+        {
+          "school": "상북중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "상북중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "상북중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 2,
+          "after": 3
+        },
+        {
+          "school": "상북중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서강중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서강중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서강중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서강중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서강중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서강중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "순천연향중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "순천연향중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 3,
+          "after": 6
+        },
+        {
+          "school": "순천연향중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "순천연향중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "순천연향중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 2,
+          "after": 5
+        },
+        {
+          "school": "순천연향중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "아름중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "아름중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "아름중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "아름중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "아름중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 2,
+          "after": 2
+        },
+        {
+          "school": "아름중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "연평중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "연평중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 2,
+          "after": 2
+        },
+        {
+          "school": "연평중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "연평중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "연평중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 2,
+          "after": 2
+        },
+        {
+          "school": "연평중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "오현중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "오현중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "오현중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "오현중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "오현중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "오현중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울산제일중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울산제일중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 2,
+          "after": 4
+        },
+        {
+          "school": "울산제일중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울산제일중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울산제일중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 2,
+          "after": 4
+        },
+        {
+          "school": "울산제일중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울진중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울진중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 2,
+          "after": 4
+        },
+        {
+          "school": "울진중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울진중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울진중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 2,
+          "after": 2
+        },
+        {
+          "school": "울진중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "장흥유치중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "장흥유치중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "장흥유치중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "장흥유치중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "장흥유치중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "장흥유치중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "청도중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "청도중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "청도중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "청도중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "청도중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "청도중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "충주여자중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "충주여자중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "충주여자중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "충주여자중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "충주여자중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "충주여자중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "평동중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "평동중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "평동중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "평동중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "평동중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "평동중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "효돈중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "효돈중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "효돈중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "효돈중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "효돈중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "효돈중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "흥해중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "흥해중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 2,
+          "after": 2
+        },
+        {
+          "school": "흥해중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "흥해중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "흥해중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "흥해중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        }
+      ],
+      "audit": {
+        "제목 생성": 0,
+        "항목 간 필드 소유 충돌": 0,
+        "기존 근거 추적 오류": 0,
+        "변환본 범위 밖 locator": 0,
+        "근거·머리글 원문 슬라이스 불일치": 0,
+        "bounded 필드의 소유 범위 이탈": 0,
+        "bounded 경계 미입증·검토 사유 잔존": 0,
+        "bounded 타 교과·대상 외 학년": 0,
+        "평문 폴백 bounded": 0,
+        "충돌 필드 값 확정": 0,
+        "재귀속 요약 근거·학년 추적 오류": 0,
+        "요약 참조 값·소유 출처 오류": 0,
+        "일반 동일성 독립 근거·문서 범위 오류": 0,
+        "열 필드 소유 범위 오류": 0,
+        "병합셀 공유 근거 오류": 0,
+        "참고표 bounded": 0
+      }
+    },
+    "2026-round-1-dev2": {
+      "before": {
+        "bounded": 82,
+        "review": 298,
+        "roles": {
+          "teaching_plan": 56,
+          "performance": 192,
+          "general_standards": 93,
+          "other": 39
+        },
+        "all_roles": {
+          "teaching_plan": 56,
+          "performance": 192,
+          "general_standards": 93,
+          "other": 39
+        },
+        "review_reasons": {
+          "별도 표 연결 미확정": 202,
+          "원문 제목 셀 미확정": 268,
+          "행·열·셀 소유 범위 미입증": 222,
+          "요약표·상세표 항목 동일성 미확정": 30,
+          "중첩·불완전 표 구조 미확정": 6,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 13,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 9,
+          "동일 항목 필드 복수 관측값·확정 보류": 9,
+          "제목 셀에 필드 라벨 혼입·경계 미확정": 4,
+          "S5 과목 경계 미확정": 7,
+          "항목 과목 판정 other": 1,
+          "평문 변환·표 구조 미보존": 1
+        },
+        "title_roles": {
+          "과제명": 26,
+          "영역": 86,
+          "번호": 0,
+          "미확정": 268
+        },
+        "bounded_title_roles": {
+          "과제명": 25,
+          "영역": 57,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "after": {
+        "bounded": 90,
+        "review": 301,
+        "roles": {
+          "teaching_plan": 70,
+          "performance": 190,
+          "general_standards": 97,
+          "other": 34
+        },
+        "all_roles": {
+          "teaching_plan": 70,
+          "performance": 190,
+          "general_standards": 97,
+          "other": 34
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 70,
+          "원문 제목 셀 미확정": 274,
+          "행·열·셀 소유 범위 미입증": 235,
+          "별도 표 연결 미확정": 140,
+          "중첩·불완전 표 구조 미확정": 6,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 10,
+          "동일 항목 필드 복수 관측값·확정 보류": 13,
+          "요약표·상세표 항목 동일성 미확정": 11,
+          "단원·성취기준·성취수준 머리글·항목 근거 제외": 8,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 9,
+          "제목 셀에 필드 라벨 혼입·경계 미확정": 4,
+          "S5 과목 경계 미확정": 7,
+          "평문 변환·표 구조 미보존": 1
+        },
+        "title_roles": {
+          "과제명": 66,
+          "영역": 51,
+          "번호": 0,
+          "미확정": 274
+        },
+        "bounded_title_roles": {
+          "과제명": 47,
+          "영역": 43,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "school_grade_semesters": [
+        {
+          "school": "갈산중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "갈산중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "갈산중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "갈산중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "갈산중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "갈산중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "광양마동중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 4,
+          "after": 4
+        },
+        {
+          "school": "광양마동중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "광양마동중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "광양마동중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "광양마동중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "광양마동중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "단성중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "단성중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "단성중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "단성중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "단성중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "단성중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "대전대화중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "대전대화중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "대전대화중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "대전대화중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 3
+        },
+        {
+          "school": "대전대화중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "대전대화중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "두루중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 1,
+          "after": 0
+        },
+        {
+          "school": "두루중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "두루중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "두루중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 1,
+          "after": 0
+        },
+        {
+          "school": "두루중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "두루중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "보문중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 3,
+          "after": 3
+        },
+        {
+          "school": "보문중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "보문중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "보문중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 2
+        },
+        {
+          "school": "보문중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "보문중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "상북중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 2,
+          "after": 2
+        },
+        {
+          "school": "상북중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "상북중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "상북중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 2,
+          "after": 3
+        },
+        {
+          "school": "상북중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "상북중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서강중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서강중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서강중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서강중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서강중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "서강중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "순천연향중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 3,
+          "after": 3
+        },
+        {
+          "school": "순천연향중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "순천연향중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "순천연향중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 3,
+          "after": 1
+        },
+        {
+          "school": "순천연향중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "순천연향중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "아름중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 3,
+          "after": 2
+        },
+        {
+          "school": "아름중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "아름중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "아름중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 3,
+          "after": 2
+        },
+        {
+          "school": "아름중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "아름중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "연평중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 3,
+          "after": 3
+        },
+        {
+          "school": "연평중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "연평중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "연평중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 3,
+          "after": 3
+        },
+        {
+          "school": "연평중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "연평중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "오현중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 4,
+          "after": 8
+        },
+        {
+          "school": "오현중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "오현중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "오현중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "오현중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "오현중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울산제일중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 1
+        },
+        {
+          "school": "울산제일중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울산제일중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울산제일중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 2,
+          "after": 4
+        },
+        {
+          "school": "울산제일중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울산제일중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울진중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 3,
+          "after": 3
+        },
+        {
+          "school": "울진중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울진중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울진중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 2,
+          "after": 2
+        },
+        {
+          "school": "울진중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "울진중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "장흥유치중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 8,
+          "after": 8
+        },
+        {
+          "school": "장흥유치중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "장흥유치중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "장흥유치중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "장흥유치중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "장흥유치중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "청도중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "청도중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "청도중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "청도중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "청도중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "청도중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "충주여자중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "충주여자중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "충주여자중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "충주여자중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "충주여자중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "충주여자중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "평동중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 8,
+          "after": 8
+        },
+        {
+          "school": "평동중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "평동중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "평동중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 20,
+          "after": 20
+        },
+        {
+          "school": "평동중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "평동중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "효돈중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "효돈중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "효돈중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "효돈중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "효돈중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "효돈중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "흥해중학교",
+          "grade": 1,
+          "semester": 1,
+          "before": 3,
+          "after": 3
+        },
+        {
+          "school": "흥해중학교",
+          "grade": 1,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "흥해중학교",
+          "grade": 1,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "흥해중학교",
+          "grade": 2,
+          "semester": 1,
+          "before": 1,
+          "after": 2
+        },
+        {
+          "school": "흥해중학교",
+          "grade": 2,
+          "semester": 2,
+          "before": 0,
+          "after": 0
+        },
+        {
+          "school": "흥해중학교",
+          "grade": 2,
+          "semester": null,
+          "before": 0,
+          "after": 0
+        }
+      ],
+      "audit": {
+        "제목 생성": 0,
+        "항목 간 필드 소유 충돌": 0,
+        "기존 근거 추적 오류": 0,
+        "변환본 범위 밖 locator": 0,
+        "근거·머리글 원문 슬라이스 불일치": 0,
+        "bounded 필드의 소유 범위 이탈": 0,
+        "bounded 경계 미입증·검토 사유 잔존": 0,
+        "bounded 타 교과·대상 외 학년": 0,
+        "평문 폴백 bounded": 0,
+        "충돌 필드 값 확정": 0,
+        "재귀속 요약 근거·학년 추적 오류": 0,
+        "요약 참조 값·소유 출처 오류": 0,
+        "일반 동일성 독립 근거·문서 범위 오류": 0,
+        "열 필드 소유 범위 오류": 0,
+        "병합셀 공유 근거 오류": 0,
+        "참고표 bounded": 0
+      }
+    }
+  },
+  "split_examples": [
+    {
+      "round": "2026-round-3-dev2",
+      "before": [
+        {
+          "item_id": "item_07bbf238e3ecd294b9fdacf728441637e2a23e3511094a88e2067b4dbe6395bd",
+          "school": "대전대화중학교",
+          "filename": "2026학년도 대전대화중학교 2학기 교수학습 및 평가운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/대전광역시/7441017/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c_2026학년도_대전대화중학교_2학기_교수학습_및_평가운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 126,
+            "row": null,
+            "col": 3
+          },
+          "locator": {
+            "start": 171175,
+            "end": 171938,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        },
+        {
+          "item_id": "item_160e481081826cffeb23968edd5ec9cec14912d4b1fc4bfdea87256f7e2e68bb",
+          "school": "대전대화중학교",
+          "filename": "2026학년도 대전대화중학교 2학기 교수학습 및 평가운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/대전광역시/7441017/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c_2026학년도_대전대화중학교_2학기_교수학습_및_평가운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 126,
+            "row": null,
+            "col": 4
+          },
+          "locator": {
+            "start": 171175,
+            "end": 171938,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        },
+        {
+          "item_id": "item_0f46be3956c8a3527c928000b40009504d087243e5bd90dd1d72ae392ddda6ee",
+          "school": "대전대화중학교",
+          "filename": "2026학년도 대전대화중학교 2학기 교수학습 및 평가운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/대전광역시/7441017/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c_2026학년도_대전대화중학교_2학기_교수학습_및_평가운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 126,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 171175,
+            "end": 171954,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        }
+      ],
+      "after": [
+        {
+          "item_id": "item_04d3871fbc8feb7fedf8c77b54f9f227175a7d94a5be37e151d4b327b38d1135",
+          "school": "대전대화중학교",
+          "filename": "2026학년도 대전대화중학교 2학기 교수학습 및 평가운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/대전광역시/7441017/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c_2026학년도_대전대화중학교_2학기_교수학습_및_평가운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 126,
+            "row": null,
+            "col": 3
+          },
+          "locator": {
+            "start": 171175,
+            "end": 171938,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "호흡 운동의 원리 탐구 실험"
+        },
+        {
+          "item_id": "item_9bb6e237d478ab40af59408dc7e1a859a921e165909fdfec1c461df30ee53873",
+          "school": "대전대화중학교",
+          "filename": "2026학년도 대전대화중학교 2학기 교수학습 및 평가운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/대전광역시/7441017/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c_2026학년도_대전대화중학교_2학기_교수학습_및_평가운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 126,
+            "row": null,
+            "col": 4
+          },
+          "locator": {
+            "start": 171175,
+            "end": 171938,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "호흡 운동의 원리 탐구 실험"
+        },
+        {
+          "item_id": "item_a25e79c7fd81d8eb83f0d5991a8218a9a621222f070b579c1bbe981fec088276",
+          "school": "대전대화중학교",
+          "filename": "2026학년도 대전대화중학교 2학기 교수학습 및 평가운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/대전광역시/7441017/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c_2026학년도_대전대화중학교_2학기_교수학습_및_평가운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 126,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 171175,
+            "end": 171954,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "광합성 요인 및 과정 서술하기"
+        }
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "before": [
+        {
+          "item_id": "item_988435caf76eae0d9375b8173cfa08a2333d7595bed62d1895641d238c177c37",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 2학기 1학년 전과목 교수학습 및 평가계획서(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7491165/fdf529ae71d5b18c1d5affac7f177434ab02ea018c4184d8bed0a1da836a0614_2026학년도_2학기_1학년_전과목_교수학습_및_평가계획서_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/fdf529ae71d5b18c1d5affac7f177434ab02ea018c4184d8bed0a1da836a0614.json",
+          "grade": 1,
+          "semester": 2,
+          "layout_position": {
+            "table": 35,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 81707,
+            "end": 82400,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "요약표·상세표 항목 동일성 미확정",
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        },
+        {
+          "item_id": "item_461beb2e5b203bcad6e0a639950a9f3029ed2e9ac7073400590c3226a972d05e",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 2학기 1학년 전과목 교수학습 및 평가계획서(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7491165/fdf529ae71d5b18c1d5affac7f177434ab02ea018c4184d8bed0a1da836a0614_2026학년도_2학기_1학년_전과목_교수학습_및_평가계획서_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/fdf529ae71d5b18c1d5affac7f177434ab02ea018c4184d8bed0a1da836a0614.json",
+          "grade": 1,
+          "semester": 2,
+          "layout_position": {
+            "table": 35,
+            "row": null,
+            "col": 6
+          },
+          "locator": {
+            "start": 81723,
+            "end": 82418,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "요약표·상세표 항목 동일성 미확정",
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        }
+      ],
+      "after": [
+        {
+          "item_id": "item_926e35e85559f7294cacd1184d1e8b4c3a0d3f6e0783dd5bcea99b87f665548d",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 2학기 1학년 전과목 교수학습 및 평가계획서(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7491165/fdf529ae71d5b18c1d5affac7f177434ab02ea018c4184d8bed0a1da836a0614_2026학년도_2학기_1학년_전과목_교수학습_및_평가계획서_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/fdf529ae71d5b18c1d5affac7f177434ab02ea018c4184d8bed0a1da836a0614.json",
+          "grade": 1,
+          "semester": 2,
+          "layout_position": {
+            "table": 35,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 81707,
+            "end": 82400,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "물질의 상태변화 설명하기"
+        },
+        {
+          "item_id": "item_9e6b6a8f1cb9308d9e0c629587479bfaebf0cf46ae6d758ab84be28b66b9e384",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 2학기 1학년 전과목 교수학습 및 평가계획서(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7491165/fdf529ae71d5b18c1d5affac7f177434ab02ea018c4184d8bed0a1da836a0614_2026학년도_2학기_1학년_전과목_교수학습_및_평가계획서_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/fdf529ae71d5b18c1d5affac7f177434ab02ea018c4184d8bed0a1da836a0614.json",
+          "grade": 1,
+          "semester": 2,
+          "layout_position": {
+            "table": 35,
+            "row": null,
+            "col": 6
+          },
+          "locator": {
+            "start": 81723,
+            "end": 82418,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "여러 가지 힘의 특징 및 적용"
+        }
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "before": [
+        {
+          "item_id": "item_3ed2fccd9be9ec3bf5cefd755e9267bae729d323ad1c6730c4cf7b45e1980b87",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 2학기 2학년 전과목 교수학습 및 평가계획서(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7491165/674e3c8f4d9a66ed57f1f83fd28881b1988e43b1e60136bbef9db1bfa1a49f2d_2026학년도_2학기_2학년_전과목_교수학습_및_평가계획서_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/674e3c8f4d9a66ed57f1f83fd28881b1988e43b1e60136bbef9db1bfa1a49f2d.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 46,
+            "row": null,
+            "col": 4
+          },
+          "locator": {
+            "start": 103114,
+            "end": 103739,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "요약표·상세표 항목 동일성 미확정",
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        },
+        {
+          "item_id": "item_1501546f18a7263042f4847a3414520ca6a5d595e20b0c1ffac3d8a011802b4b",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 2학기 2학년 전과목 교수학습 및 평가계획서(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7491165/674e3c8f4d9a66ed57f1f83fd28881b1988e43b1e60136bbef9db1bfa1a49f2d_2026학년도_2학기_2학년_전과목_교수학습_및_평가계획서_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/674e3c8f4d9a66ed57f1f83fd28881b1988e43b1e60136bbef9db1bfa1a49f2d.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 46,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 103129,
+            "end": 103757,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "요약표·상세표 항목 동일성 미확정",
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        }
+      ],
+      "after": [
+        {
+          "item_id": "item_b02d1d568cded570e9948d2ad66e59ea5db33b4410fab5046a73f32df74047c3",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 2학기 2학년 전과목 교수학습 및 평가계획서(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7491165/674e3c8f4d9a66ed57f1f83fd28881b1988e43b1e60136bbef9db1bfa1a49f2d_2026학년도_2학기_2학년_전과목_교수학습_및_평가계획서_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/674e3c8f4d9a66ed57f1f83fd28881b1988e43b1e60136bbef9db1bfa1a49f2d.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 46,
+            "row": null,
+            "col": 4
+          },
+          "locator": {
+            "start": 103114,
+            "end": 103739,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "환경요인과 광합성의 관계 탐구"
+        },
+        {
+          "item_id": "item_87bc95592d76810154417e4d5fc2c2fc85c710e8c6436a169e31705083c8f000",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 2학기 2학년 전과목 교수학습 및 평가계획서(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7491165/674e3c8f4d9a66ed57f1f83fd28881b1988e43b1e60136bbef9db1bfa1a49f2d_2026학년도_2학기_2학년_전과목_교수학습_및_평가계획서_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/674e3c8f4d9a66ed57f1f83fd28881b1988e43b1e60136bbef9db1bfa1a49f2d.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 46,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 103129,
+            "end": 103757,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "옴의 법칙"
+        }
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "before": [
+        {
+          "item_id": "item_1e2bfcee9d679308bebc305f4f2d0eef12936b70404239dd78c1d1f9d069953d",
+          "school": "상북중학교",
+          "filename": "2026학년도 상북중 2학년 2학기 교수학습 및 평가 운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7501037/c960b40e98742eae6426004e24e595a89f9fca8f0eb4247eb48824115ffcf99a_2026학년도_상북중_2학년_2학기_교수학습_및_평가_운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/c960b40e98742eae6426004e24e595a89f9fca8f0eb4247eb48824115ffcf99a.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 57,
+            "row": null,
+            "col": 4
+          },
+          "locator": {
+            "start": 87246,
+            "end": 87862,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "요약표·상세표 항목 동일성 미확정",
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        },
+        {
+          "item_id": "item_3afd0aaf213239fa1e51d164f2fcd1e50621d03de6312695e7c6008432e2fdaf",
+          "school": "상북중학교",
+          "filename": "2026학년도 상북중 2학년 2학기 교수학습 및 평가 운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7501037/c960b40e98742eae6426004e24e595a89f9fca8f0eb4247eb48824115ffcf99a_2026학년도_상북중_2학년_2학기_교수학습_및_평가_운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/c960b40e98742eae6426004e24e595a89f9fca8f0eb4247eb48824115ffcf99a.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 57,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 87246,
+            "end": 87932,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "요약표·상세표 항목 동일성 미확정",
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        },
+        {
+          "item_id": "item_4d08525bc90dc84245e403b189696de598b636f8770d327510429d60f1f1b218",
+          "school": "상북중학교",
+          "filename": "2026학년도 상북중 2학년 2학기 교수학습 및 평가 운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7501037/c960b40e98742eae6426004e24e595a89f9fca8f0eb4247eb48824115ffcf99a_2026학년도_상북중_2학년_2학기_교수학습_및_평가_운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/c960b40e98742eae6426004e24e595a89f9fca8f0eb4247eb48824115ffcf99a.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 57,
+            "row": null,
+            "col": 6
+          },
+          "locator": {
+            "start": 87264,
+            "end": 87950,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "요약표·상세표 항목 동일성 미확정",
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        }
+      ],
+      "after": [
+        {
+          "item_id": "item_1e2bfcee9d679308bebc305f4f2d0eef12936b70404239dd78c1d1f9d069953d",
+          "school": "상북중학교",
+          "filename": "2026학년도 상북중 2학년 2학기 교수학습 및 평가 운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7501037/c960b40e98742eae6426004e24e595a89f9fca8f0eb4247eb48824115ffcf99a_2026학년도_상북중_2학년_2학기_교수학습_및_평가_운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/c960b40e98742eae6426004e24e595a89f9fca8f0eb4247eb48824115ffcf99a.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 57,
+            "row": null,
+            "col": 4
+          },
+          "locator": {
+            "start": 87246,
+            "end": 87862,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        },
+        {
+          "item_id": "item_3afd0aaf213239fa1e51d164f2fcd1e50621d03de6312695e7c6008432e2fdaf",
+          "school": "상북중학교",
+          "filename": "2026학년도 상북중 2학년 2학기 교수학습 및 평가 운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7501037/c960b40e98742eae6426004e24e595a89f9fca8f0eb4247eb48824115ffcf99a_2026학년도_상북중_2학년_2학기_교수학습_및_평가_운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/c960b40e98742eae6426004e24e595a89f9fca8f0eb4247eb48824115ffcf99a.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 57,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 87246,
+            "end": 87932,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        },
+        {
+          "item_id": "item_681e80d0362c8c924c28434fdd8d149f54ab47da3508d29aa71871a23e2aa447",
+          "school": "상북중학교",
+          "filename": "2026학년도 상북중 2학년 2학기 교수학습 및 평가 운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7501037/c960b40e98742eae6426004e24e595a89f9fca8f0eb4247eb48824115ffcf99a_2026학년도_상북중_2학년_2학기_교수학습_및_평가_운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/c960b40e98742eae6426004e24e595a89f9fca8f0eb4247eb48824115ffcf99a.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 57,
+            "row": null,
+            "col": 6
+          },
+          "locator": {
+            "start": 87264,
+            "end": 87950,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "전류, 전압, 저항 사이의 관계 탐구"
+        }
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "before": [
+        {
+          "item_id": "item_fc4df452094ca24c89092b7718c0c3be4bf17e28a5977607719f54224ba045ef",
+          "school": "상북중학교",
+          "filename": "2026학년도 상북중 1학년 2학기 교수학습 및 평가 운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7501037/84ec23b96b89196c6085660ba7c9b17cd79e2152dea549d017573aa02ac32b50_2026학년도_상북중_1학년_2학기_교수학습_및_평가_운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/84ec23b96b89196c6085660ba7c9b17cd79e2152dea549d017573aa02ac32b50.json",
+          "grade": 1,
+          "semester": 2,
+          "layout_position": {
+            "table": 56,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 102468,
+            "end": 103066,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "요약표·상세표 항목 동일성 미확정",
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        },
+        {
+          "item_id": "item_318686ef7f74388b2495a378080642e0cc08de35246aa98fe7dc2690df33af1b",
+          "school": "상북중학교",
+          "filename": "2026학년도 상북중 1학년 2학기 교수학습 및 평가 운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7501037/84ec23b96b89196c6085660ba7c9b17cd79e2152dea549d017573aa02ac32b50_2026학년도_상북중_1학년_2학기_교수학습_및_평가_운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/84ec23b96b89196c6085660ba7c9b17cd79e2152dea549d017573aa02ac32b50.json",
+          "grade": 1,
+          "semester": 2,
+          "layout_position": {
+            "table": 56,
+            "row": null,
+            "col": 6
+          },
+          "locator": {
+            "start": 102483,
+            "end": 103083,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "요약표·상세표 항목 동일성 미확정",
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        }
+      ],
+      "after": [
+        {
+          "item_id": "item_7e73712d121e873595735357dd3ea2c1d0c4ccbfecadfd63b172b528f24f28f5",
+          "school": "상북중학교",
+          "filename": "2026학년도 상북중 1학년 2학기 교수학습 및 평가 운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7501037/84ec23b96b89196c6085660ba7c9b17cd79e2152dea549d017573aa02ac32b50_2026학년도_상북중_1학년_2학기_교수학습_및_평가_운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/84ec23b96b89196c6085660ba7c9b17cd79e2152dea549d017573aa02ac32b50.json",
+          "grade": 1,
+          "semester": 2,
+          "layout_position": {
+            "table": 56,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 102468,
+            "end": 103066,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "물의 상태 변화시 온도 측정하기"
+        },
+        {
+          "item_id": "item_98a0074700be1ea2984306cdfae6a077ba4451ca8c638b926288de4fd0b39850",
+          "school": "상북중학교",
+          "filename": "2026학년도 상북중 1학년 2학기 교수학습 및 평가 운영계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/울산광역시/7501037/84ec23b96b89196c6085660ba7c9b17cd79e2152dea549d017573aa02ac32b50_2026학년도_상북중_1학년_2학기_교수학습_및_평가_운영계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/84ec23b96b89196c6085660ba7c9b17cd79e2152dea549d017573aa02ac32b50.json",
+          "grade": 1,
+          "semester": 2,
+          "layout_position": {
+            "table": 56,
+            "row": null,
+            "col": 6
+          },
+          "locator": {
+            "start": 102483,
+            "end": 103083,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "물체의 운동 조사하기"
+        }
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "before": [
+        {
+          "item_id": "item_5d60e74b97f6897967b19ae17697785d3c09b1c48360d7f7524a9d66af1f9a37",
+          "school": "보문중학교",
+          "filename": "2026학년도 2학년 1학기 평가계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/대전광역시/7441034/acb777840d40fc95913e1007297a936623b5eec0917d884ce071f5fb73d02024_2026학년도_2학년_1학기_평가계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/acb777840d40fc95913e1007297a936623b5eec0917d884ce071f5fb73d02024.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 130,
+            "row": null,
+            "col": 7
+          },
+          "locator": {
+            "start": 95439,
+            "end": 96485,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        },
+        {
+          "item_id": "item_46722f7bcd822838dafd9eec1a417f0267c6135a8d635558ddbce37198cc8e19",
+          "school": "보문중학교",
+          "filename": "2026학년도 2학년 1학기 평가계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/대전광역시/7441034/acb777840d40fc95913e1007297a936623b5eec0917d884ce071f5fb73d02024_2026학년도_2학년_1학기_평가계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/acb777840d40fc95913e1007297a936623b5eec0917d884ce071f5fb73d02024.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 130,
+            "row": null,
+            "col": 8
+          },
+          "locator": {
+            "start": 95453,
+            "end": 96500,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        }
+      ],
+      "after": [
+        {
+          "item_id": "item_96462751336aeff06eba4db0b929b8310e4a8c99a0abe382d8dfd56e2ed200fc",
+          "school": "보문중학교",
+          "filename": "2026학년도 2학년 1학기 평가계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/대전광역시/7441034/acb777840d40fc95913e1007297a936623b5eec0917d884ce071f5fb73d02024_2026학년도_2학년_1학기_평가계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/acb777840d40fc95913e1007297a936623b5eec0917d884ce071f5fb73d02024.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 130,
+            "row": null,
+            "col": 7
+          },
+          "locator": {
+            "start": 95439,
+            "end": 96485,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "혼합물 분리 실험 설계 및 수행하기"
+        },
+        {
+          "item_id": "item_6e562c9feefbfbf999ba483790d1a86091201c8b67718b4db435448a52d90931",
+          "school": "보문중학교",
+          "filename": "2026학년도 2학년 1학기 평가계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/대전광역시/7441034/acb777840d40fc95913e1007297a936623b5eec0917d884ce071f5fb73d02024_2026학년도_2학년_1학기_평가계획.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/acb777840d40fc95913e1007297a936623b5eec0917d884ce071f5fb73d02024.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 130,
+            "row": null,
+            "col": 8
+          },
+          "locator": {
+            "start": 95453,
+            "end": 96500,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "암석을 관찰하여 분류하기"
+        }
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "before": [
+        {
+          "item_id": "item_acbf39c2b6175152bdadeee8afe2286d8e26f9362d1c05cf5b7a1bdaa3db481c",
+          "school": "대전대화중학교",
+          "filename": "2026학년도 대전대화중 1학기 교수학습 및 평가운영계획(수정).hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/대전광역시/7441017/2a37cb67fa457f86c175cc5cb1164163063a17e6f4117ea39f1c05eb4172ca3b_2026학년도_대전대화중_1학기_교수학습_및_평가운영계획_수정.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/2a37cb67fa457f86c175cc5cb1164163063a17e6f4117ea39f1c05eb4172ca3b.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 124,
+            "row": null,
+            "col": 3
+          },
+          "locator": {
+            "start": 145215,
+            "end": 145967,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        },
+        {
+          "item_id": "item_7cb0285650938b1a760a657f30c741716c02347169941bd994c3b8a9407f61f6",
+          "school": "대전대화중학교",
+          "filename": "2026학년도 대전대화중 1학기 교수학습 및 평가운영계획(수정).hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/대전광역시/7441017/2a37cb67fa457f86c175cc5cb1164163063a17e6f4117ea39f1c05eb4172ca3b_2026학년도_대전대화중_1학기_교수학습_및_평가운영계획_수정.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/2a37cb67fa457f86c175cc5cb1164163063a17e6f4117ea39f1c05eb4172ca3b.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 124,
+            "row": null,
+            "col": 4
+          },
+          "locator": {
+            "start": 145215,
+            "end": 145967,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        },
+        {
+          "item_id": "item_7393e402c1cff7e35327bbb2f83969c5c4825d5523aceda4399fe2f05e6286cf",
+          "school": "대전대화중학교",
+          "filename": "2026학년도 대전대화중 1학기 교수학습 및 평가운영계획(수정).hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/대전광역시/7441017/2a37cb67fa457f86c175cc5cb1164163063a17e6f4117ea39f1c05eb4172ca3b_2026학년도_대전대화중_1학기_교수학습_및_평가운영계획_수정.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/2a37cb67fa457f86c175cc5cb1164163063a17e6f4117ea39f1c05eb4172ca3b.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 124,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 145215,
+            "end": 145980,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        }
+      ],
+      "after": [
+        {
+          "item_id": "item_5dcd0fdae3a60e08e157d7c49efd17dc3c929d5c1a734917f600ff24f4139914",
+          "school": "대전대화중학교",
+          "filename": "2026학년도 대전대화중 1학기 교수학습 및 평가운영계획(수정).hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/대전광역시/7441017/2a37cb67fa457f86c175cc5cb1164163063a17e6f4117ea39f1c05eb4172ca3b_2026학년도_대전대화중_1학기_교수학습_및_평가운영계획_수정.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/2a37cb67fa457f86c175cc5cb1164163063a17e6f4117ea39f1c05eb4172ca3b.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 124,
+            "row": null,
+            "col": 3
+          },
+          "locator": {
+            "start": 145215,
+            "end": 145967,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "금속의 밀도 측정 실험"
+        },
+        {
+          "item_id": "item_4df0656b5e566401dc3fbcdcfad7456f1015a3ae297108cea1ba036ba360ab98",
+          "school": "대전대화중학교",
+          "filename": "2026학년도 대전대화중 1학기 교수학습 및 평가운영계획(수정).hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/대전광역시/7441017/2a37cb67fa457f86c175cc5cb1164163063a17e6f4117ea39f1c05eb4172ca3b_2026학년도_대전대화중_1학기_교수학습_및_평가운영계획_수정.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/2a37cb67fa457f86c175cc5cb1164163063a17e6f4117ea39f1c05eb4172ca3b.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 124,
+            "row": null,
+            "col": 4
+          },
+          "locator": {
+            "start": 145215,
+            "end": 145967,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "금속의 밀도 측정 실험"
+        },
+        {
+          "item_id": "item_1ab1698f1c20f71a1ad9a0b0ef886e254b90294a7a8cab246c4ae22655f5ba28",
+          "school": "대전대화중학교",
+          "filename": "2026학년도 대전대화중 1학기 교수학습 및 평가운영계획(수정).hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/대전광역시/7441017/2a37cb67fa457f86c175cc5cb1164163063a17e6f4117ea39f1c05eb4172ca3b_2026학년도_대전대화중_1학기_교수학습_및_평가운영계획_수정.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/2a37cb67fa457f86c175cc5cb1164163063a17e6f4117ea39f1c05eb4172ca3b.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 124,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 145215,
+            "end": 145980,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "암석의 순환 과정 서술하기"
+        }
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "before": [
+        {
+          "item_id": "item_b5430bee57be973516c724b996c0e94dd77d1ec08c7f4247fc03b8dd24d51ba2",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 1학기 1학년 교수학습 및 평가계획서 양식(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/울산광역시/7491165/47328ce3dfb1a9883bb3ff4e0c80a089ae544d0b0be6dae4fe245df5f7f0fdeb_2026학년도_1학기_1학년_교수학습_및_평가계획서_양식_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/47328ce3dfb1a9883bb3ff4e0c80a089ae544d0b0be6dae4fe245df5f7f0fdeb.json",
+          "grade": 1,
+          "semester": 1,
+          "layout_position": {
+            "table": 30,
+            "row": null,
+            "col": 1
+          },
+          "locator": {
+            "start": 72680,
+            "end": 72808,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "요약표·상세표 항목 동일성 미확정",
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        },
+        {
+          "item_id": "item_82aca443eb5c2a7136d6f35e0757617386c653404e35e36f63463520baa3c5db",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 1학기 1학년 교수학습 및 평가계획서 양식(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/울산광역시/7491165/47328ce3dfb1a9883bb3ff4e0c80a089ae544d0b0be6dae4fe245df5f7f0fdeb_2026학년도_1학기_1학년_교수학습_및_평가계획서_양식_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/47328ce3dfb1a9883bb3ff4e0c80a089ae544d0b0be6dae4fe245df5f7f0fdeb.json",
+          "grade": 1,
+          "semester": 1,
+          "layout_position": {
+            "table": 30,
+            "row": null,
+            "col": 2
+          },
+          "locator": {
+            "start": 72700,
+            "end": 72826,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "요약표·상세표 항목 동일성 미확정",
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        }
+      ],
+      "after": [
+        {
+          "item_id": "item_b5430bee57be973516c724b996c0e94dd77d1ec08c7f4247fc03b8dd24d51ba2",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 1학기 1학년 교수학습 및 평가계획서 양식(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/울산광역시/7491165/47328ce3dfb1a9883bb3ff4e0c80a089ae544d0b0be6dae4fe245df5f7f0fdeb_2026학년도_1학기_1학년_교수학습_및_평가계획서_양식_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/47328ce3dfb1a9883bb3ff4e0c80a089ae544d0b0be6dae4fe245df5f7f0fdeb.json",
+          "grade": 1,
+          "semester": 1,
+          "layout_position": {
+            "table": 30,
+            "row": null,
+            "col": 1
+          },
+          "locator": {
+            "start": 72680,
+            "end": 72808,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "생물의 분류 설명하기"
+        },
+        {
+          "item_id": "item_82aca443eb5c2a7136d6f35e0757617386c653404e35e36f63463520baa3c5db",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 1학기 1학년 교수학습 및 평가계획서 양식(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/울산광역시/7491165/47328ce3dfb1a9883bb3ff4e0c80a089ae544d0b0be6dae4fe245df5f7f0fdeb_2026학년도_1학기_1학년_교수학습_및_평가계획서_양식_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/47328ce3dfb1a9883bb3ff4e0c80a089ae544d0b0be6dae4fe245df5f7f0fdeb.json",
+          "grade": 1,
+          "semester": 1,
+          "layout_position": {
+            "table": 30,
+            "row": null,
+            "col": 2
+          },
+          "locator": {
+            "start": 72700,
+            "end": 72826,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        }
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "before": [
+        {
+          "item_id": "item_d7b5ebbc79c29651398eabc2e3215d2d319610817cbb6d50a4f2e8f2603c0ea8",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 1학기 2학년 교수학습 및 평가계획서 양식(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/울산광역시/7491165/a61e06ccb466683dfa599c339345890e8639c778ee111092ad7c81a8ffeb911a_2026학년도_1학기_2학년_교수학습_및_평가계획서_양식_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/a61e06ccb466683dfa599c339345890e8639c778ee111092ad7c81a8ffeb911a.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 45,
+            "row": null,
+            "col": 4
+          },
+          "locator": {
+            "start": 104867,
+            "end": 105499,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "요약표·상세표 항목 동일성 미확정",
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        },
+        {
+          "item_id": "item_7138589679a560ad167beb93cef5625e44c6cda5b7b7a5e544e9e33702d0b8c8",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 1학기 2학년 교수학습 및 평가계획서 양식(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/울산광역시/7491165/a61e06ccb466683dfa599c339345890e8639c778ee111092ad7c81a8ffeb911a_2026학년도_1학기_2학년_교수학습_및_평가계획서_양식_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/a61e06ccb466683dfa599c339345890e8639c778ee111092ad7c81a8ffeb911a.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 45,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 104867,
+            "end": 105517,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "요약표·상세표 항목 동일성 미확정",
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        }
+      ],
+      "after": [
+        {
+          "item_id": "item_aacc2356ca43985674123a35a8f3d61454720e6923dd8d7bb957b99d9be18c50",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 1학기 2학년 교수학습 및 평가계획서 양식(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/울산광역시/7491165/a61e06ccb466683dfa599c339345890e8639c778ee111092ad7c81a8ffeb911a_2026학년도_1학기_2학년_교수학습_및_평가계획서_양식_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/a61e06ccb466683dfa599c339345890e8639c778ee111092ad7c81a8ffeb911a.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 45,
+            "row": null,
+            "col": 4
+          },
+          "locator": {
+            "start": 104867,
+            "end": 105499,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "물질의 특성을 이용한 물질 구분하기"
+        },
+        {
+          "item_id": "item_555496520d3ce797bcb6913e5cadb3c8c45149f2e3df66defea3a248076af507",
+          "school": "울산제일중학교",
+          "filename": "2026학년도 1학기 2학년 교수학습 및 평가계획서 양식(최종본).hwpx",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/울산광역시/7491165/a61e06ccb466683dfa599c339345890e8639c778ee111092ad7c81a8ffeb911a_2026학년도_1학기_2학년_교수학습_및_평가계획서_양식_최종본.hwpx",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/a61e06ccb466683dfa599c339345890e8639c778ee111092ad7c81a8ffeb911a.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 45,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 104867,
+            "end": 105517,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "암석 분류"
+        }
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "before": [
+        {
+          "item_id": "item_766950a174e2bfbc5d82b11646a5b2f1c23c9c3c741e1400ea739bddd6893fb5",
+          "school": "상북중학교",
+          "filename": "2026학년도 상북중 2학년 1학기 교수학습 및 평가 운영계획(수정).hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/울산광역시/7501037/6a089cbf47f2780d57fcfdd2e0def83634bd546ea186885ebde02557b50745ae_2026학년도_상북중_2학년_1학기_교수학습_및_평가_운영계획_수정.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/6a089cbf47f2780d57fcfdd2e0def83634bd546ea186885ebde02557b50745ae.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 55,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 84912,
+            "end": 85618,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "요약표·상세표 항목 동일성 미확정",
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        },
+        {
+          "item_id": "item_f894959cdfe646fd8929f2167fe0205df17dd6823936f587baebc576320e53d3",
+          "school": "상북중학교",
+          "filename": "2026학년도 상북중 2학년 1학기 교수학습 및 평가 운영계획(수정).hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/울산광역시/7501037/6a089cbf47f2780d57fcfdd2e0def83634bd546ea186885ebde02557b50745ae_2026학년도_상북중_2학년_1학기_교수학습_및_평가_운영계획_수정.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/6a089cbf47f2780d57fcfdd2e0def83634bd546ea186885ebde02557b50745ae.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 55,
+            "row": null,
+            "col": 6
+          },
+          "locator": {
+            "start": 84926,
+            "end": 85740,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "요약표·상세표 항목 동일성 미확정",
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        }
+      ],
+      "after": [
+        {
+          "item_id": "item_744854b5ab1f07bd076c89ed28dde2ab7e89ea57a15d0a0ae91a4330a43f75a6",
+          "school": "상북중학교",
+          "filename": "2026학년도 상북중 2학년 1학기 교수학습 및 평가 운영계획(수정).hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/울산광역시/7501037/6a089cbf47f2780d57fcfdd2e0def83634bd546ea186885ebde02557b50745ae_2026학년도_상북중_2학년_1학기_교수학습_및_평가_운영계획_수정.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/6a089cbf47f2780d57fcfdd2e0def83634bd546ea186885ebde02557b50745ae.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 55,
+            "row": null,
+            "col": 5
+          },
+          "locator": {
+            "start": 84912,
+            "end": 85618,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "혼합물 분리 실험 설계"
+        },
+        {
+          "item_id": "item_f894959cdfe646fd8929f2167fe0205df17dd6823936f587baebc576320e53d3",
+          "school": "상북중학교",
+          "filename": "2026학년도 상북중 2학년 1학기 교수학습 및 평가 운영계획(수정).hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/울산광역시/7501037/6a089cbf47f2780d57fcfdd2e0def83634bd546ea186885ebde02557b50745ae_2026학년도_상북중_2학년_1학기_교수학습_및_평가_운영계획_수정.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/6a089cbf47f2780d57fcfdd2e0def83634bd546ea186885ebde02557b50745ae.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 55,
+            "row": null,
+            "col": 6
+          },
+          "locator": {
+            "start": 84926,
+            "end": 85740,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "review",
+          "review_reasons": [
+            "원문 제목 셀 미확정"
+          ],
+          "title": ""
+        }
+      ]
+    }
+  ],
+  "blocked_examples": [
+    {
+      "round": "2026-round-3-dev2",
+      "before": [
+        {
+          "item_id": "item_51d3e3cbdeb7db736da10de5d77725adeeedd8be7118ea597e0c03da3a2da285",
+          "school": "두루중학교",
+          "filename": "2026학년도 2학기 교과별 교수학습 및 평가 운영 계획(개인정보비식별화)/[2학년]2026학년도 2학년 2학기 과학과 평가계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/세종특별자치시/9300173/f1a70f560b2b8b4e8f23572d1f235404a90edffd7aa0923f43fc359ba5709bd3_2026학년도_2학기_교과별_교수학습_및_평가_운영_계획_개인정보비식별화.zip",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/child_ca4daca33d7bf4f99c58df1554102b771e6d1bc997684776bca7ff4658384ac3.json",
+          "grade": 2,
+          "semester": 2,
+          "layout_position": {
+            "table": 4,
+            "row": null,
+            "col": null
+          },
+          "locator": {
+            "start": 10442,
+            "end": 19483,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "단원명"
+        }
+      ],
+      "after": {
+        "item_id": "item_7abbf7ed64af7e633f77448eb38dbfdd3ef3ac55fbb5c2b26a568f5a16488a13",
+        "school": "두루중학교",
+        "filename": "2026학년도 2학기 교과별 교수학습 및 평가 운영 계획(개인정보비식별화)/[2학년]2026학년도 2학년 2학기 과학과 평가계획.hwp",
+        "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/세종특별자치시/9300173/f1a70f560b2b8b4e8f23572d1f235404a90edffd7aa0923f43fc359ba5709bd3_2026학년도_2학기_교과별_교수학습_및_평가_운영_계획_개인정보비식별화.zip",
+        "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/child_ca4daca33d7bf4f99c58df1554102b771e6d1bc997684776bca7ff4658384ac3.json",
+        "grade": 2,
+        "semester": 2,
+        "layout_position": {
+          "table": 4,
+          "row": null,
+          "col": null
+        },
+        "locator": {
+          "start": 10442,
+          "end": 19483,
+          "offset_unit": "unicode_codepoint",
+          "end_exclusive": true,
+          "converter": "kordoc"
+        },
+        "candidate_role": "general_standards",
+        "extraction_status": "review",
+        "review_reasons": [
+          "단원·성취기준·성취수준 머리글·항목 근거 제외",
+          "원문 제목 셀 미확정",
+          "행·열·셀 소유 범위 미입증"
+        ],
+        "title": ""
+      }
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "before": [
+        {
+          "item_id": "item_4db051c20ed2ee459f3ea3e090335a63a00f843f5bf5e145b2a881b7260bb5a8",
+          "school": "두루중학교",
+          "filename": "2026학년도 2학기 교과별 교수학습 및 평가 운영 계획(개인정보비식별화)/[1학년]2026학년도 1학년 2학기 과학과 평가계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/세종특별자치시/9300173/f1a70f560b2b8b4e8f23572d1f235404a90edffd7aa0923f43fc359ba5709bd3_2026학년도_2학기_교과별_교수학습_및_평가_운영_계획_개인정보비식별화.zip",
+          "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/child_a559579f11c51f37203fb8d97075944abc632682943d4e54f37162c710178074.json",
+          "grade": 1,
+          "semester": 2,
+          "layout_position": {
+            "table": 4,
+            "row": null,
+            "col": null
+          },
+          "locator": {
+            "start": 9960,
+            "end": 18080,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "단원명"
+        }
+      ],
+      "after": {
+        "item_id": "item_3d9fd1ad37456453f99046d402866d77afda290b10245620054dcc46a3b0cdf8",
+        "school": "두루중학교",
+        "filename": "2026학년도 2학기 교과별 교수학습 및 평가 운영 계획(개인정보비식별화)/[1학년]2026학년도 1학년 2학기 과학과 평가계획.hwp",
+        "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-3-dev2/세종특별자치시/9300173/f1a70f560b2b8b4e8f23572d1f235404a90edffd7aa0923f43fc359ba5709bd3_2026학년도_2학기_교과별_교수학습_및_평가_운영_계획_개인정보비식별화.zip",
+        "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/child_a559579f11c51f37203fb8d97075944abc632682943d4e54f37162c710178074.json",
+        "grade": 1,
+        "semester": 2,
+        "layout_position": {
+          "table": 4,
+          "row": null,
+          "col": null
+        },
+        "locator": {
+          "start": 9960,
+          "end": 18080,
+          "offset_unit": "unicode_codepoint",
+          "end_exclusive": true,
+          "converter": "kordoc"
+        },
+        "candidate_role": "general_standards",
+        "extraction_status": "review",
+        "review_reasons": [
+          "단원·성취기준·성취수준 머리글·항목 근거 제외",
+          "원문 제목 셀 미확정",
+          "행·열·셀 소유 범위 미입증"
+        ],
+        "title": ""
+      }
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "before": [
+        {
+          "item_id": "item_d0677eceb75458f0cdad0fd9133f87c07a2c4fad5f93e5c51d302eb5d664ca19",
+          "school": "아름중학교",
+          "filename": "2026학년도 1학년 1학기 교수학습 및 평가 운영 계획(안)(한문, 도덕 수정).hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/세종특별자치시/9300116/912bff6f1739536fc857495e7b70f2ec360b90335124089f3498e06c60cb485f_2026학년도_1학년_1학기_교수학습_및_평가_운영_계획_안_한문_도덕_수정.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/912bff6f1739536fc857495e7b70f2ec360b90335124089f3498e06c60cb485f.json",
+          "grade": 1,
+          "semester": 1,
+          "layout_position": {
+            "table": 60,
+            "row": null,
+            "col": null
+          },
+          "locator": {
+            "start": 122349,
+            "end": 131294,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "단원"
+        }
+      ],
+      "after": {
+        "item_id": "item_746bd04618aef226310b233735531418e5ee05b14f134dafc6578f915ac9e5c6",
+        "school": "아름중학교",
+        "filename": "2026학년도 1학년 1학기 교수학습 및 평가 운영 계획(안)(한문, 도덕 수정).hwp",
+        "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/세종특별자치시/9300116/912bff6f1739536fc857495e7b70f2ec360b90335124089f3498e06c60cb485f_2026학년도_1학년_1학기_교수학습_및_평가_운영_계획_안_한문_도덕_수정.hwp",
+        "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/912bff6f1739536fc857495e7b70f2ec360b90335124089f3498e06c60cb485f.json",
+        "grade": 1,
+        "semester": 1,
+        "layout_position": {
+          "table": 60,
+          "row": null,
+          "col": null
+        },
+        "locator": {
+          "start": 122349,
+          "end": 131294,
+          "offset_unit": "unicode_codepoint",
+          "end_exclusive": true,
+          "converter": "kordoc"
+        },
+        "candidate_role": "general_standards",
+        "extraction_status": "review",
+        "review_reasons": [
+          "단원·성취기준·성취수준 머리글·항목 근거 제외",
+          "원문 제목 셀 미확정",
+          "행·열·셀 소유 범위 미입증"
+        ],
+        "title": ""
+      }
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "before": [
+        {
+          "item_id": "item_5955660cb497d838dc3609d829c24573eace86eb644e4bceeb717ef38a9de47a",
+          "school": "아름중학교",
+          "filename": "2026학년도 2학년 1학기 교수학습 및 평가 운영 계획(안)(도덕 수정).hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/세종특별자치시/9300116/9bd94577b2e79b45d32b4ba10dd7778a4ffa354f241b7dbfbffcab1c8b2dfd0c_2026학년도_2학년_1학기_교수학습_및_평가_운영_계획_안_도덕_수정.hwp",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/9bd94577b2e79b45d32b4ba10dd7778a4ffa354f241b7dbfbffcab1c8b2dfd0c.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 62,
+            "row": null,
+            "col": null
+          },
+          "locator": {
+            "start": 129709,
+            "end": 138256,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "단원"
+        }
+      ],
+      "after": {
+        "item_id": "item_16389f716efeb3bbbd2303d17be30b4e5b21b91696b803504bd1f27a3e36931e",
+        "school": "아름중학교",
+        "filename": "2026학년도 2학년 1학기 교수학습 및 평가 운영 계획(안)(도덕 수정).hwp",
+        "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/세종특별자치시/9300116/9bd94577b2e79b45d32b4ba10dd7778a4ffa354f241b7dbfbffcab1c8b2dfd0c_2026학년도_2학년_1학기_교수학습_및_평가_운영_계획_안_도덕_수정.hwp",
+        "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/9bd94577b2e79b45d32b4ba10dd7778a4ffa354f241b7dbfbffcab1c8b2dfd0c.json",
+        "grade": 2,
+        "semester": 1,
+        "layout_position": {
+          "table": 62,
+          "row": null,
+          "col": null
+        },
+        "locator": {
+          "start": 129709,
+          "end": 138256,
+          "offset_unit": "unicode_codepoint",
+          "end_exclusive": true,
+          "converter": "kordoc"
+        },
+        "candidate_role": "general_standards",
+        "extraction_status": "review",
+        "review_reasons": [
+          "단원·성취기준·성취수준 머리글·항목 근거 제외",
+          "원문 제목 셀 미확정",
+          "행·열·셀 소유 범위 미입증"
+        ],
+        "title": ""
+      }
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "before": [
+        {
+          "item_id": "item_49f68fd8d0c7c1707e640fb79aae6eb3ee29a537a823a6a7006c36f398edefc7",
+          "school": "두루중학교",
+          "filename": "2026학년도 1학기 교과별 교수학습 및 평가 운영 계획(수정)/2026학년도 1학년 1학기 과학과 평가계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/세종특별자치시/9300173/de4bf9d702ba2868708a2c05563df7caa7b806aafd9e21798b23a950fbab4fe4_2026학년도_1학기_교과별_교수학습_및_평가_운영_계획_수정.zip",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/child_68efcb48dcaca1efc52118b4063db9ea57d66d2763d9bdd14f042e27ff3fb1af.json",
+          "grade": 1,
+          "semester": 1,
+          "layout_position": {
+            "table": 5,
+            "row": null,
+            "col": null
+          },
+          "locator": {
+            "start": 9624,
+            "end": 15688,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "단원명"
+        }
+      ],
+      "after": {
+        "item_id": "item_b27eb04a0cacc004b49d9e8871f052a33ec7ed5e00db5719c669062439c63fe8",
+        "school": "두루중학교",
+        "filename": "2026학년도 1학기 교과별 교수학습 및 평가 운영 계획(수정)/2026학년도 1학년 1학기 과학과 평가계획.hwp",
+        "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/세종특별자치시/9300173/de4bf9d702ba2868708a2c05563df7caa7b806aafd9e21798b23a950fbab4fe4_2026학년도_1학기_교과별_교수학습_및_평가_운영_계획_수정.zip",
+        "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/child_68efcb48dcaca1efc52118b4063db9ea57d66d2763d9bdd14f042e27ff3fb1af.json",
+        "grade": 1,
+        "semester": 1,
+        "layout_position": {
+          "table": 5,
+          "row": null,
+          "col": null
+        },
+        "locator": {
+          "start": 9624,
+          "end": 15688,
+          "offset_unit": "unicode_codepoint",
+          "end_exclusive": true,
+          "converter": "kordoc"
+        },
+        "candidate_role": "general_standards",
+        "extraction_status": "review",
+        "review_reasons": [
+          "단원·성취기준·성취수준 머리글·항목 근거 제외",
+          "원문 제목 셀 미확정",
+          "행·열·셀 소유 범위 미입증"
+        ],
+        "title": ""
+      }
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "before": [
+        {
+          "item_id": "item_9d6dae64d3e534481bfda4540eddf99bc0a3ba6c4b73dd6b97aef7bd6a80b988",
+          "school": "두루중학교",
+          "filename": "2026학년도 1학기 교과별 교수학습 및 평가 운영 계획(수정)/2026학년도 2학년 1학기 과학과 평가계획.hwp",
+          "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/세종특별자치시/9300173/de4bf9d702ba2868708a2c05563df7caa7b806aafd9e21798b23a950fbab4fe4_2026학년도_1학기_교과별_교수학습_및_평가_운영_계획_수정.zip",
+          "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/child_711c8466cdeac2bc6bfbd0123f9f322c31d95991fc4dfd137d415597be7bf000.json",
+          "grade": 2,
+          "semester": 1,
+          "layout_position": {
+            "table": 5,
+            "row": null,
+            "col": null
+          },
+          "locator": {
+            "start": 10077,
+            "end": 18869,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidate_role": "performance",
+          "extraction_status": "bounded",
+          "review_reasons": [],
+          "title": "단원명"
+        }
+      ],
+      "after": {
+        "item_id": "item_3db19b4f40567c215c15622633164948275b99444f8033a555afbfe164dd90a9",
+        "school": "두루중학교",
+        "filename": "2026학년도 1학기 교과별 교수학습 및 평가 운영 계획(수정)/2026학년도 2학년 1학기 과학과 평가계획.hwp",
+        "original_path": "data/raw/schoolinfo/4ga_rounds/2026-round-1-dev2/세종특별자치시/9300173/de4bf9d702ba2868708a2c05563df7caa7b806aafd9e21798b23a950fbab4fe4_2026학년도_1학기_교과별_교수학습_및_평가_운영_계획_수정.zip",
+        "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/child_711c8466cdeac2bc6bfbd0123f9f322c31d95991fc4dfd137d415597be7bf000.json",
+        "grade": 2,
+        "semester": 1,
+        "layout_position": {
+          "table": 5,
+          "row": null,
+          "col": null
+        },
+        "locator": {
+          "start": 10077,
+          "end": 18869,
+          "offset_unit": "unicode_codepoint",
+          "end_exclusive": true,
+          "converter": "kordoc"
+        },
+        "candidate_role": "general_standards",
+        "extraction_status": "review",
+        "review_reasons": [
+          "단원·성취기준·성취수준 머리글·항목 근거 제외",
+          "원문 제목 셀 미확정",
+          "행·열·셀 소유 범위 미입증"
+        ],
+        "title": ""
+      }
+    }
+  ]
+}

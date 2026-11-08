@@ -77,7 +77,8 @@ def test_pdf_title_and_score_in_same_cell_stays_raw_and_requires_review():
     ])
     item = extract(text)[0]
     assert item["extraction_status"] == "review"
-    assert item["fields"]["title"]["value"] == "합성 물질 탐구 영역 만점 30"
+    assert item["fields"]["title"]["value"] == "원자 모형 탐구"
+    assert item["fields"]["assessment_area"]["value"] == "합성 물질 탐구 영역 만점 30"
     assert item["fields"]["score"]["value"] == ""
     assert "제목 셀에 필드 라벨 혼입·경계 미확정" in item["review_reasons"]
 

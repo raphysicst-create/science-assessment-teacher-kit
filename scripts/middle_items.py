@@ -19,7 +19,7 @@ else:
     from middle_segments import digest_id, text_locator, visible
     from middle_subjects import classify_subject, table_spans
 
-RULE_VERSION = "middle-items-v5"
+RULE_VERSION = "middle-items-v6"
 IDENTITY_VERSION = "middle-items-v2"  # Field-only changes retain source identities.
 FIELDS = (
     "title",
@@ -54,18 +54,27 @@ LABELS = {
     "평가제목": "title",
     "고사명/평가과제명": "task",
     "횟수/영역": "assessment_area",
+    "영역및방법": "area_method",
+    "방법·영역": "area_method",
+    "평가방법(과제명)": "task",
+    "평가방법/과제명": "task",
+    "평가횟수": "frequency",
     "과제번호": "task_no",
     "평가방법": "method",
     "평가유형": "method",
     "관련단원": "unit",
+    "단원명": "unit",
+    "단원": "unit",
     "평가주체": "evaluator",
     "평가방식": "organization",
     "평가시기": "timing",
+    "평가시기/횟수": "timing",
     "시기": "timing",
     "만점": "score",
     "영역만점": "score",
     "평가만점": "score",
     "영역별만점": "score",
+    "만점점수": "score",
     "배점": "points",
     "세부배점": "points",
     "기본점수": "base_score",
@@ -73,8 +82,10 @@ LABELS = {
     "비율": "weight",
     "영역별반영비율": "weight",
     "영역반영비율": "weight",
+    "세부반영비율": "weight",
     "성취기준": "standards",
     "교육과정성취기준": "standards",
+    "관련성취기준": "standards",
     "평가준거성취기준": "criteria",
     "채점기준": "rubric",
     "평가기준": "rubric",
@@ -84,9 +95,17 @@ LABELS = {
     "학년": "grade",
     "학기": "semester",
     "성취기준별성취수준": "levels",
+    "성취수준": "levels",
 }
 TITLE_ROLES = {"title", "task", "task_no", "assessment_area"}
-TASK_NO_RE = re.compile(r"(?:실험|서[·ㆍ･・]?논술형?|서술형|논술형|과제|탐구)\s*\d+")
+TASK_NO_RE = re.compile(
+    r"(?:(?:수행\s*평가|실험|서[·ㆍ･・]?논술형?|서술형|논술형|과제|탐구)\s*\d+"
+    r"|\d+\s*(?:차|회)|[①-⑳])"
+)
+AREA_TITLE_RE = re.compile(
+    r"(?:실험(?:[·ㆍ･‧]실습)?|탐구(?:활동)?|(?:실험|탐구)\s*보고서|실험\s*탐구|서[·ㆍ･‧]?논술형?"
+    r"|서술형|논술형|구술[·ㆍ･‧]?발표|발표|보고서|프로젝트|포트폴리오)(?:\s*평가)?"
+)
 CODE_RE = re.compile(
     r"\[\s*9\s*과\s*(\d{2})\s*-\s*(\d{2})\s*\]"
     r"(?:\s*[~∼～–]\s*(?:\[\s*9\s*과\s*(\d{2})\s*-\s*)?(\d{2})\s*\]?)?"
@@ -97,7 +116,7 @@ METHOD_BOX_RE = re.compile(BOX_RE.pattern + r"|\[[^\[\]\r\n]{0,5}\]|[\uFFFD\uF00
 NUMERIC_FIELDS = {"score", "points", "weight", "essay_weight"}
 COMPOUND_NUMBER_RE = re.compile(
     r"\s*(?:\d+(?:\.\d+)?\s*점)?(?:\s|<br\s*/?>)*"
-    r"(?:\(\s*\d+(?:\.\d+)?\s*%\s*\))?\s*",
+    r"(?:\(\s*\d+(?:\.\d+)?\s*[%％]\s*\))?\s*",
     re.I,
 )
 FIELD_STATUSES = ("present", "source_absent", "unconfirmed", "conflict")
@@ -117,7 +136,7 @@ def label_role(text: str) -> str | None:
         return "score_weight"
     if "반영비율" in key and re.search(r"논술", key):
         return "essay_weight"
-    key = re.sub(r"\((?:점|(?:100)?%|퍼센트)\)", "", key)
+    key = re.sub(r"\((?:점|(?:100)?[%％]|퍼센트)\)", "", key)
     return LABELS.get(key)
 
 
@@ -130,7 +149,7 @@ def title_gate(value: str) -> dict:
         or re.search(r"성취수준|성취기준|수행평가\s*(?:세부|운영|계획)|결시|전입생", value)
         or re.search(r"수\s*있다\.?$|한다\.?$|하십시오|다음\s*과제|유의사항", value)
         or re.fullmatch(
-            r"[\d.]+\s*(?:점|%|학년|학기)?|[ABCDE]|수행평가|정기시험|중간고사|기말고사", value
+            r"[\d.]+\s*(?:점|[%％]|학년|학기)?|[ABCDE]|수행평가|정기시험|중간고사|기말고사", value
         )
         or "[9" in value
         or BOX_RE.search(value)
@@ -143,6 +162,20 @@ def title_gate(value: str) -> dict:
         "specificity_score": 0 if rejected else 1 if numbered or method_like else 2,
         "reason": "구조어·운영문·성취수준·장문 지시" if rejected else "원문 제목 셀",
     }
+
+
+def title_content_role(value: str, source_role: str) -> str:
+    """Use literal activity/category/number content before the source label."""
+    if TASK_NO_RE.fullmatch(value) or source_role == "task_no":
+        return "task_no"
+    if AREA_TITLE_RE.fullmatch(value):
+        return "assessment_area"
+    if re.search(
+        r"하기|만들기|쓰기|보고서|관찰|측정|분류|설계|설명|비교|관계|원리"
+        r"|모형|특징|적용|법칙", value
+    ):
+        return "task"
+    return "task" if source_role in {"task", "title"} else "assessment_area"
 
 
 def source_tables(text: str) -> list[dict]:
@@ -217,16 +250,19 @@ def source_tables(text: str) -> list[dict]:
 
 def evidence(cell: dict, conversion: dict, header: dict | None = None) -> dict:
     loc = text_locator(cell["start"], cell["end"], conversion)
-    loc.update({k: cell[k] for k in ("table", "row", "col") if k in cell})
+    loc.update({k: cell[k] for k in ("table", "row", "col", "rowspan", "colspan") if k in cell})
     result = {"raw": cell["raw"], "text": cell["text"], "locator": loc}
     if cell.get("source_cell_proof"):
         result["source_cell_proof"] = cell["source_cell_proof"]
+    if cell.get("shared_columns"):
+        result["shared_columns"] = cell["shared_columns"]
+        result["sharing_basis"] = "원문 colspan 병합셀·열 범위 공통값"
     if header:
         result["header_raw"] = header["raw"]
         result["header_locator"] = text_locator(header["start"], header["end"], conversion)
         result["header_unit"] = (
             "%"
-            if "%" in header["text"]
+            if re.search(r"[%％]", header["text"])
             else ("점" if re.search(r"\(\s*점\s*\)", header["text"]) else "")
         )
     return result
@@ -331,7 +367,7 @@ def numeric_spans(name: str, obs: dict) -> list[dict]:
         return [obs]
     unit = "%" if name == "weight" else "점"
     # A compound header can span two rows, one containing points and one percent.
-    pattern = re.compile(r"\d+(?:\.\d+)?\s*" + unit)
+    pattern = re.compile(r"\d+(?:\.\d+)?\s*" + (r"[%％]" if unit == "%" else unit))
     if not COMPOUND_NUMBER_RE.fullmatch(obs["raw"]):
         return [obs]
     return [
@@ -360,11 +396,11 @@ def field_value(name: str, observations: list[dict]) -> dict:
     for obs in observations:
         value = obs["text"]
         if name in NUMERIC_FIELDS:
-            numeric = re.fullmatch(r"\s*(\d+(?:\.\d+)?)\s*(점|%)?\s*", value)
+            numeric = re.fullmatch(r"\s*(\d+(?:\.\d+)?)\s*(점|[%％])?\s*", value)
             obs["value_unit"] = numeric[2] or "" if numeric else ""
             if numeric:
                 expected_unit = "%" if name in {"weight", "essay_weight"} else "점"
-                units = {u for u in (numeric[2], obs.get("header_unit")) if u}
+                units = {u.replace("％", "%") for u in (numeric[2], obs.get("header_unit")) if u}
                 if units - {expected_unit}:
                     obs["normalization_status"] = "unit_conflict"
                     result["reason"] = "원문 값·머리글 단위 충돌"
@@ -418,6 +454,8 @@ def new_structure(table: dict, cells: list[dict], claims: dict, layout: str) -> 
 
 
 def candidate_role(structure: dict, tables: list[dict], text: str) -> tuple[str, str]:
+    if structure.get("candidate_role") in {"teaching_plan", "general_standards"}:
+        return structure["candidate_role"], structure["role_basis"]
     if structure["layout"] in {"row", "column", "form"}:
         return "performance", "수행평가 그룹 또는 항목 라벨 구조"
     number = structure["table"]
@@ -440,6 +478,27 @@ def candidate_role(structure: dict, tables: list[dict], text: str) -> tuple[str,
     if any(v in {"성취기준", "성취기준별성취수준", "성취수준"} for v in labels[:4]):
         return "general_standards", "일반 성취기준·수준 머리글, 항목별 연결 근거 없음"
     return "other", "표 역할 미확인"
+
+
+def teaching_table(table: dict) -> bool:
+    """Header structure establishes teaching context, including repeated headers."""
+    for row in table["rows"]:
+        labels = [re.sub(r"\s+", "", c["text"]) for c in row]
+        unit = any("단원명" in v for v in labels)
+        schedule = any(re.search(r"시수|누계|^월$|^주$|^시기$", v) for v in labels)
+        linkage = any(re.search(r"수업.*평가.*연계|수업방법|교수.*학습.*방법", v) for v in labels)
+        if unit and (schedule or linkage) or linkage and any(
+            label_role(v) in {"method", "standards"} for v in labels
+        ):
+            return True
+    return False
+
+
+def standards_table(table: dict) -> bool:
+    return any(
+        {"unit", "standards", "levels"} <= {label_role(c["text"]) for c in row}
+        for row in table["rows"]
+    )
 
 
 def field_status(field: dict) -> str:
@@ -655,110 +714,103 @@ def row_structures(table: dict) -> list[dict]:
 
 
 def column_structures(table: dict, section: dict) -> list[dict]:
-    """Only columns explicitly covered by a 수행평가 group are assessment items."""
-    groups = [c for c in table["cells"] if c["text"] == "수행평가"]
-    if not groups:
-        return []
+    """The explicit performance group licenses leaf columns, never exam columns."""
+    groups = [c for c in table["cells"] if re.sub(r"\s+", "", c["text"]) == "수행평가"]
     output = []
+    grade_cells = [
+        c for c in table["cells"] if re.fullmatch(r"[123]학년", c["text"].replace(" ", ""))
+    ]
+    matching_grades = [c for c in grade_cells if c["text"].startswith(str(section["grade"]))]
+    if grade_cells and not matching_grades:
+        return []
     for group in groups:
+        headers = [c for c in table["cells"] if c["col"] + c["colspan"] <= group["col"]]
+        combined = any(
+            re.sub(r"\s+", "", c["text"]) in {"학기영역", "시기/영역"} for c in headers
+        )
         for col in range(group["col"], group["col"] + group["colspan"]):
-            column = [table["grid"].get((r, col)) for r in range(len(table["rows"]))]
-            column = list({c["start"]: c for c in column if c and c is not group}.values())
-            title_headers = [
-                c
-                for c in table["cells"]
-                if c["col"] < group["col"] and label_role(c["text"]) in TITLE_ROLES
-            ]
-            combined_headers = [
-                c for c in table["cells"]
-                if c["col"] < group["col"]
-                and re.sub(r"\s+", "", c["text"]) == "시기/영역"
-            ]
-            combined_area = any(
-                re.sub(r"\s+", "", c["text"]) in {"학기영역", "시기/영역"}
-                for c in table["cells"]
-                if c["col"] < group["col"]
-            )
-            titles = [
-                c
-                for c in column
-                if c["row"] > group["row"]
-                and c["colspan"] == 1
-                and (
-                    any(h["row"] == c["row"] for h in title_headers)
-                    or any(h["row"] == c["row"] for h in combined_headers)
-                    or combined_area
-                    and c["row"] == group["row"] + 1
-                )
-            ]
-            title = titles[0] if titles else None
-            if title and combined_headers and (
-                not title_gate(title["text"])["accepted"]
-                or re.fullmatch(
-                    r"실험(?:[·ㆍ･]실습)?|서술[·ㆍ･]?논술|구술[·ㆍ･]?발표|프로젝트|포트폴리오",
-                    re.sub(r"\s+", "", title["text"]),
-                )
-            ):
-                title = None
-            grade_cells = [
-                c for c in table["cells"] if re.fullmatch(r"[123]학년", c["text"].replace(" ", ""))
-            ]
-            matching_grades = [
-                c for c in grade_cells if c["text"].startswith(str(section["grade"]))
-            ]
-            if grade_cells and not matching_grades:
+            column = list({
+                c["start"]: c for (r, ccol), c in table["grid"].items()
+                if ccol == col and (r > group["row"] or matching_grades)
+                and c is not group
+            }.values())
+            if not column:
                 continue
-            anchor = matching_grades[0] if matching_grades else title or column[0]
+            claims, shared = defaultdict(list), []
+            for cell in column:
+                if cell["row"] <= group["row"]:
+                    continue
+                left = sorted(
+                    (h for h in headers if h["row"] <= cell["row"] < h["row"] + h["rowspan"]),
+                    key=lambda h: h["col"],
+                )
+                labeled = [h for h in left if label_role(h["text"])]
+                header = labeled[-1] if labeled else None
+                role = label_role(header["text"]) if header else None
+                if role == "weight" and any(
+                    re.fullmatch(r"서[·ㆍ･・]?논술형?|논술형", re.sub(r"\s+", "", h["text"]))
+                    for h in left
+                ):
+                    role = "essay_weight"
+                if role == "area_method":
+                    role = "method" if AREA_TITLE_RE.fullmatch(cell["text"]) else "assessment_area"
+                # A method/type header spanning two rows supplies a type first,
+                # followed by the literal task in the next row of that column.
+                if role == "method" and title_gate(cell["text"])["accepted"]:
+                    if title_content_role(cell["text"], "assessment_area") == "task":
+                        role = "task"
+                    elif header["row"] != cell["row"]:
+                        continue
+                if role is None and combined:
+                    if cell["row"] == group["row"] + 1 or any(
+                        re.sub(r"\s+", "", h["text"]) == "시기/영역"
+                        and h["row"] == cell["row"] for h in left
+                    ):
+                        if not (AREA_TITLE_RE.fullmatch(cell["text"]) and any(
+                            re.sub(r"\s+", "", h["text"]) == "시기/영역" for h in left
+                        )):
+                            role, header = "assessment_area", group
+                    elif any(
+                        t["rowspan"] == 1 and cell["row"] == t["row"] + 1
+                        for t, _ in claims.get("assessment_area", [])
+                    ):
+                        claims["method"].append((cell, group))
+                        role, header = "timing", group
+                if not role:
+                    continue
+                if cell["colspan"] > 1:
+                    shared.append((role, cell, header))
+                    # Aggregated numeric values cannot be allocated to items.
+                    if role in NUMERIC_FIELDS | {"score_weight"}:
+                        continue
+                    # Never inherit a value spanning outside the performance group.
+                    if not (group["col"] <= cell["col"] and
+                            cell["col"] + cell["colspan"] <= group["col"] + group["colspan"]):
+                        continue
+                    cell = {**cell, "shared_columns": list(
+                        range(cell["col"], cell["col"] + cell["colspan"])
+                    )}
+                claims[role].append((cell, header))
+            title_cells = [c for role in TITLE_ROLES for c, _ in claims.get(role, [])]
+            anchor = matching_grades[0] if matching_grades else (
+                title_cells[0] if title_cells else column[0]
+            )
             if not section["locator"]["start"] <= anchor["start"] < section["locator"]["end"]:
                 continue
-            claims = defaultdict(list)
-            if title:
-                claims["assessment_area"].append((title, group))
-            shared = []
-            for cell in column:
-                if cell is title or cell["row"] <= group["row"]:
-                    continue
-                left = [c for c in table["rows"][cell["row"]] if c["col"] < group["col"]]
-                # Only numeric rowspans are in this work package. Inheriting a
-                # method label can misread a following teacher/subject row.
-                inherited = [
-                    c for (r, col), c in table["grid"].items()
-                    if r == cell["row"] and col < group["col"]
-                    and label_role(c["text"]) in {"score_weight", "score", "weight", "essay_weight"}
-                ]
-                left = sorted({c["start"]: c for c in inherited + left}.values(),
-                              key=lambda c: c["col"])
-                headers = [h for h in left if label_role(h["text"])]
-                if headers:
-                    header = headers[-1]
-                    role = label_role(header["text"])
-                    essay_headers = [h for h in left if re.fullmatch(
-                        r"서[·ㆍ･・]?논술형?|논술형", re.sub(r"\s+", "", h["text"])
-                    )]
-                    if role == "weight" and essay_headers:
-                        role, header = "essay_weight", essay_headers[-1]
-                    if cell["colspan"] == 1:
-                        claims[role].append((cell, header))
-                    else:
-                        shared.append((role, cell, header))
-                elif (
-                    combined_area and title and title["rowspan"] == 1
-                    and cell["row"] == title["row"] + 1 and cell["colspan"] == 1
-                ):
-                    claims["method"].append((cell, group))
-                    claims["timing"].append((cell, group))
             structure = new_structure(table, column, claims, "column")
-            structure["anchor"] = anchor
-            structure["column"] = col
-            structure["shared_fields"] = shared
+            structure.update(anchor=anchor, column=col, shared_fields=shared)
+            # Column ownership is explicit even when merged title cells overlap.
+            structure["group"] = group
             output.append(structure)
     return output
 
 
 def task_number(structure: dict) -> str:
-    for role in ("task_no", "task", "title"):
+    for role in ("task_no", "task", "title", "assessment_area"):
         for cell, _ in structure["claims"].get(role, []):
-            if TASK_NO_RE.fullmatch(cell["text"]):
+            if TASK_NO_RE.fullmatch(cell["text"]) or (
+                role == "task_no" and re.fullmatch(r"\d+", cell["text"])
+            ):
                 return cell["text"]
     return ""
 
@@ -928,7 +980,7 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
             compound = role == "score_weight" or (
                 role in {"score", "weight"}
                 and "점" in cell["raw"]
-                and "%" in cell["raw"]
+                and re.search(r"[%％]", cell["raw"])
                 and COMPOUND_NUMBER_RE.fullmatch(cell["raw"])
             )
             if compound:
@@ -937,17 +989,30 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
                 observations["weight"].append(dict(obs))
             else:
                 observations[field].append(obs)
-    title = None
-    title_role = None
-    for role in ("title", "assessment_area", "task", "task_no"):
+    title_candidates = []
+    for role in ("task", "title", "assessment_area", "task_no"):
         for cell, header in claims.get(role, []):
             if title_gate(cell["text"])["accepted"]:
-                title, title_role = evidence(cell, conversion, header), role
-                break
-        if title:
-            break
+                content_role = title_content_role(cell["text"], role)
+                title_candidates.append((content_role, cell, header, role))
+    title = None
+    title_role = None
+    if title_candidates:
+        title_role, cell, header, source_role = min(
+            title_candidates, key=lambda c: ("task", "assessment_area", "task_no").index(c[0])
+        )
+        title = evidence(cell, conversion, header)
     if title:
-        observations["title"] = [title]
+        observations["title"] = [
+            evidence(c, conversion, h) for content, c, h, role in title_candidates
+            if content == title_role and role == source_role
+        ]
+    identity_title = next(
+        (
+            c for role in ("title", "assessment_area", "task", "task_no")
+            for c, _ in claims.get(role, []) if title_gate(c["text"])["accepted"]
+        ), None,
+    )
     fields = {name: field_value(name, obs) for name, obs in observations.items()}
     checks = [
         row
@@ -1014,7 +1079,7 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
         section.get("semester"),
         fields["task_no"]["value"],
         anchor["start"],
-        title["locator"]["start"] if title else left,
+        identity_title["start"] if identity_title else left,
         structure.get("row"),
         structure.get("column"),
         IDENTITY_VERSION,
@@ -1062,6 +1127,8 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
         },
         "boundary_evidence": {
             "section_locator": section["locator"],
+            "performance_group": evidence(structure["group"], conversion)
+            if structure.get("group") else None,
             "appendix": section.get("appendix_boundary_evidence"),
             "grade_anchor": evidence(structure["anchor"], conversion)
             if structure.get("anchor")
@@ -1088,6 +1155,7 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
             {
                 "field": role,
                 **evidence(c, conversion, h),
+                "shared_columns": list(range(c["col"], c["col"] + c["colspan"])),
                 "reason": "다항목 병합셀 공통값·항목별 배분 불가",
             }
             for role, c, h in structure["shared_fields"]
@@ -1102,16 +1170,32 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
 def ownership_errors(items: list[dict]) -> list[dict]:
     owners = defaultdict(set)
     field_names = defaultdict(set)
+    invalid_shared = []
     for item in items:
         if item.get("candidate_role") == "summary_duplicate" and item.get("identity_relation"):
             continue  # Alias of its detail, not an independent source owner.
         for name, field in item["fields"].items():
             for obs in field["evidence"]:
                 loc = obs["locator"]
+                if obs.get("shared_columns") and any(
+                    s["locator"]["start"] <= loc["start"] <= loc["end"] <= s["locator"]["end"]
+                    and s.get("shared_columns") == obs["shared_columns"]
+                    and item["layout_position"]["col"] in s["shared_columns"]
+                    and s["shared_columns"] == list(range(
+                        loc["col"], loc["col"] + loc.get("colspan", 1)
+                    )) and loc.get("colspan", 1) > 1
+                    for s in item["shared_fields"]
+                ):
+                    continue
+                if obs.get("shared_columns"):
+                    invalid_shared.append({
+                        "field": [name], "start": loc["start"], "end": loc["end"],
+                        "item_ids": [item["item_id"]], "reason": "병합셀 공유 범위 미입증",
+                    })
                 key = (item["document_id"], item["child_id"], loc["start"], loc["end"])
                 owners[key].add(item["item_id"])
                 field_names[key].add(name)
-    return [
+    return invalid_shared + [
         {"field": sorted(field_names[key]), "start": key[2], "end": key[3], "item_ids": sorted(ids)}
         for key, ids in owners.items()
         if len(ids) > 1
@@ -1145,6 +1229,17 @@ def extract_middle_items(
             }
             structure = new_structure(table, [cell], defaultdict(list), "text_candidate")
             structure["review_reasons"].append("중첩·불완전 표 구조 미확정")
+            structures.append(structure)
+            continue
+        if teaching_table(table) or standards_table(table):
+            role, basis = (
+                ("teaching_plan", "단원·일정 또는 수업·평가 연계 머리글·방법은 참고")
+                if teaching_table(table) else
+                ("general_standards", "단원·성취기준·성취수준 머리글·항목 근거 제외")
+            )
+            structure = new_structure(table, table["cells"], defaultdict(list), "unlinked_table")
+            structure.update(candidate_role=role, role_basis=basis)
+            structure["review_reasons"].append(basis)
             structures.append(structure)
             continue
         columns = column_structures(table, section)
@@ -1191,10 +1286,6 @@ def extract_middle_items(
                     structure["review_reasons"].append(
                         "동일 과제번호 상세표와 동일성·연속성 확인 필요"
                     )
-    if any(s["layout"] == "form" for s in structures):
-        for structure in structures:
-            if structure["layout"] == "column":
-                structure["review_reasons"].append("요약표·상세표 항목 동일성 미확정")
     occupied = [(t["start"], t["end"]) for t in tables]
     # Flat PDF labels and hints locate candidates only. Do not infer cell edges.
     pattern = re.compile(r"(?m)^\s*(?:수행\s*과제|평가\s*영역(?:명)?|평가\s*과제)\s*[:：]?\s*$")

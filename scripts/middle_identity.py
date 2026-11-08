@@ -6,6 +6,11 @@ import copy
 import re
 from collections import defaultdict
 
+if __package__:
+    from .middle_items import AREA_TITLE_RE, TASK_NO_RE
+else:
+    from middle_items import AREA_TITLE_RE, TASK_NO_RE
+
 
 def compact(value):
     return re.sub(r"\s+", "", str(value))
@@ -19,10 +24,10 @@ def title_key(value):
 
 def titles(item):
     keys = set()
-    for name in ("title", "task_text"):
+    for name in ("title", "task_text", "assessment_area"):
         value = item["fields"][name]["value"]
         for v in value if isinstance(value, list) else [value]:
-            if v:
+            if v and not AREA_TITLE_RE.fullmatch(v) and not TASK_NO_RE.fullmatch(v):
                 keys.add(title_key(v))
     return keys
 
@@ -56,6 +61,8 @@ def independent_matches(a, b):
 
 
 def equal_value(name, a, b):
+    if name == "title":
+        return title_key(a) == title_key(b)
     if name == "standards":
         return set(a) == set(b)
     if name == "method":
@@ -75,10 +82,21 @@ def merge_pair(summary, detail, proof):
     summary["role_basis"] = proof["basis"]
     for item in (summary, detail):
         item["identity_relation"] = proof
+    resolved = {
+        "요약표·상세표 항목 동일성 미확정",
+        "동일 과제번호 상세표와 동일성·연속성 확인 필요",
+    }
+    summary["review_reasons"] = [r for r in summary["review_reasons"] if r not in resolved]
+    if not summary["review_reasons"]:
+        summary["extraction_status"] = "bounded"
     # Source headings describe different concepts (number/area/task), and
     # rubric/elements may intentionally be abbreviated in summaries. Preserve
     # their source observations, without claiming that these scopes are equal.
-    comparable = {"score", "points", "weight", "essay_weight", "timing", "standards", "method"}
+    comparable = {
+        "score", "points", "weight", "essay_weight", "timing", "standards", "method", "task_no"
+    }
+    if summary.get("title_role") == detail.get("title_role"):
+        comparable.add("title")
     for name, target in detail["fields"].items():
         source = summary["fields"][name]
         snapshots = [
@@ -162,6 +180,10 @@ def reconcile_items(items):
             same_title = bool(titles(summary) & titles(detail))
             if not unique_number and not (same_title and len(matched) >= 2):
                 if same_title:
+                    summary["extraction_status"] = "review"
+                    reason = "요약표·상세표 항목 동일성 미확정"
+                    if reason not in summary["review_reasons"]:
+                        summary["review_reasons"].append(reason)
                     summary.setdefault("identity_review", []).append(
                         {
                             "detail_item_id": detail["item_id"],
@@ -191,6 +213,8 @@ def reconcile_items(items):
             sum(s is summary for s, _, _ in edges) != 1
             or sum(d is detail for _, d, _ in edges) != 1
         ):
+            summary["extraction_status"] = "review"
+            summary["review_reasons"].append("요약표·상세표 동일성 다중 대응·확정 보류")
             summary.setdefault("identity_review", []).append(
                 {"reason": "동일성 다중 대응·확정 보류"}
             )
