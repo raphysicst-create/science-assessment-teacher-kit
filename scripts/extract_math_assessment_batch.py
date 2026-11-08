@@ -61,7 +61,7 @@ def pdf_conversion_status(page_count: int, textless_pages: int) -> str:
     return "partial_image" if textless_pages else "ok"
 
 
-def convert_pdf(path: Path) -> dict:
+def convert_pdf(path: Path, *, conversion_only: bool = False) -> dict:
     """Read every page. Table/cell counts are unknown for this text-layer reader."""
     try:
         import fitz
@@ -75,20 +75,24 @@ def convert_pdf(path: Path) -> dict:
                 text = page.get_text("text")
                 has_image = bool(page.get_image_info())
                 texts.append(text)
-                method_rows.extend(pdf_method_rows(page, number))
+                if not conversion_only:
+                    method_rows.extend(pdf_method_rows(page, number))
                 pages.append(
                     {
                         "page": number,
                         **text_metrics(text),
                         "textless": not text.strip(),
                         "has_raster_image": has_image,
+                        **({"text": text} if conversion_only else {}),
                     }
                 )
-            if __package__:
-                from .middle_physical import pdf_surfaces
-            else:
-                from middle_physical import pdf_surfaces
-            surfaces = pdf_surfaces(document)
+            surfaces = []
+            if not conversion_only:
+                if __package__:
+                    from .middle_physical import pdf_surfaces
+                else:
+                    from middle_physical import pdf_surfaces
+                surfaces = pdf_surfaces(document)
         text = "\n\n".join(texts)
         textless = sum(page["textless"] for page in pages)
         return {
@@ -148,6 +152,7 @@ def table_metrics(value: object) -> tuple[int, int]:
 
 def convert_kordoc(
     path: Path, kordoc: Path, cwd: Path, pdf_observation: dict | None = None,
+    *, conversion_only: bool = False,
 ) -> dict:
     with tempfile.TemporaryDirectory(prefix="math_plan_batch_") as temp:
         output = Path(temp) / "parsed.json"
@@ -189,7 +194,9 @@ def convert_kordoc(
             coverage = {}
             status = "ok" if len(text.strip()) >= 300 else "short"
             if path.suffix.lower() == ".pdf":
-                observed = pdf_observation if pdf_observation is not None else convert_pdf(path)
+                observed = pdf_observation if pdf_observation is not None else convert_pdf(
+                    path, conversion_only=conversion_only,
+                )
                 status = observed["conversion_status"]
                 if status == "failed":
                     status = "coverage_unknown"
@@ -207,7 +214,7 @@ def convert_kordoc(
                 "image_page_count": None, "table_count": tables, "cell_count": cells,
                 "warnings": parsed.get("warnings", []), **coverage,
                 "method_rows": structured_method_rows(text, parsed["blocks"])
-                if path.suffix.lower() == ".pdf" else [],
+                if path.suffix.lower() == ".pdf" and not conversion_only else [],
             }
         except (OSError, subprocess.TimeoutExpired, ValueError, KeyError, TypeError) as exc:
             return failed_conversion("kordoc", exc)
@@ -232,21 +239,28 @@ def source_provenance(path: Path, source: dict | None = None) -> dict:
 
 def extract_document(
     path: Path, kordoc: Path, cwd: Path, source: dict | None = None,
-    *, pdf_converter: str = "pymupdf",
+    *, pdf_converter: str = "pymupdf", conversion_only: bool = False,
 ) -> dict:
     """Safe reproduction with additive quality metadata and child provenance.
 
     extract_status keeps the legacy ok/short/failed vocabulary. conversion_status
     distinguishes PDF coverage and ZIP partial results. Neither certifies layout.
+    conversion_only bypasses physical/item/method interpretation and retains
+    per-page PDF text for independent gold labeling.
     """
     if pdf_converter not in {"pymupdf", "kordoc"}:
         raise ValueError(f"unknown PDF converter: {pdf_converter}")
     provenance = source_provenance(path, source)
     if path.suffix.lower() == ".zip":
-        result = extract_zip(path, kordoc, cwd, pdf_converter=pdf_converter)
+        result = extract_zip(
+            path, kordoc, cwd, pdf_converter=pdf_converter, conversion_only=conversion_only,
+        )
     elif path.suffix.lower() == ".pdf":
-        result = convert_pdf(path)
-        structured = convert_kordoc(path, kordoc, cwd, pdf_observation=result)
+        result = convert_pdf(path, conversion_only=True) if conversion_only else convert_pdf(path)
+        structured = convert_kordoc(
+            path, kordoc, cwd, pdf_observation=result,
+            **({"conversion_only": True} if conversion_only else {}),
+        )
         source_provenance(path, {"sha256": provenance["sha256"]})
         if pdf_converter == "kordoc":
             if structured["conversion_status"] != "failed":
@@ -254,7 +268,7 @@ def extract_document(
                     **structured, "pymupdf": result,
                     "method_check_comparison": compare_method_rows(
                         result, structured, provenance["sha256"],
-                    ),
+                    ) if not conversion_only else [],
                     "table_structure": "html_or_markdown" if structured["table_count"] else (
                         "not_detected"
                     ),
@@ -286,7 +300,9 @@ def extract_document(
             if result["conversion_status"] == "failed":
                 result["conversion_status"] = "coverage_unknown"
     else:
-        result = convert_kordoc(path, kordoc, cwd)
+        result = convert_kordoc(
+            path, kordoc, cwd, **({"conversion_only": True} if conversion_only else {}),
+        )
     status = result["conversion_status"]
     legacy = "short" if status in {
         "partial", "partial_image", "image_only", "coverage_unknown",
@@ -299,6 +315,7 @@ def extract_document(
 
 def extract_zip(
     path: Path, kordoc: Path, cwd: Path, *, pdf_converter: str = "pymupdf",
+    conversion_only: bool = False,
 ) -> dict:
     children = []
     archive_error = None
@@ -318,7 +335,10 @@ def extract_zip(
                     target = Path(temp) / f"{index:05}{Path(info.filename).suffix.lower()}"
                     try:
                         target.write_bytes(archive.read(info))
-                        child = extract_document(target, kordoc, cwd, pdf_converter=pdf_converter)
+                        child = extract_document(
+                            target, kordoc, cwd, pdf_converter=pdf_converter,
+                            **({"conversion_only": True} if conversion_only else {}),
+                        )
                     except (
                         OSError, RuntimeError, ValueError, NotImplementedError, zipfile.BadZipFile,
                     ) as exc:
