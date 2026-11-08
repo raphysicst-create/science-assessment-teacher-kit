@@ -192,3 +192,15 @@
 - 라벨 스키마 `data/reference/gold_label_schema.json` sha256 `38e1b3125065cd8789083cbee82bacfb3f0878c4d1bf25482c00a19ad7c7db3b`
 - 원문 묶음 177문서(원문 84개, ZIP 9개를 자식 102개로 풀어 씀), 원문 사본 84개.
 - 1차 생성물은 Python 3.12 `mkdtemp` 접근 제한 때문에 사용자 계정이 읽을 수 없어 다시 만들었다. 옛 생성물은 `data/.gold-before-acl-fix/`에 남아 있다(Codex 샌드박스 계정만 접근, 삭제 정책 거부).
+
+## 1차 라벨 제출·봉인 (2026-11-08)
+
+| 라벨 파일 | sha256 | 문서 줄 | 항목 |
+|---|---|---:|---:|
+| `data/gold/labels/claude.jsonl`(a+b) | `921a62497e59616d9c69593c19883b7793bcdd497499cb4eafeb7d00df5c3e23` | 177 | 83 |
+| `data/gold/labels/astra.jsonl`(a+b) | `c19f3fce82f17a61fbf7c4afe00fbb39028c184b48991e404dafdd6c55d79a52` | 177 | 85 |
+
+- 묶음 파일: claude_a `506e7dd8…`, claude_b `eb6a3552…`, astra_a `e13c73e5…`, astra_b `7b4b970d…`. 두 벌 모두 검사기 오류 0.
+- Claude 라벨러: 이 대화를 모르는 새 서브에이전트 2회(묶음 a·b 순차, 모델 상속). astra: `gpt-6-astra` 추론 ultra 2회 병렬.
+- 계획서와 다른 점: astra는 결과 파일을 직접 써야 해서 `read-only` 대신 `workspace-write`로 돌렸다. 끝난 뒤 봉인 해시 265건을 다시 대조해 원문·묶음·지침·스키마가 바뀌지 않았음을 확인했다(불일치 0).
+- 라벨러가 보고한 지침의 빈칸(성취수준 표를 채점기준으로 볼지, 진도표 시기, 평가기준 열별 비율, 평가 미실시 자유학기 영역, 제목 표기 차이 등)은 지침 v1을 고치지 않고 불일치 판정 단계에서 규칙으로 정한다.
