@@ -17,6 +17,7 @@ from extract_math_assessment_batch import (
     extract_document,
     source_provenance,
 )
+from middle_rounds import roster_codes, roster_path
 from middle_segments import (
     RULE_VERSION,
     STATUS_DEFINITIONS,
@@ -29,18 +30,23 @@ from middle_segments import (
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def audit_document(source: dict, root: Path, output: Path) -> dict:
+def audit_document(source: dict, root: Path, output: Path, *, reuse: bool = False) -> dict:
     path = root / source["saved_path"]
     provenance = source_provenance(path, source)
     if path.stat().st_size != source["size_bytes"]:
         raise ValueError(f"original size mismatch: {path}")
     kordoc = root / "node_modules/kordoc/dist/cli.js"
-    if path.suffix.lower() in {".pdf", ".zip"}:
+    text_path = output / f"{source['sha256']}.json"
+    if reuse and text_path.exists():
+        conversion = json.loads(text_path.read_text(encoding="utf-8"))
+        if conversion.get("sha256", source["sha256"]) != source["sha256"]:
+            raise ValueError("cached conversion source hash mismatch")
+    elif path.suffix.lower() in {".pdf", ".zip"}:
         conversion = extract_document(path, kordoc, root, source, pdf_converter="kordoc")
     else:
         conversion = convert_kordoc(path, kordoc, root)
-    text_path = output / f"{source['sha256']}.json"
-    atomic_json(text_path, conversion)
+    if not reuse or not text_path.exists():
+        atomic_json(text_path, conversion)
     document = {
         **provenance,
         "document_id": document_identifier(source["sha256"]),
@@ -84,6 +90,40 @@ def audit_document(source: dict, root: Path, output: Path) -> dict:
             raise ValueError(f"original changed: {path}")
     document["summary"] = summarize_segments(document["segments"])
     return document
+
+
+def independent_documents(document: dict, root: Path) -> list[dict]:
+    """Materialize each ZIP member in its own coordinate system for S4–S6."""
+    if not document["children"]:
+        return [document]
+    conversion_path = root / document["converted_path"]
+    conversion = json.loads(conversion_path.read_text(encoding="utf-8"))
+    result = []
+    for child in conversion["children"]:
+        identity = child_identifier(document["sha256"], child)
+        path = conversion_path.with_name(identity + ".json")
+        atomic_json(path, child)
+        segments = segment_document(document["source"], child, child)
+        for segment in segments:
+            segment["document_id"] = identity
+            segment["locator"]["text_field"] = "text"
+        result.append({
+            **document, "document_id": identity, "child_id": identity,
+            "parent_document_id": document["document_id"],
+            "parent_sha256": document["sha256"], "sha256": child.get("sha256"),
+            "member_index": child["member_index"], "member_name": child["member_name"],
+            "source": {**document["source"], "candidate_name": child["member_name"]},
+            "edition": {**document["edition"], "candidate_name": child["member_name"]},
+            "converted_path": path.relative_to(root).as_posix(),
+            "text": child["text"],
+            "text_sha256": hashlib.sha256(child["text"].encode("utf-8")).hexdigest(),
+            "conversion_status": child["conversion_status"],
+            "converter": child.get("converter"),
+            "format": Path(child["member_name"]).suffix.lower().lstrip("."),
+            "children": [], "segments": segments,
+            "summary": summarize_segments(segments),
+        })
+    return result
 
 
 def science_heading_candidates(documents: list[dict]) -> list[dict]:
@@ -160,7 +200,7 @@ def markdown_report(report: dict) -> str:
         "본문 머리글·표 셀·다음 구조 머리글로 경계를 잡았다. 경계는 candidate 상태이며 "
         "공통 표 머리글은 학년 구간 앞에 있을 수 있다. subject_heading_locator로 함께 찾는다.",
         "동일 과목에서 학년이 반복되면 위치별 별도 구간으로 남긴다. "
-        "중계의 교수학습부·평가부 반복 때문에 후보 수가 학년 수보다 클 수 있다.",
+        "교수학습부·평가부가 반복되면 후보 수가 학년 수보다 클 수 있다.",
         "목차·표지·미식별 머리글 구간도 누락시키지 않고 검토 상태로 기록한다. "
         "과학 후보 목록은 머리글의 문자열 포함 검사 결과다.",
         "판본은 공백·페이지 번호 줄을 제거한 본문이 같을 때만 자동 대체한다. "
@@ -314,6 +354,8 @@ def markdown_report(report: dict) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--round-key", default="2026-round-3")
+    parser.add_argument("--roster", type=Path)
+    parser.add_argument("--reuse-conversions", action="store_true")
     args = parser.parse_args()
     if not all(c.isalnum() or c == "-" for c in args.round_key):
         parser.error("round key must contain only letters, digits and hyphens")
@@ -332,6 +374,9 @@ def main() -> None:
         with (ROOT / "data/rosters/middle-gold10.csv").open(encoding="utf-8-sig") as handle:
             schools = {r["school_code"] for r in csv.DictReader(handle)}
         sources = {p: r for p, r in sources.items() if str(r["school_code"]) in schools}
+    else:
+        schools = roster_codes(roster_path(ROOT, args.round_key, args.roster))
+        sources = {p: r for p, r in sources.items() if str(r["school_code"]) in schools}
     excluded = [
         r for r in sources.values()
         if not args.round_key.endswith("-gold")
@@ -343,7 +388,8 @@ def main() -> None:
     texts.mkdir(parents=True, exist_ok=True)
     documents = []
     for index, source in enumerate(plans, 1):
-        documents.append(audit_document(source, ROOT, texts))
+        document = audit_document(source, ROOT, texts, reuse=args.reuse_conversions)
+        documents.extend(independent_documents(document, ROOT))
         print(f"segments={index}/{len(plans)} {source['school_name']}", flush=True)
     comparisons = resolve_versions(documents)
     for d in documents:
@@ -353,6 +399,7 @@ def main() -> None:
         "schema_version": 1,
         "rule_version": RULE_VERSION,
         "round": args.round_key,
+        "roster": roster_path(ROOT, args.round_key, args.roster).relative_to(ROOT).as_posix(),
         "status_definitions": STATUS_DEFINITIONS,
         "documents": documents,
         "excluded_non_plan": excluded,

@@ -20,12 +20,14 @@ from middle_items import (
     visible,
 )
 from middle_pdf_cells import verified_title_splits
+from middle_rounds import roster_codes, roster_path
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def audit(input_path: Path) -> dict:
+def audit(input_path: Path, roster: Path | None = None) -> dict:
     subjects = json.loads(input_path.read_text(encoding="utf-8"))
+    schools = roster_codes(roster) if roster else None
     round_key = subjects["round"]
     s4 = json.loads((ROOT / f"data/derived/segments/{round_key}.json").read_text(encoding="utf-8"))
     parents = {s["segment_id"]: s for d in s4["documents"] for s in d["segments"]}
@@ -45,12 +47,18 @@ def audit(input_path: Path) -> dict:
     items, documents, excluded, sections = [], [], [], []
     trace_errors = []
     for document in subjects["documents"]:
-        chosen = round_key != "2026-round-3" or not (
-            document["school"] == "영통중학교" and "(최종)" not in document["filename"]
+        if schools is not None and str(document["school_code"]) not in schools:
+            continue
+        # Preserve the original development edition choice using edition metadata,
+        # rather than an institution-specific condition. Other rounds keep all.
+        has_final = any(
+            d["school_code"] == document["school_code"] and "(최종)" in d["filename"]
+            for d in subjects["documents"]
         )
+        chosen = round_key != "2026-round-3" or not has_final or "(최종)" in document["filename"]
         documents.append({**document, "development_selected": chosen})
         if not chosen:
-            excluded.append({**document, "reason": "총괄 결정·영통 (최종) 판으로 개발"})
+            excluded.append({**document, "reason": "기존 개발 회차의 (최종) 판 선택 유지"})
             continue
         conversion = json.loads((ROOT / document["converted_path"]).read_text(encoding="utf-8"))
         source_document = source_documents[document["converted_path"]]
@@ -194,7 +202,7 @@ def audit(input_path: Path) -> dict:
         "scope": (
             "정답 10개교 전체 보존 문서의 S5 target 중1·중2. S9 공식 측정용"
             if round_key.endswith("-gold") else
-            "개발 12개교 S5 target 중1·중2. 영통 (최종) 판. 원문 정답 대조 전"
+            "개발 명단의 S5 target 중1·중2. 기존 회차 최종 판 선택 유지. 원문 정답 대조 전"
         ),
         "public_eligible": False,
         "documents": documents,
@@ -331,7 +339,7 @@ def markdown(report: dict) -> str:
         "",
         "Unicode 문자 오프셋은 변경하지 않은 S4 변환본 기준이며 끝은 미포함이다. "
         "표·행·열은 0부터 센다. 원문 경로·해시·판본·S4/S5 ID는 JSON에 보존한다. "
-        "신목형 표는 같은 표의 학년 행이 입증한 머리글을 S4 경계 밖에서도 참조한다.",
+        "학년별 표는 같은 표의 학년 행이 입증한 머리글을 S4 경계 밖에서도 참조한다.",
         "",
         "PDF는 kordoc HTML/Markdown 표를 사용한다. 평문 폴백은 행·열 경계를 "
         "입증하지 못해 검토 후보로 남긴다. "
@@ -455,7 +463,7 @@ def markdown(report: dict) -> str:
             "",
             "1. 항목 구조 미식별·변환 셀 병합 의심 구간. 실제 항목 수·경계를 전수 대조한다.",
             "2. 번호형 요약행·상세표 중복 후보와 연결되지 않은 루브릭·성취수준 표.",
-            "3. S5 경계 미확정 공주중1, 신목중 학년 경계 및 공통 비율 병합셀.",
+            "3. S5 경계 미확정 구간, 학년 경계 및 공통 비율 병합셀.",
             "4. 체크 선택지·기타 괄호·코드 범위와 빈 필드. 빈값은 원문 미기재를 입증하지 않는다.",
             "",
             "## 원문 대조 확인표",
@@ -533,10 +541,14 @@ def markdown(report: dict) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--round-key", default="2026-round-3")
+    parser.add_argument("--roster", type=Path)
     parser.add_argument("--input", type=Path)
     parser.add_argument("--output-dir", type=Path, default=ROOT / "data/derived/items")
     args = parser.parse_args()
-    report = audit(args.input or ROOT / f"data/derived/subjects/{args.round_key}.json")
+    report = audit(
+        args.input or ROOT / f"data/derived/subjects/{args.round_key}.json",
+        roster_path(ROOT, args.round_key, args.roster),
+    )
     atomic_write(
         args.output_dir / f"{args.round_key}.json",
         json.dumps(report, ensure_ascii=False, indent=2) + "\n",

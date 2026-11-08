@@ -10,6 +10,7 @@ import tempfile
 from collections import Counter
 from pathlib import Path
 
+from middle_rounds import roster_codes, roster_path
 from middle_subjects import (
     MIDDLE_SUBJECT_PREFIXES,
     RULE_VERSION,
@@ -21,8 +22,11 @@ from middle_subjects import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
-STATES = ("target", "other", "mixed", "unknown")
-STATE_LABELS = {"target": "과학", "other": "타 교과", "mixed": "혼합", "unknown": "미확정"}
+STATES = ("target", "other", "mixed", "unknown", "image_only")
+STATE_LABELS = {
+    "target": "과학", "other": "타 교과", "mixed": "혼합", "unknown": "미확정",
+    "image_only": "읽을 수 없음",
+}
 REASONS = {
     "target_and_other_codes": "과학·타 교과 코드 동시 존재",
     "unknown_code": "공통 사전에 없는 접두",
@@ -52,12 +56,27 @@ def atomic_write(path: Path, text: str) -> None:
         Path(temporary).unlink(missing_ok=True)
 
 
-def audit(input_path: Path) -> dict:
+def document_status(decisions: list[dict], conversion: dict) -> str:
+    if conversion.get("conversion_status") == "image_only":
+        return "image_only"
+    states = {s["status"] for s in decisions}
+    if "mixed" in states or {"target", "other"} <= states:
+        return "mixed"
+    for state in ("target", "other"):
+        if state in states:
+            return state
+    return "unknown"
+
+
+def audit(input_path: Path, roster: Path | None = None) -> dict:
     s4 = json.loads(input_path.read_text(encoding="utf-8"))
+    schools = roster_codes(roster) if roster else None
     prefix_counts = Counter()
     sections, excluded_examples, documents = [], [], []
     pre_grade_conflicts = []
     for document in s4["documents"]:
+        if schools is not None and str(document["source"]["school_code"]) not in schools:
+            continue
         path = ROOT / document["converted_path"]
         conversion = json.loads(path.read_text(encoding="utf-8"))
         text = conversion["text"]
@@ -65,7 +84,8 @@ def audit(input_path: Path) -> dict:
         if text_sha != document["text_sha256"]:
             raise ValueError(f"S4 text hash mismatch: {path}")
         physical_path = None
-        if Path(document["original_path"]).suffix.lower() == ".pdf":
+        if (Path(document["original_path"]).suffix.lower() == ".pdf"
+                and conversion.get("conversion_status") != "image_only"):
             from middle_physical import add_column_geometry, physical_index
 
             physical = physical_index(text, conversion, ROOT / document["original_path"])
@@ -106,6 +126,15 @@ def audit(input_path: Path) -> dict:
             "text_sha256": text_sha,
             "version_status": document.get("version_status", "single"),
             "physical_path": physical_path,
+            "child_id": document.get("child_id"),
+            "parent_document_id": document.get("parent_document_id"),
+            "conversion_status": conversion.get("conversion_status"),
+            "status": document_status(decisions, conversion),
+            "grades": sorted({s["grade"] for s in document["segments"] if s["grade"]}),
+            "review_reason": (
+                "읽을 수 없음(image_only): PDF 글자층 없음. OCR·원문 확인 필요"
+                if conversion.get("conversion_status") == "image_only" else None
+            ),
         }
         documents.append(metadata)
         for section in decisions:
@@ -116,6 +145,8 @@ def audit(input_path: Path) -> dict:
                 {
                     **section,
                     **metadata,
+                    "status": section["status"],
+                    "document_status": metadata["status"],
                     "science_candidate": science_candidate(section),
                     "tables": tables,
                 }
@@ -187,10 +218,11 @@ def audit(input_path: Path) -> dict:
         "schema_version": 1,
         "rule_version": RULE_VERSION,
         "round": s4["round"],
+        "roster": str(roster) if roster else s4.get("roster"),
         "scope": (
             "정답 10개교, 보존된 전체 문서의 S4 중1·중2 구간. 판본 합산"
             if s4["round"].endswith("-gold") else
-            "개발 12개교, S4 중1·중2 구간. 판본을 합산하며 원문 항목 수와 구별"
+            "개발 명단의 S4 중1·중2 구간. 판본을 합산하며 원문 항목 수와 구별"
         ),
         "curriculum_status": "미확정. S7에서 검토",
         "public_eligible": False,
@@ -208,6 +240,7 @@ def audit(input_path: Path) -> dict:
         "grade_unresolved": unresolved_grades,
         "s4_incomplete_source_count": len(s4["incomplete_sources"]),
         "summary": {
+            "document_states": dict(Counter(d["status"] for d in documents)),
             "schools": len(school_grades) // 2,
             "documents": len(documents),
             "observed_prefix_types": len(prefix_counts),
@@ -251,11 +284,12 @@ def markdown(report: dict) -> str:
     lines = [
         "# 중학교 과목 판정 실측 S5",
         "",
-        "개발 12개교의 중1·중2 S4 구간을 대상으로 한 비공개 검토 자료다. "
+        f"개발 {report['summary']['schools']}개교의 중1·중2 S4 구간을 대상으로 한다. "
+        "비공개 검토 자료이며 "
         "교육과정·단원·항목 제목·배점은 확정하지 않는다.",
         "",
         "구간 수는 구조 구간과 코드 앵커 후보 수이며 평가 항목 수와 다르다. "
-        "영통중 수정·최종 두 판을 각각 센다. 학년 미확정·중3은 본 집계에서 격리했다.",
+        "수정·최종 판본을 각각 센다. 학년 미확정·중3은 본 집계에서 격리했다.",
         "",
         "위치는 변경하지 않은 변환본의 Unicode 문자 오프셋이며 끝은 미포함이다. "
         "원문 파일 경로와 변환본 해시는 JSON 문서 목록에 있다. "
@@ -306,8 +340,8 @@ def markdown(report: dict) -> str:
             "",
             "1. 머리글·코드 충돌, 혼합 표, 머리글 없는 과학 코드 앵커의 시작·끝.",
             "2. 미확정 접두와 학년 미확정 구간. 전 교과 코드 부록·요약표 여부도 확인.",
-            "3. 신목중·중계중 무코드 과학 구간과 다음 기술·가정 머리글 경계.",
-            "4. 영통중 두 판의 대체 관계와 S4 판본 충돌. 과목 판정으로 공개를 승인하지 않음.",
+            "3. 무코드 과학 구간과 다음 기술·가정 머리글 경계.",
+            "4. 복수 판본의 대체 관계와 S4 판본 충돌. 과목 판정으로 공개를 승인하지 않음.",
             "",
             "## 혼합·미확정 구간 전부",
             "",
@@ -462,10 +496,12 @@ def review_row(section: dict) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--round-key", default="2026-round-3")
+    parser.add_argument("--roster", type=Path)
     parser.add_argument("--input", type=Path)
     parser.add_argument("--output-dir", type=Path, default=ROOT / "data/derived/subjects")
     args = parser.parse_args()
-    report = audit(args.input or ROOT / f"data/derived/segments/{args.round_key}.json")
+    roster = roster_path(ROOT, args.round_key, args.roster)
+    report = audit(args.input or ROOT / f"data/derived/segments/{args.round_key}.json", roster)
     atomic_write(
         args.output_dir / f"{args.round_key}.json",
         json.dumps(report, ensure_ascii=False, indent=2) + "\n",

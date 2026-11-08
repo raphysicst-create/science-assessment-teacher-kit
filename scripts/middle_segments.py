@@ -13,7 +13,8 @@ import re
 from collections import defaultdict
 from difflib import SequenceMatcher
 
-RULE_VERSION = "middle-segments-v2"
+RULE_VERSION = "middle-segments-v3"
+IDENTITY_VERSION = "middle-segments-v2"  # Unchanged source spans retain their IDs.
 STATUS_DEFINITIONS = {
     "normal": "중1·중2 학년 식별. 과목·교육과정·공개 여부는 후속 단계 검토",
     "grade3_quarantined": "중3 구간 격리",
@@ -32,10 +33,28 @@ GRADE_RE = re.compile(
     r"(?P<explicit>[123])(?!\d)(?:\s*학년)?|(?<!\d)(?P<bare>[123])\s*학년|"
     r"(?<!\d)\(\s*(?P<parenthesized>[123])\s*\)\s*학년"
 )
+COMBINED_GRADE_RE = re.compile(r"([123])\s*[·ㆍ,.~∼와및/-]\s*([123])\s*학년")
 SEMESTER_RE = re.compile(r"(?<!\d)\(?\s*([12])\s*\)?\s*학기")
 PLAN_RE = re.compile(r"교수\s*[·ㆍ‧･⦁⋅․-]?\s*학습|평가\s*(?:운영|세부)?\s*계획|교과\s*교육\s*과정")
 CELL_RE = re.compile(r"<(?:td|th)\b[^>]*>(.*?)</(?:td|th)>", re.S | re.I)
 FREE_RE = re.compile(r"자유\s*학기|과정\s*중심\s*평가|(?<![A-Za-z])P(?![A-Za-z])")
+SUBJECT_LABELS = (
+    "국어", "도덕", "사회", "역사", "수학", "과학", "기술·가정", "기술가정",
+    "정보", "체육", "음악", "미술", "영어", "한문", "진로와직업", "보건", "환경",
+    "생활중국어", "생활일본어",
+)
+
+
+def short_subject_key(clean: str) -> str | None:
+    """A complete subject label, optionally with grade/term and a section number."""
+    label = re.sub(r"^(?:\d+[.)]|[ⅠⅡⅢⅣⅤ]+[.)]?|[가-하][.)])\s*", "", clean)
+    label = re.sub(r"^(?:과\s*목\s*명?|교\s*과\s*목?)\s*[:：|]\s*", "", label)
+    label = re.sub(r"20\d{2}\s*학년도?", "", label)
+    label = SEMESTER_RE.sub("", label)
+    label = GRADE_RE.sub("", label)
+    label = re.sub(r"[\s\[\]()<>·ㆍ‧･⦁⋅․/•]+", "", label).removesuffix("과")
+    aliases = {re.sub(r"[·\s]", "", name): name for name in SUBJECT_LABELS}
+    return aliases.get(label)
 
 
 def digest_id(prefix: str, *parts: object) -> str:
@@ -74,6 +93,8 @@ def extract_grade_evidence(
 ) -> list[dict]:
     evidence = []
     for match in GRADE_RE.finditer(text):
+        if any(c.start() <= match.start() < c.end() for c in COMBINED_GRADE_RE.finditer(text)):
+            continue
         label = match["level"] or ""
         level = {
             "중": "middle",
@@ -118,6 +139,18 @@ def subject_heading_key(clean: str) -> str | None:
     # PDF layout can concatenate a school footer or explicit cover metadata
     # onto the title. Recognition strips these only; raw text/offsets stay intact.
     clean = re.sub(r"(?<=계획)\s*[가-힣]{2,20}중학교$", "", clean)
+    clean = re.sub(r"계획\s*서$", "계획", clean)
+    method_heading = re.fullmatch(
+        r"(.+?)\s*교수[·ㆍ‧･⦁⋅․\s-]*학습(?:\s*(?:및)?\s*평가\s*방법)?", clean,
+    )
+    if method_heading:
+        short = short_subject_key(method_heading[1])
+        if short:
+            return short
+    if clean.endswith("평가"):
+        short = short_subject_key(clean.removesuffix("평가"))
+        if short:
+            return short
     clean = re.sub(
         r"\s*대상\s*[:：]\s*[123]\s*학년(?:\s+담당\s*교사\s*[:：].*)?$", "", clean,
     )
@@ -135,12 +168,14 @@ def subject_heading_key(clean: str) -> str | None:
     if tail:
         return None
     label = clean[: plan.start()]
+    label = re.sub(r"자유\s*학기(?:제)?", "", label)
     label = re.sub(r"20\d{2}\s*(?:학년도?|년도)", "", label)
     label = SEMESTER_RE.sub("", label)
+    label = COMBINED_GRADE_RE.sub("", label)
     label = GRADE_RE.sub("", label)
     label = re.sub(r"^[\s\d|.()ⅠⅡⅢⅣⅤ\uf000]+", "", label)
-    label = label.replace("(", "").replace(")", "").strip()
-    if re.search(r"수행|지필|평가|영역별|비율|교과별|전과목|세부|학습|지도|및", label):
+    label = re.sub(r"[()\[\]]", "", label).strip()
+    if re.search(r"수행|지필|평가|영역별|비율|교과별|전과목|세부|학습|지도|및|학년|학기", label):
         return None
     if not re.fullmatch(r"[가-힣A-Za-z\s·ㆍ‧･⦁⋅․/•\[\]]{1,40}", label):
         return None
@@ -152,31 +187,78 @@ def metadata_events(text: str) -> tuple[list[dict], list[dict]]:
     """Use explicit school/grade/term/subject columns as cover boundaries."""
     headings, grades = [], []
     pattern = re.compile(
-        r"(?m)^\|[^\n]*학교명[^\n]*\|[^\n]*\n"
-        r"\|[ :|\-]+\n\|[^\n]*\|[^\S\n]*(?:\n|$)"
+        r"(?m)^\|[^\n]*학년[^\n]*\|[^\n]*\n"
+        r"\|[ :|\-]+\r?\n\|[^\n]*\|[^\S\n]*(?:\n|$)"
     )
     for match in pattern.finditer(text):
         lines = match.group().splitlines()
         headers = [visible(c) for c in lines[0].strip().strip("|").split("|")]
         values = [visible(c) for c in lines[2].strip().strip("|").split("|")]
-        if len(headers) != len(values) or not {"학교명", "학년", "학기", "과목"} <= set(headers):
+        subject_col = next((h for h in headers if h in {"과목", "과목명", "교과", "교과목"}), None)
+        if len(headers) != len(values) or not subject_col or "학년" not in headers:
             continue
         row = dict(zip(headers, values, strict=True))
-        if not re.fullmatch(r"[123]\s*학년", row["학년"]):
+        if not re.fullmatch(r"[123](?:\s*학년)?", row["학년"]):
             continue
-        if not re.fullmatch(r"[12]\s*학기", row["학기"]):
+        if "학기" in row and not re.fullmatch(r"[12]\s*학기", row["학기"]):
             continue
-        if not re.fullmatch(r"[가-힣·ㆍ･\s]{1,20}", row["과목"]):
+        if not re.fullmatch(r"[가-힣A-Za-z·ㆍ･\s()‘’'\"-]{1,60}", row[subject_col]):
             continue
         headings.append({
             "start": match.start(), "end": match.end(), "raw": match.group(),
-            "key": re.sub(r"\s+", "", row["과목"]).removesuffix("과"),
+            "key": re.sub(r"\s+", "", row[subject_col]).removesuffix("과"),
+            "basis": "metadata_subject_column",
         })
-        grades.extend(
-            {**g, "role": "subject_heading", "boundary_start": match.start()}
-            for g in extract_grade_evidence(match.group(), "table_cell", "middle", match.start())
-        )
+        cells = list(re.finditer(r"(?<=\|)[^|]*(?=\|)", lines[2]))
+        cell = cells[headers.index("학년")]
+        value_start = (match.start()
+                       + sum(len(s) for s in match.group().splitlines(keepends=True)[:2])
+                       + cell.start())
+        raw = cell.group()
+        grades.append({"grade": int(row["학년"][0]), "source": "table_cell",
+                       "text": raw, "start": value_start, "end": value_start + len(raw),
+                       "role": "subject_heading", "boundary_start": match.start()})
     return headings, grades
+
+
+def subject_column_events(text: str) -> list[dict]:
+    """Explicit subject columns delimit summary rows, never the whole document."""
+    events = []
+    # Converter tables may be HTML or contiguous Markdown rows.
+    tables = re.finditer(
+        r"<table\b[^>]*>.*?</table\s*>|(?:^[ \t]*\|[^\n]*\|[^\S\n]*(?:\n|$))+",
+        text, re.S | re.M | re.I,
+    )
+    for table in tables:
+        column = None
+        local = []
+        rows = list(re.finditer(r"<tr\b[^>]*>.*?</tr\s*>", table.group(), re.S | re.I))
+        if not rows:
+            rows = list(re.finditer(r"(?m)^\s*\|[^\n]*\|", table.group()))
+        for row in rows:
+            cells = [visible(m[1]) for m in CELL_RE.finditer(row.group())]
+            if not cells:
+                cells = [visible(c) for c in row.group().strip().strip("|").split("|")]
+            names = [re.sub(r"\s+", "", c) for c in cells]
+            if "학년" in names and any(c in {"과목", "과목명", "교과", "교과목"} for c in names):
+                local = []
+                break
+            labels = {"교과", "교과목", "과목", "과목명"}
+            if any(c in labels for c in names):
+                column = next(i for i, c in enumerate(names) if c in labels)
+                continue
+            if column is None or column >= len(cells):
+                continue
+            key = short_subject_key(cells[column])
+            if key:
+                local.append({"start": table.start() + row.start(),
+                              "end": table.start() + row.end(), "raw": row.group(),
+                              "key": key, "basis": "subject_column"})
+        if local:
+            events.extend(local)
+            events.append({"start": table.end(), "end": table.end(), "raw": "",
+                           "key": None, "basis": "subject_table_end"})
+    return events
 
 
 def structural_events(text: str) -> tuple[list[dict], list[dict]]:
@@ -187,6 +269,21 @@ def structural_events(text: str) -> tuple[list[dict], list[dict]]:
     for line in text.splitlines(keepends=True):
         clean = visible(line)
         key = subject_heading_key(clean)
+        basis = "plan_heading"
+        # A label is accepted only as a whole line, or an explicit subject field.
+        # General prose and compound words never supply a subject boundary.
+        if not key:
+            cells = list(CELL_RE.finditer(line))
+            if len(cells) == 2 and visible(cells[0][1]) in {"교과", "교과목", "과목", "과목명"}:
+                key = short_subject_key(visible(cells[1][1]))
+                basis = "subject_column"
+            elif not cells and "|" not in clean:
+                candidate = short_subject_key(clean)
+                previous = previous_lines[-1]["clean"] if previous_lines else ""
+                # Avoid a prose line broken immediately before a subject word.
+                if candidate and (not previous or not line.strip() == candidate
+                                  or offset == 0 or text[:offset].endswith("\n\n")):
+                    key, basis = candidate, "subject_label"
         heading_start = offset
         heading_raw = line.rstrip("\r\n")
         # PDF covers can place the subject/grade and the plan title on separate
@@ -210,6 +307,7 @@ def structural_events(text: str) -> tuple[list[dict], list[dict]]:
                     "end": offset + len(line.rstrip("\r\n")),
                     "raw": heading_raw,
                     "key": key,
+                    "basis": basis,
                 }
             )
             grades.extend(
@@ -221,6 +319,12 @@ def structural_events(text: str) -> tuple[list[dict], list[dict]]:
                 )
             )
         elif CELL_RE.search(line):
+            cells = list(CELL_RE.finditer(line))
+            for first, second in zip(cells, cells[1:], strict=False):
+                if visible(first[1]) == "학년" and re.fullmatch(r"[123]", visible(second[1])):
+                    grades.append({"grade": int(visible(second[1])), "source": "table_cell",
+                                   "text": second[1], "start": offset + second.start(1),
+                                   "end": offset + second.end(1), "boundary_start": offset})
             for cell in CELL_RE.finditer(line):
                 cell_text = cell[1]
                 if re.fullmatch(
@@ -249,7 +353,11 @@ def structural_events(text: str) -> tuple[list[dict], list[dict]]:
             label = re.sub(r"^(?:대\s*상(?:\s*학년)?|학\s*년)\s*[:：]\s*", "", label)
             grade_label = re.fullmatch(r"(?:중학교\s*|중\s*)?[123]\s*(?:학년)?", label)
             overview = re.fullmatch(r"평가\s*개요\s*\(\s*[123]\s*학년\s*\)", label)
-            if grade_label or overview:
+            grade_section = re.fullmatch(
+                r"[123]\s*학년\s*(?:교수[·ㆍ\s-]*학습|성취기준별|수행평가|평가)"
+                r"[가-힣·ㆍ\s()/-]*(?:방법|계획|기준|평가|개요|학습)", label,
+            )
+            if grade_label or overview or grade_section:
                 grades.extend(
                     {**g, "role": "grade_heading", "boundary_start": offset}
                     for g in extract_grade_evidence(
@@ -259,7 +367,16 @@ def structural_events(text: str) -> tuple[list[dict], list[dict]]:
                     )
                 )
             elif line.lstrip().startswith("|"):
-                for cell in re.finditer(r"(?<=\|)[^|]*(?=\|)", line):
+                cells = list(re.finditer(r"(?<=\|)[^|]*(?=\|)", line))
+                for first, second in zip(cells, cells[1:], strict=False):
+                    if visible(first.group()) == "학년" and re.fullmatch(
+                        r"[123]", visible(second.group()),
+                    ):
+                        grades.append({"grade": int(visible(second.group())),
+                                       "source": "table_cell", "text": second.group(),
+                                       "start": offset + second.start(),
+                                       "end": offset + second.end(), "boundary_start": offset})
+                for cell in cells:
                     if re.fullmatch(r"\s*[123]\s*학년\s*", cell.group()):
                         grades.extend(
                             {**g, "boundary_start": offset}
@@ -274,11 +391,15 @@ def structural_events(text: str) -> tuple[list[dict], list[dict]]:
             previous_lines.append({"clean": clean, "start": offset})
         offset += len(line)
     metadata_heads, metadata_grades = metadata_events(text)
+    column_heads = subject_column_events(text)
+    headings = [h for h in headings if not any(
+        c["start"] == h["start"] for c in column_heads
+    )]
     grades = [g for g in grades if not any(
         h["start"] <= g["start"] < h["end"] for h in metadata_heads
     )]
     return (
-        sorted(headings + metadata_heads, key=lambda h: h["start"]),
+        sorted(headings + metadata_heads + column_heads, key=lambda h: h["start"]),
         sorted(grades + metadata_grades, key=lambda g: g["start"]),
     )
 
@@ -338,6 +459,14 @@ def segment_document(source: dict, conversion: dict, child: dict | None = None) 
     text_sha = hashlib.sha256(text.encode("utf-8")).hexdigest()
     filename = child["member_name"] if child else source["candidate_name"]
     file_grades = extract_grade_evidence(filename, "filename", "middle")
+    # A combined filename is a scope, not a single-grade contradiction.
+    combined = COMBINED_GRADE_RE.search(filename)
+    if combined:
+        file_grades = [
+            {"grade": int(combined[group]), "source": "filename", "text": combined[group],
+             "start": combined.start(group), "end": combined.end(group)}
+            for group in (1, 2)
+        ]
     headings, grade_events = structural_events(text)
     # Standalone grade chapters before the first subject establish grade-major
     # order. Subject-major documents instead reset grade at a new subject.
@@ -383,7 +512,10 @@ def segment_document(source: dict, conversion: dict, child: dict | None = None) 
                 if not text[start:end].strip():
                     continue
                 body_evidence = span["grade_evidence"] or chapter_grade
-                evidence = body_evidence + file_grades if body_evidence else file_grades
+                evidence = (
+                    body_evidence if body_evidence and combined
+                    else body_evidence + file_grades if body_evidence else file_grades
+                )
                 values = {g["grade"] for g in evidence}
                 grade = next(iter(values)) if len(values) == 1 else None
                 conflicts = len(values) > 1
@@ -481,7 +613,7 @@ def segment_document(source: dict, conversion: dict, child: dict | None = None) 
                         review_reason = "전학년 표기. 단일 학년 구간 분리 근거 미확정"
                 segment_id = digest_id(
                     "seg_",
-                    RULE_VERSION,
+                    IDENTITY_VERSION,
                     container_id,
                     text_sha,
                     conversion.get("converter"),

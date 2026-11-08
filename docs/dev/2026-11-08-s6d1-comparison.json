@@ -1,0 +1,4790 @@
+{
+  "seed": 202611081,
+  "rounds": [
+    {
+      "round": "2026-round-3",
+      "coverage_before": [
+        {
+          "school": "대치중학교",
+          "school_code": "7091427",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "대치중학교",
+          "school_code": "7091427",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "천안불당중학교",
+          "school_code": "8151010",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "천안불당중학교",
+          "school_code": "8151010",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "휘문중학교",
+          "school_code": "7091457",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "휘문중학교",
+          "school_code": "7091457",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "신목중학교",
+          "school_code": "7081502",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "신목중학교",
+          "school_code": "7081502",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "중계중학교",
+          "school_code": "7051202",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "중계중학교",
+          "school_code": "7051202",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "영통중학교",
+          "school_code": "7541037",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 6,
+          "legacy_target_sections": 6
+        },
+        {
+          "school": "영통중학교",
+          "school_code": "7541037",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "백석중학교",
+          "school_code": "7621021",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "백석중학교",
+          "school_code": "7621021",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "판교중학교",
+          "school_code": "7551159",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "판교중학교",
+          "school_code": "7551159",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "양평중학교",
+          "school_code": "7731008",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "양평중학교",
+          "school_code": "7731008",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "공주중학교",
+          "school_code": "8161006",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 5,
+          "legacy_target_sections": 5
+        },
+        {
+          "school": "공주중학교",
+          "school_code": "8161006",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "서산중학교",
+          "school_code": "8191011",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "서산중학교",
+          "school_code": "8191011",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "홍성중학교",
+          "school_code": "8261012",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "홍성중학교",
+          "school_code": "8261012",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        }
+      ],
+      "coverage_after": [
+        {
+          "school": "대치중학교",
+          "school_code": "7091427",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "대치중학교",
+          "school_code": "7091427",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "천안불당중학교",
+          "school_code": "8151010",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "천안불당중학교",
+          "school_code": "8151010",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "휘문중학교",
+          "school_code": "7091457",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "휘문중학교",
+          "school_code": "7091457",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "신목중학교",
+          "school_code": "7081502",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "신목중학교",
+          "school_code": "7081502",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "중계중학교",
+          "school_code": "7051202",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "중계중학교",
+          "school_code": "7051202",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "영통중학교",
+          "school_code": "7541037",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 6,
+          "legacy_target_sections": 6
+        },
+        {
+          "school": "영통중학교",
+          "school_code": "7541037",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "백석중학교",
+          "school_code": "7621021",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "백석중학교",
+          "school_code": "7621021",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "판교중학교",
+          "school_code": "7551159",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "판교중학교",
+          "school_code": "7551159",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "양평중학교",
+          "school_code": "7731008",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "양평중학교",
+          "school_code": "7731008",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "공주중학교",
+          "school_code": "8161006",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 5,
+          "legacy_target_sections": 5
+        },
+        {
+          "school": "공주중학교",
+          "school_code": "8161006",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "서산중학교",
+          "school_code": "8191011",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "서산중학교",
+          "school_code": "8191011",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "홍성중학교",
+          "school_code": "8261012",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 5,
+          "legacy_target_sections": 5
+        },
+        {
+          "school": "홍성중학교",
+          "school_code": "8261012",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 5,
+          "legacy_target_sections": 5
+        }
+      ],
+      "coverage_counts_before": {
+        "찾음": 24
+      },
+      "coverage_counts_after": {
+        "찾음": 24
+      },
+      "s5_before": {
+        "target": 0,
+        "other": 0,
+        "mixed": 25,
+        "unknown": 0,
+        "image_only": 0
+      },
+      "s5_after": {
+        "target": 0,
+        "other": 0,
+        "mixed": 25,
+        "unknown": 0,
+        "image_only": 0
+      },
+      "s6_before": {
+        "bounded": 55,
+        "review": 119,
+        "target_sections": 34,
+        "title_generated": 0,
+        "ownership_errors": 0,
+        "source_trace_errors": 0,
+        "field_filled": {
+          "title": 55,
+          "assessment_area": 36,
+          "task_no": 8,
+          "task_text": 32,
+          "method": 50,
+          "timing": 40,
+          "score": 37,
+          "points": 7,
+          "weight": 37,
+          "essay_weight": 21,
+          "standards": 48,
+          "rubric": 27,
+          "criteria": 8,
+          "elements": 43
+        },
+        "field_states": {
+          "title": {
+            "present": 69,
+            "source_absent": 0,
+            "unconfirmed": 105,
+            "conflict": 0
+          },
+          "assessment_area": {
+            "present": 48,
+            "source_absent": 0,
+            "unconfirmed": 125,
+            "conflict": 1
+          },
+          "task_no": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 166,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 35,
+            "source_absent": 0,
+            "unconfirmed": 139,
+            "conflict": 0
+          },
+          "method": {
+            "present": 63,
+            "source_absent": 0,
+            "unconfirmed": 110,
+            "conflict": 1
+          },
+          "timing": {
+            "present": 57,
+            "source_absent": 0,
+            "unconfirmed": 116,
+            "conflict": 1
+          },
+          "score": {
+            "present": 50,
+            "source_absent": 0,
+            "unconfirmed": 124,
+            "conflict": 0
+          },
+          "points": {
+            "present": 7,
+            "source_absent": 0,
+            "unconfirmed": 167,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 49,
+            "source_absent": 0,
+            "unconfirmed": 123,
+            "conflict": 2
+          },
+          "essay_weight": {
+            "present": 27,
+            "source_absent": 0,
+            "unconfirmed": 147,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 66,
+            "source_absent": 0,
+            "unconfirmed": 106,
+            "conflict": 2
+          },
+          "rubric": {
+            "present": 30,
+            "source_absent": 0,
+            "unconfirmed": 144,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 166,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 52,
+            "source_absent": 0,
+            "unconfirmed": 122,
+            "conflict": 0
+          }
+        },
+        "summary_duplicates": 31,
+        "performance_candidates": 76,
+        "independent_candidates": 174,
+        "bounded_field_states": {
+          "title": {
+            "present": 55,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 0
+          },
+          "assessment_area": {
+            "present": 36,
+            "source_absent": 0,
+            "unconfirmed": 19,
+            "conflict": 0
+          },
+          "task_no": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 47,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 32,
+            "source_absent": 0,
+            "unconfirmed": 23,
+            "conflict": 0
+          },
+          "method": {
+            "present": 50,
+            "source_absent": 0,
+            "unconfirmed": 5,
+            "conflict": 0
+          },
+          "timing": {
+            "present": 40,
+            "source_absent": 0,
+            "unconfirmed": 15,
+            "conflict": 0
+          },
+          "score": {
+            "present": 37,
+            "source_absent": 0,
+            "unconfirmed": 18,
+            "conflict": 0
+          },
+          "points": {
+            "present": 7,
+            "source_absent": 0,
+            "unconfirmed": 48,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 37,
+            "source_absent": 0,
+            "unconfirmed": 18,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 21,
+            "source_absent": 0,
+            "unconfirmed": 34,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 48,
+            "source_absent": 0,
+            "unconfirmed": 7,
+            "conflict": 0
+          },
+          "rubric": {
+            "present": 27,
+            "source_absent": 0,
+            "unconfirmed": 28,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 47,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 43,
+            "source_absent": 0,
+            "unconfirmed": 12,
+            "conflict": 0
+          }
+        },
+        "review_roles": {
+          "teaching_plan": 50,
+          "general_standards": 41,
+          "performance": 21,
+          "other": 2,
+          "affective": 5
+        },
+        "unlinked_table_roles": {
+          "teaching_plan": 50,
+          "general_standards": 41,
+          "affective": 5
+        },
+        "source_conflicts": 3,
+        "precision": "미측정",
+        "recall": "미측정",
+        "structural_checks_meaning": "의미 검증 아님",
+        "method_check_comparison": {
+          "documents_with_metadata": 16,
+          "documents_with_matching_text_hash": 15,
+          "all_pdf_rows": {
+            "unmapped": 1318,
+            "matched": 59
+          },
+          "item_rows": {
+            "unmapped": 34,
+            "matched": 4
+          }
+        },
+        "field_fill_rates": {
+          "title": 1.0,
+          "assessment_area": 0.6545,
+          "task_no": 0.1455,
+          "task_text": 0.5818,
+          "method": 0.9091,
+          "timing": 0.7273,
+          "score": 0.6727,
+          "points": 0.1273,
+          "weight": 0.6727,
+          "essay_weight": 0.3818,
+          "standards": 0.8727,
+          "rubric": 0.4909,
+          "criteria": 0.1455,
+          "elements": 0.7818
+        },
+        "empty_reasons": {
+          "필드 추출·원문 기재 여부 미확인": 296,
+          "다항목 병합셀 공통값·항목별 배분 불가": 9,
+          "코드 추출·원문 기재 여부 미확인": 7,
+          "체크 없음": 5,
+          "원문 값 판독·단위 확인 필요": 4
+        },
+        "empty_reasons_by_field": {
+          "title": {},
+          "assessment_area": {
+            "필드 추출·원문 기재 여부 미확인": 19
+          },
+          "task_no": {
+            "필드 추출·원문 기재 여부 미확인": 47
+          },
+          "task_text": {
+            "필드 추출·원문 기재 여부 미확인": 23
+          },
+          "method": {
+            "체크 없음": 5
+          },
+          "timing": {
+            "다항목 병합셀 공통값·항목별 배분 불가": 2,
+            "필드 추출·원문 기재 여부 미확인": 13
+          },
+          "score": {
+            "필드 추출·원문 기재 여부 미확인": 18
+          },
+          "points": {
+            "필드 추출·원문 기재 여부 미확인": 46,
+            "원문 값 판독·단위 확인 필요": 2
+          },
+          "weight": {
+            "필드 추출·원문 기재 여부 미확인": 11,
+            "다항목 병합셀 공통값·항목별 배분 불가": 7
+          },
+          "essay_weight": {
+            "필드 추출·원문 기재 여부 미확인": 32,
+            "원문 값 판독·단위 확인 필요": 2
+          },
+          "standards": {
+            "코드 추출·원문 기재 여부 미확인": 7
+          },
+          "rubric": {
+            "필드 추출·원문 기재 여부 미확인": 28
+          },
+          "criteria": {
+            "필드 추출·원문 기재 여부 미확인": 47
+          },
+          "elements": {
+            "필드 추출·원문 기재 여부 미확인": 12
+          }
+        },
+        "review_reasons": {
+          "별도 표 연결 미확정": 96,
+          "원문 제목 셀 미확정": 105,
+          "행·열·셀 소유 범위 미입증": 98,
+          "요약표·상세표 항목 동일성 미확정": 9,
+          "원문 내부 충돌 (method)": 1,
+          "원문 내부 충돌 (standards)": 2,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 2,
+          "S5 과목 경계 미확정": 1,
+          "원문 내부 충돌 (weight)": 1,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 1,
+          "동일 항목 필드 복수 관측값·확정 보류": 1
+        }
+      },
+      "s6_after": {
+        "bounded": 55,
+        "review": 119,
+        "target_sections": 42,
+        "title_generated": 0,
+        "ownership_errors": 0,
+        "source_trace_errors": 0,
+        "field_filled": {
+          "title": 55,
+          "assessment_area": 36,
+          "task_no": 8,
+          "task_text": 32,
+          "method": 50,
+          "timing": 40,
+          "score": 37,
+          "points": 7,
+          "weight": 37,
+          "essay_weight": 21,
+          "standards": 48,
+          "rubric": 27,
+          "criteria": 8,
+          "elements": 43
+        },
+        "field_states": {
+          "title": {
+            "present": 69,
+            "source_absent": 0,
+            "unconfirmed": 105,
+            "conflict": 0
+          },
+          "assessment_area": {
+            "present": 48,
+            "source_absent": 0,
+            "unconfirmed": 125,
+            "conflict": 1
+          },
+          "task_no": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 166,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 35,
+            "source_absent": 0,
+            "unconfirmed": 139,
+            "conflict": 0
+          },
+          "method": {
+            "present": 63,
+            "source_absent": 0,
+            "unconfirmed": 110,
+            "conflict": 1
+          },
+          "timing": {
+            "present": 57,
+            "source_absent": 0,
+            "unconfirmed": 116,
+            "conflict": 1
+          },
+          "score": {
+            "present": 50,
+            "source_absent": 0,
+            "unconfirmed": 124,
+            "conflict": 0
+          },
+          "points": {
+            "present": 7,
+            "source_absent": 0,
+            "unconfirmed": 167,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 49,
+            "source_absent": 0,
+            "unconfirmed": 123,
+            "conflict": 2
+          },
+          "essay_weight": {
+            "present": 27,
+            "source_absent": 0,
+            "unconfirmed": 147,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 66,
+            "source_absent": 0,
+            "unconfirmed": 106,
+            "conflict": 2
+          },
+          "rubric": {
+            "present": 30,
+            "source_absent": 0,
+            "unconfirmed": 144,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 166,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 52,
+            "source_absent": 0,
+            "unconfirmed": 122,
+            "conflict": 0
+          }
+        },
+        "summary_duplicates": 31,
+        "performance_candidates": 76,
+        "independent_candidates": 174,
+        "bounded_field_states": {
+          "title": {
+            "present": 55,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 0
+          },
+          "assessment_area": {
+            "present": 36,
+            "source_absent": 0,
+            "unconfirmed": 19,
+            "conflict": 0
+          },
+          "task_no": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 47,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 32,
+            "source_absent": 0,
+            "unconfirmed": 23,
+            "conflict": 0
+          },
+          "method": {
+            "present": 50,
+            "source_absent": 0,
+            "unconfirmed": 5,
+            "conflict": 0
+          },
+          "timing": {
+            "present": 40,
+            "source_absent": 0,
+            "unconfirmed": 15,
+            "conflict": 0
+          },
+          "score": {
+            "present": 37,
+            "source_absent": 0,
+            "unconfirmed": 18,
+            "conflict": 0
+          },
+          "points": {
+            "present": 7,
+            "source_absent": 0,
+            "unconfirmed": 48,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 37,
+            "source_absent": 0,
+            "unconfirmed": 18,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 21,
+            "source_absent": 0,
+            "unconfirmed": 34,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 48,
+            "source_absent": 0,
+            "unconfirmed": 7,
+            "conflict": 0
+          },
+          "rubric": {
+            "present": 27,
+            "source_absent": 0,
+            "unconfirmed": 28,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 47,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 43,
+            "source_absent": 0,
+            "unconfirmed": 12,
+            "conflict": 0
+          }
+        },
+        "review_roles": {
+          "teaching_plan": 50,
+          "general_standards": 41,
+          "performance": 21,
+          "other": 2,
+          "affective": 5
+        },
+        "unlinked_table_roles": {
+          "teaching_plan": 50,
+          "general_standards": 41,
+          "affective": 5
+        },
+        "source_conflicts": 3,
+        "precision": "미측정",
+        "recall": "미측정",
+        "structural_checks_meaning": "의미 검증 아님",
+        "method_check_comparison": {
+          "documents_with_metadata": 16,
+          "documents_with_matching_text_hash": 15,
+          "all_pdf_rows": {
+            "unmapped": 1318,
+            "matched": 59
+          },
+          "item_rows": {
+            "unmapped": 34,
+            "matched": 4
+          }
+        },
+        "field_fill_rates": {
+          "title": 1.0,
+          "assessment_area": 0.6545,
+          "task_no": 0.1455,
+          "task_text": 0.5818,
+          "method": 0.9091,
+          "timing": 0.7273,
+          "score": 0.6727,
+          "points": 0.1273,
+          "weight": 0.6727,
+          "essay_weight": 0.3818,
+          "standards": 0.8727,
+          "rubric": 0.4909,
+          "criteria": 0.1455,
+          "elements": 0.7818
+        },
+        "empty_reasons": {
+          "필드 추출·원문 기재 여부 미확인": 296,
+          "다항목 병합셀 공통값·항목별 배분 불가": 9,
+          "코드 추출·원문 기재 여부 미확인": 7,
+          "체크 없음": 5,
+          "원문 값 판독·단위 확인 필요": 4
+        },
+        "empty_reasons_by_field": {
+          "title": {},
+          "assessment_area": {
+            "필드 추출·원문 기재 여부 미확인": 19
+          },
+          "task_no": {
+            "필드 추출·원문 기재 여부 미확인": 47
+          },
+          "task_text": {
+            "필드 추출·원문 기재 여부 미확인": 23
+          },
+          "method": {
+            "체크 없음": 5
+          },
+          "timing": {
+            "다항목 병합셀 공통값·항목별 배분 불가": 2,
+            "필드 추출·원문 기재 여부 미확인": 13
+          },
+          "score": {
+            "필드 추출·원문 기재 여부 미확인": 18
+          },
+          "points": {
+            "필드 추출·원문 기재 여부 미확인": 46,
+            "원문 값 판독·단위 확인 필요": 2
+          },
+          "weight": {
+            "필드 추출·원문 기재 여부 미확인": 11,
+            "다항목 병합셀 공통값·항목별 배분 불가": 7
+          },
+          "essay_weight": {
+            "필드 추출·원문 기재 여부 미확인": 32,
+            "원문 값 판독·단위 확인 필요": 2
+          },
+          "standards": {
+            "코드 추출·원문 기재 여부 미확인": 7
+          },
+          "rubric": {
+            "필드 추출·원문 기재 여부 미확인": 28
+          },
+          "criteria": {
+            "필드 추출·원문 기재 여부 미확인": 47
+          },
+          "elements": {
+            "필드 추출·원문 기재 여부 미확인": 12
+          }
+        },
+        "review_reasons": {
+          "별도 표 연결 미확정": 96,
+          "원문 제목 셀 미확정": 105,
+          "행·열·셀 소유 범위 미입증": 98,
+          "요약표·상세표 항목 동일성 미확정": 9,
+          "원문 내부 충돌 (method)": 1,
+          "원문 내부 충돌 (standards)": 2,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 2,
+          "S5 과목 경계 미확정": 9,
+          "원문 내부 충돌 (weight)": 1,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 1,
+          "동일 항목 필드 복수 관측값·확정 보류": 1
+        }
+      },
+      "audit": {
+        "violations": {
+          "locator_out_of_bounds": 0,
+          "parent_text_mismatch": 0,
+          "child_identity_mismatch": 0,
+          "uncoded_without_science_heading": 0,
+          "ownership_errors": 0,
+          "source_trace_errors": 0,
+          "title_generated": 0
+        },
+        "suspected_false_positives": []
+      }
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "coverage_before": [
+        {
+          "school": "갈산중학교",
+          "school_code": "7331053",
+          "grade": 1,
+          "state": "못 찾음",
+          "reason": "학년 연결 미확정",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "갈산중학교",
+          "school_code": "7331053",
+          "grade": 2,
+          "state": "못 찾음",
+          "reason": "학년 연결 미확정",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "연평중학교",
+          "school_code": "7321079",
+          "grade": 1,
+          "state": "못 찾음",
+          "reason": "학년 연결 미확정",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "연평중학교",
+          "school_code": "7321079",
+          "grade": 2,
+          "state": "못 찾음",
+          "reason": "학년 연결 미확정",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "평동중학교",
+          "school_code": "7402283",
+          "grade": 1,
+          "state": "못 찾음",
+          "reason": "학년 연결 미확정",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "평동중학교",
+          "school_code": "7402283",
+          "grade": 2,
+          "state": "못 찾음",
+          "reason": "학년 연결 미확정",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "서강중학교",
+          "school_code": "7392190",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 17,
+          "legacy_target_sections": 17
+        },
+        {
+          "school": "서강중학교",
+          "school_code": "7392190",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 17,
+          "legacy_target_sections": 17
+        },
+        {
+          "school": "보문중학교",
+          "school_code": "7441034",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 4,
+          "legacy_target_sections": 4
+        },
+        {
+          "school": "보문중학교",
+          "school_code": "7441034",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 4,
+          "legacy_target_sections": 4
+        },
+        {
+          "school": "대전대화중학교",
+          "school_code": "7441017",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "대전대화중학교",
+          "school_code": "7441017",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "울산제일중학교",
+          "school_code": "7491165",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 8,
+          "legacy_target_sections": 8
+        },
+        {
+          "school": "울산제일중학교",
+          "school_code": "7491165",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 8,
+          "legacy_target_sections": 8
+        },
+        {
+          "school": "상북중학교",
+          "school_code": "7501037",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "상북중학교",
+          "school_code": "7501037",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "아름중학교",
+          "school_code": "9300116",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 6,
+          "legacy_target_sections": 6
+        },
+        {
+          "school": "아름중학교",
+          "school_code": "9300116",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 6,
+          "legacy_target_sections": 6
+        },
+        {
+          "school": "두루중학교",
+          "school_code": "9300173",
+          "grade": 1,
+          "state": "못 찾음",
+          "reason": "ZIP 자식 S4 좌표와 S5 부모 본문 해시 불일치",
+          "target_sections": 0,
+          "legacy_target_sections": 11
+        },
+        {
+          "school": "두루중학교",
+          "school_code": "9300173",
+          "grade": 2,
+          "state": "못 찾음",
+          "reason": "ZIP 자식 S4 좌표와 S5 부모 본문 해시 불일치",
+          "target_sections": 0,
+          "legacy_target_sections": 10
+        },
+        {
+          "school": "충주여자중학교",
+          "school_code": "8021039",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 4,
+          "legacy_target_sections": 4
+        },
+        {
+          "school": "충주여자중학교",
+          "school_code": "8021039",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 4,
+          "legacy_target_sections": 4
+        },
+        {
+          "school": "단성중학교",
+          "school_code": "8111006",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "단성중학교",
+          "school_code": "8111006",
+          "grade": 2,
+          "state": "못 찾음",
+          "reason": "학년 연결 미확정",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "순천연향중학교",
+          "school_code": "8522008",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 4,
+          "legacy_target_sections": 4
+        },
+        {
+          "school": "순천연향중학교",
+          "school_code": "8522008",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 11,
+          "legacy_target_sections": 11
+        },
+        {
+          "school": "광양마동중학교",
+          "school_code": "8552076",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 10,
+          "legacy_target_sections": 10
+        },
+        {
+          "school": "광양마동중학교",
+          "school_code": "8552076",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 11,
+          "legacy_target_sections": 11
+        },
+        {
+          "school": "장흥유치중학교",
+          "school_code": "8622007",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "장흥유치중학교",
+          "school_code": "8622007",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "흥해중학교",
+          "school_code": "8761213",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "흥해중학교",
+          "school_code": "8761213",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 11,
+          "legacy_target_sections": 11
+        },
+        {
+          "school": "청도중학교",
+          "school_code": "8911044",
+          "grade": 1,
+          "state": "읽을 수 없음",
+          "reason": "image_only: 평가계획은 있으나 글자층 없음",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "청도중학교",
+          "school_code": "8911044",
+          "grade": 2,
+          "state": "읽을 수 없음",
+          "reason": "image_only: 평가계획은 있으나 글자층 없음",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "울진중학교",
+          "school_code": "8971049",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "울진중학교",
+          "school_code": "8971049",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "오현중학교",
+          "school_code": "9296032",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 13,
+          "legacy_target_sections": 13
+        },
+        {
+          "school": "오현중학교",
+          "school_code": "9296032",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 7,
+          "legacy_target_sections": 7
+        },
+        {
+          "school": "효돈중학교",
+          "school_code": "9299012",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "효돈중학교",
+          "school_code": "9299012",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        }
+      ],
+      "coverage_after": [
+        {
+          "school": "갈산중학교",
+          "school_code": "7331053",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "갈산중학교",
+          "school_code": "7331053",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "연평중학교",
+          "school_code": "7321079",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "연평중학교",
+          "school_code": "7321079",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "평동중학교",
+          "school_code": "7402283",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "평동중학교",
+          "school_code": "7402283",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "서강중학교",
+          "school_code": "7392190",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "서강중학교",
+          "school_code": "7392190",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "보문중학교",
+          "school_code": "7441034",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 4,
+          "legacy_target_sections": 4
+        },
+        {
+          "school": "보문중학교",
+          "school_code": "7441034",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 4,
+          "legacy_target_sections": 4
+        },
+        {
+          "school": "대전대화중학교",
+          "school_code": "7441017",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "대전대화중학교",
+          "school_code": "7441017",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "울산제일중학교",
+          "school_code": "7491165",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "울산제일중학교",
+          "school_code": "7491165",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "상북중학교",
+          "school_code": "7501037",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "상북중학교",
+          "school_code": "7501037",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "아름중학교",
+          "school_code": "9300116",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "아름중학교",
+          "school_code": "9300116",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "두루중학교",
+          "school_code": "9300173",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "두루중학교",
+          "school_code": "9300173",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "충주여자중학교",
+          "school_code": "8021039",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "충주여자중학교",
+          "school_code": "8021039",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "단성중학교",
+          "school_code": "8111006",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "단성중학교",
+          "school_code": "8111006",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "순천연향중학교",
+          "school_code": "8522008",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "순천연향중학교",
+          "school_code": "8522008",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "광양마동중학교",
+          "school_code": "8552076",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "광양마동중학교",
+          "school_code": "8552076",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "장흥유치중학교",
+          "school_code": "8622007",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "장흥유치중학교",
+          "school_code": "8622007",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "흥해중학교",
+          "school_code": "8761213",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "흥해중학교",
+          "school_code": "8761213",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 11,
+          "legacy_target_sections": 11
+        },
+        {
+          "school": "청도중학교",
+          "school_code": "8911044",
+          "grade": 1,
+          "state": "읽을 수 없음",
+          "reason": "image_only: 평가계획은 있으나 글자층 없음",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "청도중학교",
+          "school_code": "8911044",
+          "grade": 2,
+          "state": "읽을 수 없음",
+          "reason": "image_only: 평가계획은 있으나 글자층 없음",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "울진중학교",
+          "school_code": "8971049",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "울진중학교",
+          "school_code": "8971049",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "오현중학교",
+          "school_code": "9296032",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "오현중학교",
+          "school_code": "9296032",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 7,
+          "legacy_target_sections": 7
+        },
+        {
+          "school": "효돈중학교",
+          "school_code": "9299012",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "효돈중학교",
+          "school_code": "9299012",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        }
+      ],
+      "coverage_counts_before": {
+        "못 찾음": 9,
+        "찾음": 29,
+        "읽을 수 없음": 2
+      },
+      "coverage_counts_after": {
+        "찾음": 38,
+        "읽을 수 없음": 2
+      },
+      "s5_before": {
+        "target": 5,
+        "other": 60,
+        "mixed": 34,
+        "unknown": 6,
+        "image_only": 0
+      },
+      "s5_after": {
+        "target": 10,
+        "other": 123,
+        "mixed": 31,
+        "unknown": 1,
+        "image_only": 3
+      },
+      "s6_before": {
+        "bounded": 36,
+        "review": 308,
+        "target_sections": 183,
+        "title_generated": 0,
+        "ownership_errors": 0,
+        "source_trace_errors": 0,
+        "field_filled": {
+          "title": 36,
+          "assessment_area": 27,
+          "task_no": 0,
+          "task_text": 9,
+          "method": 11,
+          "timing": 0,
+          "score": 1,
+          "points": 0,
+          "weight": 1,
+          "essay_weight": 0,
+          "standards": 35,
+          "rubric": 0,
+          "criteria": 0,
+          "elements": 10
+        },
+        "field_states": {
+          "title": {
+            "present": 81,
+            "source_absent": 0,
+            "unconfirmed": 263,
+            "conflict": 0
+          },
+          "assessment_area": {
+            "present": 53,
+            "source_absent": 0,
+            "unconfirmed": 272,
+            "conflict": 19
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 344,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 12,
+            "source_absent": 0,
+            "unconfirmed": 332,
+            "conflict": 0
+          },
+          "method": {
+            "present": 54,
+            "source_absent": 0,
+            "unconfirmed": 286,
+            "conflict": 4
+          },
+          "timing": {
+            "present": 16,
+            "source_absent": 0,
+            "unconfirmed": 309,
+            "conflict": 19
+          },
+          "score": {
+            "present": 18,
+            "source_absent": 0,
+            "unconfirmed": 309,
+            "conflict": 17
+          },
+          "points": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 344,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 11,
+            "source_absent": 0,
+            "unconfirmed": 316,
+            "conflict": 17
+          },
+          "essay_weight": {
+            "present": 6,
+            "source_absent": 0,
+            "unconfirmed": 338,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 70,
+            "source_absent": 0,
+            "unconfirmed": 270,
+            "conflict": 4
+          },
+          "rubric": {
+            "present": 2,
+            "source_absent": 0,
+            "unconfirmed": 342,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 344,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 14,
+            "source_absent": 0,
+            "unconfirmed": 330,
+            "conflict": 0
+          }
+        },
+        "summary_duplicates": 6,
+        "performance_candidates": 144,
+        "independent_candidates": 344,
+        "bounded_field_states": {
+          "title": {
+            "present": 36,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 0
+          },
+          "assessment_area": {
+            "present": 27,
+            "source_absent": 0,
+            "unconfirmed": 9,
+            "conflict": 0
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 36,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 9,
+            "source_absent": 0,
+            "unconfirmed": 27,
+            "conflict": 0
+          },
+          "method": {
+            "present": 11,
+            "source_absent": 0,
+            "unconfirmed": 25,
+            "conflict": 0
+          },
+          "timing": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 36,
+            "conflict": 0
+          },
+          "score": {
+            "present": 1,
+            "source_absent": 0,
+            "unconfirmed": 35,
+            "conflict": 0
+          },
+          "points": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 36,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 1,
+            "source_absent": 0,
+            "unconfirmed": 35,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 36,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 35,
+            "source_absent": 0,
+            "unconfirmed": 1,
+            "conflict": 0
+          },
+          "rubric": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 36,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 36,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 10,
+            "source_absent": 0,
+            "unconfirmed": 26,
+            "conflict": 0
+          }
+        },
+        "review_roles": {
+          "teaching_plan": 71,
+          "other": 74,
+          "performance": 108,
+          "general_standards": 55
+        },
+        "unlinked_table_roles": {
+          "teaching_plan": 71,
+          "general_standards": 55,
+          "performance": 43,
+          "other": 9
+        },
+        "source_conflicts": 5,
+        "precision": "미측정",
+        "recall": "미측정",
+        "structural_checks_meaning": "의미 검증 아님",
+        "method_check_comparison": {
+          "documents_with_metadata": 77,
+          "documents_with_matching_text_hash": 77,
+          "all_pdf_rows": {
+            "unmapped": 3136,
+            "matched": 36,
+            "conflict": 10
+          },
+          "item_rows": {
+            "unmapped": 35,
+            "matched": 1
+          }
+        },
+        "field_fill_rates": {
+          "title": 1.0,
+          "assessment_area": 0.75,
+          "task_no": 0.0,
+          "task_text": 0.25,
+          "method": 0.3056,
+          "timing": 0.0,
+          "score": 0.0278,
+          "points": 0.0,
+          "weight": 0.0278,
+          "essay_weight": 0.0,
+          "standards": 0.9722,
+          "rubric": 0.0,
+          "criteria": 0.0,
+          "elements": 0.2778
+        },
+        "empty_reasons": {
+          "필드 추출·원문 기재 여부 미확인": 348,
+          "체크 없음": 25,
+          "코드 추출·원문 기재 여부 미확인": 1
+        },
+        "empty_reasons_by_field": {
+          "title": {},
+          "assessment_area": {
+            "필드 추출·원문 기재 여부 미확인": 9
+          },
+          "task_no": {
+            "필드 추출·원문 기재 여부 미확인": 36
+          },
+          "task_text": {
+            "필드 추출·원문 기재 여부 미확인": 27
+          },
+          "method": {
+            "체크 없음": 25
+          },
+          "timing": {
+            "필드 추출·원문 기재 여부 미확인": 36
+          },
+          "score": {
+            "필드 추출·원문 기재 여부 미확인": 35
+          },
+          "points": {
+            "필드 추출·원문 기재 여부 미확인": 36
+          },
+          "weight": {
+            "필드 추출·원문 기재 여부 미확인": 35
+          },
+          "essay_weight": {
+            "필드 추출·원문 기재 여부 미확인": 36
+          },
+          "standards": {
+            "코드 추출·원문 기재 여부 미확인": 1
+          },
+          "rubric": {
+            "필드 추출·원문 기재 여부 미확인": 36
+          },
+          "criteria": {
+            "필드 추출·원문 기재 여부 미확인": 36
+          },
+          "elements": {
+            "필드 추출·원문 기재 여부 미확인": 26
+          }
+        },
+        "review_reasons": {
+          "별도 표 연결 미확정": 178,
+          "원문 제목 셀 미확정": 263,
+          "행·열·셀 소유 범위 미입증": 248,
+          "S5 과목 경계 미확정": 121,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 38,
+          "항목 과목 판정 other": 21,
+          "중첩·불완전 표 구조 미확정": 32,
+          "요약표·상세표 항목 동일성 미확정": 12,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 19,
+          "동일 항목 필드 복수 관측값·확정 보류": 19,
+          "원문 내부 충돌 (method)": 4,
+          "원문 내부 충돌 (standards)": 4,
+          "항목 과목 판정 unknown": 5
+        }
+      },
+      "s6_after": {
+        "bounded": 31,
+        "review": 230,
+        "target_sections": 74,
+        "title_generated": 0,
+        "ownership_errors": 0,
+        "source_trace_errors": 0,
+        "field_filled": {
+          "title": 31,
+          "assessment_area": 16,
+          "task_no": 0,
+          "task_text": 15,
+          "method": 22,
+          "timing": 1,
+          "score": 2,
+          "points": 0,
+          "weight": 2,
+          "essay_weight": 0,
+          "standards": 30,
+          "rubric": 4,
+          "criteria": 0,
+          "elements": 13
+        },
+        "field_states": {
+          "title": {
+            "present": 51,
+            "source_absent": 0,
+            "unconfirmed": 210,
+            "conflict": 0
+          },
+          "assessment_area": {
+            "present": 42,
+            "source_absent": 0,
+            "unconfirmed": 215,
+            "conflict": 4
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 261,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 16,
+            "source_absent": 0,
+            "unconfirmed": 245,
+            "conflict": 0
+          },
+          "method": {
+            "present": 42,
+            "source_absent": 0,
+            "unconfirmed": 214,
+            "conflict": 5
+          },
+          "timing": {
+            "present": 16,
+            "source_absent": 0,
+            "unconfirmed": 241,
+            "conflict": 4
+          },
+          "score": {
+            "present": 17,
+            "source_absent": 0,
+            "unconfirmed": 242,
+            "conflict": 2
+          },
+          "points": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 261,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 11,
+            "source_absent": 0,
+            "unconfirmed": 248,
+            "conflict": 2
+          },
+          "essay_weight": {
+            "present": 6,
+            "source_absent": 0,
+            "unconfirmed": 255,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 40,
+            "source_absent": 0,
+            "unconfirmed": 216,
+            "conflict": 5
+          },
+          "rubric": {
+            "present": 9,
+            "source_absent": 0,
+            "unconfirmed": 252,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 261,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 14,
+            "source_absent": 0,
+            "unconfirmed": 247,
+            "conflict": 0
+          }
+        },
+        "summary_duplicates": 7,
+        "performance_candidates": 103,
+        "independent_candidates": 261,
+        "bounded_field_states": {
+          "title": {
+            "present": 31,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 0
+          },
+          "assessment_area": {
+            "present": 16,
+            "source_absent": 0,
+            "unconfirmed": 15,
+            "conflict": 0
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 31,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 15,
+            "source_absent": 0,
+            "unconfirmed": 16,
+            "conflict": 0
+          },
+          "method": {
+            "present": 22,
+            "source_absent": 0,
+            "unconfirmed": 9,
+            "conflict": 0
+          },
+          "timing": {
+            "present": 1,
+            "source_absent": 0,
+            "unconfirmed": 30,
+            "conflict": 0
+          },
+          "score": {
+            "present": 2,
+            "source_absent": 0,
+            "unconfirmed": 29,
+            "conflict": 0
+          },
+          "points": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 31,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 2,
+            "source_absent": 0,
+            "unconfirmed": 29,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 31,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 30,
+            "source_absent": 0,
+            "unconfirmed": 1,
+            "conflict": 0
+          },
+          "rubric": {
+            "present": 4,
+            "source_absent": 0,
+            "unconfirmed": 27,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 31,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 13,
+            "source_absent": 0,
+            "unconfirmed": 18,
+            "conflict": 0
+          }
+        },
+        "review_roles": {
+          "teaching_plan": 64,
+          "performance": 72,
+          "general_standards": 56,
+          "other": 38
+        },
+        "unlinked_table_roles": {
+          "teaching_plan": 64,
+          "general_standards": 56,
+          "performance": 24,
+          "other": 9
+        },
+        "source_conflicts": 6,
+        "precision": "미측정",
+        "recall": "미측정",
+        "structural_checks_meaning": "의미 검증 아님",
+        "method_check_comparison": {
+          "documents_with_metadata": 77,
+          "documents_with_matching_text_hash": 77,
+          "all_pdf_rows": {
+            "unmapped": 3136,
+            "matched": 36,
+            "conflict": 10
+          },
+          "item_rows": {
+            "unmapped": 37,
+            "matched": 1
+          }
+        },
+        "field_fill_rates": {
+          "title": 1.0,
+          "assessment_area": 0.5161,
+          "task_no": 0.0,
+          "task_text": 0.4839,
+          "method": 0.7097,
+          "timing": 0.0323,
+          "score": 0.0645,
+          "points": 0.0,
+          "weight": 0.0645,
+          "essay_weight": 0.0,
+          "standards": 0.9677,
+          "rubric": 0.129,
+          "criteria": 0.0,
+          "elements": 0.4194
+        },
+        "empty_reasons": {
+          "필드 추출·원문 기재 여부 미확인": 288,
+          "체크 없음": 9,
+          "코드 추출·원문 기재 여부 미확인": 1
+        },
+        "empty_reasons_by_field": {
+          "title": {},
+          "assessment_area": {
+            "필드 추출·원문 기재 여부 미확인": 15
+          },
+          "task_no": {
+            "필드 추출·원문 기재 여부 미확인": 31
+          },
+          "task_text": {
+            "필드 추출·원문 기재 여부 미확인": 16
+          },
+          "method": {
+            "체크 없음": 9
+          },
+          "timing": {
+            "필드 추출·원문 기재 여부 미확인": 30
+          },
+          "score": {
+            "필드 추출·원문 기재 여부 미확인": 29
+          },
+          "points": {
+            "필드 추출·원문 기재 여부 미확인": 31
+          },
+          "weight": {
+            "필드 추출·원문 기재 여부 미확인": 29
+          },
+          "essay_weight": {
+            "필드 추출·원문 기재 여부 미확인": 31
+          },
+          "standards": {
+            "코드 추출·원문 기재 여부 미확인": 1
+          },
+          "rubric": {
+            "필드 추출·원문 기재 여부 미확인": 27
+          },
+          "criteria": {
+            "필드 추출·원문 기재 여부 미확인": 31
+          },
+          "elements": {
+            "필드 추출·원문 기재 여부 미확인": 18
+          }
+        },
+        "review_reasons": {
+          "별도 표 연결 미확정": 153,
+          "원문 제목 셀 미확정": 210,
+          "행·열·셀 소유 범위 미입증": 187,
+          "중첩·불완전 표 구조 미확정": 9,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 25,
+          "요약표·상세표 항목 동일성 미확정": 19,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 4,
+          "동일 항목 필드 복수 관측값·확정 보류": 4,
+          "원문 내부 충돌 (method)": 5,
+          "원문 내부 충돌 (standards)": 5,
+          "S5 과목 경계 미확정": 7,
+          "항목 과목 판정 unknown": 7
+        }
+      },
+      "audit": {
+        "violations": {
+          "locator_out_of_bounds": 0,
+          "parent_text_mismatch": 0,
+          "child_identity_mismatch": 0,
+          "uncoded_without_science_heading": 0,
+          "ownership_errors": 0,
+          "source_trace_errors": 0,
+          "title_generated": 0
+        },
+        "suspected_false_positives": []
+      }
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "coverage_before": [
+        {
+          "school": "갈산중학교",
+          "school_code": "7331053",
+          "grade": 1,
+          "state": "못 찾음",
+          "reason": "학년 연결 미확정",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "갈산중학교",
+          "school_code": "7331053",
+          "grade": 2,
+          "state": "못 찾음",
+          "reason": "학년 연결 미확정",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "연평중학교",
+          "school_code": "7321079",
+          "grade": 1,
+          "state": "못 찾음",
+          "reason": "학년 연결 미확정",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "연평중학교",
+          "school_code": "7321079",
+          "grade": 2,
+          "state": "못 찾음",
+          "reason": "학년 연결 미확정",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "평동중학교",
+          "school_code": "7402283",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 32,
+          "legacy_target_sections": 32
+        },
+        {
+          "school": "평동중학교",
+          "school_code": "7402283",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 56,
+          "legacy_target_sections": 56
+        },
+        {
+          "school": "서강중학교",
+          "school_code": "7392190",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 12,
+          "legacy_target_sections": 12
+        },
+        {
+          "school": "서강중학교",
+          "school_code": "7392190",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 17,
+          "legacy_target_sections": 17
+        },
+        {
+          "school": "보문중학교",
+          "school_code": "7441034",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 4,
+          "legacy_target_sections": 4
+        },
+        {
+          "school": "보문중학교",
+          "school_code": "7441034",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "대전대화중학교",
+          "school_code": "7441017",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "대전대화중학교",
+          "school_code": "7441017",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "울산제일중학교",
+          "school_code": "7491165",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 7,
+          "legacy_target_sections": 7
+        },
+        {
+          "school": "울산제일중학교",
+          "school_code": "7491165",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 8,
+          "legacy_target_sections": 8
+        },
+        {
+          "school": "상북중학교",
+          "school_code": "7501037",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "상북중학교",
+          "school_code": "7501037",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "아름중학교",
+          "school_code": "9300116",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 5,
+          "legacy_target_sections": 5
+        },
+        {
+          "school": "아름중학교",
+          "school_code": "9300116",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 6,
+          "legacy_target_sections": 6
+        },
+        {
+          "school": "두루중학교",
+          "school_code": "9300173",
+          "grade": 1,
+          "state": "못 찾음",
+          "reason": "ZIP 자식 S4 좌표와 S5 부모 본문 해시 불일치",
+          "target_sections": 0,
+          "legacy_target_sections": 30
+        },
+        {
+          "school": "두루중학교",
+          "school_code": "9300173",
+          "grade": 2,
+          "state": "못 찾음",
+          "reason": "ZIP 자식 S4 좌표와 S5 부모 본문 해시 불일치",
+          "target_sections": 0,
+          "legacy_target_sections": 10
+        },
+        {
+          "school": "충주여자중학교",
+          "school_code": "8021039",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 4,
+          "legacy_target_sections": 4
+        },
+        {
+          "school": "충주여자중학교",
+          "school_code": "8021039",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 4,
+          "legacy_target_sections": 4
+        },
+        {
+          "school": "단성중학교",
+          "school_code": "8111006",
+          "grade": 1,
+          "state": "못 찾음",
+          "reason": "학년 연결 미확정",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "단성중학교",
+          "school_code": "8111006",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 5,
+          "legacy_target_sections": 5
+        },
+        {
+          "school": "순천연향중학교",
+          "school_code": "8522008",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 4,
+          "legacy_target_sections": 4
+        },
+        {
+          "school": "순천연향중학교",
+          "school_code": "8522008",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 4,
+          "legacy_target_sections": 4
+        },
+        {
+          "school": "광양마동중학교",
+          "school_code": "8552076",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 16,
+          "legacy_target_sections": 16
+        },
+        {
+          "school": "광양마동중학교",
+          "school_code": "8552076",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 6,
+          "legacy_target_sections": 6
+        },
+        {
+          "school": "장흥유치중학교",
+          "school_code": "8622007",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "장흥유치중학교",
+          "school_code": "8622007",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "흥해중학교",
+          "school_code": "8761213",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 5,
+          "legacy_target_sections": 5
+        },
+        {
+          "school": "흥해중학교",
+          "school_code": "8761213",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "청도중학교",
+          "school_code": "8911044",
+          "grade": 1,
+          "state": "읽을 수 없음",
+          "reason": "image_only: 평가계획은 있으나 글자층 없음",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "청도중학교",
+          "school_code": "8911044",
+          "grade": 2,
+          "state": "읽을 수 없음",
+          "reason": "image_only: 평가계획은 있으나 글자층 없음",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "울진중학교",
+          "school_code": "8971049",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "울진중학교",
+          "school_code": "8971049",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "오현중학교",
+          "school_code": "9296032",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 5,
+          "legacy_target_sections": 5
+        },
+        {
+          "school": "오현중학교",
+          "school_code": "9296032",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 8,
+          "legacy_target_sections": 8
+        },
+        {
+          "school": "효돈중학교",
+          "school_code": "9299012",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 8,
+          "legacy_target_sections": 8
+        },
+        {
+          "school": "효돈중학교",
+          "school_code": "9299012",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        }
+      ],
+      "coverage_after": [
+        {
+          "school": "갈산중학교",
+          "school_code": "7331053",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "갈산중학교",
+          "school_code": "7331053",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "연평중학교",
+          "school_code": "7321079",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "연평중학교",
+          "school_code": "7321079",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "평동중학교",
+          "school_code": "7402283",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 8,
+          "legacy_target_sections": 8
+        },
+        {
+          "school": "평동중학교",
+          "school_code": "7402283",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 8,
+          "legacy_target_sections": 8
+        },
+        {
+          "school": "서강중학교",
+          "school_code": "7392190",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "서강중학교",
+          "school_code": "7392190",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "보문중학교",
+          "school_code": "7441034",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "보문중학교",
+          "school_code": "7441034",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "대전대화중학교",
+          "school_code": "7441017",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "대전대화중학교",
+          "school_code": "7441017",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "울산제일중학교",
+          "school_code": "7491165",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "울산제일중학교",
+          "school_code": "7491165",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "상북중학교",
+          "school_code": "7501037",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "상북중학교",
+          "school_code": "7501037",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "아름중학교",
+          "school_code": "9300116",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "아름중학교",
+          "school_code": "9300116",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "두루중학교",
+          "school_code": "9300173",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "두루중학교",
+          "school_code": "9300173",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "충주여자중학교",
+          "school_code": "8021039",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "충주여자중학교",
+          "school_code": "8021039",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "단성중학교",
+          "school_code": "8111006",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "단성중학교",
+          "school_code": "8111006",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "순천연향중학교",
+          "school_code": "8522008",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "순천연향중학교",
+          "school_code": "8522008",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "광양마동중학교",
+          "school_code": "8552076",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "광양마동중학교",
+          "school_code": "8552076",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 6,
+          "legacy_target_sections": 6
+        },
+        {
+          "school": "장흥유치중학교",
+          "school_code": "8622007",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 3,
+          "legacy_target_sections": 3
+        },
+        {
+          "school": "장흥유치중학교",
+          "school_code": "8622007",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "흥해중학교",
+          "school_code": "8761213",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 5,
+          "legacy_target_sections": 5
+        },
+        {
+          "school": "흥해중학교",
+          "school_code": "8761213",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "청도중학교",
+          "school_code": "8911044",
+          "grade": 1,
+          "state": "읽을 수 없음",
+          "reason": "image_only: 평가계획은 있으나 글자층 없음",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "청도중학교",
+          "school_code": "8911044",
+          "grade": 2,
+          "state": "읽을 수 없음",
+          "reason": "image_only: 평가계획은 있으나 글자층 없음",
+          "target_sections": 0,
+          "legacy_target_sections": 0
+        },
+        {
+          "school": "울진중학교",
+          "school_code": "8971049",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "울진중학교",
+          "school_code": "8971049",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "오현중학교",
+          "school_code": "9296032",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 2,
+          "legacy_target_sections": 2
+        },
+        {
+          "school": "오현중학교",
+          "school_code": "9296032",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        },
+        {
+          "school": "효돈중학교",
+          "school_code": "9299012",
+          "grade": 1,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 8,
+          "legacy_target_sections": 8
+        },
+        {
+          "school": "효돈중학교",
+          "school_code": "9299012",
+          "grade": 2,
+          "state": "찾음",
+          "reason": "S5 target 과학 구간과 S4 본문 해시 일치",
+          "target_sections": 1,
+          "legacy_target_sections": 1
+        }
+      ],
+      "coverage_counts_before": {
+        "못 찾음": 7,
+        "찾음": 31,
+        "읽을 수 없음": 2
+      },
+      "coverage_counts_after": {
+        "찾음": 38,
+        "읽을 수 없음": 2
+      },
+      "s5_before": {
+        "target": 4,
+        "other": 51,
+        "mixed": 39,
+        "unknown": 6,
+        "image_only": 0
+      },
+      "s5_after": {
+        "target": 8,
+        "other": 80,
+        "mixed": 37,
+        "unknown": 2,
+        "image_only": 3
+      },
+      "s6_before": {
+        "bounded": 44,
+        "review": 402,
+        "target_sections": 272,
+        "title_generated": 0,
+        "ownership_errors": 0,
+        "source_trace_errors": 0,
+        "field_filled": {
+          "title": 44,
+          "assessment_area": 25,
+          "task_no": 0,
+          "task_text": 19,
+          "method": 19,
+          "timing": 2,
+          "score": 0,
+          "points": 0,
+          "weight": 0,
+          "essay_weight": 0,
+          "standards": 39,
+          "rubric": 4,
+          "criteria": 0,
+          "elements": 10
+        },
+        "field_states": {
+          "title": {
+            "present": 113,
+            "source_absent": 0,
+            "unconfirmed": 333,
+            "conflict": 0
+          },
+          "assessment_area": {
+            "present": 91,
+            "source_absent": 0,
+            "unconfirmed": 348,
+            "conflict": 7
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 446,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 20,
+            "source_absent": 0,
+            "unconfirmed": 426,
+            "conflict": 0
+          },
+          "method": {
+            "present": 87,
+            "source_absent": 0,
+            "unconfirmed": 359,
+            "conflict": 0
+          },
+          "timing": {
+            "present": 51,
+            "source_absent": 0,
+            "unconfirmed": 390,
+            "conflict": 5
+          },
+          "score": {
+            "present": 28,
+            "source_absent": 0,
+            "unconfirmed": 418,
+            "conflict": 0
+          },
+          "points": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 446,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 27,
+            "source_absent": 0,
+            "unconfirmed": 419,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 9,
+            "source_absent": 0,
+            "unconfirmed": 436,
+            "conflict": 1
+          },
+          "standards": {
+            "present": 106,
+            "source_absent": 0,
+            "unconfirmed": 340,
+            "conflict": 0
+          },
+          "rubric": {
+            "present": 9,
+            "source_absent": 0,
+            "unconfirmed": 437,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 446,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 50,
+            "source_absent": 0,
+            "unconfirmed": 396,
+            "conflict": 0
+          }
+        },
+        "summary_duplicates": 0,
+        "performance_candidates": 197,
+        "independent_candidates": 446,
+        "bounded_field_states": {
+          "title": {
+            "present": 44,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 0
+          },
+          "assessment_area": {
+            "present": 25,
+            "source_absent": 0,
+            "unconfirmed": 19,
+            "conflict": 0
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 44,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 19,
+            "source_absent": 0,
+            "unconfirmed": 25,
+            "conflict": 0
+          },
+          "method": {
+            "present": 19,
+            "source_absent": 0,
+            "unconfirmed": 25,
+            "conflict": 0
+          },
+          "timing": {
+            "present": 2,
+            "source_absent": 0,
+            "unconfirmed": 42,
+            "conflict": 0
+          },
+          "score": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 44,
+            "conflict": 0
+          },
+          "points": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 44,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 44,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 44,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 39,
+            "source_absent": 0,
+            "unconfirmed": 5,
+            "conflict": 0
+          },
+          "rubric": {
+            "present": 4,
+            "source_absent": 0,
+            "unconfirmed": 40,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 44,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 10,
+            "source_absent": 0,
+            "unconfirmed": 34,
+            "conflict": 0
+          }
+        },
+        "review_roles": {
+          "other": 97,
+          "performance": 153,
+          "general_standards": 92,
+          "teaching_plan": 60
+        },
+        "unlinked_table_roles": {
+          "general_standards": 92,
+          "other": 23,
+          "teaching_plan": 60,
+          "performance": 58
+        },
+        "source_conflicts": 0,
+        "precision": "미측정",
+        "recall": "미측정",
+        "structural_checks_meaning": "의미 검증 아님",
+        "method_check_comparison": {
+          "documents_with_metadata": 61,
+          "documents_with_matching_text_hash": 61,
+          "all_pdf_rows": {
+            "unmapped": 3155,
+            "matched": 2
+          },
+          "item_rows": {
+            "unmapped": 65
+          }
+        },
+        "field_fill_rates": {
+          "title": 1.0,
+          "assessment_area": 0.5682,
+          "task_no": 0.0,
+          "task_text": 0.4318,
+          "method": 0.4318,
+          "timing": 0.0455,
+          "score": 0.0,
+          "points": 0.0,
+          "weight": 0.0,
+          "essay_weight": 0.0,
+          "standards": 0.8864,
+          "rubric": 0.0909,
+          "criteria": 0.0,
+          "elements": 0.2273
+        },
+        "empty_reasons": {
+          "필드 추출·원문 기재 여부 미확인": 420,
+          "체크 없음": 25,
+          "코드 범위 펼침 미확정": 1,
+          "원문 값 판독·단위 확인 필요": 4,
+          "코드 추출·원문 기재 여부 미확인": 4
+        },
+        "empty_reasons_by_field": {
+          "title": {},
+          "assessment_area": {
+            "필드 추출·원문 기재 여부 미확인": 19
+          },
+          "task_no": {
+            "필드 추출·원문 기재 여부 미확인": 44
+          },
+          "task_text": {
+            "필드 추출·원문 기재 여부 미확인": 25
+          },
+          "method": {
+            "체크 없음": 25
+          },
+          "timing": {
+            "필드 추출·원문 기재 여부 미확인": 42
+          },
+          "score": {
+            "필드 추출·원문 기재 여부 미확인": 44
+          },
+          "points": {
+            "필드 추출·원문 기재 여부 미확인": 44
+          },
+          "weight": {
+            "필드 추출·원문 기재 여부 미확인": 44
+          },
+          "essay_weight": {
+            "필드 추출·원문 기재 여부 미확인": 40,
+            "원문 값 판독·단위 확인 필요": 4
+          },
+          "standards": {
+            "코드 범위 펼침 미확정": 1,
+            "코드 추출·원문 기재 여부 미확인": 4
+          },
+          "rubric": {
+            "필드 추출·원문 기재 여부 미확인": 40
+          },
+          "criteria": {
+            "필드 추출·원문 기재 여부 미확인": 44
+          },
+          "elements": {
+            "필드 추출·원문 기재 여부 미확인": 34
+          }
+        },
+        "review_reasons": {
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 46,
+          "원문 제목 셀 미확정": 333,
+          "행·열·셀 소유 범위 미입증": 311,
+          "S5 과목 경계 미확정": 201,
+          "항목 과목 판정 other": 34,
+          "별도 표 연결 미확정": 233,
+          "중첩·불완전 표 구조 미확정": 31,
+          "요약표·상세표 항목 동일성 미확정": 16,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 7,
+          "동일 항목 필드 복수 관측값·확정 보류": 7,
+          "제목 셀에 필드 라벨 혼입·경계 미확정": 4,
+          "평문 변환·표 구조 미보존": 1
+        }
+      },
+      "s6_after": {
+        "bounded": 82,
+        "review": 298,
+        "target_sections": 85,
+        "title_generated": 0,
+        "ownership_errors": 0,
+        "source_trace_errors": 0,
+        "field_filled": {
+          "title": 82,
+          "assessment_area": 57,
+          "task_no": 0,
+          "task_text": 25,
+          "method": 61,
+          "timing": 35,
+          "score": 20,
+          "points": 0,
+          "weight": 20,
+          "essay_weight": 0,
+          "standards": 73,
+          "rubric": 13,
+          "criteria": 0,
+          "elements": 43
+        },
+        "field_states": {
+          "title": {
+            "present": 112,
+            "source_absent": 0,
+            "unconfirmed": 268,
+            "conflict": 0
+          },
+          "assessment_area": {
+            "present": 101,
+            "source_absent": 0,
+            "unconfirmed": 270,
+            "conflict": 9
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 380,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 26,
+            "source_absent": 0,
+            "unconfirmed": 354,
+            "conflict": 0
+          },
+          "method": {
+            "present": 95,
+            "source_absent": 0,
+            "unconfirmed": 285,
+            "conflict": 0
+          },
+          "timing": {
+            "present": 54,
+            "source_absent": 0,
+            "unconfirmed": 320,
+            "conflict": 6
+          },
+          "score": {
+            "present": 28,
+            "source_absent": 0,
+            "unconfirmed": 351,
+            "conflict": 1
+          },
+          "points": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 380,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 27,
+            "source_absent": 0,
+            "unconfirmed": 352,
+            "conflict": 1
+          },
+          "essay_weight": {
+            "present": 9,
+            "source_absent": 0,
+            "unconfirmed": 369,
+            "conflict": 2
+          },
+          "standards": {
+            "present": 101,
+            "source_absent": 0,
+            "unconfirmed": 279,
+            "conflict": 0
+          },
+          "rubric": {
+            "present": 16,
+            "source_absent": 0,
+            "unconfirmed": 364,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 380,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 50,
+            "source_absent": 0,
+            "unconfirmed": 330,
+            "conflict": 0
+          }
+        },
+        "summary_duplicates": 0,
+        "performance_candidates": 192,
+        "independent_candidates": 380,
+        "bounded_field_states": {
+          "title": {
+            "present": 82,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 0
+          },
+          "assessment_area": {
+            "present": 57,
+            "source_absent": 0,
+            "unconfirmed": 25,
+            "conflict": 0
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 82,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 25,
+            "source_absent": 0,
+            "unconfirmed": 57,
+            "conflict": 0
+          },
+          "method": {
+            "present": 61,
+            "source_absent": 0,
+            "unconfirmed": 21,
+            "conflict": 0
+          },
+          "timing": {
+            "present": 35,
+            "source_absent": 0,
+            "unconfirmed": 47,
+            "conflict": 0
+          },
+          "score": {
+            "present": 20,
+            "source_absent": 0,
+            "unconfirmed": 62,
+            "conflict": 0
+          },
+          "points": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 82,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 20,
+            "source_absent": 0,
+            "unconfirmed": 62,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 82,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 73,
+            "source_absent": 0,
+            "unconfirmed": 9,
+            "conflict": 0
+          },
+          "rubric": {
+            "present": 13,
+            "source_absent": 0,
+            "unconfirmed": 69,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 82,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 43,
+            "source_absent": 0,
+            "unconfirmed": 39,
+            "conflict": 0
+          }
+        },
+        "review_roles": {
+          "teaching_plan": 56,
+          "general_standards": 93,
+          "performance": 110,
+          "other": 39
+        },
+        "unlinked_table_roles": {
+          "teaching_plan": 56,
+          "general_standards": 93,
+          "performance": 30,
+          "other": 23
+        },
+        "source_conflicts": 0,
+        "precision": "미측정",
+        "recall": "미측정",
+        "structural_checks_meaning": "의미 검증 아님",
+        "method_check_comparison": {
+          "documents_with_metadata": 61,
+          "documents_with_matching_text_hash": 61,
+          "all_pdf_rows": {
+            "unmapped": 3155,
+            "matched": 2
+          },
+          "item_rows": {
+            "unmapped": 70
+          }
+        },
+        "field_fill_rates": {
+          "title": 1.0,
+          "assessment_area": 0.6951,
+          "task_no": 0.0,
+          "task_text": 0.3049,
+          "method": 0.7439,
+          "timing": 0.4268,
+          "score": 0.2439,
+          "points": 0.0,
+          "weight": 0.2439,
+          "essay_weight": 0.0,
+          "standards": 0.8902,
+          "rubric": 0.1585,
+          "criteria": 0.0,
+          "elements": 0.5244
+        },
+        "empty_reasons": {
+          "필드 추출·원문 기재 여부 미확인": 677,
+          "원문 값 판독·단위 확인 필요": 12,
+          "체크 없음": 21,
+          "코드 추출·원문 기재 여부 미확인": 8,
+          "코드 범위 펼침 미확정": 1
+        },
+        "empty_reasons_by_field": {
+          "title": {},
+          "assessment_area": {
+            "필드 추출·원문 기재 여부 미확인": 25
+          },
+          "task_no": {
+            "필드 추출·원문 기재 여부 미확인": 82
+          },
+          "task_text": {
+            "필드 추출·원문 기재 여부 미확인": 53,
+            "원문 값 판독·단위 확인 필요": 4
+          },
+          "method": {
+            "체크 없음": 21
+          },
+          "timing": {
+            "필드 추출·원문 기재 여부 미확인": 47
+          },
+          "score": {
+            "필드 추출·원문 기재 여부 미확인": 62
+          },
+          "points": {
+            "필드 추출·원문 기재 여부 미확인": 78,
+            "원문 값 판독·단위 확인 필요": 4
+          },
+          "weight": {
+            "필드 추출·원문 기재 여부 미확인": 62
+          },
+          "essay_weight": {
+            "필드 추출·원문 기재 여부 미확인": 78,
+            "원문 값 판독·단위 확인 필요": 4
+          },
+          "standards": {
+            "코드 추출·원문 기재 여부 미확인": 8,
+            "코드 범위 펼침 미확정": 1
+          },
+          "rubric": {
+            "필드 추출·원문 기재 여부 미확인": 69
+          },
+          "criteria": {
+            "필드 추출·원문 기재 여부 미확인": 82
+          },
+          "elements": {
+            "필드 추출·원문 기재 여부 미확인": 39
+          }
+        },
+        "review_reasons": {
+          "별도 표 연결 미확정": 202,
+          "원문 제목 셀 미확정": 268,
+          "행·열·셀 소유 범위 미입증": 222,
+          "요약표·상세표 항목 동일성 미확정": 30,
+          "중첩·불완전 표 구조 미확정": 6,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 13,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 9,
+          "동일 항목 필드 복수 관측값·확정 보류": 9,
+          "제목 셀에 필드 라벨 혼입·경계 미확정": 4,
+          "S5 과목 경계 미확정": 7,
+          "항목 과목 판정 other": 1,
+          "평문 변환·표 구조 미보존": 1
+        }
+      },
+      "audit": {
+        "violations": {
+          "locator_out_of_bounds": 0,
+          "parent_text_mismatch": 0,
+          "child_identity_mismatch": 0,
+          "uncoded_without_science_heading": 0,
+          "ownership_errors": 0,
+          "source_trace_errors": 0,
+          "title_generated": 0
+        },
+        "suspected_false_positives": [
+          {
+            "section_id": "subj_53db63c3b937e2fad2e33fb7cbfb9c0c65ca565080846b9298e11ec434d4eda5",
+            "school": "효돈중학교",
+            "filename": "2026학년도 효돈중 1학기 1학년 교수학습 및 평가 계획.pdf",
+            "locator": {
+              "start": 192348,
+              "end": 193915,
+              "offset_unit": "unicode_codepoint",
+              "end_exclusive": true,
+              "converter": "kordoc",
+              "text_field": "text"
+            },
+            "reason": "사전 밖 과목명(주제선택(지구의세포들))·과학 코드: 경계 검토 필요"
+          },
+          {
+            "section_id": "subj_6b840f5aa2e10ce2e05b3c314f1b43848cb03a93659ac010a8fb580b6cea89c0",
+            "school": "효돈중학교",
+            "filename": "2026학년도 효돈중 1학기 1학년 교수학습 및 평가 계획.pdf",
+            "locator": {
+              "start": 195289,
+              "end": 195878,
+              "offset_unit": "unicode_codepoint",
+              "end_exclusive": true,
+              "converter": "kordoc",
+              "text_field": "text"
+            },
+            "reason": "사전 밖 과목명(주제선택(지구의세포들))·과학 코드: 경계 검토 필요"
+          },
+          {
+            "section_id": "subj_da61b1fb858241aac3011b3d7300f0293c1aef465b2268200d1d93d1879420c1",
+            "school": "효돈중학교",
+            "filename": "2026학년도 효돈중 1학기 1학년 교수학습 및 평가 계획.pdf",
+            "locator": {
+              "start": 195917,
+              "end": 196790,
+              "offset_unit": "unicode_codepoint",
+              "end_exclusive": true,
+              "converter": "kordoc",
+              "text_field": "text"
+            },
+            "reason": "사전 밖 과목명(주제선택(지구의세포들))·과학 코드: 경계 검토 필요"
+          },
+          {
+            "section_id": "subj_5735e1ec5dda6d47262b8611905f194bd0cf7c2e535cb0efbb6b4708c1a09fd3",
+            "school": "효돈중학교",
+            "filename": "2026학년도 효돈중 1학기 1학년 교수학습 및 평가 계획.pdf",
+            "locator": {
+              "start": 196884,
+              "end": 197847,
+              "offset_unit": "unicode_codepoint",
+              "end_exclusive": true,
+              "converter": "kordoc",
+              "text_field": "text"
+            },
+            "reason": "사전 밖 과목명(주제선택(지구의세포들))·과학 코드: 경계 검토 필요"
+          },
+          {
+            "section_id": "subj_d667b019d7bab80bd49a00d1bc04e568851d08c8e0732456c4140cc8d450c48f",
+            "school": "효돈중학교",
+            "filename": "2026학년도 효돈중 1학기 1학년 교수학습 및 평가 계획.pdf",
+            "locator": {
+              "start": 198485,
+              "end": 201141,
+              "offset_unit": "unicode_codepoint",
+              "end_exclusive": true,
+              "converter": "kordoc",
+              "text_field": "text"
+            },
+            "reason": "사전 밖 과목명(주제선택(지구의세포들))·과학 코드: 경계 검토 필요"
+          },
+          {
+            "section_id": "subj_bcbf55d5e4829b4203b990904c071645a5a933cb2f518b48dd9bd49e89af3f07",
+            "school": "효돈중학교",
+            "filename": "2026학년도 효돈중 1학기 1학년 교수학습 및 평가 계획.pdf",
+            "locator": {
+              "start": 201152,
+              "end": 202599,
+              "offset_unit": "unicode_codepoint",
+              "end_exclusive": true,
+              "converter": "kordoc",
+              "text_field": "text"
+            },
+            "reason": "사전 밖 과목명(주제선택(지구의세포들))·과학 코드: 경계 검토 필요"
+          },
+          {
+            "section_id": "subj_37dccd7afdaabb6dacbb6eb3a50cf51d61c1cc2e56f6ccb2f0472591e2c0e3bc",
+            "school": "효돈중학교",
+            "filename": "2026학년도 효돈중 1학기 1학년 교수학습 및 평가 계획.pdf",
+            "locator": {
+              "start": 203019,
+              "end": 205188,
+              "offset_unit": "unicode_codepoint",
+              "end_exclusive": true,
+              "converter": "kordoc",
+              "text_field": "text"
+            },
+            "reason": "사전 밖 과목명(주제선택(지구의세포들))·과학 코드: 경계 검토 필요"
+          }
+        ]
+      }
+    }
+  ],
+  "new_section_count": 63,
+  "sample": [
+    {
+      "round": "2026-round-1-dev2",
+      "school": "충주여자중학교",
+      "grade": 1,
+      "filename": "2026학년도 1학기 과학과 교수학습 및 평가계획.pdf",
+      "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/61e0df2868109472c302f902f8e90a1ec8fbbf19389e141614d07ab3d9d2fad1.json",
+      "section_id": "subj_56776c0d4568d63cf36f2dd229063627cf808fe1f8534d366069863cd0e5416b",
+      "locator": {
+        "start": 11,
+        "end": 16313,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc",
+        "text_field": "text"
+      },
+      "line_start": 3,
+      "line_end": 194,
+      "heading": "# 과학과 1학기 교수학습 및 평가계획",
+      "end_basis": "next_subject_or_s4_grade_boundary",
+      "next_subject": "과학",
+      "end_description": "학년 표지/학년 칸: 중2",
+      "boundary_evidence": {
+        "start": {
+          "start": 11,
+          "end": 32,
+          "raw": "# 과학과 1학기 교수학습 및 평가계획",
+          "key": "과학",
+          "basis": "plan_heading"
+        },
+        "end": null,
+        "s4_end_basis": "next_structural_heading_or_grade",
+        "next_s4_boundary": {
+          "locator": {
+            "start": 16313,
+            "end": 17506,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc",
+            "text_field": "text"
+          },
+          "grade": 2,
+          "grade_evidence": [
+            {
+              "grade": 2,
+              "source": "body_heading",
+              "school_level": null,
+              "text": "2학년",
+              "start": 16320,
+              "end": 16323,
+              "role": "grade_heading",
+              "boundary_start": 16313
+            }
+          ],
+          "subject_heading_raw": "# 과학과 1학기 교수학습 및 평가계획",
+          "subject_heading_key": "과학"
+        }
+      },
+      "boundary_verified": true
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "평동중학교",
+      "grade": 1,
+      "filename": "2026학년도 1학기 교과별 교수학습 및 평가 계획(26.09.09. 수정).hwpx",
+      "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/08ca9b47300ee2d81e69eaf628513d246f75a3fe2ea048046f0010d83889540c.json",
+      "section_id": "subj_a5473971295782c11518dad49db9dfc79a42c7d61e0a2bc021f8e7806c2df883",
+      "locator": {
+        "start": 376258,
+        "end": 384923,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc",
+        "text_field": "text"
+      },
+      "line_start": 4663,
+      "line_end": 4755,
+      "heading": "2026학년도 1학기 과학과 교수학습 및 평가 계획",
+      "end_basis": "next_subject_or_s4_grade_boundary",
+      "next_subject": "과학",
+      "end_description": "학년 표지/학년 칸: 중2",
+      "boundary_evidence": {
+        "start": {
+          "start": 376258,
+          "end": 376286,
+          "raw": "2026학년도 1학기 과학과 교수학습 및 평가 계획",
+          "key": "과학",
+          "basis": "plan_heading"
+        },
+        "end": null,
+        "s4_end_basis": "next_structural_heading_or_grade",
+        "next_s4_boundary": {
+          "locator": {
+            "start": 384923,
+            "end": 398495,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc",
+            "text_field": "text"
+          },
+          "grade": 2,
+          "grade_evidence": [
+            {
+              "grade": 2,
+              "source": "table_cell",
+              "text": "2",
+              "start": 384942,
+              "end": 384943,
+              "boundary_start": 384923
+            }
+          ],
+          "subject_heading_raw": "2026학년도 1학기 과학과 교수학습 및 평가 계획",
+          "subject_heading_key": "과학"
+        }
+      },
+      "boundary_verified": true
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "울산제일중학교",
+      "grade": 2,
+      "filename": "2026학년도 1학기 2학년 교수학습 및 평가계획서 양식(최종본).hwpx",
+      "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/a61e06ccb466683dfa599c339345890e8639c778ee111092ad7c81a8ffeb911a.json",
+      "section_id": "subj_9c6e5e418de681e04db6c53d41059bdeb2c6165f6bbe371646b39cf2bbee9df2",
+      "locator": {
+        "start": 102594,
+        "end": 129816,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc",
+        "text_field": "text"
+      },
+      "line_start": 1221,
+      "line_end": 1570,
+      "heading": "( 과학 )과 2학년",
+      "end_basis": "next_subject_or_s4_grade_boundary",
+      "next_subject": "기술·가정",
+      "end_description": "다음 교과 머리글: 기술·가정",
+      "boundary_evidence": {
+        "start": {
+          "start": 102594,
+          "end": 102605,
+          "raw": "( 과학 )과 2학년",
+          "key": "과학",
+          "basis": "subject_label"
+        },
+        "end": {
+          "start": 129816,
+          "end": 129830,
+          "raw": "( 기술․가정 )과 2학년",
+          "key": "기술·가정",
+          "basis": "subject_label"
+        },
+        "s4_end_basis": "next_structural_heading_or_grade",
+        "next_s4_boundary": {
+          "locator": {
+            "start": 129816,
+            "end": 154918,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc",
+            "text_field": "text"
+          },
+          "grade": 2,
+          "grade_evidence": [
+            {
+              "grade": 2,
+              "source": "body_heading",
+              "school_level": null,
+              "text": "2학년",
+              "start": 129827,
+              "end": 129830,
+              "role": "subject_heading",
+              "boundary_start": 129816
+            },
+            {
+              "grade": 2,
+              "source": "body_heading",
+              "school_level": null,
+              "text": "2학년",
+              "start": 130117,
+              "end": 130120,
+              "role": "subject_heading",
+              "boundary_start": 130105
+            },
+            {
+              "grade": 2,
+              "source": "filename",
+              "school_level": null,
+              "text": "2학년",
+              "start": 12,
+              "end": 15
+            }
+          ],
+          "subject_heading_raw": "( 기술․가정 )과 2학년",
+          "subject_heading_key": "기술가정"
+        }
+      },
+      "boundary_verified": true
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "서강중학교",
+      "grade": 1,
+      "filename": "2026학년도 1학기 교수학습 및 평가 운영 계획(1학년).pdf",
+      "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/53fda89407e3da4cf89b8d90101f23e0a31862f0cd68dd697d6f84acedcd591d.json",
+      "section_id": "subj_c318656f7545e8f8f6216101f80230d8a5662378f96d400eb9e5c1f48886c81e",
+      "locator": {
+        "start": 104656,
+        "end": 146390,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc",
+        "text_field": "text"
+      },
+      "line_start": 1357,
+      "line_end": 1806,
+      "heading": "2026학년도 1학년 1학기 [과학] 교수‧학습 및 평가 운영 계획",
+      "end_basis": "next_subject_or_s4_grade_boundary",
+      "next_subject": "수학",
+      "end_description": "다음 교과 머리글: 수학",
+      "boundary_evidence": {
+        "start": {
+          "start": 104656,
+          "end": 104693,
+          "raw": "2026학년도 1학년 1학기 [과학] 교수‧학습 및 평가 운영 계획",
+          "key": "과학",
+          "basis": "plan_heading"
+        },
+        "end": {
+          "start": 146390,
+          "end": 146426,
+          "raw": "2026학년도 1학년 1학기 수학과 교수‧학습 및 평가 운영 계획",
+          "key": "수학",
+          "basis": "plan_heading"
+        },
+        "s4_end_basis": "next_structural_heading_or_grade",
+        "next_s4_boundary": {
+          "locator": {
+            "start": 146390,
+            "end": 196758,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc",
+            "text_field": "text"
+          },
+          "grade": 1,
+          "grade_evidence": [
+            {
+              "grade": 1,
+              "source": "body_heading",
+              "school_level": null,
+              "text": "1학년",
+              "start": 146398,
+              "end": 146401,
+              "role": "subject_heading",
+              "boundary_start": 146390
+            },
+            {
+              "grade": 1,
+              "source": "filename",
+              "school_level": null,
+              "text": "1학년",
+              "start": 28,
+              "end": 31
+            }
+          ],
+          "subject_heading_raw": "2026학년도 1학년 1학기 수학과 교수‧학습 및 평가 운영 계획",
+          "subject_heading_key": "수학"
+        }
+      },
+      "boundary_verified": true
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "단성중학교",
+      "grade": 1,
+      "filename": "2026학년도 1학기 1,2학년 과학과 교수학습 및 평가계획.pdf",
+      "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/0bdb458e18ca34103cfc35c2c20a436ca41dde4f1915d98ae62dea7ded00fd73.json",
+      "section_id": "subj_7d71c228dbd48da64bbf17250f71846c9ffda4e1505a206214dc085d7f0f5ca0",
+      "locator": {
+        "start": 14591,
+        "end": 21161,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc",
+        "text_field": "text"
+      },
+      "line_start": 264,
+      "line_end": 349,
+      "heading": "# 과학과 1·2학년 교수·학습 및 평가계획",
+      "end_basis": "next_subject_or_s4_grade_boundary",
+      "next_subject": "과학",
+      "end_description": "학년 표지/학년 칸: 중2",
+      "boundary_evidence": {
+        "start": {
+          "start": 18,
+          "end": 42,
+          "key": "과학",
+          "raw": "# 과학과 1·2학년 교수·학습 및 평가계획"
+        },
+        "end": null,
+        "s4_end_basis": "next_structural_heading_or_grade",
+        "next_s4_boundary": {
+          "locator": {
+            "start": 21161,
+            "end": 27771,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc",
+            "text_field": "text"
+          },
+          "grade": 2,
+          "grade_evidence": [
+            {
+              "grade": 2,
+              "source": "body_heading",
+              "school_level": null,
+              "text": "2학년",
+              "start": 21167,
+              "end": 21170,
+              "role": "grade_heading",
+              "boundary_start": 21161
+            }
+          ],
+          "subject_heading_raw": "# 과학과 1·2학년 교수·학습 및 평가계획",
+          "subject_heading_key": "과학"
+        }
+      },
+      "boundary_verified": true
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "평동중학교",
+      "grade": 2,
+      "filename": "2026학년도 1학기 교과별 교수학습 및 평가 계획(수정).hwpx",
+      "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/924848d225039ac26fb37b4e41f10936f8ce8c2c663486756eceffc9b100b0df.json",
+      "section_id": "subj_1d902012a36253549b8231fd692e871bcea683ba64a6ad4994183b1111f70398",
+      "locator": {
+        "start": 378726,
+        "end": 392298,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc",
+        "text_field": "text"
+      },
+      "line_start": 4640,
+      "line_end": 4692,
+      "heading": "2026학년도 1학기 과학과 교수학습 및 평가 계획",
+      "end_basis": "next_subject_or_s4_grade_boundary",
+      "next_subject": "과학",
+      "end_description": "학년 표지/학년 칸: 중3",
+      "boundary_evidence": {
+        "start": {
+          "start": 370061,
+          "end": 370089,
+          "key": "과학",
+          "raw": "2026학년도 1학기 과학과 교수학습 및 평가 계획"
+        },
+        "end": null,
+        "s4_end_basis": "next_structural_heading_or_grade",
+        "next_s4_boundary": {
+          "locator": {
+            "start": 392298,
+            "end": 400465,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc",
+            "text_field": "text"
+          },
+          "grade": 3,
+          "grade_evidence": [
+            {
+              "grade": 3,
+              "source": "table_cell",
+              "text": "3",
+              "start": 392317,
+              "end": 392318,
+              "boundary_start": 392298
+            }
+          ],
+          "subject_heading_raw": "2026학년도 1학기 과학과 교수학습 및 평가 계획",
+          "subject_heading_key": "과학"
+        }
+      },
+      "boundary_verified": true
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "연평중학교",
+      "grade": 2,
+      "filename": "2026-1학기 연평중학교 과학, 기술가정, 정보과 교수학습 및 평가운영 계획.hwpx",
+      "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/9b5957ad102a505c6456f1145fe0de4daf3b390b29d20e5bbb8a1db5441eb717.json",
+      "section_id": "subj_98a59b44c45b15bc12f77c0a9431f01301ccc54456e29404f0e5103175f12ee8",
+      "locator": {
+        "start": 56336,
+        "end": 87961,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc",
+        "text_field": "text"
+      },
+      "line_start": 672,
+      "line_end": 977,
+      "heading": "2026학년도 1학기 [과학]과 교수학습 및 평가 운영 계획",
+      "end_basis": "next_subject_or_s4_grade_boundary",
+      "next_subject": "기술·가정",
+      "end_description": "다음 교과 머리글: 기술·가정",
+      "boundary_evidence": {
+        "start": {
+          "start": 56336,
+          "end": 56369,
+          "raw": "2026학년도 1학기 [과학]과 교수학습 및 평가 운영 계획",
+          "key": "과학",
+          "basis": "plan_heading"
+        },
+        "end": {
+          "start": 87961,
+          "end": 87997,
+          "raw": "2026학년도 1학기 [기술·가정]과 교수학습 및 평가 운영 계획",
+          "key": "기술·가정",
+          "basis": "plan_heading"
+        },
+        "s4_end_basis": "next_structural_heading_or_grade",
+        "next_s4_boundary": {
+          "locator": {
+            "start": 87961,
+            "end": 102424,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc",
+            "text_field": "text"
+          },
+          "grade": 2,
+          "grade_evidence": [
+            {
+              "grade": 2,
+              "source": "table_cell",
+              "text": " 2 ",
+              "start": 88089,
+              "end": 88092,
+              "role": "subject_heading",
+              "boundary_start": 87999
+            }
+          ],
+          "subject_heading_raw": "2026학년도 1학기 [기술·가정]과 교수학습 및 평가 운영 계획",
+          "subject_heading_key": "기술·가정"
+        }
+      },
+      "boundary_verified": true
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "광양마동중학교",
+      "grade": 1,
+      "filename": "2026학년도 광양마동중 2학기 교수학습 및 평가운영 계획(1학년 전과목).pdf",
+      "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/a35241d0d4e7c66d5061d65471103b8d0038c0ea6e5c0021d48650e45bce0811.json",
+      "section_id": "subj_675a87cc95abd079da77158cecbcaf6518de9fd3555c38ab924a78aeed5a7d47",
+      "locator": {
+        "start": 141859,
+        "end": 180330,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc",
+        "text_field": "text"
+      },
+      "line_start": 1878,
+      "line_end": 2401,
+      "heading": "# 과학 평가",
+      "end_basis": "next_subject_or_s4_grade_boundary",
+      "next_subject": "기술·가정",
+      "end_description": "다음 교과 머리글: 기술·가정",
+      "boundary_evidence": {
+        "start": {
+          "start": 141859,
+          "end": 141866,
+          "raw": "# 과학 평가",
+          "key": "과학",
+          "basis": "plan_heading"
+        },
+        "end": {
+          "start": 180330,
+          "end": 180337,
+          "raw": "# 기술･가정",
+          "key": "기술·가정",
+          "basis": "subject_label"
+        },
+        "s4_end_basis": "next_structural_heading_or_grade",
+        "next_s4_boundary": {
+          "locator": {
+            "start": 180330,
+            "end": 219064,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc",
+            "text_field": "text"
+          },
+          "grade": 1,
+          "grade_evidence": [
+            {
+              "grade": 1,
+              "source": "table_cell",
+              "school_level": null,
+              "text": "1학년",
+              "start": 180352,
+              "end": 180355,
+              "boundary_start": 180348
+            },
+            {
+              "grade": 1,
+              "source": "body_heading",
+              "school_level": null,
+              "text": "1학년",
+              "start": 180425,
+              "end": 180428,
+              "role": "grade_heading",
+              "boundary_start": 180423
+            },
+            {
+              "grade": 1,
+              "source": "filename",
+              "school_level": null,
+              "text": "1학년",
+              "start": 33,
+              "end": 36
+            }
+          ],
+          "subject_heading_raw": "# 기술･가정",
+          "subject_heading_key": "기술가정"
+        }
+      },
+      "boundary_verified": true
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "순천연향중학교",
+      "grade": 1,
+      "filename": "2026학년도 순천연향중 1학년 1학기 교수학습 및 평가 운영 계획.pdf",
+      "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/ececd2588edf9ee298108d8679f66627d8abedc133b990d74c5d65a91f7a34af.json",
+      "section_id": "subj_fc704d5ac84be077211661c4ac5fc0ccd20cff6e0de725887465fb7c2949b49e",
+      "locator": {
+        "start": 119009,
+        "end": 145672,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc",
+        "text_field": "text"
+      },
+      "line_start": 1869,
+      "line_end": 2311,
+      "heading": "# 과학과 교수 ․ 학습 및 평가 운영 계획",
+      "end_basis": "next_subject_or_s4_grade_boundary",
+      "next_subject": "기술·가정",
+      "end_description": "다음 교과 머리글: 기술·가정",
+      "boundary_evidence": {
+        "start": {
+          "start": 119009,
+          "end": 119033,
+          "raw": "# 과학과 교수 ․ 학습 및 평가 운영 계획",
+          "key": "과학",
+          "basis": "plan_heading"
+        },
+        "end": {
+          "start": 145672,
+          "end": 145709,
+          "raw": "2026학년도 1학기 기술·가정과 교수 ․ 학습 및 평가 운영 계획",
+          "key": "기술·가정",
+          "basis": "plan_heading"
+        },
+        "s4_end_basis": "next_structural_heading_or_grade",
+        "next_s4_boundary": {
+          "locator": {
+            "start": 145672,
+            "end": 151158,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc",
+            "text_field": "text"
+          },
+          "grade": 1,
+          "grade_evidence": [
+            {
+              "grade": 1,
+              "source": "table_cell",
+              "text": " 1학년 ",
+              "start": 145772,
+              "end": 145777,
+              "role": "subject_heading",
+              "boundary_start": 145711
+            },
+            {
+              "grade": 1,
+              "source": "filename",
+              "school_level": null,
+              "text": "1학년",
+              "start": 14,
+              "end": 17
+            }
+          ],
+          "subject_heading_raw": "2026학년도 1학기 기술·가정과 교수 ․ 학습 및 평가 운영 계획",
+          "subject_heading_key": "기술·가정"
+        }
+      },
+      "boundary_verified": true
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "울산제일중학교",
+      "grade": 2,
+      "filename": "2026학년도 2학기 2학년 전과목 교수학습 및 평가계획서(최종본).hwpx",
+      "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/674e3c8f4d9a66ed57f1f83fd28881b1988e43b1e60136bbef9db1bfa1a49f2d.json",
+      "section_id": "subj_df9874715c9433d66f85d884b6b5d35da6de50be5303622855135ad3b0becb6b",
+      "locator": {
+        "start": 100784,
+        "end": 128116,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc",
+        "text_field": "text"
+      },
+      "line_start": 1222,
+      "line_end": 1582,
+      "heading": "( 과학 )과 2학년",
+      "end_basis": "next_subject_or_s4_grade_boundary",
+      "next_subject": "기술·가정",
+      "end_description": "다음 교과 머리글: 기술·가정",
+      "boundary_evidence": {
+        "start": {
+          "start": 100784,
+          "end": 100795,
+          "raw": "( 과학 )과 2학년",
+          "key": "과학",
+          "basis": "subject_label"
+        },
+        "end": {
+          "start": 128116,
+          "end": 128129,
+          "raw": "( 기술가정 )과 2학년",
+          "key": "기술·가정",
+          "basis": "subject_label"
+        },
+        "s4_end_basis": "next_structural_heading_or_grade",
+        "next_s4_boundary": {
+          "locator": {
+            "start": 128116,
+            "end": 155055,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc",
+            "text_field": "text"
+          },
+          "grade": 2,
+          "grade_evidence": [
+            {
+              "grade": 2,
+              "source": "body_heading",
+              "school_level": null,
+              "text": "2학년",
+              "start": 128126,
+              "end": 128129,
+              "role": "subject_heading",
+              "boundary_start": 128116
+            },
+            {
+              "grade": 2,
+              "source": "body_heading",
+              "school_level": null,
+              "text": "2학년",
+              "start": 128424,
+              "end": 128427,
+              "role": "subject_heading",
+              "boundary_start": 128412
+            },
+            {
+              "grade": 2,
+              "source": "table_cell",
+              "school_level": null,
+              "text": "2학년",
+              "start": 135904,
+              "end": 135907,
+              "boundary_start": 135875,
+              "cell_text": "2학년 총정리",
+              "cell_start": 135904
+            },
+            {
+              "grade": 2,
+              "source": "filename",
+              "school_level": null,
+              "text": "2학년",
+              "start": 12,
+              "end": 15
+            }
+          ],
+          "subject_heading_raw": "( 기술가정 )과 2학년",
+          "subject_heading_key": "기술가정"
+        }
+      },
+      "boundary_verified": true
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "순천연향중학교",
+      "grade": 2,
+      "filename": "2026학년도 순천연향중 2학기 2학년 전과목 교수학습 및 평가계획.pdf",
+      "converted_path": "data/derived/segments/2026-round-3-dev2-conversions/e00b3ca2e3fd3de8c851a392663a117978e158424a8c893bf0832a0beeddb2c6.json",
+      "section_id": "subj_c3ecce9e0d04f88df34e1a48aca9a0b225e14d0a66b184c61925b2b6900d51aa",
+      "locator": {
+        "start": 118497,
+        "end": 168157,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc",
+        "text_field": "text"
+      },
+      "line_start": 1467,
+      "line_end": 2046,
+      "heading": "# 과학과 교수 ․ 학습 및 평가 운영 계획",
+      "end_basis": "next_subject_or_s4_grade_boundary",
+      "next_subject": "기술·가정",
+      "end_description": "다음 교과 머리글: 기술·가정",
+      "boundary_evidence": {
+        "start": {
+          "start": 118497,
+          "end": 118521,
+          "raw": "# 과학과 교수 ․ 학습 및 평가 운영 계획",
+          "key": "과학",
+          "basis": "plan_heading"
+        },
+        "end": {
+          "start": 168157,
+          "end": 168198,
+          "raw": "2026학년도 2학기 [기술 ․ 가정]과 교수 ․ 학습 및 평가 운영 계획",
+          "key": "기술·가정",
+          "basis": "plan_heading"
+        },
+        "s4_end_basis": "next_structural_heading_or_grade",
+        "next_s4_boundary": {
+          "locator": {
+            "start": 168157,
+            "end": 174045,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc",
+            "text_field": "text"
+          },
+          "grade": 2,
+          "grade_evidence": [
+            {
+              "grade": 2,
+              "source": "table_cell",
+              "school_level": null,
+              "text": "2학년",
+              "start": 168262,
+              "end": 168265,
+              "boundary_start": 168260
+            },
+            {
+              "grade": 2,
+              "source": "filename",
+              "school_level": null,
+              "text": "2학년",
+              "start": 18,
+              "end": 21
+            }
+          ],
+          "subject_heading_raw": "2026학년도 2학기 [기술 ․ 가정]과 교수 ․ 학습 및 평가 운영 계획",
+          "subject_heading_key": "기술․가정"
+        }
+      },
+      "boundary_verified": true
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "갈산중학교",
+      "grade": 1,
+      "filename": "4. 과학과_2026학년도 교수학습 및 평가 운영계획.hwp",
+      "converted_path": "data/derived/segments/2026-round-1-dev2-conversions/73df81a5f6953bcdb321d9a676eca955b994c776d005eeb1ff0afc48beb96cd7.json",
+      "section_id": "subj_940ffe6b7f9d12a64bd406c36e2f79212638c35781db4a533a3b0a9a45afc067",
+      "locator": {
+        "start": 36,
+        "end": 7883,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc",
+        "text_field": "text"
+      },
+      "line_start": 3,
+      "line_end": 70,
+      "heading": "<tr><td colspan=\"2\">2026학년도 과학과 교수학습 및 평가 운영 계획</td></tr>",
+      "end_basis": "next_subject_or_s4_grade_boundary",
+      "next_subject": "과학",
+      "end_description": "학년 표지/학년 칸: 중2",
+      "boundary_evidence": {
+        "start": {
+          "start": 36,
+          "end": 93,
+          "raw": "<tr><td colspan=\"2\">2026학년도 과학과 교수학습 및 평가 운영 계획</td></tr>",
+          "key": "과학",
+          "basis": "plan_heading"
+        },
+        "end": {
+          "start": 7883,
+          "end": 7995,
+          "raw": "| 학년 | 학기 | 과목 | 학급 | 주당시수 | 지도교사 |\n| --- | --- | --- | --- | --- | --- |\n| 2 | 1학기 | 과학 | 1반 \\~ 5반 | 4 | 허지영 |\n",
+          "key": "과학",
+          "basis": "metadata_subject_column"
+        },
+        "s4_end_basis": "next_structural_heading_or_grade",
+        "next_s4_boundary": {
+          "locator": {
+            "start": 7883,
+            "end": 15390,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc",
+            "text_field": "text"
+          },
+          "grade": 2,
+          "grade_evidence": [
+            {
+              "grade": 2,
+              "source": "table_cell",
+              "text": " 2 ",
+              "start": 7958,
+              "end": 7961,
+              "role": "subject_heading",
+              "boundary_start": 7883
+            },
+            {
+              "grade": 2,
+              "source": "table_cell",
+              "text": " 2 ",
+              "start": 11698,
+              "end": 11701,
+              "role": "subject_heading",
+              "boundary_start": 11623
+            }
+          ],
+          "subject_heading_raw": "| 학년 | 학기 | 과목 | 학급 | 주당시수 | 지도교사 |\n| --- | --- | --- | --- | --- | --- |\n| 2 | 1학기 | 과학 | 1반 \\~ 5반 | 4 | 허지영 |\n",
+          "subject_heading_key": "과학"
+        }
+      },
+      "boundary_verified": true
+    }
+  ]
+}

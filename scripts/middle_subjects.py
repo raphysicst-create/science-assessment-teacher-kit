@@ -14,7 +14,7 @@ if __package__:
 else:
     from middle_segments import digest_id, structural_events, text_locator, visible
 
-RULE_VERSION = "middle-subjects-v2"
+RULE_VERSION = "middle-subjects-v3"
 IDENTITY_VERSION = "middle-subjects-v1"  # Same source spans retain their identities.
 # National middle-school subject families. Local elective prefixes remain unknown
 # until their source curriculum is checked. This is not a 2022-code validity list.
@@ -85,7 +85,7 @@ def subject_headers(text: str) -> list[dict]:
     by_start = {
         h["start"]: {**h, "key": canonical_subject(h["key"])}
         for h in headings
-        if canonical_subject(h["key"]) in SUBJECT_NAMES
+        if h["key"] and canonical_subject(h["key"]) in SUBJECT_NAMES
     }
     offset = 0
     lines = text.splitlines(keepends=True)
@@ -351,6 +351,21 @@ def subject_sections(
                         else "next_subject_or_s4_grade_boundary"
                         if right < len(text)
                         else "document_end"
+                    ),
+                    "boundary_evidence": {
+                        "start": header,
+                        "end": next((h for h in headers if h["start"] == right), None),
+                        "s4_end_basis": parent.get("end_basis"),
+                        "next_s4_boundary": next((
+                            {"locator": p["locator"], "grade": p.get("grade"),
+                             "grade_evidence": p.get("grade_evidence", []),
+                             "subject_heading_raw": p.get("subject_heading_raw"),
+                             "subject_heading_key": p.get("subject_heading_key")}
+                            for p in segments if p["locator"]["start"] == right
+                        ), None),
+                    },
+                    "next_subject": next(
+                        (h["key"] for h in headers if h["start"] == right), None,
                     ),
                 }
             )
