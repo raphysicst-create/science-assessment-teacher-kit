@@ -22,7 +22,7 @@ def title_key(value):
     value = re.sub(r"\(\s*\d+(?:\.\d+)?\s*점\s*\)\s*$", "", value)
     value = re.sub(r"\((?:실험탐구논술형|논술형|실험[·ㆍ]?실습|서[·ㆍ]?논술형)\)\s*$", "", value)
     value = re.sub(r"\((?:프로젝트|실험[·ㆍ]실습|서[·ㆍ]논술형?)\s*평가\)\s*$", "", value)
-    return title_alias_key(re.sub(r"[·ㆍ･‧]", "", compact(value)).strip("'\"‘’“”"))
+    return title_alias_key(re.sub(r"[·ㆍ･‧⋅•・]", "", compact(value)).strip("'\"‘’“”"))
 
 
 def titles(item):
@@ -144,7 +144,9 @@ def merge_pair(summary, detail, proof):
     comparable = {
         "score", "points", "weight", "essay_weight", "timing", "standards", "task_no"
     }
-    if (titles(summary) & titles(detail) or proof["basis"] == "unique_task_number"
+    if (title_key(summary["fields"]["title"]["value"])
+            == title_key(detail["fields"]["title"]["value"])
+            or proof["basis"] == "unique_task_number"
             and summary.get("title_role") == detail.get("title_role")):
         comparable.add("title")
     for name, target in detail["fields"].items():
@@ -282,11 +284,19 @@ def reconcile_items(items):
             )
             if containment:
                 matched.append("title_containment")
-            # Generic/competency area labels are comparison evidence only when
-            # each occurs once in a complete ordered sequence, with another vote.
-            same_title |= bool(ordered and any(
+            # Preserve ordered area correspondence. Unordered generic labels
+            # additionally require equal representative titles; concrete tasks
+            # cannot be joined merely because both use the same method.
+            same_title |= bool(any(
                 sum(k in area_titles(i) for i in local_summaries) == 1
-                and sum(k in area_titles(i) for i in local_details) == 1
+                and sum(k in area_titles(i) for i in (
+                    local_details if ordered else [i for i in local if i["layout"] == "form"]
+                )) == 1
+                and (ordered or all(title_key(i["fields"]["title"]["value"]) == k
+                         for i in (summary, detail)) or any(
+                    title_key(o["text"]) == k and not AREA_TITLE_RE.fullmatch(o["text"])
+                    for i in (summary, detail) for o in i["fields"]["assessment_area"]["evidence"]
+                ))
                 for k in area_overlap
             ))
             structural_pair = ordered and "standards" in matched and len(matched) >= 2

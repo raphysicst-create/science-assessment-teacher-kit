@@ -61,6 +61,11 @@ def item_scope(structure, section, conversion):
     boundaries = [b for b in context.get("boundaries", []) if b["start"] <= start]
     reasons = []
     grade = grades[-1] if grades else None
+    assessment = section.get("assessment_scope_evidence")
+    if assessment and assessment.get("grade"):
+        grade = {"grade": section["grade"], "start": start,
+                 "source": "assessment_table_evidence",
+                 "evidence": assessment["grade"]}
     appendix = section.get("appendix_boundary_evidence", {})
     if (grade and grade["start"] < section["locator"]["start"]
             and section.get("boundary_verified")

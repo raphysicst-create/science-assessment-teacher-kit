@@ -22,7 +22,7 @@ LEVEL_RE = re.compile(
 
 
 def method_literal(value):
-    value = re.sub(r"[ㆍ･・‧⋅]", "·", value.strip())
+    value = re.sub(r"[ㆍ･・‧⋅•]", "·", value.strip())
     if METHOD_RE.fullmatch(value):
         return True
     parts = re.split(r"\s*[,，/·\n]+\s*", value)
@@ -60,7 +60,7 @@ def title_alias_key(value):
     value = unicodedata.normalize("NFKC", value)
     for wrong, correct in (("됬", "됐"), ("되요", "돼요"), ("했읍", "했습"), ("하였읍", "하였습")):
         value = value.replace(wrong, correct)
-    return re.sub(r"[\s·ㆍ･‧,，'\"‘’“”]+", "", value)
+    return re.sub(r"[\s·ㆍ･‧⋅•・,，'\"‘’“”]+", "", value)
 
 
 def enrich_claims(structure):

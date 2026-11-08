@@ -7,6 +7,7 @@ flattened PDF text remain review candidates. No curriculum or activity inference
 from __future__ import annotations
 
 import hashlib
+import html
 import re
 from collections import defaultdict
 
@@ -21,7 +22,8 @@ if __package__:
         title_alias_key,
         title_parts,
     )
-    from .middle_segments import digest_id, text_locator, visible
+    from .middle_segments import digest_id, text_locator
+    from .middle_segments import visible as structural_visible
     from .middle_subjects import classify_subject, table_spans
 else:
     from assessment_symbols import BOX_RE, marker_state
@@ -34,10 +36,11 @@ else:
         title_alias_key,
         title_parts,
     )
-    from middle_segments import digest_id, text_locator, visible
+    from middle_segments import digest_id, text_locator
+    from middle_segments import visible as structural_visible
     from middle_subjects import classify_subject, table_spans
 
-RULE_VERSION = "middle-items-v10"
+RULE_VERSION = "middle-items-v11"
 IDENTITY_VERSION = "middle-items-v2"  # Field-only changes retain source identities.
 FIELDS = (
     "title",
@@ -58,6 +61,10 @@ FIELDS = (
     "free_semester",
 )
 LABELS = {
+    "과목": "subject",
+    "과목명": "subject",
+    "교과": "subject",
+    "교과목": "subject",
     "평가영역": "assessment_area",
     "평가영역명": "assessment_area",
     "영역명": "assessment_area",
@@ -152,7 +159,8 @@ TASK_NO_RE = re.compile(
     r"|\d+\s*(?:차|회)|[①-⑳])"
 )
 AREA_TITLE_RE = re.compile(
-    r"(?:실험(?:[·ㆍ･‧]실습)?|탐구(?:활동)?|(?:실험|탐구)\s*보고서|실험\s*탐구|서[·ㆍ･‧]?논술형?"
+    r"(?:실험(?:[·ㆍ･‧⋅•・]실습)?|탐구(?:활동)?|(?:실험|탐구)\s*보고서|실험\s*탐구"
+    r"|서[·ㆍ･‧⋅•・]?논술형?"
     r"|서술형|논술형|구술[·ㆍ･‧]?발표|발표|보고서|프로젝트|포트폴리오)(?:\s*평가)?"
 )
 CODE_SPACE = r"(?:\s|<br\s*/?>)*"
@@ -186,6 +194,13 @@ ROLE_LABELS = {
 }
 
 
+def visible(value: str) -> str:
+    # Korean book delimiters in literal cells are not HTML markup. Preserve
+    # their original spelling while still interpreting actual converter tags.
+    value = re.sub(r"<[가-힣][^<>]*>", lambda m: html.escape(m[0]), value)
+    return structural_visible(value)
+
+
 def label_role(text: str) -> str | None:
     key = re.sub(r"\s+", "", text)
     key = re.sub(r"^[➊-➓❶-❿①-⑳]+", "", key)
@@ -205,6 +220,7 @@ def title_gate(value: str) -> dict:
     """Authenticity comes from the caller's source cell, never this score."""
     rejected = bool(
         not value
+        or re.match(r"^(?:을|를|은|는|이|가|와|과|의|에|에서|으로|로)\s", value)
         or label_role(value)
         or len(value) > 120
         or re.search(r"성취수준|성취기준|수행평가\s*(?:세부|운영|계획)|결시|전입생", value)
@@ -245,7 +261,7 @@ def title_content_role(value: str, source_role: str) -> str:
     if AREA_TITLE_RE.fullmatch(value):
         return "assessment_area"
     if re.search(
-        r"하기|만들기|쓰기|보고서|관찰|측정|분류|설계|설명|비교|관계|원리"
+        r"하기|만들기|쓰기|보고서|관찰|측정|분류|설계|설명|서술|비교|관계|원리"
         r"|모형|특징|적용|법칙", value
     ):
         return "task"
@@ -690,15 +706,21 @@ def preceding_task(table: dict, tables: list[dict], text: str, section: dict) ->
     if not lines:
         return None
     line = lines[-1]
+    grade_heading = re.fullmatch(
+        r"[\s#*\-]*(?:[가-하]\s*[.)]\s*)?([123])\s*학년\s*", line[1],
+    )
+    if grade_heading and int(grade_heading[1]) == section.get("grade") and len(lines) > 1:
+        line = lines[-2]
+        lines = lines[:-1]
     if len(lines) > 1:
         previous = lines[-2]
         other = re.fullmatch(r"[\s#*\-]*(?:[가-하]|\d+)\s*[.)]\s*(.+)", previous[1])
         if (other and title_gate(visible(other[1]))["accepted"]
                 and not re.search(r"학년\s*$|계획\s*$|세부\s*기준\s*$"
-                                  r"|수행평가.*(?:세부|기준|영역별)", previous[1])):
+                                  r"|(?:평가|수행평가).*(?:세부|기준|영역별)", previous[1])):
             return None  # Multiple task headings require physical correspondence.
     match = re.fullmatch(
-        r"[\s#*\-]*(?:[가-하]|\d+)\s*[.)]\s*(?:\(\s*(.+?)\s*\)"
+        r"[\s#*\-]*\(?(?:[가-하]|\d+)\s*[.)]\s*(?:\(\s*(.+?)\s*\)"
         r"\s*영역\s*세부\s*평가\s*기준|(.+?))\s*", line[1],
     )
     if not match:
@@ -706,6 +728,11 @@ def preceding_task(table: dict, tables: list[dict], text: str, section: dict) ->
     group = 1 if match[1] else 2
     lo, hi = match.span(group)
     raw = line[1][lo:hi]
+    prefix = re.match(r"수행\s*평가\s*영역명\s*[:：]\s*", raw)
+    heading_role = "assessment_area" if prefix else "task"
+    if prefix:
+        lo += prefix.end()
+        raw = line[1][lo:hi]
     if not title_gate(visible(raw))["accepted"]:
         return None
     roles = {label_role(c["text"]) for c in table["cells"]}
@@ -713,7 +740,7 @@ def preceding_task(table: dict, tables: list[dict], text: str, section: dict) ->
         return None
     return {"raw": raw, "text": visible(raw), "start": start + line.start(1) + lo,
             "end": start + line.start(1) + hi, "table": table["table"],
-            "row": -1, "col": 0, "rowspan": 1, "colspan": 1}
+            "row": -1, "col": 0, "rowspan": 1, "colspan": 1, "heading_role": heading_role}
 
 
 def split_form_labels(table: dict, conversion: dict) -> dict:
@@ -815,7 +842,7 @@ def form_structures(table: dict) -> list[dict]:
                 for c in cells
                 if c["row"] > header["row"]
                 and c["col"] == header["col"]
-                and c["colspan"] == header["colspan"]
+                and c["colspan"] >= header["colspan"]
                 and CODE_RE.search(c["raw"])
             )
         rubric_headers = [c for c in cells if label_role(c["text"]) == "rubric"]
@@ -862,7 +889,7 @@ def form_structures(table: dict) -> list[dict]:
     return output
 
 
-def row_structures(table: dict) -> list[dict]:
+def row_structures(table: dict, section: dict | None = None) -> list[dict]:
     for row in table["rows"]:
         headers = {c["col"]: c for c in row if label_role(c["text"])}
         roles = {label_role(c["text"]) for c in headers.values()}
@@ -880,6 +907,20 @@ def row_structures(table: dict) -> list[dict]:
             if all(re.fullmatch(r"[:\-\s]*", c["text"]) for c in cells):
                 continue
             claims = defaultdict(list)
+            context = {label_role(h["text"]): table["grid"].get((row_number, col))
+                       for col, h in headers.items()
+                       if label_role(h["text"]) in {"subject", "grade", "semester"}}
+            if "subject" in context and (not context["subject"] or re.sub(
+                r"\s+", "", context["subject"]["text"]
+            ) not in {"과학", "과학과"}):
+                continue
+            if section and any(
+                role in context and (not context[role] or not re.fullmatch(
+                    r"[123](?:학년|학기)?", re.sub(r"\s+", "", context[role]["text"])
+                ) or int(context[role]["text"].strip()[0]) != section.get(role))
+                for role in ("grade", "semester")
+            ):
+                continue
             for col, header in headers.items():
                 cell = table["grid"].get((row_number, col))
                 if cell and cell["rowspan"] == 1 and cell["text"]:
@@ -896,6 +937,7 @@ def row_structures(table: dict) -> list[dict]:
             if any(claims.get(r) for r in TITLE_ROLES):
                 structure = new_structure(table, cells, claims, "row")
                 structure["row"] = row_number
+                structure["row_context"] = {k: c for k, c in context.items() if c}
                 structure["table_role"] = (
                     "summary"
                     if ({"score", "weight"} <= roles or "score_weight" in roles)
@@ -1234,14 +1276,28 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     for role in ("task", "title", "task_text", "assessment_area", "task_no"):
         for cell, header in claims.get(role, []):
             cell = title_cell(cell)
-            if role == "task_text" and (
+            explicit_task = bool(
+                role in {"task", "task_text"} and header
+                and re.fullmatch(r"(?:수행|평가)\s*과제(?:\s*내용)?", header["text"])
+                and not cell.get("description_only")
+                and not re.search(r"(?:^|<br\s*/?>|\n)\s*(?:\d+[.)]|[①-⑳])", cell["raw"])
+                and len(cell["text"]) <= 240
+                and not re.match(r"^(?:을|를|은|는|이|가|와|과|의|에|에서|으로|로)\s", cell["text"])
+                and title_content_role(cell["text"], "assessment_area") == "task"
+                and not CODE_RE.search(cell["raw"])
+                and not BOX_RE.search(cell["raw"])
+                and not re.search(r"수\s*있다\.?$|하십시오|다음\s*과제|유의사항"
+                                  r"|성취수준|성취기준|결시|전입생", cell["text"])
+            )
+            if role == "task_text" and not explicit_task and (
                 cell.get("description_only")
                 or not title_gate(cell["text"])["accepted"]
                 or title_content_role(cell["text"], "assessment_area") != "task"
                 or re.search(r"<br|[\r\n]|^\s*\d+[.)]", cell["raw"], re.I)
             ):
                 continue
-            if title_gate(cell["text"])["accepted"] or re.fullmatch(r"\d+", cell["text"]):
+            if (explicit_task or title_gate(cell["text"])["accepted"]
+                    or re.fullmatch(r"\d+", cell["text"])):
                 content_role = title_content_role(cell["text"], role)
                 title_candidates.append((content_role, cell, header, role))
     title = None
@@ -1254,8 +1310,18 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     if title:
         observations["title"] = [
             evidence(c, conversion, h) for content, c, h, role in title_candidates
-            if content == title_role
+            if content == title_role and role == source_role
+            and (header is None or h is not None)
         ]
+        # A physical section heading identifies the same form, but cannot vote
+        # against its explicit task-value cell. Keep it as an area observation.
+        if header is not None:
+            observations["assessment_area"].extend(
+                evidence(c, conversion) for content, c, h, role in title_candidates
+                if content == title_role and role == source_role and h is None
+                and not any(o["locator"]["start"] == c["start"]
+                            for o in observations["assessment_area"])
+            )
     identity_title = next(
         (
             c for role in ("title", "assessment_area", "task", "task_no")
@@ -1406,6 +1472,10 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
             "performance_group": evidence(structure["group"], conversion)
             if structure.get("group") else None,
             "appendix": section.get("appendix_boundary_evidence"),
+            "assessment_scope": section.get("assessment_scope_evidence"),
+            "row_context": {k: evidence(c, conversion)
+                            for k, c in structure.get("row_context", {}).items()},
+            "pdf_summary": structure.get("pdf_summary"),
             "grade_anchor": evidence(structure["anchor"], conversion)
             if structure.get("anchor")
             else None,
@@ -1531,7 +1601,9 @@ def extract_middle_items(
         # Form/row bounds must fit inside their S4/S5 section.
         if not start <= table["start"] < table["end"] <= end:
             continue
-        found = row_structures(table) or form_structures(split_form_labels(table, conversion))
+        found = row_structures(table, section) or form_structures(
+            split_form_labels(table, conversion)
+        )
         external = conversion.get("physical", {}).get("titles", {}).get(str(table["table"]))
         heading = preceding_task(table, all_tables, text, section)
         external = external or heading
@@ -1555,7 +1627,7 @@ def extract_middle_items(
         ):
             found[0]["cells"].append(external)
             found[0]["external_task"] = external
-            found[0]["claims"]["task"].append((external, None))
+            found[0]["claims"][external.get("heading_role", "task")].append((external, None))
         if heading and len(found) == 1:
             found[0]["adjacent_task_heading"] = heading
         for structure in found:

@@ -59,6 +59,8 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
         documents.append(document)
         conversion = json.loads((ROOT / document["converted_path"]).read_text(encoding="utf-8"))
         source_document = source_documents[document["converted_path"]]
+        conversion["document_grade_evidence"] = [g for s in source_document["segments"]
+                                                  for g in s["grade_evidence"]]
         conversion["sha256"] = source_document["sha256"]
         comparison = method_checks.get(source_document["sha256"])
         if comparison and comparison["structured_text_sha256"] == document["text_sha256"]:
@@ -83,11 +85,14 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
                 raise ValueError("physical correspondence hash mismatch")
             conversion["physical"] = physical
         if Path(document["original_path"]).suffix.lower() == ".pdf":
+            conversion["source_pdf_path"] = ROOT / document["original_path"]
             conversion["verified_cell_splits"] = verified_title_splits(
                 text, ROOT / document["original_path"]
             )
         if hashlib.sha256(text.encode("utf-8")).hexdigest() != document["text_sha256"]:
             raise ValueError(f"S4 text hash mismatch: {document['converted_path']}")
+        document_item_start = len(items)
+        assessment_templates = []
         for section in subjects["sections"]:
             if section["converted_path"] != document["converted_path"]:
                 continue
@@ -107,7 +112,9 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
                 **section,
                 "semester": parent["semester"],
                 "semester_evidence": parent["semester_evidence"],
+                "grade_evidence": parent["grade_evidence"],
             }
+            assessment_templates.append(section)
             found = extract_middle_items(text, section, conversion)
             for item in found:
                 for name, field in item["fields"].items():
@@ -159,6 +166,28 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
                 }
                 for i in found
             )
+        from middle_assessment_scope import assessment_items
+
+        recovered = assessment_items(
+            text, assessment_templates, conversion, items[document_item_start:],
+        )
+        for item in recovered:
+            for name, field in item["fields"].items():
+                for obs in field["evidence"] + field.get("options", []):
+                    loc = obs["locator"]
+                    if text[loc["start"]:loc["end"]] != obs["raw"]:
+                        trace_errors.append({"item_id": item["item_id"], "field": name,
+                                             "locator": loc})
+            title = item["fields"]["title"]
+            item["title_generated"] = bool(title["value"] and (
+                not title["evidence"] or any(visible(o["raw"]) not in title.get(
+                    "aliases", [title["value"]]) for o in title["evidence"])))
+            item.update(document, edition=source_document["edition"],
+                        source_sha256=source_document["sha256"])
+            item.setdefault("semester_evidence", next(
+                (s["semester_evidence"] for s in assessment_templates
+                 if s["grade"] == item["grade"] and s["semester"] == item["semester"]), []))
+        items[document_item_start:] = recovered
     reconcile_items(items)
     items, history = edition_history(documents, items)
     errors = ownership_errors(items)
