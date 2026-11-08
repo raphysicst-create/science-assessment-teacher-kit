@@ -1,0 +1,1582 @@
+{
+  "rounds": {
+    "2026-round-3": {
+      "before": {
+        "bounded": 59,
+        "review": 116,
+        "roles": {
+          "teaching_plan": 56,
+          "performance": 71,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "all_roles": {
+          "teaching_plan": 56,
+          "summary_duplicate": 36,
+          "performance": 71,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 56,
+          "원문 제목 셀 미확정": 107,
+          "행·열·셀 소유 범위 미입증": 104,
+          "별도 표 연결 미확정": 46,
+          "동일 항목 필드 복수 관측값·확정 보류": 5,
+          "원문 내부 충돌 (standards)": 2,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 2,
+          "S5 과목 경계 미확정": 9,
+          "원문 내부 충돌 (title)": 1,
+          "원문 내부 충돌 (weight)": 1,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 1
+        },
+        "title_roles": {
+          "과제명": 52,
+          "영역": 16,
+          "번호": 0,
+          "미확정": 107
+        },
+        "bounded_title_roles": {
+          "과제명": 43,
+          "영역": 16,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "after": {
+        "bounded": 66,
+        "review": 109,
+        "roles": {
+          "teaching_plan": 56,
+          "performance": 71,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "all_roles": {
+          "teaching_plan": 56,
+          "summary_duplicate": 36,
+          "performance": 71,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 56,
+          "원문 제목 셀 미확정": 107,
+          "행·열·셀 소유 범위 미입증": 104,
+          "별도 표 연결 미확정": 46,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 2,
+          "S5 과목 경계 미확정": 9,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 1
+        },
+        "title_roles": {
+          "과제명": 52,
+          "영역": 16,
+          "번호": 0,
+          "미확정": 107
+        },
+        "bounded_title_roles": {
+          "과제명": 50,
+          "영역": 16,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "audit": {
+        "제목 생성": 0,
+        "항목 간 필드 소유 충돌": 0,
+        "기존 근거 추적 오류": 0,
+        "변환본 범위 밖 locator": 0,
+        "근거·머리글 원문 슬라이스 불일치": 0,
+        "bounded 필드의 소유 범위 이탈": 0,
+        "bounded 경계 미입증·검토 사유 잔존": 0,
+        "bounded 타 교과·대상 외 학년": 0,
+        "평문 폴백 bounded": 0,
+        "충돌 필드 값 확정": 0,
+        "재귀속 요약 근거·학년 추적 오류": 0,
+        "요약 참조 값·소유 출처 오류": 0,
+        "일반 동일성 독립 근거·문서 범위 오류": 0,
+        "열 필드 소유 범위 오류": 0,
+        "병합셀 공유 근거 오류": 0,
+        "참고표 bounded": 0,
+        "자유학기 문맥 근거 추적 오류": 0,
+        "범위 코드 참조 밖 값": 0,
+        "세부배점 근거 추적 오류": 0,
+        "성취기준 공통·충돌 값 오류": 0
+      },
+      "field_states": {
+        "before": {
+          "title": {
+            "present": 63,
+            "source_absent": 0,
+            "unconfirmed": 107,
+            "conflict": 5
+          },
+          "assessment_area": {
+            "present": 40,
+            "source_absent": 0,
+            "unconfirmed": 134,
+            "conflict": 1
+          },
+          "task_no": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 167,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 41,
+            "source_absent": 0,
+            "unconfirmed": 134,
+            "conflict": 0
+          },
+          "method": {
+            "present": 65,
+            "source_absent": 0,
+            "unconfirmed": 110,
+            "conflict": 0
+          },
+          "timing": {
+            "present": 57,
+            "source_absent": 0,
+            "unconfirmed": 117,
+            "conflict": 1
+          },
+          "score": {
+            "present": 57,
+            "source_absent": 0,
+            "unconfirmed": 118,
+            "conflict": 0
+          },
+          "points": {
+            "present": 7,
+            "source_absent": 0,
+            "unconfirmed": 168,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 49,
+            "source_absent": 0,
+            "unconfirmed": 124,
+            "conflict": 2
+          },
+          "essay_weight": {
+            "present": 27,
+            "source_absent": 0,
+            "unconfirmed": 148,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 62,
+            "source_absent": 0,
+            "unconfirmed": 111,
+            "conflict": 2
+          },
+          "rubric": {
+            "present": 30,
+            "source_absent": 0,
+            "unconfirmed": 145,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 167,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 47,
+            "source_absent": 0,
+            "unconfirmed": 128,
+            "conflict": 0
+          },
+          "sub_scores": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 175,
+            "conflict": 0
+          },
+          "free_semester": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 175,
+            "conflict": 0
+          }
+        },
+        "after": {
+          "title": {
+            "present": 64,
+            "source_absent": 0,
+            "unconfirmed": 107,
+            "conflict": 4
+          },
+          "assessment_area": {
+            "present": 40,
+            "source_absent": 0,
+            "unconfirmed": 134,
+            "conflict": 1
+          },
+          "task_no": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 167,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 41,
+            "source_absent": 0,
+            "unconfirmed": 134,
+            "conflict": 0
+          },
+          "method": {
+            "present": 53,
+            "source_absent": 0,
+            "unconfirmed": 122,
+            "conflict": 0
+          },
+          "timing": {
+            "present": 57,
+            "source_absent": 0,
+            "unconfirmed": 117,
+            "conflict": 1
+          },
+          "score": {
+            "present": 57,
+            "source_absent": 0,
+            "unconfirmed": 117,
+            "conflict": 1
+          },
+          "points": {
+            "present": 7,
+            "source_absent": 0,
+            "unconfirmed": 168,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 49,
+            "source_absent": 0,
+            "unconfirmed": 124,
+            "conflict": 2
+          },
+          "essay_weight": {
+            "present": 27,
+            "source_absent": 0,
+            "unconfirmed": 148,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 62,
+            "source_absent": 0,
+            "unconfirmed": 111,
+            "conflict": 2
+          },
+          "rubric": {
+            "present": 11,
+            "source_absent": 0,
+            "unconfirmed": 164,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 167,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 56,
+            "source_absent": 0,
+            "unconfirmed": 119,
+            "conflict": 0
+          },
+          "sub_scores": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 167,
+            "conflict": 0
+          },
+          "free_semester": {
+            "present": 175,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 0
+          }
+        }
+      },
+      "bounded_field_states": {
+        "before": {
+          "title": {
+            "present": 59,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 0
+          },
+          "assessment_area": {
+            "present": 33,
+            "source_absent": 0,
+            "unconfirmed": 26,
+            "conflict": 0
+          },
+          "task_no": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 51,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 33,
+            "source_absent": 0,
+            "unconfirmed": 26,
+            "conflict": 0
+          },
+          "method": {
+            "present": 54,
+            "source_absent": 0,
+            "unconfirmed": 5,
+            "conflict": 0
+          },
+          "timing": {
+            "present": 46,
+            "source_absent": 0,
+            "unconfirmed": 13,
+            "conflict": 0
+          },
+          "score": {
+            "present": 49,
+            "source_absent": 0,
+            "unconfirmed": 10,
+            "conflict": 0
+          },
+          "points": {
+            "present": 7,
+            "source_absent": 0,
+            "unconfirmed": 52,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 45,
+            "source_absent": 0,
+            "unconfirmed": 14,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 24,
+            "source_absent": 0,
+            "unconfirmed": 35,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 52,
+            "source_absent": 0,
+            "unconfirmed": 7,
+            "conflict": 0
+          },
+          "rubric": {
+            "present": 24,
+            "source_absent": 0,
+            "unconfirmed": 35,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 51,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 44,
+            "source_absent": 0,
+            "unconfirmed": 15,
+            "conflict": 0
+          },
+          "sub_scores": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 59,
+            "conflict": 0
+          },
+          "free_semester": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 59,
+            "conflict": 0
+          }
+        },
+        "after": {
+          "title": {
+            "present": 63,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 3
+          },
+          "assessment_area": {
+            "present": 39,
+            "source_absent": 0,
+            "unconfirmed": 27,
+            "conflict": 0
+          },
+          "task_no": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 58,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 40,
+            "source_absent": 0,
+            "unconfirmed": 26,
+            "conflict": 0
+          },
+          "method": {
+            "present": 51,
+            "source_absent": 0,
+            "unconfirmed": 15,
+            "conflict": 0
+          },
+          "timing": {
+            "present": 53,
+            "source_absent": 0,
+            "unconfirmed": 13,
+            "conflict": 0
+          },
+          "score": {
+            "present": 56,
+            "source_absent": 0,
+            "unconfirmed": 10,
+            "conflict": 0
+          },
+          "points": {
+            "present": 7,
+            "source_absent": 0,
+            "unconfirmed": 59,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 48,
+            "source_absent": 0,
+            "unconfirmed": 17,
+            "conflict": 1
+          },
+          "essay_weight": {
+            "present": 27,
+            "source_absent": 0,
+            "unconfirmed": 39,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 57,
+            "source_absent": 0,
+            "unconfirmed": 7,
+            "conflict": 2
+          },
+          "rubric": {
+            "present": 10,
+            "source_absent": 0,
+            "unconfirmed": 56,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 8,
+            "source_absent": 0,
+            "unconfirmed": 58,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 45,
+            "source_absent": 0,
+            "unconfirmed": 21,
+            "conflict": 0
+          },
+          "sub_scores": {
+            "present": 7,
+            "source_absent": 0,
+            "unconfirmed": 59,
+            "conflict": 0
+          },
+          "free_semester": {
+            "present": 66,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 0
+          }
+        }
+      }
+    },
+    "2026-round-3-dev2": {
+      "before": {
+        "bounded": 72,
+        "review": 226,
+        "roles": {
+          "teaching_plan": 71,
+          "performance": 135,
+          "other": 36,
+          "general_standards": 56
+        },
+        "all_roles": {
+          "teaching_plan": 71,
+          "performance": 135,
+          "summary_duplicate": 26,
+          "other": 36,
+          "general_standards": 56
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 71,
+          "원문 제목 셀 미확정": 197,
+          "행·열·셀 소유 범위 미입증": 175,
+          "동일 항목 필드 복수 관측값·확정 보류": 1,
+          "요약표·상세표 항목 동일성 미확정": 11,
+          "별도 표 연결 미확정": 67,
+          "변환 손실": 2,
+          "평문 변환·표 구조 미보존": 1,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 25,
+          "중첩·불완전 표 구조 미확정": 9,
+          "단원·성취기준·성취수준 머리글·항목 근거 제외": 2,
+          "원문 내부 충돌 (method)": 9,
+          "원문 내부 충돌 (standards)": 5,
+          "S5 과목 경계 미확정": 7,
+          "항목 과목 판정 unknown": 7
+        },
+        "title_roles": {
+          "과제명": 73,
+          "영역": 28,
+          "번호": 0,
+          "미확정": 197
+        },
+        "bounded_title_roles": {
+          "과제명": 53,
+          "영역": 19,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "after": {
+        "bounded": 87,
+        "review": 211,
+        "roles": {
+          "teaching_plan": 71,
+          "performance": 135,
+          "other": 36,
+          "general_standards": 56
+        },
+        "all_roles": {
+          "teaching_plan": 71,
+          "performance": 135,
+          "summary_duplicate": 26,
+          "other": 36,
+          "general_standards": 56
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 71,
+          "원문 제목 셀 미확정": 197,
+          "행·열·셀 소유 범위 미입증": 175,
+          "요약표·상세표 항목 동일성 미확정": 11,
+          "별도 표 연결 미확정": 67,
+          "변환 손실": 2,
+          "평문 변환·표 구조 미보존": 1,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 25,
+          "중첩·불완전 표 구조 미확정": 9,
+          "단원·성취기준·성취수준 머리글·항목 근거 제외": 2,
+          "S5 과목 경계 미확정": 7,
+          "항목 과목 판정 unknown": 7
+        },
+        "title_roles": {
+          "과제명": 73,
+          "영역": 28,
+          "번호": 0,
+          "미확정": 197
+        },
+        "bounded_title_roles": {
+          "과제명": 62,
+          "영역": 25,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "audit": {
+        "제목 생성": 0,
+        "항목 간 필드 소유 충돌": 0,
+        "기존 근거 추적 오류": 0,
+        "변환본 범위 밖 locator": 0,
+        "근거·머리글 원문 슬라이스 불일치": 0,
+        "bounded 필드의 소유 범위 이탈": 0,
+        "bounded 경계 미입증·검토 사유 잔존": 0,
+        "bounded 타 교과·대상 외 학년": 0,
+        "평문 폴백 bounded": 0,
+        "충돌 필드 값 확정": 0,
+        "재귀속 요약 근거·학년 추적 오류": 0,
+        "요약 참조 값·소유 출처 오류": 0,
+        "일반 동일성 독립 근거·문서 범위 오류": 0,
+        "열 필드 소유 범위 오류": 0,
+        "병합셀 공유 근거 오류": 0,
+        "참고표 bounded": 0,
+        "자유학기 문맥 근거 추적 오류": 0,
+        "범위 코드 참조 밖 값": 0,
+        "세부배점 근거 추적 오류": 0,
+        "성취기준 공통·충돌 값 오류": 0
+      },
+      "field_states": {
+        "before": {
+          "title": {
+            "present": 100,
+            "source_absent": 0,
+            "unconfirmed": 197,
+            "conflict": 1
+          },
+          "assessment_area": {
+            "present": 64,
+            "source_absent": 0,
+            "unconfirmed": 233,
+            "conflict": 1
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 298,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 39,
+            "source_absent": 0,
+            "unconfirmed": 259,
+            "conflict": 0
+          },
+          "method": {
+            "present": 91,
+            "source_absent": 0,
+            "unconfirmed": 198,
+            "conflict": 9
+          },
+          "timing": {
+            "present": 64,
+            "source_absent": 0,
+            "unconfirmed": 234,
+            "conflict": 0
+          },
+          "score": {
+            "present": 58,
+            "source_absent": 0,
+            "unconfirmed": 240,
+            "conflict": 0
+          },
+          "points": {
+            "present": 10,
+            "source_absent": 0,
+            "unconfirmed": 288,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 48,
+            "source_absent": 0,
+            "unconfirmed": 250,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 21,
+            "source_absent": 0,
+            "unconfirmed": 277,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 85,
+            "source_absent": 0,
+            "unconfirmed": 208,
+            "conflict": 5
+          },
+          "rubric": {
+            "present": 41,
+            "source_absent": 0,
+            "unconfirmed": 257,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 298,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 28,
+            "source_absent": 0,
+            "unconfirmed": 270,
+            "conflict": 0
+          },
+          "sub_scores": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 298,
+            "conflict": 0
+          },
+          "free_semester": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 298,
+            "conflict": 0
+          }
+        },
+        "after": {
+          "title": {
+            "present": 100,
+            "source_absent": 0,
+            "unconfirmed": 197,
+            "conflict": 1
+          },
+          "assessment_area": {
+            "present": 64,
+            "source_absent": 0,
+            "unconfirmed": 233,
+            "conflict": 1
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 298,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 39,
+            "source_absent": 0,
+            "unconfirmed": 259,
+            "conflict": 0
+          },
+          "method": {
+            "present": 74,
+            "source_absent": 3,
+            "unconfirmed": 216,
+            "conflict": 5
+          },
+          "timing": {
+            "present": 64,
+            "source_absent": 0,
+            "unconfirmed": 234,
+            "conflict": 0
+          },
+          "score": {
+            "present": 58,
+            "source_absent": 0,
+            "unconfirmed": 240,
+            "conflict": 0
+          },
+          "points": {
+            "present": 10,
+            "source_absent": 0,
+            "unconfirmed": 288,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 48,
+            "source_absent": 0,
+            "unconfirmed": 250,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 21,
+            "source_absent": 0,
+            "unconfirmed": 277,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 89,
+            "source_absent": 0,
+            "unconfirmed": 205,
+            "conflict": 4
+          },
+          "rubric": {
+            "present": 46,
+            "source_absent": 0,
+            "unconfirmed": 252,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 298,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 51,
+            "source_absent": 0,
+            "unconfirmed": 247,
+            "conflict": 0
+          },
+          "sub_scores": {
+            "present": 27,
+            "source_absent": 0,
+            "unconfirmed": 270,
+            "conflict": 1
+          },
+          "free_semester": {
+            "present": 298,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 0
+          }
+        }
+      },
+      "bounded_field_states": {
+        "before": {
+          "title": {
+            "present": 72,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 0
+          },
+          "assessment_area": {
+            "present": 34,
+            "source_absent": 0,
+            "unconfirmed": 38,
+            "conflict": 0
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 72,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 32,
+            "source_absent": 0,
+            "unconfirmed": 40,
+            "conflict": 0
+          },
+          "method": {
+            "present": 70,
+            "source_absent": 0,
+            "unconfirmed": 2,
+            "conflict": 0
+          },
+          "timing": {
+            "present": 37,
+            "source_absent": 0,
+            "unconfirmed": 35,
+            "conflict": 0
+          },
+          "score": {
+            "present": 37,
+            "source_absent": 0,
+            "unconfirmed": 35,
+            "conflict": 0
+          },
+          "points": {
+            "present": 10,
+            "source_absent": 0,
+            "unconfirmed": 62,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 27,
+            "source_absent": 0,
+            "unconfirmed": 45,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 13,
+            "source_absent": 0,
+            "unconfirmed": 59,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 64,
+            "source_absent": 0,
+            "unconfirmed": 8,
+            "conflict": 0
+          },
+          "rubric": {
+            "present": 24,
+            "source_absent": 0,
+            "unconfirmed": 48,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 72,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 20,
+            "source_absent": 0,
+            "unconfirmed": 52,
+            "conflict": 0
+          },
+          "sub_scores": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 72,
+            "conflict": 0
+          },
+          "free_semester": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 72,
+            "conflict": 0
+          }
+        },
+        "after": {
+          "title": {
+            "present": 86,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 1
+          },
+          "assessment_area": {
+            "present": 40,
+            "source_absent": 0,
+            "unconfirmed": 46,
+            "conflict": 1
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 87,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 33,
+            "source_absent": 0,
+            "unconfirmed": 54,
+            "conflict": 0
+          },
+          "method": {
+            "present": 62,
+            "source_absent": 3,
+            "unconfirmed": 17,
+            "conflict": 5
+          },
+          "timing": {
+            "present": 52,
+            "source_absent": 0,
+            "unconfirmed": 35,
+            "conflict": 0
+          },
+          "score": {
+            "present": 47,
+            "source_absent": 0,
+            "unconfirmed": 40,
+            "conflict": 0
+          },
+          "points": {
+            "present": 10,
+            "source_absent": 0,
+            "unconfirmed": 77,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 37,
+            "source_absent": 0,
+            "unconfirmed": 50,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 15,
+            "source_absent": 0,
+            "unconfirmed": 72,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 77,
+            "source_absent": 0,
+            "unconfirmed": 6,
+            "conflict": 4
+          },
+          "rubric": {
+            "present": 31,
+            "source_absent": 0,
+            "unconfirmed": 56,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 87,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 38,
+            "source_absent": 0,
+            "unconfirmed": 49,
+            "conflict": 0
+          },
+          "sub_scores": {
+            "present": 24,
+            "source_absent": 0,
+            "unconfirmed": 62,
+            "conflict": 1
+          },
+          "free_semester": {
+            "present": 87,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 0
+          }
+        }
+      }
+    },
+    "2026-round-1-dev2": {
+      "before": {
+        "bounded": 138,
+        "review": 289,
+        "roles": {
+          "teaching_plan": 70,
+          "performance": 242,
+          "other": 18,
+          "general_standards": 97
+        },
+        "all_roles": {
+          "teaching_plan": 70,
+          "performance": 242,
+          "summary_duplicate": 23,
+          "other": 18,
+          "general_standards": 97
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 70,
+          "원문 제목 셀 미확정": 249,
+          "행·열·셀 소유 범위 미입증": 197,
+          "동일 항목 필드 복수 관측값·확정 보류": 6,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 15,
+          "별도 표 연결 미확정": 97,
+          "원문 내부 충돌 (standards)": 4,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 3,
+          "중첩·불완전 표 구조 미확정": 6,
+          "요약표·상세표 항목 동일성 미확정": 17,
+          "단원·성취기준·성취수준 머리글·항목 근거 제외": 8,
+          "원문 내부 충돌 (method)": 8,
+          "제목 셀에 필드 라벨 혼입·경계 미확정": 4,
+          "S5 과목 경계 미확정": 8,
+          "평문 변환·표 구조 미보존": 1
+        },
+        "title_roles": {
+          "과제명": 103,
+          "영역": 75,
+          "번호": 0,
+          "미확정": 249
+        },
+        "bounded_title_roles": {
+          "과제명": 77,
+          "영역": 61,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "after": {
+        "bounded": 152,
+        "review": 278,
+        "roles": {
+          "teaching_plan": 70,
+          "performance": 245,
+          "other": 18,
+          "general_standards": 97
+        },
+        "all_roles": {
+          "teaching_plan": 70,
+          "performance": 245,
+          "summary_duplicate": 23,
+          "other": 18,
+          "general_standards": 97
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 70,
+          "원문 제목 셀 미확정": 252,
+          "행·열·셀 소유 범위 미입증": 200,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 15,
+          "별도 표 연결 미확정": 100,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 3,
+          "중첩·불완전 표 구조 미확정": 6,
+          "요약표·상세표 항목 동일성 미확정": 17,
+          "단원·성취기준·성취수준 머리글·항목 근거 제외": 8,
+          "제목 셀에 필드 라벨 혼입·경계 미확정": 4,
+          "S5 과목 경계 미확정": 8,
+          "평문 변환·표 구조 미보존": 1
+        },
+        "title_roles": {
+          "과제명": 103,
+          "영역": 75,
+          "번호": 0,
+          "미확정": 252
+        },
+        "bounded_title_roles": {
+          "과제명": 86,
+          "영역": 66,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "audit": {
+        "제목 생성": 0,
+        "항목 간 필드 소유 충돌": 0,
+        "기존 근거 추적 오류": 0,
+        "변환본 범위 밖 locator": 0,
+        "근거·머리글 원문 슬라이스 불일치": 0,
+        "bounded 필드의 소유 범위 이탈": 0,
+        "bounded 경계 미입증·검토 사유 잔존": 0,
+        "bounded 타 교과·대상 외 학년": 0,
+        "평문 폴백 bounded": 0,
+        "충돌 필드 값 확정": 0,
+        "재귀속 요약 근거·학년 추적 오류": 0,
+        "요약 참조 값·소유 출처 오류": 0,
+        "일반 동일성 독립 근거·문서 범위 오류": 0,
+        "열 필드 소유 범위 오류": 0,
+        "병합셀 공유 근거 오류": 0,
+        "참고표 bounded": 0,
+        "자유학기 문맥 근거 추적 오류": 0,
+        "범위 코드 참조 밖 값": 0,
+        "세부배점 근거 추적 오류": 0,
+        "성취기준 공통·충돌 값 오류": 0
+      },
+      "field_states": {
+        "before": {
+          "title": {
+            "present": 174,
+            "source_absent": 0,
+            "unconfirmed": 247,
+            "conflict": 6
+          },
+          "assessment_area": {
+            "present": 134,
+            "source_absent": 0,
+            "unconfirmed": 289,
+            "conflict": 4
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 427,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 43,
+            "source_absent": 0,
+            "unconfirmed": 384,
+            "conflict": 0
+          },
+          "method": {
+            "present": 151,
+            "source_absent": 0,
+            "unconfirmed": 268,
+            "conflict": 8
+          },
+          "timing": {
+            "present": 107,
+            "source_absent": 0,
+            "unconfirmed": 318,
+            "conflict": 2
+          },
+          "score": {
+            "present": 76,
+            "source_absent": 0,
+            "unconfirmed": 351,
+            "conflict": 0
+          },
+          "points": {
+            "present": 4,
+            "source_absent": 0,
+            "unconfirmed": 423,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 68,
+            "source_absent": 0,
+            "unconfirmed": 359,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 27,
+            "source_absent": 0,
+            "unconfirmed": 399,
+            "conflict": 1
+          },
+          "standards": {
+            "present": 177,
+            "source_absent": 0,
+            "unconfirmed": 246,
+            "conflict": 4
+          },
+          "rubric": {
+            "present": 64,
+            "source_absent": 0,
+            "unconfirmed": 363,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 427,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 68,
+            "source_absent": 0,
+            "unconfirmed": 359,
+            "conflict": 0
+          },
+          "sub_scores": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 427,
+            "conflict": 0
+          },
+          "free_semester": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 427,
+            "conflict": 0
+          }
+        },
+        "after": {
+          "title": {
+            "present": 174,
+            "source_absent": 0,
+            "unconfirmed": 250,
+            "conflict": 6
+          },
+          "assessment_area": {
+            "present": 134,
+            "source_absent": 0,
+            "unconfirmed": 292,
+            "conflict": 4
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 430,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 45,
+            "source_absent": 0,
+            "unconfirmed": 385,
+            "conflict": 0
+          },
+          "method": {
+            "present": 126,
+            "source_absent": 5,
+            "unconfirmed": 295,
+            "conflict": 4
+          },
+          "timing": {
+            "present": 107,
+            "source_absent": 0,
+            "unconfirmed": 321,
+            "conflict": 2
+          },
+          "score": {
+            "present": 78,
+            "source_absent": 0,
+            "unconfirmed": 352,
+            "conflict": 0
+          },
+          "points": {
+            "present": 4,
+            "source_absent": 0,
+            "unconfirmed": 426,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 70,
+            "source_absent": 0,
+            "unconfirmed": 360,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 27,
+            "source_absent": 0,
+            "unconfirmed": 402,
+            "conflict": 1
+          },
+          "standards": {
+            "present": 178,
+            "source_absent": 0,
+            "unconfirmed": 248,
+            "conflict": 4
+          },
+          "rubric": {
+            "present": 75,
+            "source_absent": 0,
+            "unconfirmed": 355,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 430,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 100,
+            "source_absent": 0,
+            "unconfirmed": 330,
+            "conflict": 0
+          },
+          "sub_scores": {
+            "present": 42,
+            "source_absent": 0,
+            "unconfirmed": 384,
+            "conflict": 4
+          },
+          "free_semester": {
+            "present": 430,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 0
+          }
+        }
+      },
+      "bounded_field_states": {
+        "before": {
+          "title": {
+            "present": 138,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 0
+          },
+          "assessment_area": {
+            "present": 78,
+            "source_absent": 0,
+            "unconfirmed": 60,
+            "conflict": 0
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 138,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 35,
+            "source_absent": 0,
+            "unconfirmed": 103,
+            "conflict": 0
+          },
+          "method": {
+            "present": 107,
+            "source_absent": 0,
+            "unconfirmed": 31,
+            "conflict": 0
+          },
+          "timing": {
+            "present": 68,
+            "source_absent": 0,
+            "unconfirmed": 70,
+            "conflict": 0
+          },
+          "score": {
+            "present": 54,
+            "source_absent": 0,
+            "unconfirmed": 84,
+            "conflict": 0
+          },
+          "points": {
+            "present": 1,
+            "source_absent": 0,
+            "unconfirmed": 137,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 42,
+            "source_absent": 0,
+            "unconfirmed": 96,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 11,
+            "source_absent": 0,
+            "unconfirmed": 127,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 131,
+            "source_absent": 0,
+            "unconfirmed": 7,
+            "conflict": 0
+          },
+          "rubric": {
+            "present": 52,
+            "source_absent": 0,
+            "unconfirmed": 86,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 138,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 54,
+            "source_absent": 0,
+            "unconfirmed": 84,
+            "conflict": 0
+          },
+          "sub_scores": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 138,
+            "conflict": 0
+          },
+          "free_semester": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 138,
+            "conflict": 0
+          }
+        },
+        "after": {
+          "title": {
+            "present": 149,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 3
+          },
+          "assessment_area": {
+            "present": 84,
+            "source_absent": 0,
+            "unconfirmed": 67,
+            "conflict": 1
+          },
+          "task_no": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 152,
+            "conflict": 0
+          },
+          "task_text": {
+            "present": 42,
+            "source_absent": 0,
+            "unconfirmed": 110,
+            "conflict": 0
+          },
+          "method": {
+            "present": 101,
+            "source_absent": 4,
+            "unconfirmed": 44,
+            "conflict": 3
+          },
+          "timing": {
+            "present": 80,
+            "source_absent": 0,
+            "unconfirmed": 72,
+            "conflict": 0
+          },
+          "score": {
+            "present": 62,
+            "source_absent": 0,
+            "unconfirmed": 90,
+            "conflict": 0
+          },
+          "points": {
+            "present": 1,
+            "source_absent": 0,
+            "unconfirmed": 151,
+            "conflict": 0
+          },
+          "weight": {
+            "present": 50,
+            "source_absent": 0,
+            "unconfirmed": 102,
+            "conflict": 0
+          },
+          "essay_weight": {
+            "present": 17,
+            "source_absent": 0,
+            "unconfirmed": 135,
+            "conflict": 0
+          },
+          "standards": {
+            "present": 141,
+            "source_absent": 0,
+            "unconfirmed": 7,
+            "conflict": 4
+          },
+          "rubric": {
+            "present": 56,
+            "source_absent": 0,
+            "unconfirmed": 96,
+            "conflict": 0
+          },
+          "criteria": {
+            "present": 0,
+            "source_absent": 0,
+            "unconfirmed": 152,
+            "conflict": 0
+          },
+          "elements": {
+            "present": 72,
+            "source_absent": 0,
+            "unconfirmed": 80,
+            "conflict": 0
+          },
+          "sub_scores": {
+            "present": 28,
+            "source_absent": 0,
+            "unconfirmed": 120,
+            "conflict": 4
+          },
+          "free_semester": {
+            "present": 152,
+            "source_absent": 0,
+            "unconfirmed": 0,
+            "conflict": 0
+          }
+        }
+      }
+    }
+  },
+  "access_violations": [],
+  "sample_size": 14,
+  "development_totals": {
+    "before": {
+      "score": {
+        "equal": 13,
+        "empty_value_match_unconfirmed": 11,
+        "different": 5,
+        "item_unmatched": 6
+      },
+      "weight": {
+        "different": 7,
+        "empty_value_match_unconfirmed": 11,
+        "equal": 11,
+        "item_unmatched": 6
+      },
+      "timing": {
+        "different": 18,
+        "reference_or_conflict_note": 3,
+        "equal": 8,
+        "item_unmatched": 6
+      },
+      "standards": {
+        "equal": 25,
+        "reference_or_conflict_note": 3,
+        "item_unmatched": 6,
+        "different": 1
+      }
+    },
+    "after": {
+      "score": {
+        "equal": 14,
+        "empty_value_match_unconfirmed": 14,
+        "different": 5,
+        "item_unmatched": 2
+      },
+      "weight": {
+        "different": 7,
+        "empty_value_match_unconfirmed": 14,
+        "equal": 12,
+        "item_unmatched": 2
+      },
+      "timing": {
+        "different": 18,
+        "reference_or_conflict_note": 3,
+        "equal": 12,
+        "item_unmatched": 2
+      },
+      "standards": {
+        "equal": 29,
+        "reference_or_conflict_note": 3,
+        "different": 1,
+        "item_unmatched": 2
+      }
+    }
+  }
+}

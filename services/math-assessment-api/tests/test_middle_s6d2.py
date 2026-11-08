@@ -179,7 +179,7 @@ def test_summary_detail_identity_requires_unique_number_or_two_independent_field
             assert target["fields"]["score"]["status"] == "conflict"
             observed = target["fields"]["score"]["source_observations"]
             assert {o["value"] for o in observed} == {20, 90}
-            assert target["extraction_status"] == "review"
+            assert target["extraction_status"] == "bounded"  # S6d-3 field conflict only.
     assert ownership_errors(items) == []
 
 
@@ -229,7 +229,7 @@ def test_unique_number_preserves_conflicting_concrete_titles():
     assert {o["value"] for o in field["source_observations"]} == {
         "기체 부피 측정하기", "다른 행성 모형 만들기",
     }
-    assert items[-1]["extraction_status"] == "review"
+    assert items[-1]["extraction_status"] == "bounded"  # S6d-3 field conflict only.
 
 
 def test_different_tasks_do_not_link_through_a_shared_generic_area():
@@ -272,7 +272,7 @@ def test_conflicting_task_cells_in_a_single_column_are_preserved_as_conflict():
         "<td>다른 기체 모형 만들기</td><td>행성 모형 만들기</td></tr></table>",
     )
     first, second = extract(text)
-    assert first["extraction_status"] == "review"
+    assert first["extraction_status"] == "bounded"  # S6d-3: column ownership is established.
     assert first["fields"]["title"]["status"] == "conflict"
     assert first["fields"]["title"]["observed_values"] == [
         "기체 부피 측정하기", "다른 기체 모형 만들기",

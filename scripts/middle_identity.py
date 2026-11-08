@@ -7,8 +7,10 @@ import re
 from collections import defaultdict
 
 if __package__:
+    from .middle_fields import title_alias_key
     from .middle_items import AREA_TITLE_RE, TASK_NO_RE, title_gate
 else:
+    from middle_fields import title_alias_key
     from middle_items import AREA_TITLE_RE, TASK_NO_RE, title_gate
 
 
@@ -20,7 +22,7 @@ def title_key(value):
     value = re.sub(r"\(\s*\d+(?:\.\d+)?\s*점\s*\)\s*$", "", value)
     value = re.sub(r"\((?:실험탐구논술형|논술형|실험[·ㆍ]?실습|서[·ㆍ]?논술형)\)\s*$", "", value)
     value = re.sub(r"\((?:프로젝트|실험[·ㆍ]실습|서[·ㆍ]논술형?)\s*평가\)\s*$", "", value)
-    return re.sub(r"[·ㆍ･‧]", "", compact(value)).strip("'\"‘’“”")
+    return title_alias_key(re.sub(r"[·ㆍ･‧]", "", compact(value)).strip("'\"‘’“”"))
 
 
 def titles(item):
@@ -137,14 +139,16 @@ def merge_pair(summary, detail, proof):
             target["comparison_status"] = "different_source_scope"
             continue
         if present_a and present_b and not equal_value(name, av, bv):
-            for item, f in ((summary, source), (detail, target)):
+            for f in (source, target):
                 f.update(
                     value=[] if isinstance(f["value"], list) else "",
                     status="conflict",
                     reason="요약·상세 원문 관측값 충돌·확정 보류",
                 )
-                item["extraction_status"] = "review"
-                item["review_reasons"].append(f"원문 내부 충돌 ({name})")
+                if name == "standards":
+                    common = sorted(set(av) & set(bv))
+                    f.update(value=common, confirmed_values=common,
+                             conflict_values=sorted(set(av) ^ set(bv)))
         elif present_a and not present_b and target["status"] != "conflict":
             # A reference retains the summary's evidence ownership. Local
             # evidence/ranges belong to the detail only.
@@ -158,6 +162,10 @@ def merge_pair(summary, detail, proof):
             target["comparison_status"] = "summary_only"
         elif present_a and present_b:
             target["comparison_status"] = "equal"
+            if name == "title":
+                aliases = list(dict.fromkeys(source.get("aliases", [av])
+                                             + target.get("aliases", [bv])))
+                source["aliases"] = target["aliases"] = aliases
         else:
             target["comparison_status"] = "detail_only" if present_b else "unconfirmed"
 

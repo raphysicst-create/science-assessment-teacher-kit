@@ -242,9 +242,10 @@ def test_identity_and_field_comparison_are_separate_and_never_union(mutation):
         )
     if mutation in {"weight", "codes"}:
         field = d["fields"]["weight" if mutation == "weight" else "standards"]
-        assert field["status"] == "conflict" and field["value"] in ("", [])
+        assert field["status"] == "conflict"
+        assert field["value"] == (["[9과13-02]"] if mutation == "codes" else "")
         assert len(field["source_observations"]) == 2
-        assert d["extraction_status"] == "review"
+        assert d["extraction_status"] == "bounded"  # S6d-3: field/boundary independence.
     if mutation == "summary_only":
         assert d["fields"]["weight"]["value"] == 10
         assert d["fields"]["weight"]["value_source"] == "summary"

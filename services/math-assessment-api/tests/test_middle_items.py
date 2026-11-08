@@ -284,7 +284,8 @@ def test_separate_rubric_requires_number_and_continuity(number, joined):
     items = extract(text)
     assert bool(items[0]["links"]) == joined
     assert value(items[0], "standards") == (["[9과07-04]"] if joined else [])
-    assert bool(value(items[0], "rubric")) == joined
+    # S6d-3: a one-score element row has no level judgments, hence no rubric.
+    assert not value(items[0], "rubric")
 
 
 def test_number_match_with_intervening_text_does_not_join():
@@ -561,9 +562,12 @@ def test_general_summary_detail_identity_preserves_both_conflicting_values(name,
     for item in items:
         field = item["fields"][name]
         assert field["status"] == "conflict"
-        assert field["value"] in ("", [])
+        if name == "standards":
+            assert field["value"] == sorted(set(original_values[0]) & set(original_values[1]))
+        else:
+            assert field["value"] == ""
         assert [o["value"] for o in field["source_observations"]] == original_values
-        assert item["extraction_status"] == "review"
+        assert item["extraction_status"] == "bounded"  # Field conflict does not change bounds.
         for source in field["source_observations"]:
             for obs in source["evidence"]:
                 loc = obs["locator"]

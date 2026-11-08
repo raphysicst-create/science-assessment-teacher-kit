@@ -128,7 +128,7 @@ def test_linked_code_conflict_keeps_both_source_observations():
         field = item["fields"]["standards"]
         assert field["status"] == "conflict" and field["value"] == []
         assert len(field["source_observations"]) == 2
-        assert item["extraction_status"] == "review"
+        assert item["extraction_status"] == "bounded"  # S6d-3 field conflict only.
 
 
 def test_free_semester_unscored_heading_form_is_a_performance_item():

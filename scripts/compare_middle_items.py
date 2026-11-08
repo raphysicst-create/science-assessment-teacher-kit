@@ -101,7 +101,7 @@ def safety_counts(report: dict) -> dict:
                 conversion.get("conversion_status") == "fallback_text_only"
             )
         locators = [item["locator"], *item["owned_ranges"]]
-        for field in item["fields"].values():
+        for name, field in item["fields"].items():
             if field.get("value_source") == "summary":
                 source = by_id.get(field["value_source_item_id"])
                 snapshots = [
@@ -116,7 +116,12 @@ def safety_counts(report: dict) -> dict:
                 )
             counts["충돌 필드 값 확정"] += field.get("status") == "conflict" and field[
                 "value"
-            ] not in ("", [], None)
+            ] not in ("", [], None) and not (
+                name == "standards"
+                and field.get("confirmed_values") == field["value"]
+                and field.get("conflict_values")
+                and not set(field["value"]) & set(field["conflict_values"])
+            )
             local = field["evidence"] + field.get("options", []) + field.get("occurrences", [])
             related = [
                 obs

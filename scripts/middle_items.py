@@ -12,14 +12,32 @@ from collections import defaultdict
 
 if __package__:
     from .assessment_symbols import BOX_RE, marker_state
+    from .middle_fields import (
+        enrich_claims,
+        free_semester_field,
+        method_literal,
+        reference_codes,
+        sub_score_field,
+        title_alias_key,
+        title_parts,
+    )
     from .middle_segments import digest_id, text_locator, visible
     from .middle_subjects import classify_subject, table_spans
 else:
     from assessment_symbols import BOX_RE, marker_state
+    from middle_fields import (
+        enrich_claims,
+        free_semester_field,
+        method_literal,
+        reference_codes,
+        sub_score_field,
+        title_alias_key,
+        title_parts,
+    )
     from middle_segments import digest_id, text_locator, visible
     from middle_subjects import classify_subject, table_spans
 
-RULE_VERSION = "middle-items-v7"
+RULE_VERSION = "middle-items-v8"
 IDENTITY_VERSION = "middle-items-v2"  # Field-only changes retain source identities.
 FIELDS = (
     "title",
@@ -36,6 +54,8 @@ FIELDS = (
     "rubric",
     "criteria",
     "elements",
+    "sub_scores",
+    "free_semester",
 )
 LABELS = {
     "평가영역": "assessment_area",
@@ -107,6 +127,20 @@ LABELS = {
     "교과역량": "competency",
     "평가요소(배점)": "elements",
     "평가요소및배점": "elements",
+    "과제설명": "task_text",
+    "과제내용": "task_text",
+    "수행내용": "task_text",
+    "수행과정": "task_text",
+    "활동내용": "task_text",
+    "평가내용": "task_text",
+    "세부활동": "task_text",
+    "평가기준(채점기준)": "rubric",
+    "채점기준(수행수준)": "rubric",
+    "수행수준(채점기준)": "rubric",
+    "수행수준": "rubric",
+    "과제내용및수행과정": "task_text",
+    "수행과제내용": "task_text",
+    "수행과제(내용)": "task_text",
 }
 TITLE_ROLES = {"title", "task", "task_no", "assessment_area"}
 TASK_NO_RE = re.compile(
@@ -127,7 +161,7 @@ CELL_RE = re.compile(r"<(?:td|th)\b([^>]*)>(.*?)</(?:td|th)\s*>", re.S | re.I)
 METHOD_BOX_RE = re.compile(BOX_RE.pattern + r"|\[[^\[\]\r\n]{0,5}\]|[\uFFFD\uF000-\uF8FF]", re.I)
 NUMERIC_FIELDS = {"score", "points", "weight", "essay_weight"}
 COMPOUND_NUMBER_RE = re.compile(
-    r"\s*(?:\d+(?:\.\d+)?\s*점)?(?:\s|<br\s*/?>)*"
+    r"\s*(?:\d+(?:\.\d+)?\s*점?)?(?:\s|<br\s*/?>)*"
     r"(?:\(\s*\d+(?:\.\d+)?\s*[%％]\s*\))?\s*",
     re.I,
 )
@@ -146,7 +180,7 @@ def label_role(text: str) -> str | None:
     key = re.sub(r"\s+", "", text)
     if key in {"영역만점(반영비율)", "만점(반영비율)", "영역만점(학기말반영비율)"}:
         return "score_weight"
-    if "반영비율" in key and re.search(r"논술", key):
+    if "반영비율" in key and re.search(r"논술|서술", key):
         return "essay_weight"
     key = re.sub(r"\((?:점|(?:100)?[%％]|퍼센트)\)", "", key)
     return LABELS.get(key)
@@ -191,7 +225,7 @@ def method_only(value: str) -> bool:
 
 def title_content_role(value: str, source_role: str) -> str:
     """Use literal activity/category/number content before the source label."""
-    if TASK_NO_RE.fullmatch(value) or source_role == "task_no":
+    if TASK_NO_RE.fullmatch(value) or re.fullmatch(r"\d+", value) or source_role == "task_no":
         return "task_no"
     if AREA_TITLE_RE.fullmatch(value):
         return "assessment_area"
@@ -303,8 +337,16 @@ def method_values(observations: list[dict], *, conversion_loss: bool = False) ->
         raw = obs["raw"]
         markers = list(METHOD_BOX_RE.finditer(raw))
         if not markers:
-            if obs["text"]:
+            if method_literal(obs["text"]):
                 plain.append(obs)
+            elif obs["text"]:
+                obs["excluded_reason"] = (
+                    "방법 칸의 과제명·비방법 값" if obs.get("is_task_name") or re.search(
+                        r"(?:하기|쓰기|작성|측정|설명|분석|조사|표현|만들기|그리기|정리|실험|탐구)\s*$",
+                        obs["text"],
+                    ) or obs["text"] in {"-", "—", "없음", "미기재", "해당없음", "해당 없음"}
+                    else "방법 값 판독·용어 확인 필요"
+                )
             continue
         for index, marker in enumerate(markers):
             end = markers[index + 1].start() if index + 1 < len(markers) else len(raw)
@@ -350,6 +392,9 @@ def method_values(observations: list[dict], *, conversion_loss: bool = False) ->
         "options": options,
         "plain": plain,
         "evidence": observations,
+        "source_absent": bool(observations) and not options and not plain and all(
+            o.get("excluded_reason") == "방법 칸의 과제명·비방법 값" for o in observations
+        ),
     }
 
 
@@ -358,11 +403,10 @@ def standard_values(observations: list[dict]) -> dict:
     for obs in observations:
         for match in CODE_RE.finditer(obs["raw"]):
             area, first, last_area, last = match.groups()
-            stop = int(last or first)
-            valid_range = last_area in {None, area} and int(first) <= stop <= 99
-            codes = (
-                [f"[9과{area}-{n:02}]" for n in range(int(first), stop + 1)] if valid_range else []
-            )
+            begin = f"[9과{area}-{first}]"
+            finish = f"[9과{last_area or area}-{last or first}]"
+            codes = ([c for c in reference_codes() if begin <= c <= finish]
+                     if last and begin <= finish else [begin] if not last else [])
             loc = {
                 **obs["locator"],
                 "start": obs["locator"]["start"] + match.start(),
@@ -373,7 +417,8 @@ def standard_values(observations: list[dict]) -> dict:
                     "raw": match.group(),
                     "expanded": codes,
                     "locator": loc,
-                    "expansion_status": "syntactic_unvalidated" if codes else "review",
+                    "expansion_status": "reference_validated" if last and codes else
+                    "literal_code" if codes else "review",
                 }
             )
             expanded.extend(codes)
@@ -384,8 +429,13 @@ def standard_values(observations: list[dict]) -> dict:
         "reason": ""
         if expanded
         else ("코드 범위 펼침 미확정" if occurrences else "코드 추출·원문 기재 여부 미확인"),
-        "curriculum_status": "undetermined",
-        "validity": "S7 미검증",
+        "curriculum_status": (
+            "range_review" if any(o["expansion_status"] == "review" for o in occurrences)
+            else "range_reference_validated" if any(
+                o["expansion_status"] == "reference_validated" for o in occurrences
+            ) else "literal_only" if expanded else "undetermined"
+        ),
+        "validity": "범위는 로컬 2022 코드 목록으로 한정·단일 코드는 원문 보존",
     }
 
 
@@ -395,7 +445,7 @@ def numeric_spans(name: str, obs: dict) -> list[dict]:
         return [obs]
     unit = "%" if name == "weight" else "점"
     # A compound header can span two rows, one containing points and one percent.
-    pattern = re.compile(r"\d+(?:\.\d+)?\s*" + (r"[%％]" if unit == "%" else unit))
+    pattern = re.compile(r"\d+(?:\.\d+)?\s*" + (r"[%％]" if unit == "%" else r"점?"))
     if not COMPOUND_NUMBER_RE.fullmatch(obs["raw"]):
         return [obs]
     return [
@@ -412,7 +462,8 @@ def numeric_spans(name: str, obs: dict) -> list[dict]:
             "cell_locator": obs["locator"],
             "header_unit": unit,
         }
-        for match in pattern.finditer(obs["raw"])
+        for match in pattern.finditer(obs["raw"] if unit == "%" else
+                                      re.split(r"<br\s*/?>|\(", obs["raw"], maxsplit=1)[0])
     ]
 
 
@@ -454,7 +505,11 @@ def field_value(name: str, observations: list[dict]) -> dict:
         elif value:
             values.append(value)
     unique = list(dict.fromkeys(values))
+    if name == "title" and len(unique) > 1 and len({title_alias_key(v) for v in unique}) == 1:
+        result.update(value=unique[0], aliases=unique, reason="")
+        return result
     if any(obs.get("normalization_status") == "unit_conflict" for obs in observations):
+        result["status"] = "conflict"
         return result
     if len(unique) == 1:
         result.update(value=unique[0], reason="")
@@ -537,7 +592,7 @@ def field_status(field: dict) -> str:
         return "unconfirmed"
     if field["value"] not in ("", [], None):
         return "present"
-    if field.get("state") == "all_unselected" or (
+    if field.get("source_absent") or field.get("state") == "all_unselected" or (
         field["evidence"]
         and all(
             o["text"].strip() in {"미기재", "없음", "해당 없음", "해당없음", "미실시"}
@@ -1061,6 +1116,15 @@ def continuation_claims(owner: dict, table: dict) -> None:
 
 def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     claims = structure["claims"]
+    sub_scores = enrich_claims(structure)
+    for role in ("task", "title", "assessment_area"):
+        pairs = []
+        for cell, header in claims.get(role, []):
+            number, activity = title_parts(cell)
+            if number:
+                claims["task_no"].append((number, header))
+            pairs.append((activity, header))
+        claims[role] = pairs
     # Terminal points are a maximum only in a title slot, never rubric elements.
     for role in ("task", "title", "assessment_area"):
         for cell, header in list(claims.get(role, [])):
@@ -1082,7 +1146,6 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
             obs = evidence(cell, conversion, header)
             compound = role == "score_weight" or (
                 role in {"score", "weight"}
-                and "점" in cell["raw"]
                 and re.search(r"[%％]", cell["raw"])
                 and COMPOUND_NUMBER_RE.fullmatch(cell["raw"])
             )
@@ -1096,7 +1159,7 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     for role in ("task", "title", "assessment_area", "task_no"):
         for cell, header in claims.get(role, []):
             cell = title_cell(cell)
-            if title_gate(cell["text"])["accepted"]:
+            if title_gate(cell["text"])["accepted"] or re.fullmatch(r"\d+", cell["text"]):
                 content_role = title_content_role(cell["text"], role)
                 title_candidates.append((content_role, cell, header, role))
     title = None
@@ -1109,7 +1172,7 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     if title:
         observations["title"] = [
             evidence(c, conversion, h) for content, c, h, role in title_candidates
-            if content == title_role and role == source_role
+            if content == title_role
         ]
     identity_title = next(
         (
@@ -1118,6 +1181,9 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
         ), None,
     )
     fields = {name: field_value(name, obs) for name, obs in observations.items()}
+    names = {c["text"] for _, c, _, _ in title_candidates}
+    for obs in observations["method"]:
+        obs["is_task_name"] = obs["text"] in names and not method_literal(obs["text"])
     checks = [
         row
         for row in conversion.get("method_check_comparison", {}).get("rows", [])
@@ -1135,6 +1201,10 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     )
     fields["method"]["conversion_comparison"] = checks
     fields["standards"] = standard_values(observations["standards"])
+    fields["sub_scores"] = sub_score_field(sub_scores, conversion)
+    fields["free_semester"] = free_semester_field(structure, section, conversion)
+    if title_role == "task_no" and not fields["task_no"]["value"]:
+        fields["task_no"] = field_value("task_no", observations["title"])
     if not fields["task_no"]["value"] and task_number(structure):
         fields["task_no"] = field_value(
             "task_no",
@@ -1202,8 +1272,6 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
         field["status"] = field_status(field)
         if field["status"] == "source_absent":
             field["reason"] = "원문에 부재·미선택 명시"
-    if any(field["status"] == "conflict" for field in fields.values()):
-        reasons.append("동일 항목 필드 복수 관측값·확정 보류")
     return {
         "item_id": item_id,
         "document_id": section.get("document_id"),
@@ -1384,7 +1452,9 @@ def extract_middle_items(
             found[0]["adjacent_task_heading"] = heading
         for structure in found:
             title_roles = set(structure["claims"]) & TITLE_ROLES
-            if title_roles == {"task_no"}:
+            if title_roles == {"task_no"} and not (
+                set(structure["claims"]) & {"method", "timing", "score", "score_weight", "weight"}
+            ):
                 continue
             structures.append(structure)
     structures.extend(connect_tables(structures, all_tables, text, section, conversion))

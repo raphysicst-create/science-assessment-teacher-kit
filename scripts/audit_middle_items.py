@@ -130,7 +130,7 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
                     and (
                         not title["evidence"]
                         or any(
-                            visible(obs["raw"]) != title["value"]
+                            visible(obs["raw"]) not in title.get("aliases", [title["value"]])
                             or text[obs["locator"]["start"] : obs["locator"]["end"]] != obs["raw"]
                             for obs in title["evidence"]
                         )
@@ -295,6 +295,8 @@ def values(item: dict) -> str:
         "rubric": "채점기준",
         "criteria": "평가준거",
         "elements": "평가요소",
+        "sub_scores": "세부배점",
+        "free_semester": "자유학기",
     }
     fields = item["fields"]
     output = []
@@ -305,7 +307,7 @@ def values(item: dict) -> str:
             value = field["value"]
         if name in {"rubric", "criteria"} and value:
             value = f"근거 {len(field['evidence'])}개"
-        elif name == "elements" and value:
+        elif name in {"elements", "sub_scores"} and value:
             value = f"근거 {len(field['evidence'])}개"
         if name == "method":
             checks = " / ".join(o["raw"] for o in field["options"])
@@ -314,10 +316,11 @@ def values(item: dict) -> str:
             observed = [
                 (o["source_role"], o["value"]) for o in field.get("source_observations", [])
             ]
-            value = f"확정 보류 · 출처별 관측 {observed}"
+            value = (f"필드 충돌 · 공통 확정 {field.get('confirmed_values', [])}"
+                     f" · 출처별 관측 {observed}")
         has_evidence = (
             "근거 있음"
-            if field["evidence"]
+            if field["evidence"] or field.get("reference_evidence")
             else ("요약 출처 참조" if field.get("value_source") == "summary" else "근거 없음")
         )
         output.append(
