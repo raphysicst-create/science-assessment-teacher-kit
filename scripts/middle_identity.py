@@ -233,7 +233,7 @@ def merge_pair(summary, detail, proof):
 
 def reconcile_items(items):
     summaries = [i for i in items if i.get("table_role") == "summary"]
-    details = [i for i in items if i["layout"] == "form"]
+    details = [i for i in items if i["layout"] == "form" and i["fields"]["title"]["value"]]
     groups = defaultdict(list)
     for i in items:
         groups[scope(i)].append(i)

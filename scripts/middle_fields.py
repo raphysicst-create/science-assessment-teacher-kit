@@ -25,6 +25,12 @@ def method_literal(value):
     value = re.sub(r"[ㆍ･・‧⋅•]", "·", value.strip())
     if METHOD_RE.fullmatch(value):
         return True
+    # Conversion can erase every separator between printed method choices.
+    # Consume the entire cell with a closed vocabulary; activity prose cannot
+    # match just because it contains a method word.
+    if re.fullmatch(r"(?:" + METHOD_RE.pattern + r"|기타(?:\s*\([^()]*\))?"
+                    r"|[\s,，/·])+", value):
+        return True
     parts = re.split(r"\s*[,，/·\n]+\s*", value)
     return bool(parts) and all(METHOD_RE.fullmatch(p) for p in parts)
 
