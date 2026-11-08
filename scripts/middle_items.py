@@ -40,7 +40,7 @@ else:
     from middle_segments import visible as structural_visible
     from middle_subjects import classify_subject, table_spans
 
-RULE_VERSION = "middle-items-v12"
+RULE_VERSION = "middle-items-v13"
 IDENTITY_VERSION = "middle-items-v2"  # Field-only changes retain source identities.
 FIELDS = (
     "title",
@@ -162,7 +162,7 @@ TASK_NO_RE = re.compile(
 AREA_TITLE_RE = re.compile(
     r"(?:실험(?:[·ㆍ･‧⋅•・]실습)?|탐구(?:활동)?|(?:실험|탐구)\s*보고서|실험\s*탐구"
     r"|서[·ㆍ･‧⋅•・]?논술형?"
-    r"|서술형|논술형|구술[·ㆍ･‧]?발표|발표|보고서|프로젝트|포트폴리오)(?:\s*평가)?"
+    r"|과학\s*논술|서술형|논술형|구술[·ㆍ･‧]?발표|발표|보고서|프로젝트|포트폴리오)(?:\s*평가)?"
 )
 CODE_SPACE = r"(?:\s|<br\s*/?>)*"
 CODE_RE = re.compile(
@@ -231,6 +231,11 @@ def title_gate(value: str) -> dict:
     """Authenticity comes from the caller's source cell, never this score."""
     rejected = bool(
         not value
+        or (len(re.sub(r"\s+", "", value)) < 3
+            and not TASK_NO_RE.fullmatch(value) and not AREA_TITLE_RE.fullmatch(value))
+        or re.search(r"의수$|(?:에서|으로)[가-힣]?$", value)
+        or re.search(r"[가-힣][을를의]$", value)
+        or re.search(r"\s(?:을|를|은|는|의|와|과)$", value)
         or re.match(r"^(?:을|를|은|는|이|가|와|과|의|에|에서|으로|로)\s", value)
         or label_role(value)
         or len(value) > 120
@@ -1024,9 +1029,8 @@ def column_structures(table: dict, section: dict) -> list[dict]:
                 header = labeled[-1] if labeled else None
                 role = label_role(header["text"]) if header else None
                 if (role == "method" and title_gate(cell["text"])["accepted"]
-                        and not method_literal(cell["text"])
-                        and title_content_role(cell["text"], "assessment_area") == "task"):
-                    role = "task"
+                        and not method_literal(cell["text"])):
+                    role = title_content_role(cell["text"], "assessment_area")
                 if role == "weight" and any(
                     re.fullmatch(r"서[·ㆍ･・]?논술형?|논술형", re.sub(r"\s+", "", h["text"]))
                     for h in left
@@ -1091,6 +1095,122 @@ def column_structures(table: dict, section: dict) -> list[dict]:
             # Column ownership is explicit even when merged title cells overlap.
             structure["group"] = group
             output.append(structure)
+    return coalesce_columns(output)
+
+
+def coalesce_columns(structures: list[dict]) -> list[dict]:
+    """A literal title cell owns its subcolumns, including split code rows."""
+    groups = defaultdict(list)
+    for s in structures:
+        titles = [(role, c) for role in ("task", "title", "assessment_area")
+                  for c, _ in s["claims"].get(role, [])
+                  if title_gate(c["text"])["accepted"]]
+        # The most specific title row establishes the item span, not the
+        # assessment method/score/standards leaf rows below it.
+        key = min(titles, key=lambda p: (
+            title_content_role(p[1]["text"], p[0]) != "task", -p[1]["row"]
+        ))[1]["start"] if titles else ("untitled", s["column"])
+        groups[key, task_number(s)].append(s)
+    output = []
+    for group in groups.values():
+        owner = group[0]
+        lo, hi = min(s["column"] for s in group), max(s["column"] for s in group) + 1
+        claims = defaultdict(list)
+        shared = {}
+        cells = {}
+        for s in group:
+            cells.update((c["start"], c) for c in s["cells"])
+            for role, pairs in s["claims"].items():
+                for c, h in pairs:
+                    if role == "standards" and c["colspan"] > hi - lo:
+                        shared[role, c["start"]] = (role, c, h)
+                        continue
+                    claims[role].append((c, h))
+            for role, c, h in s["shared_fields"]:
+                if lo <= c["col"] and c["col"] + c["colspan"] <= hi:
+                    claims[role].append((c, h))
+                else:
+                    shared[role, c["start"]] = (role, c, h)
+        # A spanned total under a points header outranks the internal method
+        # allocations. Preserve allocations as sub_scores, never sum levels.
+        totals = [(c, h) for c, h in claims["points"]
+                  if c["col"] == lo and c["colspan"] == hi - lo and hi - lo > 1]
+        allocations = []
+        if totals:
+            total, header = min(totals, key=lambda p: p[0]["row"])
+            for c, h in claims["points"]:
+                if c["row"] <= total["row"] or not re.fullmatch(r"\d+(?:\.\d+)?", c["text"]):
+                    continue
+                methods = [m for m, _ in claims["method"] if m["col"] == c["col"]]
+                if len({m["start"] for m in methods}) == 1:
+                    m = methods[0]
+                    allocations.append((m["text"], float(c["text"]), [m, c], h))
+            claims["score"] = [(total, header)]
+            claims["points"] = [(total, header)]
+        for role, pairs in claims.items():
+            pairs = [({k: v for k, v in c.items() if k != "shared_columns"}, h)
+                     if lo <= c["col"] and c["col"] + c["colspan"] <= hi else (c, h)
+                     for c, h in pairs]
+            claims[role] = list({(c["start"], c["end"]): (c, h) for c, h in pairs}.values())
+        owner.update(cells=list(cells.values()), claims=claims,
+                     shared_fields=list(shared.values()), column_sub_scores=allocations,
+                     merged_columns=list(range(lo, hi)))
+        output.append(owner)
+    repeated = defaultdict(list)
+    for s in output:
+        titles = [(role, c) for role in ("task", "title", "assessment_area")
+                  for c, _ in s["claims"].get(role, []) if title_gate(c["text"])["accepted"]]
+        if titles and not task_number(s):
+            _, cell = min(titles, key=lambda p: (
+                title_content_role(p[1]["text"], p[0]) != "task", -p[1]["row"]))
+            if re.search(r"하기|만들기|쓰기|(?:탐구|측정|관찰)$", cell["text"]):
+                repeated[title_alias_key(cell["text"])].append(s)
+    for group in repeated.values():
+        if len(group) > 1:
+            for s in group:
+                s["review_reasons"].append("동일 표 반복 제목·항목 분리 근거 미확정")
+    return output
+
+
+def coalesce_forms(structures: list[dict], tables: list[dict], text: str) -> list[dict]:
+    """Merge repeated literal form titles only inside a proven task boundary."""
+    output = []
+    for s in structures:
+        previous = output[-1] if output else None
+        if not previous or previous["layout"] != "form" or s["layout"] != "form":
+            output.append(s)
+            continue
+        def names(obj):
+            return {title_alias_key(title_cell(c)["text"])
+                    for role in ("task", "title") for c, _ in obj["claims"].get(role, [])
+                    if title_gate(title_cell(c)["text"])["accepted"]}
+        same = names(previous) & names(s)
+        a, b = previous.get("adjacent_task_heading"), s.get("adjacent_task_heading")
+        numbered = task_number(previous), task_number(s)
+        last = previous["links"][-1]["table"] if previous["links"] else previous["table"]
+        adjacent = last + 1 == s["table"]
+        gap = text[tables[last]["end"]:tables[s["table"]]["start"]] if adjacent else ""
+        continuous = adjacent and not re.sub(r"\s|\f|<!--\s*page\s*\d+\s*-->", "", gap)
+        field_proof = any(obj["claims"].get(role) for obj in (previous, s)
+                          for role in ("standards", "rubric", "elements"))
+        same_heading = a and b and a["start"] == b["start"]
+        different_heading = a and b and a["start"] != b["start"]
+        if (not same or not field_proof or different_heading
+                or all(numbered) and numbered[0] != numbered[1]
+                or not (previous["table"] == s["table"] or continuous or same_heading)):
+            output.append(s)
+            continue
+        previous["cells"] = list({c["start"]: c for c in previous["cells"] + s["cells"]}.values())
+        for role, pairs in s["claims"].items():
+            previous["claims"][role].extend(pairs)
+        previous["shared_fields"].extend(s["shared_fields"])
+        previous.setdefault("merged_forms", []).append({"table": s["table"],
+                                                        "basis": "same_literal_task_boundary"})
+        if adjacent:
+            previous["links"].append({"table": s["table"], "start": tables[s["table"]]["start"],
+                                      "end": tables[s["table"]]["end"],
+                                      "basis": "동일 과제명·새 머리글 없음·인접 표 연속"})
+        previous["links"].extend(s["links"])
     return output
 
 
@@ -1132,6 +1252,26 @@ def connect_tables(
         if table["table"] in used:
             continue
         cells = table["cells"]
+        # A numbered task heading opens one form. A directly adjacent field
+        # table without a new task/grade/term heading can continue that form.
+        prior_end = tables[table["table"] - 1]["end"] if table["table"] else 0
+        gap = text[prior_end:table["start"]]
+        blank_gap = not re.sub(r"\s|\f|<!--\s*page\s*\d+\s*-->", "", gap)
+        roles = {label_role(c["text"]) for c in cells}
+        heading_owners = [s for s in structures if s["layout"] == "form"
+                          and s.get("adjacent_task_heading")
+                          and (s["links"][-1]["table"] if s["links"] else s["table"])
+                          == table["table"] - 1]
+        if (blank_gap and len(heading_owners) == 1 and not roles & TITLE_ROLES
+                and roles & {"rubric", "elements"}):
+            owner = heading_owners[0]
+            owner["cells"].extend(cells)
+            owner["links"].append({"table": table["table"], "start": table["start"],
+                                    "end": table["end"],
+                                    "basis": "과제 머리글 아래 새 표지 없는 채점·요소 표 연속"})
+            continuation_claims(owner, table)
+            used.add(table["table"])
+            continue
         physical_owners = []
         for s in structures:
             if s["layout"] != "form":
@@ -1298,7 +1438,7 @@ def split_standard_forms(tables: list[dict], text: str, section: dict) -> list[d
 
 def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     claims = structure["claims"]
-    sub_scores = enrich_claims(structure)
+    sub_scores = enrich_claims(structure) + structure.get("column_sub_scores", [])
     # A single, explicitly spanned activity under the task's element header
     # names the task. Ordinary rubric criteria and multiple elements do not.
     activities = {c["start"]: (c, h) for c, h in claims.get("elements", [])
@@ -1533,6 +1673,7 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     for role, _, _ in structure["shared_fields"]:
         if role in fields and not fields[role]["value"]:
             fields[role]["reason"] = "다항목 병합셀 공통값·항목별 배분 불가"
+            fields[role]["shared"] = True
     for field in fields.values():
         field["status"] = field_status(field)
         if field["status"] == "source_absent":
@@ -1563,6 +1704,8 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
             "col": structure.get("column"),
         },
         "boundary_evidence": {
+            "merged_columns": structure.get("merged_columns", []),
+            "merged_forms": structure.get("merged_forms", []),
             "empty_span_overlaps": structure.get("empty_span_overlaps", []),
             "item_scope": scope_evidence,
             "section_locator": section["locator"],
@@ -1745,6 +1888,7 @@ def extract_middle_items(
             ):
                 continue
             structures.append(structure)
+    structures = coalesce_forms(structures, all_tables, text)
     structures.extend(connect_tables(structures, all_tables, text, section, conversion))
     # A summary row and a detailed form can repeat a numbered task. Without
     # explicit row continuity they remain separate review candidates.

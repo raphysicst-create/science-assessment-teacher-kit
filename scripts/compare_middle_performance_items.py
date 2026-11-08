@@ -124,14 +124,24 @@ def column_audit(report):
         position = item["layout_position"]
         table = tables[path][position["table"]]
         col = position["col"]
+        columns = item["boundary_evidence"].get("merged_columns") or [col]
+        span_proven = columns == list(range(col, max(columns) + 1)) and any(
+            c["col"] == col and c["colspan"] == len(columns)
+            and any(c["start"] <= o["locator"]["start"] < o["locator"]["end"] <= c["end"]
+                    for name in ("title", "assessment_area")
+                    for o in item["fields"][name]["evidence"])
+            for c in table["cells"])
+        if len(columns) > 1 and not span_proven:
+            counts["열 필드 소유 범위 오류"] += 1
+            columns = [col]
         for field in item["fields"].values():
             for obs in field["evidence"]:
                 loc = obs["locator"]
                 cells = [c for c in table["cells"]
                          if c["start"] <= loc["start"] <= loc["end"] <= c["end"]]
-                valid = len(cells) == 1 and cells[0]["col"] <= col < (
+                valid = len(cells) == 1 and any(cells[0]["col"] <= c < (
                     cells[0]["col"] + cells[0]["colspan"]
-                )
+                ) for c in columns)
                 counts["열 필드 소유 범위 오류"] += not valid
                 if obs.get("shared_columns"):
                     counts["병합셀 공유 근거 오류"] += not valid or (

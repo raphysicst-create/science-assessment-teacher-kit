@@ -206,8 +206,13 @@ def test_shared_title_timing_and_standards_have_explicit_column_scope():
     assert all(i["extraction_status"] == "bounded" for i in items)
     assert all(i["title_role"] == "assessment_area" for i in items)
     for item in items:
-        for field in ("title", "timing", "standards"):
+        for field in ("title", "timing"):
             assert item["fields"][field]["evidence"][0]["shared_columns"] == [1, 2]
+        # S6d-2e: a cross-task standards set is shared evidence, never a
+        # confirmed standards value for each individually numbered task.
+        assert item["fields"]["standards"]["value"] == []
+        assert item["fields"]["standards"]["status"] == "unconfirmed"
+        assert any(f["field"] == "standards" for f in item["shared_fields"])
     assert ownership_errors(items) == []
 
 

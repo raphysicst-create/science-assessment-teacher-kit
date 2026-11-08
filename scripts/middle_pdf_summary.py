@@ -62,6 +62,28 @@ def physical_columns(values, rows):
     return result
 
 
+def split_standard_columns(values, rows, columns):
+    """Only a standards rectangle wholly inside the task column owns codes.
+
+    A wide rectangle is genuinely shared even if words happen to line up under
+    individual headings. Word centres cannot allocate a shared curriculum set.
+    """
+    result = {}
+    for col, fields in columns:
+        area, _ = fields["title"]
+        row, value = fields["standards"]
+        title_box = rows[area].cells[col]
+        box = rows[row].cells[col]
+        if box and title_box[0] - 1 <= box[0] and box[2] <= title_box[2] + 1:
+            result[col] = (value, box, False)
+            continue
+        spanning = [(b, v) for b, v in zip(rows[row].cells, values[row], strict=True)
+                    if b and v and b[0] <= title_box[0] < title_box[2] <= b[2] + 1]
+        result[col] = (spanning[0][1], spanning[0][0], True) if len(spanning) == 1 else (
+            None, None, True)
+    return result
+
+
 def recover_pdf_summaries(text, tables, pdf_path):
     import fitz
 
@@ -107,17 +129,23 @@ def recover_pdf_summaries(text, tables, pdf_path):
                 # Header/portfolio fragments may precede the numbered grade.
                 window_start, window_end = previous["start"], next_start
                 source_cells = [c for t in (previous, core) for c in t["cells"]]
-                grade_raw = re.search(rf"(?m)^[^\n]*\b{grade}\s*학년[^\n]*$",
-                                      text[previous["end"]:core["start"]])
-                if not grade_raw:
+                # The grade may precede the label/portfolio fragment, rather
+                # than lie between that fragment and the numeric core table.
+                grade_left = tables[previous["table"] - 1]["end"] if previous["table"] else 0
+                grade_rows = list(re.finditer(r"(?m)^[^\n]*\b([123])\s*학년[^\n]*$",
+                                             text[grade_left:core["start"]]))
+                if not grade_rows or int(grade_rows[-1][1]) != grade:
                     continue
-                grade_start = previous["end"] + grade_raw.start()
+                grade_raw = grade_rows[-1]
+                grade_start = grade_left + grade_raw.start()
+                window_start = min(window_start, grade_start)
                 grade_proof = {"grade": grade, "semester": None,
                                "start": grade_start, "end": grade_start + len(grade_raw[0]),
                                "raw": grade_raw[0], "basis": "pdf_grade_cell_and_text",
                                "page": page.number + 1, "bbox": list(physical.rows[0].cells[0])}
                 structures = []
                 used = set()
+                standard_columns = split_standard_columns(values, physical.rows, columns)
                 for col, fields in columns:
                     title_value = fields["title"][1]
                     owners = [c for c in source_cells if compact(c["text"]) == compact(title_value)]
@@ -125,7 +153,21 @@ def recover_pdf_summaries(text, tables, pdf_path):
                         continue
                     owner = owners[0]
                     claims, cells = defaultdict(list), []
+                    shared_standards = []
                     for role, (r, value) in fields.items():
+                        if role == "standards":
+                            value, standard_box, shared = standard_columns[col]
+                            if shared:
+                                hits = [p for c in source_cells
+                                        if value and (p := matched_part(c, value))]
+                                if len(hits) == 1:
+                                    part = {**hits[0], "col": min(c for c, _ in columns),
+                                            "colspan": len(columns), "source_cell_proof": {
+                                                "basis": "pdf_shared_standards_cell",
+                                                "page": page.number + 1,
+                                                "bbox": list(standard_box), "value": value}}
+                                    shared_standards.append((role, part, None))
+                                continue  # Unallocatable fields never become per-task values.
                         if not value:
                             continue
                         pool = [c for c in source_cells if c["table"] == owner["table"]
@@ -173,10 +215,10 @@ def recover_pdf_summaries(text, tables, pdf_path):
                             used.add((part["start"], part["end"]))
                             cells.append(part)
                             claims[role].append((part, None))
-                    if (not claims["title"] or not (claims["score_weight"] or claims["score"])
-                            or not claims["standards"]):
+                    if (not claims["title"] or not (claims["score_weight"] or claims["score"])):
                         continue
                     structure = new_structure(core, cells, claims, "pdf_column")
+                    structure["shared_fields"] = shared_standards
                     structure.update(column=col, table_role="summary", candidate_role="performance",
                                      role_basis="PDF 수행평가 그룹·독립 셀 기하와 원문 범위 대응",
                                      pdf_summary={"page": page.number + 1,

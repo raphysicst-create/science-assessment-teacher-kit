@@ -308,14 +308,18 @@ def reconcile_items(items):
             if containment:
                 matched.append("title_containment")
             # Preserve ordered area correspondence. Unordered generic labels
-            # additionally require equal representative titles; concrete tasks
-            # cannot be joined merely because both use the same method.
+            # additionally require equal representative titles, or an exact
+            # standards set and allocation. A method label alone is no vote.
+            scoped_area = (summary.get("title_role") == "assessment_area"
+                           and bool(af_codes := summary["fields"]["standards"]["value"])
+                           and set(af_codes) == set(detail["fields"]["standards"]["value"])
+                           and "score" in matched)
             area_match = bool(any(
                 sum(k in area_titles(i) for i in local_summaries) == 1
                 and sum(k in area_titles(i) for i in (
                     local_details if ordered else [i for i in local if i["layout"] == "form"]
                 )) == 1
-                and (ordered or all(title_key(i["fields"]["title"]["value"]) == k
+                and (ordered or scoped_area or all(title_key(i["fields"]["title"]["value"]) == k
                          for i in (summary, detail)) or any(
                     title_key(o["text"]) == k and not AREA_TITLE_RE.fullmatch(o["text"])
                     for i in (summary, detail) for o in i["fields"]["assessment_area"]["evidence"]

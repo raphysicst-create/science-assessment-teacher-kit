@@ -1,0 +1,422 @@
+{
+  "rounds": {
+    "2026-round-3": {
+      "before": {
+        "bounded": 62,
+        "review": 109,
+        "roles": {
+          "teaching_plan": 56,
+          "performance": 67,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "all_roles": {
+          "teaching_plan": 56,
+          "performance": 67,
+          "summary_duplicate": 40,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 56,
+          "원문 제목 셀 미확정": 107,
+          "행·열·셀 소유 범위 미입증": 104,
+          "별도 표 연결 미확정": 46,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 2,
+          "항목 학년 표지와 S5 학년 귀속 충돌": 1,
+          "S5 과목 경계 미확정": 9,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 1
+        },
+        "title_roles": {
+          "과제명": 49,
+          "영역": 15,
+          "번호": 0,
+          "미확정": 107
+        },
+        "bounded_title_roles": {
+          "과제명": 47,
+          "영역": 15,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "after": {
+        "bounded": 62,
+        "review": 109,
+        "roles": {
+          "teaching_plan": 56,
+          "performance": 67,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "all_roles": {
+          "teaching_plan": 56,
+          "performance": 67,
+          "summary_duplicate": 40,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 56,
+          "원문 제목 셀 미확정": 107,
+          "행·열·셀 소유 범위 미입증": 104,
+          "별도 표 연결 미확정": 46,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 2,
+          "항목 학년 표지와 S5 학년 귀속 충돌": 1,
+          "S5 과목 경계 미확정": 9,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 1
+        },
+        "title_roles": {
+          "과제명": 45,
+          "영역": 19,
+          "번호": 0,
+          "미확정": 107
+        },
+        "bounded_title_roles": {
+          "과제명": 43,
+          "영역": 19,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "edition_history_bounded": 5,
+      "edition_removed_documents": 1,
+      "audit": {
+        "제목 생성": 0,
+        "항목 간 필드 소유 충돌": 0,
+        "기존 근거 추적 오류": 0,
+        "변환본 범위 밖 locator": 0,
+        "근거·머리글 원문 슬라이스 불일치": 0,
+        "bounded 필드의 소유 범위 이탈": 0,
+        "bounded 경계 미입증·검토 사유 잔존": 0,
+        "bounded 타 교과·대상 외 학년": 0,
+        "평문 폴백 bounded": 0,
+        "충돌 필드 값 확정": 0,
+        "재귀속 요약 근거·학년 추적 오류": 0,
+        "요약 참조 값·소유 출처 오류": 0,
+        "일반 동일성 독립 근거·문서 범위 오류": 0,
+        "열 필드 소유 범위 오류": 0,
+        "병합셀 공유 근거 오류": 0,
+        "참고표 bounded": 0,
+        "policy_trace": 0,
+        "policy_scope": 0,
+        "outside_reference": 0,
+        "sub_score_trace": 0,
+        "option_trace": 0,
+        "rubric_trace": 0
+      },
+      "edition_removed_bounded": 0,
+      "summary_links": {
+        "before": 40,
+        "after": 40
+      },
+      "split_merges": [],
+      "removed_split_candidates": 0
+    },
+    "2026-round-3-dev2": {
+      "before": {
+        "bounded": 102,
+        "review": 175,
+        "roles": {
+          "teaching_plan": 69,
+          "performance": 122,
+          "other": 30,
+          "general_standards": 56
+        },
+        "all_roles": {
+          "teaching_plan": 69,
+          "summary_duplicate": 70,
+          "performance": 122,
+          "other": 30,
+          "general_standards": 56
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 69,
+          "원문 제목 셀 미확정": 171,
+          "행·열·셀 소유 범위 미입증": 159,
+          "별도 표 연결 미확정": 60,
+          "요약표·상세표 항목 동일성 미확정": 1,
+          "변환 손실": 2,
+          "평문 변환·표 구조 미보존": 1,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 25,
+          "항목 학년 표지와 S5 학년 귀속 충돌": 7,
+          "중첩·불완전 표 구조 미확정": 2,
+          "단원·성취기준·성취수준 머리글·항목 근거 제외": 2,
+          "S5 과목 경계 미확정": 7,
+          "항목 과목 판정 unknown": 7
+        },
+        "title_roles": {
+          "과제명": 86,
+          "영역": 20,
+          "번호": 0,
+          "미확정": 171
+        },
+        "bounded_title_roles": {
+          "과제명": 83,
+          "영역": 19,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "after": {
+        "bounded": 102,
+        "review": 173,
+        "roles": {
+          "teaching_plan": 69,
+          "performance": 120,
+          "other": 30,
+          "general_standards": 56
+        },
+        "all_roles": {
+          "teaching_plan": 69,
+          "summary_duplicate": 72,
+          "performance": 120,
+          "other": 30,
+          "general_standards": 56
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 69,
+          "원문 제목 셀 미확정": 171,
+          "행·열·셀 소유 범위 미입증": 158,
+          "별도 표 연결 미확정": 59,
+          "변환 손실": 2,
+          "평문 변환·표 구조 미보존": 1,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 25,
+          "항목 학년 표지와 S5 학년 귀속 충돌": 7,
+          "중첩·불완전 표 구조 미확정": 2,
+          "단원·성취기준·성취수준 머리글·항목 근거 제외": 2,
+          "S5 과목 경계 미확정": 7,
+          "항목 과목 판정 unknown": 7
+        },
+        "title_roles": {
+          "과제명": 81,
+          "영역": 23,
+          "번호": 0,
+          "미확정": 171
+        },
+        "bounded_title_roles": {
+          "과제명": 79,
+          "영역": 23,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "edition_history_bounded": 5,
+      "edition_removed_documents": 15,
+      "audit": {
+        "제목 생성": 0,
+        "항목 간 필드 소유 충돌": 0,
+        "기존 근거 추적 오류": 0,
+        "변환본 범위 밖 locator": 0,
+        "근거·머리글 원문 슬라이스 불일치": 0,
+        "bounded 필드의 소유 범위 이탈": 0,
+        "bounded 경계 미입증·검토 사유 잔존": 0,
+        "bounded 타 교과·대상 외 학년": 0,
+        "평문 폴백 bounded": 0,
+        "충돌 필드 값 확정": 0,
+        "재귀속 요약 근거·학년 추적 오류": 0,
+        "요약 참조 값·소유 출처 오류": 0,
+        "일반 동일성 독립 근거·문서 범위 오류": 0,
+        "열 필드 소유 범위 오류": 0,
+        "병합셀 공유 근거 오류": 0,
+        "참고표 bounded": 0,
+        "policy_trace": 0,
+        "policy_scope": 0,
+        "outside_reference": 0,
+        "sub_score_trace": 0,
+        "option_trace": 0,
+        "rubric_trace": 0
+      },
+      "edition_removed_bounded": 0,
+      "summary_links": {
+        "before": 70,
+        "after": 72
+      },
+      "split_merges": [
+        {
+          "item_id": "item_1e2bfcee9d679308bebc305f4f2d0eef12936b70404239dd78c1d1f9d069953d",
+          "columns": [
+            4,
+            5
+          ],
+          "before_item_ids": [
+            "item_bc11ea7db985f9b3dc18c5fb6490fbe7e67e761d022122cfc163154b5b11864b",
+            "item_5688f21e4e390473bc458eba25a7a2addef83c1ab9ea07a8b19c9872c3038b23"
+          ],
+          "removed_split_candidates": 1
+        },
+        {
+          "item_id": "item_420a981b5a927e7e46467f838f1852a4fed46b19eaed1e18b5c08898a48a2aa3",
+          "columns": [
+            5,
+            6
+          ],
+          "before_item_ids": [
+            "item_420a981b5a927e7e46467f838f1852a4fed46b19eaed1e18b5c08898a48a2aa3",
+            "item_6ee06fb526c68b52ef4490abebe1619883ca2e8029ea598941b60cf675ef9ee6"
+          ],
+          "removed_split_candidates": 1
+        },
+        {
+          "item_id": "item_54a768e527367a01aca1525150f3a39acbf022d1369cc3b449e836b41df7bd2a",
+          "columns": [
+            6,
+            7
+          ],
+          "before_item_ids": [
+            "item_54a768e527367a01aca1525150f3a39acbf022d1369cc3b449e836b41df7bd2a",
+            "item_fdd0b505eee02d65129722c04829ec6ba3cac7de15243faf12502200cadca76d"
+          ],
+          "removed_split_candidates": 1
+        }
+      ],
+      "removed_split_candidates": 3
+    },
+    "2026-round-1-dev2": {
+      "before": {
+        "bounded": 103,
+        "review": 194,
+        "roles": {
+          "teaching_plan": 64,
+          "performance": 145,
+          "other": 18,
+          "general_standards": 70
+        },
+        "all_roles": {
+          "teaching_plan": 64,
+          "summary_duplicate": 72,
+          "performance": 145,
+          "other": 18,
+          "general_standards": 70
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 64,
+          "원문 제목 셀 미확정": 174,
+          "행·열·셀 소유 범위 미입증": 159,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 15,
+          "항목 학년 표지와 S5 학년 귀속 충돌": 17,
+          "별도 표 연결 미확정": 69,
+          "요약표·상세표 동일성 다중 대응·확정 보류": 2,
+          "단원·성취기준·성취수준 머리글·항목 근거 제외": 8,
+          "중첩·불완전 표 구조 미확정": 2,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 2,
+          "제목 셀에 필드 라벨 혼입·경계 미확정": 4,
+          "다른 프로그램 머리글 범위·과학 교과 귀속 보류": 13,
+          "S5 과목 경계 미확정": 8,
+          "요약표·상세표 항목 동일성 미확정": 1,
+          "평문 변환·표 구조 미보존": 1
+        },
+        "title_roles": {
+          "과제명": 87,
+          "영역": 36,
+          "번호": 0,
+          "미확정": 174
+        },
+        "bounded_title_roles": {
+          "과제명": 77,
+          "영역": 26,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "after": {
+        "bounded": 102,
+        "review": 197,
+        "roles": {
+          "teaching_plan": 64,
+          "performance": 147,
+          "other": 18,
+          "general_standards": 70
+        },
+        "all_roles": {
+          "teaching_plan": 64,
+          "summary_duplicate": 69,
+          "performance": 147,
+          "other": 18,
+          "general_standards": 70
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 64,
+          "원문 제목 셀 미확정": 177,
+          "행·열·셀 소유 범위 미입증": 158,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 15,
+          "항목 학년 표지와 S5 학년 귀속 충돌": 16,
+          "별도 표 연결 미확정": 68,
+          "요약표·상세표 동일성 다중 대응·확정 보류": 2,
+          "단원·성취기준·성취수준 머리글·항목 근거 제외": 8,
+          "중첩·불완전 표 구조 미확정": 2,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 2,
+          "제목 셀에 필드 라벨 혼입·경계 미확정": 4,
+          "다른 프로그램 머리글 범위·과학 교과 귀속 보류": 13,
+          "S5 과목 경계 미확정": 8,
+          "요약표·상세표 항목 동일성 미확정": 1,
+          "평문 변환·표 구조 미보존": 1
+        },
+        "title_roles": {
+          "과제명": 87,
+          "영역": 35,
+          "번호": 0,
+          "미확정": 177
+        },
+        "bounded_title_roles": {
+          "과제명": 77,
+          "영역": 25,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "edition_history_bounded": 15,
+      "edition_removed_documents": 3,
+      "audit": {
+        "제목 생성": 0,
+        "항목 간 필드 소유 충돌": 0,
+        "기존 근거 추적 오류": 0,
+        "변환본 범위 밖 locator": 0,
+        "근거·머리글 원문 슬라이스 불일치": 0,
+        "bounded 필드의 소유 범위 이탈": 0,
+        "bounded 경계 미입증·검토 사유 잔존": 0,
+        "bounded 타 교과·대상 외 학년": 0,
+        "평문 폴백 bounded": 0,
+        "충돌 필드 값 확정": 0,
+        "재귀속 요약 근거·학년 추적 오류": 0,
+        "요약 참조 값·소유 출처 오류": 0,
+        "일반 동일성 독립 근거·문서 범위 오류": 0,
+        "열 필드 소유 범위 오류": 0,
+        "병합셀 공유 근거 오류": 0,
+        "참고표 bounded": 0,
+        "policy_trace": 0,
+        "policy_scope": 0,
+        "outside_reference": 0,
+        "sub_score_trace": 0,
+        "option_trace": 0,
+        "rubric_trace": 0
+      },
+      "edition_removed_bounded": 0,
+      "summary_links": {
+        "before": 72,
+        "after": 69
+      },
+      "split_merges": [],
+      "removed_split_candidates": 0
+    }
+  },
+  "access_violations": [],
+  "development_totals": {
+    "before": {
+      "found": 142,
+      "missed": 5,
+      "wrong_or_duplicate": 5,
+      "bounded": 147
+    },
+    "after": {
+      "found": 147,
+      "missed": 0,
+      "wrong_or_duplicate": 0,
+      "bounded": 147
+    }
+  }
+}
