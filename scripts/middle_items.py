@@ -37,7 +37,7 @@ else:
     from middle_segments import digest_id, text_locator, visible
     from middle_subjects import classify_subject, table_spans
 
-RULE_VERSION = "middle-items-v9"
+RULE_VERSION = "middle-items-v10"
 IDENTITY_VERSION = "middle-items-v2"  # Field-only changes retain source identities.
 FIELDS = (
     "title",
@@ -141,6 +141,10 @@ LABELS = {
     "과제내용및수행과정": "task_text",
     "수행과제내용": "task_text",
     "수행과제(내용)": "task_text",
+    "수행과제(과제내용)": "task_text",
+    "평가과제내용": "task_text",
+    "채점요소": "elements",
+    "핵심아이디어": "competency",
 }
 TITLE_ROLES = {"title", "task", "task_no", "assessment_area"}
 TASK_NO_RE = re.compile(
@@ -151,14 +155,20 @@ AREA_TITLE_RE = re.compile(
     r"(?:실험(?:[·ㆍ･‧]실습)?|탐구(?:활동)?|(?:실험|탐구)\s*보고서|실험\s*탐구|서[·ㆍ･‧]?논술형?"
     r"|서술형|논술형|구술[·ㆍ･‧]?발표|발표|보고서|프로젝트|포트폴리오)(?:\s*평가)?"
 )
+CODE_SPACE = r"(?:\s|<br\s*/?>)*"
 CODE_RE = re.compile(
-    r"\[\s*9\s*과\s*(\d{2})\s*-\s*(\d{2})\s*\]"
-    r"(?:(?:\s|<br\s*/?>)*[~∼～–](?:\s|<br\s*/?>)*"
-    r"(?:\[\s*9\s*과\s*(\d{2})\s*-\s*)?(\d{2})\s*\]?)?"
+    rf"\[{CODE_SPACE}9{CODE_SPACE}과{CODE_SPACE}(\d{{1,2}}){CODE_SPACE}[-－–]"
+    rf"{CODE_SPACE}(\d{{2}}){CODE_SPACE}\]"
+    rf"(?:{CODE_SPACE}[~∼～〜–]{CODE_SPACE}"
+    rf"(?:\[{CODE_SPACE}9{CODE_SPACE}과{CODE_SPACE}(\d{{1,2}}){CODE_SPACE}[-－–]"
+    rf"{CODE_SPACE})?(\d{{2}}){CODE_SPACE}\]?)?",
+    re.I,
 )
 ROW_RE = re.compile(r"<tr\b[^>]*>(.*?)</tr\s*>", re.S | re.I)
 CELL_RE = re.compile(r"<(?:td|th)\b([^>]*)>(.*?)</(?:td|th)\s*>", re.S | re.I)
-METHOD_BOX_RE = re.compile(BOX_RE.pattern + r"|\[[^\[\]\r\n]{0,5}\]|[\uFFFD\uF000-\uF8FF]", re.I)
+METHOD_BOX_RE = re.compile(
+    r"gfed[a-z]+|" + BOX_RE.pattern + r"|\[[^\[\]\r\n]{0,5}\]|[\uFFFD\uF000-\uF8FF]", re.I
+)
 NUMERIC_FIELDS = {"score", "points", "weight", "essay_weight"}
 COMPOUND_NUMBER_RE = re.compile(
     r"\s*(?:\d+(?:\.\d+)?\s*점?)?(?:\s|<br\s*/?>)*"
@@ -328,6 +338,10 @@ def evidence(cell: dict, conversion: dict, header: dict | None = None) -> dict:
     result = {"raw": cell["raw"], "text": cell["text"], "locator": loc}
     if cell.get("source_cell_proof"):
         result["source_cell_proof"] = cell["source_cell_proof"]
+    if cell.get("method_kind"):
+        result["method_kind"] = cell["method_kind"]
+    if cell.get("description_only"):
+        result["description_only"] = True
     if cell.get("shared_columns"):
         result["shared_columns"] = cell["shared_columns"]
         result["sharing_basis"] = "원문 colspan 병합셀·열 범위 공통값"
@@ -363,16 +377,25 @@ def method_values(observations: list[dict], *, conversion_loss: bool = False) ->
                     else "방법 값 판독·용어 확인 필요"
                 )
             continue
+        # Both printed conventions occur. The edge text determines orientation,
+        # never the checked/unchecked state or the number of selected options.
+        suffix = bool(visible(raw[:markers[0].start()]).strip()) and not bool(
+            visible(raw[markers[-1].end():]).strip()
+        )
         for index, marker in enumerate(markers):
-            end = markers[index + 1].start() if index + 1 < len(markers) else len(raw)
-            option_raw = raw[marker.start() : end]
-            text = visible(raw[marker.end() : end]).strip()
-            normalized = re.sub(r"[ㆍ･・‧]", "·", re.sub(r"\s+", "", text))
+            start = (markers[index - 1].end() if index else 0) if suffix else marker.start()
+            end = marker.end() if suffix else (
+                markers[index + 1].start() if index + 1 < len(markers) else len(raw)
+            )
+            option_raw = raw[start:end]
+            text = visible(raw[start:marker.start()] if suffix else raw[marker.end():end])
+            text = text.strip(" \r\n,，/|:：")
+            normalized = re.sub(r"[ㆍ･・‧⋅]", "·", re.sub(r"\s+", "", text))
             normalized = re.sub(r"^서술·논술", "서·논술", normalized)
             other = re.search(r"기타\s*\((.*?)\)", text, re.S)
             loc = {
                 **obs["locator"],
-                "start": obs["locator"]["start"] + marker.start(),
+                "start": obs["locator"]["start"] + start,
                 "end": obs["locator"]["start"] + end,
             }
             options.append(
@@ -381,12 +404,14 @@ def method_values(observations: list[dict], *, conversion_loss: bool = False) ->
                     "option_text": text,
                     "marker": marker.group(),
                     "state": marker_state(marker.group()),
+                    "kind": obs.get("method_kind", "method"),
                     "other_content": other[1] if other else None,
                     "normalized": "기타" if other else normalized,
                     "locator": loc,
                 }
             )
-    selected = [o["normalized"] for o in options if o["state"] == "checked"]
+    selected = [o["normalized"] for o in options if o["state"] == "checked"
+                and o["normalized"]]
     if conversion_loss:
         state, reason, selected = "conversion_loss", "변환 손실", []
     elif any(o["state"] == "unknown" for o in options):
@@ -418,10 +443,11 @@ def standard_values(observations: list[dict]) -> dict:
     for obs in observations:
         for match in CODE_RE.finditer(obs["raw"]):
             area, first, last_area, last = match.groups()
-            begin = f"[9과{area}-{first}]"
-            finish = f"[9과{last_area or area}-{last or first}]"
+            begin = f"[9과{int(area):02}-{first}]"
+            finish = f"[9과{int(last_area or area):02}-{last or first}]"
             codes = ([c for c in reference_codes() if begin <= c <= finish]
-                     if last and begin <= finish else [begin] if not last else [])
+                     if last and begin <= finish else [begin]
+                     if not last and begin in reference_codes() else [])
             loc = {
                 **obs["locator"],
                 "start": obs["locator"]["start"] + match.start(),
@@ -432,7 +458,7 @@ def standard_values(observations: list[dict]) -> dict:
                     "raw": match.group(),
                     "expanded": codes,
                     "locator": loc,
-                    "expansion_status": "reference_validated" if last and codes else
+                    "expansion_status": "reference_validated" if codes else
                     "literal_code" if codes else "review",
                 }
             )
@@ -450,7 +476,7 @@ def standard_values(observations: list[dict]) -> dict:
                 o["expansion_status"] == "reference_validated" for o in occurrences
             ) else "literal_only" if expanded else "undetermined"
         ),
-        "validity": "범위는 로컬 2022 코드 목록으로 한정·단일 코드는 원문 보존",
+        "validity": "로컬 2022 기준 87개로 정규화·원문 보존",
     }
 
 
@@ -726,6 +752,13 @@ def form_structures(table: dict) -> list[dict]:
     for row in table["rows"]:
         for index, header in enumerate(row[:-1]):
             role = label_role(header["text"])
+            if role == "task" and re.sub(r"\s+", "", header["text"]) in {
+                "수행과제", "평가과제"
+            } and re.search(
+                r"(?:<br\s*/?>|\n)\s*(?:\d+[.)]|[①-⑳])|^\s*\d+[.)]",
+                row[index + 1]["raw"], re.I,
+            ):
+                role = "task_text"
             if role == "task" and "성취수준별" in row[index + 1]["text"]:
                 continue  # This is a column header, not a task value.
             if role and not label_role(row[index + 1]["text"]):
@@ -1177,7 +1210,7 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
                     claims["score"].append((part, header))
     observations = {name: [] for name in FIELDS}
     for role, pairs in claims.items():
-        field = "task_text" if role == "task" else role
+        field = role
         if field not in observations and role != "score_weight":
             continue
         seen = set()
@@ -1202,7 +1235,8 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
         for cell, header in claims.get(role, []):
             cell = title_cell(cell)
             if role == "task_text" and (
-                not title_gate(cell["text"])["accepted"]
+                cell.get("description_only")
+                or not title_gate(cell["text"])["accepted"]
                 or title_content_role(cell["text"], "assessment_area") != "task"
                 or re.search(r"<br|[\r\n]|^\s*\d+[.)]", cell["raw"], re.I)
             ):
@@ -1249,6 +1283,18 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     )
     fields["method"]["conversion_comparison"] = checks
     fields["standards"] = standard_values(observations["standards"])
+    fields["rubric"]["summary"] = [o["text"] for o in observations["rubric"]
+                                   if not re.fullmatch(r"[A-F]|\d+(?:\.\d+)?\s*점?",
+                                                       o["text"])][:3]
+    fields["rubric"]["table_locators"] = [
+        {"table": table,
+         "start": min(o["locator"]["start"] for o in observations["rubric"]
+                      if o["locator"].get("table") == table),
+         "end": max(o["locator"]["end"] for o in observations["rubric"]
+                    if o["locator"].get("table") == table)}
+        for table in sorted({o["locator"]["table"] for o in observations["rubric"]
+                             if "table" in o["locator"]})
+    ]
     fields["sub_scores"] = sub_score_field(sub_scores, conversion)
     fields["free_semester"] = free_semester_field(structure, section, conversion)
     if title_role == "task_no" and not fields["task_no"]["value"]:

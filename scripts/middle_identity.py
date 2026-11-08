@@ -29,6 +29,11 @@ def titles(item):
     keys = set()
     for name in ("title", "task_text", "assessment_area"):
         value = item["fields"][name]["value"]
+        if name == "task_text":
+            # Enriched rubric activities cannot vote on the identity that owns
+            # them. Only an original explicit task-content cell can do so.
+            value = [o["text"] for o in item["fields"][name]["evidence"]
+                     if not o.get("description_only")]
         for v in value if isinstance(value, list) else [value]:
             if (v and title_gate(v)["accepted"] and not AREA_TITLE_RE.fullmatch(v)
                     and not TASK_NO_RE.fullmatch(v)):
@@ -93,6 +98,34 @@ def equal_value(name, a, b):
     return a == b
 
 
+def merge_method(source, target, summary_id):
+    """Combine independently stated methods and task-scoped evaluator choices."""
+    def key(value):
+        value = re.sub(r"[ㆍ･・‧⋅]", "·", compact(value))
+        value = re.sub(r"(?:형)?평가$|형$", "", value)
+        return {"서술·논술": "서·논술", "실험": "실험·실습"}.get(value, value)
+
+    for stated, choices in ((source, target), (target, source)):
+        unchecked = {key(o["normalized"]) for o in choices.get("options", [])
+                     if o["state"] == "unchecked"}
+        if unchecked & {key(v) for v in stated["value"]}:
+            target.update(value=[], status="conflict", reason="요약·세부 방법 선택값 충돌")
+            return
+    values = list(target["value"])
+    for value in source["value"]:
+        if key(value) not in {key(v) for v in values}:
+            values.append(value)
+    if not values:
+        return
+    if not target["value"] and target.get("state") not in {"unknown", "conversion_loss"}:
+        target.update(value_source="summary", value_source_item_id=summary_id)
+    else:
+        target["value_source"] = "source_observations"
+    target.update(value=values, reason="", comparison_status="scoped_method_evidence")
+    target["status"] = ("unconfirmed" if target.get("state") in {"unknown", "conversion_loss"}
+                        else "present")
+
+
 def merge_pair(summary, detail, proof):
     summary["candidate_role"] = "summary_duplicate"
     summary["role_basis"] = proof["basis"]
@@ -109,14 +142,8 @@ def merge_pair(summary, detail, proof):
     # rubric/elements may intentionally be abbreviated in summaries. Preserve
     # their source observations, without claiming that these scopes are equal.
     comparable = {
-        "score", "points", "weight", "essay_weight", "timing", "standards", "method", "task_no"
+        "score", "points", "weight", "essay_weight", "timing", "standards", "task_no"
     }
-    method_headers = [
-        {compact(o.get("header_raw", "")) for o in i["fields"]["method"]["evidence"]}
-        for i in (summary, detail)
-    ]
-    if any("평가유형" in h for h in method_headers) and method_headers[0] != method_headers[1]:
-        comparable.discard("method")  # Type and method are separate source concepts.
     if (titles(summary) & titles(detail) or proof["basis"] == "unique_task_number"
             and summary.get("title_role") == detail.get("title_role")):
         comparable.add("title")
@@ -135,6 +162,13 @@ def merge_pair(summary, detail, proof):
         ]
         target["source_observations"] = snapshots
         source["source_observations"] = copy.deepcopy(snapshots)
+        if name == "method":
+            for snapshot, field in zip(snapshots, (source, target), strict=True):
+                snapshot["options"] = copy.deepcopy(field.get("options", []))
+                snapshot["state"] = field.get("state")
+            source["source_observations"] = copy.deepcopy(snapshots)
+            merge_method(source, target, summary["item_id"])
+            continue
         av, bv = source["value"], target["value"]
         present_a, present_b = av not in ("", [], None), bv not in ("", [], None)
         if name not in comparable:

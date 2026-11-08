@@ -10,7 +10,7 @@ from pathlib import Path
 
 METHOD_RE = re.compile(
     r"(?:실험(?:[·ㆍ\s]?실습)?|실습|실기|탐구|보고서(?:법)?|관찰(?:평가|법)?|"
-    r"서[·ㆍ]?논술형?|서술형|논술형|서논술형|서술논술형|구술(?:[·ㆍ]?발표)?|"
+    r"서[·ㆍ]?논술형?|서술형?|논술형?|서논술형|서술논술형|구술(?:[·ㆍ]?발표)?|"
     r"발표|토의|토론|프로젝트|포트폴리오|면접|자기평가|동료평가|"
     r"교사평가|교사\s*관찰\s*및\s*기록|선택형|단답형|모둠|개별|지필평가|"
     r"체크리스트|수업\s*참여도)(?:\s*평가)?"
@@ -22,7 +22,10 @@ LEVEL_RE = re.compile(
 
 
 def method_literal(value):
-    parts = re.split(r"\s*[,，/·ㆍ\n]+\s*", value.strip())
+    value = re.sub(r"[ㆍ･・‧⋅]", "·", value.strip())
+    if METHOD_RE.fullmatch(value):
+        return True
+    parts = re.split(r"\s*[,，/·\n]+\s*", value)
     return bool(parts) and all(METHOD_RE.fullmatch(p) for p in parts)
 
 
@@ -61,79 +64,209 @@ def title_alias_key(value):
 
 
 def enrich_claims(structure):
-    """Read element/level columns only inside the already established ownership."""
+    """Enrich only cells whose task ownership was already established."""
     if __package__:
-        from .middle_items import label_role
+        from .middle_items import cell_part, label_role
     else:
-        from middle_items import label_role
+        from middle_items import cell_part, label_role
     claims, cells = structure["claims"], structure["cells"]
-    rows = {}
-    for c in cells:
-        if "table" in c:
-            rows.setdefault((c["table"], c["row"]), []).append(c)
-    sub_scores, rubric = [], []
-    for header in cells:
-        role = label_role(header["text"])
-        if role not in {"elements", "rubric"}:
+    for cell, header in claims.get("task", []):
+        if not header or not re.search(r"수행\s*과제|평가\s*과제", header["text"]):
             continue
-        for (table, row), values in rows.items():
-            if table != header.get("table") or row <= header["row"]:
-                continue
-            same = [c for c in values if c["col"] == header["col"]]
-            if role == "elements":
-                for c in same:
-                    if c["text"] and not label_role(c["text"]):
-                        claims["elements"].append((c, header))
-                        inline = re.fullmatch(r"(.+?)\s*\(\s*(\d+(?:\.\d+)?)\s*점?\s*\)",
-                                              c["text"])
-                        if inline:
-                            sub_scores.append((inline[1].strip(), float(inline[2]), [c], header))
-                        else:
-                            point_headers = [h for h in cells if h.get("table") == table
-                                             and h["row"] == header["row"]
-                                             and label_role(h["text"]) in {"points", "score"}]
-                            for h in point_headers:
-                                amounts = [v for v in values if v["col"] == h["col"]
-                                           and re.fullmatch(r"\d+(?:\.\d+)?\s*점?", v["text"])]
-                                for v in amounts:
-                                    sub_scores.append((c["text"], float(re.sub(r"점|\s", "",
-                                                                                 v["text"])),
-                                                       [c, v], header))
-    # Dedicated task rubric: a judgment column and at least two distinct levels.
-    # General curriculum achievement tables cannot satisfy this grammar.
-    for table in {c.get("table") for c in cells if "table" in c}:
+        if len(cell["text"]) > 120 or re.search(
+            r"(?:^|<br\s*/?>|\n)\s*(?:\d+[.)]|[①-⑳])", cell["raw"], re.I
+        ):
+            claims["task_text"].append((cell, header))
+    rows = {}
+    for cell in cells:
+        if "table" in cell:
+            rows.setdefault((cell["table"], cell["row"]), []).append(cell)
+    if structure["layout"] == "form":
+        detail_form_claims(claims, cells, rows)
+    sub_scores, rubric, activities = [], [], []
+    for table in {c["table"] for c in cells if "table" in c}:
         local = [c for c in cells if c.get("table") == table]
-        headers = [c for c in local if label_role(c["text"]) == "rubric"]
-        for h in headers:
+        local_rows = {r: values for (t, r), values in rows.items() if t == table}
+        rubric_headers = [c for c in local if label_role(c["text"]) == "rubric"]
+        # A task-only unscored A–E scale after its method is also a rubric.
+        methods = [c["row"] for c in local if label_role(c["text"]) == "method"]
+        rubric_headers += [c for c in local if label_role(c["text"]) == "levels"
+                           and methods and c["row"] > min(methods)]
+        combined = [c for c in local if re.fullmatch(
+            r"평가\s*요소\s*및\s*배점", c["text"])]
+        rubric_headers += combined
+        table_judgments = []
+        for header in rubric_headers:
+            stop = min((c["row"] for c in local if c["row"] > header["row"]
+                        and label_role(c["text"]) in {
+                            "method", "standards", "timing", "score_weight", "task_text",
+                        }), default=max(local_rows, default=0) + 1)
             judgments, levels = [], set()
-            for (t, row), values in rows.items():
-                if t != table or row <= h["row"]:
+            for row, values in local_rows.items():
+                if not header["row"] <= row < stop:
                     continue
-                criteria = [c for c in values if h["col"] <= c["col"] < h["col"] + h["colspan"]
-                            and c["text"] and not label_role(c["text"])
-                            and not LEVEL_RE.fullmatch(c["text"])
-                            and re.search(r"함|됨|있|없|임$|한다|이다|미흡|충실|우수|필요|부족|"
-                                          r"정확|오류|이상|미만|못|모두|일부|완료", c["text"])]
+                in_column = [c for c in values if (
+                    header in combined or label_role(header["text"]) == "levels"
+                    and c["col"] > header["col"]
+                    or header["col"] <= c["col"] < header["col"] + header["colspan"]
+                )]
+                criteria = [c for c in in_column if judgment(c["text"])
+                            and not label_role(c["text"])]
                 scale = [c for c in values if c not in criteria
                          and LEVEL_RE.fullmatch(c["text"])]
                 if criteria and scale:
-                    judgments.extend(criteria + scale)
+                    judgments.extend((c, header) for c in criteria + scale)
                     levels.update(c["text"] for c in scale)
             if len(levels) >= 2:
-                rubric.extend((c, h) for c in judgments)
+                rubric.extend(judgments)
+                table_judgments.extend(c for c, _ in judgments if judgment(c["text"]))
+        elements = [c for c in local if label_role(c["text"]) == "elements"
+                    and c not in combined]
+        for header in elements:
+            header_scores = {}
+            point_headers = [c for c in local if c["row"] == header["row"]
+                             and label_role(c["text"]) in {"points", "score"}]
+            stop = min((c["row"] for c in local if c["row"] > header["row"]
+                        and label_role(c["text"]) in {
+                            "method", "standards", "task_text", "score_weight", "timing",
+                        }), default=max(local_rows, default=0) + 1)
+            for cell in local:
+                if not (header["row"] < cell["row"] < stop
+                        and cell["col"] == header["col"]
+                        and cell["colspan"] <= header["colspan"]
+                        and cell["text"] and not label_role(cell["text"])
+                        and not re.match(r"합\s*계|기본\s*점수|미응시|장기", cell["text"])):
+                    continue
+                claims["elements"].append((cell, header))
+                end = min(stop, cell["row"] + cell["rowspan"])
+                scores = [v for r, values in local_rows.items() if cell["row"] <= r < end
+                          for v in values for h in point_headers
+                          if h["col"] <= v["col"] < h["col"] + h["colspan"]
+                          and re.fullmatch(r"\d+(?:\.\d+)?\s*점?", v["text"])]
+                if scores:
+                    highest = max(float(re.sub(r"점|\s", "", v["text"])) for v in scores)
+                    element_name = re.sub(
+                        r"\s*\(\s*\d+(?:\.\d+)?\s*점?\s*\)\s*$", "", cell["text"]
+                    ).strip()
+                    if table_judgments:
+                        previous = header_scores.get(element_name, (0, []))
+                        header_scores[element_name] = (
+                            max(highest, previous[0]), [*previous[1], cell, *scores]
+                        )
+                    else:
+                        sub_scores.append((element_name, highest, [cell, *scores], header))
+                # The first level of each spanned element preserves its literal
+                # activity, without generating a description from the title.
+                first = [c for c in table_judgments if c["row"] == cell["row"]]
+                if re.search(r"하기|작성|제작|탐구|측정|조사", cell["text"]):
+                    activities.append((cell, header))
+                if first:
+                    activities.extend((c, header) for c in first)
+            sub_scores.extend((name, score, evidence, header)
+                              for name, (score, evidence) in header_scores.items())
+        for header in combined:
+            questions = [c for c in local if c["row"] == header["row"]
+                         and judgment(c["text"]) and c is not header]
+            scores = [c for c in local if header["row"] < c["row"]
+                      < header["row"] + header["rowspan"]
+                      and re.fullmatch(r"\d+(?:\.\d+)?\s*점?", c["text"])]
+            if len(questions) == 1 and scores:
+                sub_scores.append((questions[0]["text"], max(
+                    float(re.sub(r"점|\s", "", c["text"])) for c in scores),
+                    [questions[0], *scores], header))
+                activities.append((questions[0], header))
+                first_row = min((c["row"] for c in table_judgments
+                                 if c["row"] > header["row"]), default=None)
+                activities.extend((c, header) for c in table_judgments if c["row"] == first_row)
     claims["rubric"] = list({c["start"]: (c, h) for c, h in rubric}.values())
-    # Inline element(point) pairs also occur across a form row, not just below
-    # a column heading. Keep their original subcell offsets.
-    if __package__:
-        from .middle_items import cell_part
-    else:
-        from middle_items import cell_part
+    # Explicit step lists in element columns describe the task even without scores.
     for cell, header in claims.get("elements", []):
-        for m in re.finditer(r"([^<>\r\n/]+?)\s*\(\s*(\d+(?:\.\d+)?)\s*점?\s*\)",
-                             cell["raw"]):
-            part = cell_part(cell, m.start(), m.end())
-            sub_scores.append((m[1].strip(), float(m[2]), [part], header))
+        if re.search(r"(?:^|<br\s*/?>|\n)\s*(?:[▪•①-⑳]|\d+[.)])", cell["raw"], re.I):
+            activities.append((cell, header))
+        for match in re.finditer(
+            r"([^<>\r\n/]+?)\s*\(\s*(\d+(?:\.\d+)?)\s*점?\s*\)", cell["raw"]
+        ):
+            part = cell_part(cell, match.start(), match.end())
+            sub_scores.append((match[1].strip(), float(match[2]), [part], header))
+    claims["task_text"].extend(list({c["start"]: ({**c, "description_only": True}, h)
+                                      for c, h in activities}.values()))
     return sub_scores
+
+
+def judgment(text):
+    return bool(not LEVEL_RE.fullmatch(text) and re.search(
+        r"함|됨|있|없|임$|한다|이다|하였다|미흡|충실|우수|필요|부족|정확|오류|이상|미만|"
+        r"못|모두|일부|완료|충족|하는가|했는가|하였는가", text))
+
+
+def detail_form_claims(claims, cells, rows):
+    """Read labeled form windows, including method subrows and displaced units."""
+    if __package__:
+        from .middle_items import METHOD_BOX_RE, cell_part, label_role
+    else:
+        from middle_items import METHOD_BOX_RE, cell_part, label_role
+    method_claims = []
+    excluded_method_cells = set()
+    eligible_method_cells = set()
+    for header in cells:
+        role = label_role(header["text"])
+        if role in {"method", "evaluator", "organization"}:
+            for (table, row), values in rows.items():
+                if table != header.get("table") or not (
+                    header["row"] <= row < header["row"] + header["rowspan"]
+                ):
+                    continue
+                # A second label in this row terminates the field's window.
+                boundary = min((c["col"] for c in cells
+                                if c.get("table") == table
+                                and c["row"] <= row < c["row"] + c["rowspan"]
+                                and c["col"] > header["col"]
+                                and label_role(c["text"]) not in {None, "evaluator", "organization"}
+                                and c is not header), default=1000)
+                descriptor = " ".join(c["text"] for c in values
+                                      if c["col"] > header["col"] and not METHOD_BOX_RE.search(
+                                          c["raw"]) and len(c["text"]) < 12)
+                if re.search(r"점수\s*부여|원점수|평균점|환산점", descriptor):
+                    excluded_method_cells.update(c["start"] for c in values)
+                    continue
+                kind = ("evaluator" if role == "evaluator" or "주체" in descriptor else
+                        "organization" if role == "organization" or "방식" in descriptor
+                        else "method")
+                for cell in values:
+                    if not header["col"] < cell["col"] < boundary or label_role(cell["text"]):
+                        continue
+                    eligible_method_cells.add(cell["start"])
+                    if METHOD_BOX_RE.search(cell["raw"]) or method_literal(cell["text"]):
+                        method_claims.append(({**cell, "method_kind": kind}, header))
+                    elif role == "method" and len(cell["text"]) > 25 and re.search(
+                        r"측정|작성|설계|설명|발표|조사|분석|탐구|실험|서술", cell["text"]
+                    ):
+                        claims["task_text"].append(({**cell, "description_only": True}, header))
+                    elif cell["text"] in {"-", "—", "없음", "미기재", "해당없음", "해당 없음"}:
+                        method_claims.append((cell, header))
+        if role == "timing":
+            values = rows.get((header.get("table"), header["row"]), [])
+            next_cells = [c for c in values if c["col"] > header["col"]]
+            if next_cells:
+                cell = min(next_cells, key=lambda c: c["col"])
+                # Some converted forms put the time inside a neighboring unit label.
+                if re.search(r"만점|반영\s*비율", cell["text"]):
+                    claims["timing"] = [(c, h) for c, h in claims.get("timing", [])
+                                        if h is None or h["start"] != header["start"]]
+                    for match in re.finditer(r"\d{1,2}월(?:\s*\d주)?", cell["raw"]):
+                        claims["timing"].append((cell_part(cell, *match.span()), header))
+                    amounts = [c for c in next_cells if c["col"] > cell["col"]]
+                    if amounts and re.fullmatch(r"\s*\d+점?\s*(?:<br\s*/?>)?\s*\(\d+%\)\s*",
+                                               amounts[0]["raw"], re.I):
+                        claims["score_weight"].append((amounts[0], cell))
+    # Keep unreadable literal cells so they remain unconfirmed, not absent.
+    method_claims.extend((c, h) for c, h in claims.get("method", [])
+                         if c["text"] and len(c["text"]) <= 25
+                         and c["start"] not in excluded_method_cells
+                         and c["start"] in eligible_method_cells
+                         and not any(c["start"] == v["start"] for v, _ in method_claims)
+                         and not re.fullmatch(r"유형|주체|방식|점수부여방법", c["text"]))
+    claims["method"] = list({c["start"]: (c, h) for c, h in method_claims}.values())
 
 
 def sub_score_field(entries, conversion):
@@ -166,6 +299,25 @@ def free_semester_field(structure, section, conversion):
     text = conversion["text"]
     start, end = section["locator"]["start"], section["locator"]["end"]
     references = []
+    # A literal grade-wide declaration before the subject section applies to
+    # that grade. A term-qualified declaration still needs the matching term.
+    declaration = re.compile(
+        r"([123])\s*학년\s*(?:([12])\s*학기\s*)?(?:은|는)\s*"
+        r"자유\s*학(?:기|년)(?:제)?(?:를?\s*(?:운영|실시)|이(?:다|므로|어서)?|로|임|\b)"
+    )
+    for match in declaration.finditer(text, 0, start):
+        if int(match[1]) != section.get("grade") or (
+            match[2] and int(match[2]) != section.get("semester")
+        ):
+            continue
+        tail = text[match.end():text.find("\n", match.end())
+                    if "\n" in text[match.end():] else start]
+        if re.search(r"아니|않|미실시|미운영", tail):
+            continue
+        references.append({"raw": match.group(), "text": match.group(),
+                           "locator": text_locator(*match.span(), conversion),
+                           "scope": "document_grade_policy", "grade": int(match[1]),
+                           "semester": int(match[2]) if match[2] else None})
     # S4/S5 grade/term scope is mandatory: never borrow another term's policy.
     pattern = r"자유\s*학(?:기|년)(?:제)?|성취도\s*(?:미산출|산출하지\s*않)|이수\s*/\s*미이수"
     for m in re.finditer(pattern, text[start:end]):
@@ -189,7 +341,9 @@ def free_semester_field(structure, section, conversion):
             r"[ABCDE](?:\s*[·ㆍ,/~-]\s*[ABCDE])*", c["text"])
                   and c["start"] in rubric_cells]
         has_scale = any(re.search(r"척도|등급|성취수준", c["text"]) for c in cells)
-        has_points = any(re.search(r"\d+\s*점", c["text"]) for c in cells)
+        has_points = any(re.search(r"\d+\s*점", c["text"]) or (
+            c["start"] in rubric_cells and re.fullmatch(r"\d+(?:\.\d+)?", c["text"])
+        ) for c in cells)
         if len({c["text"] for c in levels}) >= 2 and has_scale and not has_points:
             references = [{"raw": c["raw"], "text": c["text"],
                            "locator": text_locator(c["start"], c["end"], conversion),

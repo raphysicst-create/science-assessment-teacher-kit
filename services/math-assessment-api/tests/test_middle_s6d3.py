@@ -93,10 +93,11 @@ def test_teaching_methods_timing_and_codes_are_reference_only():
 
 def test_task_steps_are_preserved_without_borrowing_teaching_plan():
     description = "1. 실험 설계 및 수행<br>2. 결과 정리 / 탐구 과정 정리"
-    assert field(form([["과제설명", description]]), "task_text")["value"] == [
-        "온도 측정하기", "1. 실험 설계 및 수행 2. 결과 정리 / 탐구 과정 정리",
-    ]
-    assert field(form(), "task_text")["value"] == "온도 측정하기"
+    # S6d-3b descriptions contain actual stages, without a copied title.
+    assert field(form([["과제설명", description]]), "task_text")["value"] == (
+        "1. 실험 설계 및 수행 2. 결과 정리 / 탐구 과정 정리"
+    )
+    assert field(form(), "task_text")["value"] == ""
 
 
 def test_summary_timing_and_other_ratio():
