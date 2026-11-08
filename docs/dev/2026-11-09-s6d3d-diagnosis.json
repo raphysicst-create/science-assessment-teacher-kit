@@ -1,0 +1,7034 @@
+{
+  "item_count": 146,
+  "clusters": [
+    {
+      "cluster": "HTML·수준·기준/점수 열·병합",
+      "count": 73,
+      "missing": {
+        "rubric": 52,
+        "task_text": 21,
+        "sub_scores": 57
+      },
+      "representatives": [
+        {
+          "round": "2026-round-3",
+          "item_id": "item_d659d8c439a9be5a50626901418739695baedb1ae9bd62b09fa3d7dc66233baa",
+          "document": "data/derived/segments/2026-round-3-conversions/7278b2e1aba867eeb62ab44008396787e7420dfc1e465ece19122a3e2206d1e9.json",
+          "school": "천안불당중학교",
+          "title": "비열 비교하기",
+          "missing": [
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 150723,
+            "end": 154273,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [
+            {
+              "start": 150695,
+              "end": 154292,
+              "table": 59,
+              "format": "html",
+              "score": 17,
+              "owned": true,
+              "basis": {
+                "title": true,
+                "heading": true,
+                "standard_code": true,
+                "owned": true
+              },
+              "tables": [
+                59
+              ]
+            }
+          ],
+          "cluster": "HTML·수준·기준/점수 열·병합"
+        },
+        {
+          "round": "2026-round-3",
+          "item_id": "item_aa0bd0a55fae576c8f16ebbdacec25b394b12c6a497b3926b80d38e2a98839ab",
+          "document": "data/derived/segments/2026-round-3-conversions/7278b2e1aba867eeb62ab44008396787e7420dfc1e465ece19122a3e2206d1e9.json",
+          "school": "천안불당중학교",
+          "title": "기체의 압력과 부피 관계",
+          "missing": [
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 154331,
+            "end": 157377,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [
+            {
+              "start": 154315,
+              "end": 157396,
+              "table": 60,
+              "format": "html",
+              "score": 17,
+              "owned": true,
+              "basis": {
+                "title": true,
+                "heading": true,
+                "standard_code": true,
+                "owned": true
+              },
+              "tables": [
+                60
+              ]
+            }
+          ],
+          "cluster": "HTML·수준·기준/점수 열·병합"
+        }
+      ]
+    },
+    {
+      "cluster": "미검출·미확정",
+      "count": 27,
+      "missing": {
+        "task_text": 27,
+        "sub_scores": 26,
+        "rubric": 26
+      },
+      "representatives": [
+        {
+          "round": "2026-round-3",
+          "item_id": "item_b98982f15eadf4000ced9fd61472df6a4faeddd6e4e438b11079c7cfcab2af6b",
+          "document": "data/derived/segments/2026-round-3-conversions/813777ef20d8c54bb5b293140fb31ca7be8185fe34df5451debaa8e79737bee9.json",
+          "school": "신목중학교",
+          "title": "힘과 운동",
+          "missing": [
+            "task_text",
+            "sub_scores",
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 169,
+            "end": 504,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [],
+          "cluster": "미검출·미확정"
+        },
+        {
+          "round": "2026-round-3",
+          "item_id": "item_43d95d77afa2d655fb6e4269d126d9f5fae13952e9ce8ae947ff4b72f7e20377",
+          "document": "data/derived/segments/2026-round-3-conversions/813777ef20d8c54bb5b293140fb31ca7be8185fe34df5451debaa8e79737bee9.json",
+          "school": "신목중학교",
+          "title": "기체의 성질",
+          "missing": [
+            "task_text",
+            "sub_scores",
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 183,
+            "end": 504,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [],
+          "cluster": "미검출·미확정"
+        }
+      ]
+    },
+    {
+      "cluster": "HTML·기준·점수 한 셀·병합",
+      "count": 13,
+      "missing": {
+        "sub_scores": 7,
+        "rubric": 13,
+        "task_text": 6
+      },
+      "representatives": [
+        {
+          "round": "2026-round-3",
+          "item_id": "item_b0782a73837c518336903c99cbc7bb54dc830a1b7383bad0b8f17fd635a9a86b",
+          "document": "data/derived/segments/2026-round-3-conversions/975aca37d1b80723978b395fd0321fd5c4bdcd5727179e5dada85cd42576acfb.json",
+          "school": "양평중학교",
+          "title": "세포의 구조와 생물의 구성 탐구하기",
+          "missing": [
+            "sub_scores",
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 376318,
+            "end": 378682,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [
+            {
+              "start": 376339,
+              "end": 378701,
+              "table": 227,
+              "format": "html",
+              "score": 17,
+              "owned": true,
+              "basis": {
+                "title": true,
+                "heading": true,
+                "standard_code": true,
+                "owned": true
+              },
+              "tables": [
+                227
+              ]
+            }
+          ],
+          "cluster": "HTML·기준·점수 한 셀·병합"
+        },
+        {
+          "round": "2026-round-3-dev2",
+          "item_id": "item_9bdf19b0ac9023c3270ca4414d19def30138a17a3d045245b0732dfa32c766ca",
+          "document": "data/derived/segments/2026-round-3-dev2-conversions/ac639ae2c502329488d4cb9dc1af310654fc2ef4761fb1a15f0a49ed2df07fab.json",
+          "school": "아름중학교",
+          "title": "소화계와 소화효소",
+          "missing": [
+            "sub_scores",
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 142810,
+            "end": 144380,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [
+            {
+              "start": 142794,
+              "end": 144399,
+              "table": 68,
+              "format": "html",
+              "score": 13,
+              "owned": true,
+              "basis": {
+                "title": true,
+                "heading": false,
+                "standard_code": true,
+                "owned": true
+              },
+              "tables": [
+                68
+              ]
+            }
+          ],
+          "cluster": "HTML·기준·점수 한 셀·병합"
+        }
+      ]
+    },
+    {
+      "cluster": "HTML·요소·배점 행/열·병합",
+      "count": 12,
+      "missing": {
+        "sub_scores": 12,
+        "rubric": 10,
+        "task_text": 1
+      },
+      "representatives": [
+        {
+          "round": "2026-round-3",
+          "item_id": "item_0a680c9138aef1c48764a5bad9ec1e4cd6125ff84685329d9cc8fdfb1aded7e0",
+          "document": "data/derived/segments/2026-round-3-conversions/2e6d90ed99f34011e629b9a8d38667d6ab7f3b6b325c3e81ab02fc5c9455e879.json",
+          "school": "대치중학교",
+          "title": "달의 위상 변화 관찰",
+          "missing": [
+            "sub_scores",
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 150728,
+            "end": 151688,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [
+            {
+              "start": 150712,
+              "end": 151707,
+              "table": 159,
+              "format": "html",
+              "score": 13,
+              "owned": true,
+              "basis": {
+                "title": true,
+                "heading": false,
+                "standard_code": true,
+                "owned": true
+              },
+              "tables": [
+                159
+              ]
+            }
+          ],
+          "cluster": "HTML·요소·배점 행/열·병합"
+        },
+        {
+          "round": "2026-round-3",
+          "item_id": "item_1ce326727545593e94b83dfe2110ec0c7aea9aa60e88fdae46c840ce545114df",
+          "document": "data/derived/segments/2026-round-3-conversions/2e6d90ed99f34011e629b9a8d38667d6ab7f3b6b325c3e81ab02fc5c9455e879.json",
+          "school": "대치중학교",
+          "title": "상태변화와 열에너지",
+          "missing": [
+            "sub_scores",
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 151725,
+            "end": 152703,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [
+            {
+              "start": 151709,
+              "end": 152722,
+              "table": 160,
+              "format": "html",
+              "score": 13,
+              "owned": true,
+              "basis": {
+                "title": true,
+                "heading": false,
+                "standard_code": true,
+                "owned": true
+              },
+              "tables": [
+                160
+              ]
+            }
+          ],
+          "cluster": "HTML·요소·배점 행/열·병합"
+        }
+      ]
+    },
+    {
+      "cluster": "복수 세부표 후보·소유 미확정",
+      "count": 7,
+      "missing": {
+        "task_text": 7,
+        "sub_scores": 7,
+        "rubric": 7
+      },
+      "representatives": [
+        {
+          "round": "2026-round-3-dev2",
+          "item_id": "item_f472e05a62c9f3aa7ec1ef6c0ef7a59d10ff8797da401bb2253af778e930224f",
+          "document": "data/derived/segments/2026-round-3-dev2-conversions/a26ba58244debcd70f30d01c3dd89ed26731cf3b1ef3b83f82e5d1e39f86d14a.json",
+          "school": "갈산중학교",
+          "title": "탐구 보고서",
+          "missing": [
+            "task_text",
+            "sub_scores",
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 24556,
+            "end": 25526,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [
+            {
+              "start": 35151,
+              "end": 35445,
+              "table": 23,
+              "format": "html",
+              "score": 4,
+              "owned": false,
+              "basis": {
+                "title": false,
+                "heading": true,
+                "standard_code": false,
+                "owned": false
+              },
+              "tables": [
+                23
+              ]
+            },
+            {
+              "start": 42813,
+              "end": 44489,
+              "table": 28,
+              "format": "html",
+              "score": 4,
+              "owned": false,
+              "basis": {
+                "title": false,
+                "heading": true,
+                "standard_code": false,
+                "owned": false
+              },
+              "tables": [
+                28
+              ]
+            }
+          ],
+          "cluster": "복수 세부표 후보·소유 미확정"
+        },
+        {
+          "round": "2026-round-3-dev2",
+          "item_id": "item_a0f567b6e39c80a92883203eddf5e9e2140dec8e28c6f7469fa155cc0c0faf7d",
+          "document": "data/derived/segments/2026-round-3-dev2-conversions/a26ba58244debcd70f30d01c3dd89ed26731cf3b1ef3b83f82e5d1e39f86d14a.json",
+          "school": "갈산중학교",
+          "title": "탐구 보고서",
+          "missing": [
+            "task_text",
+            "sub_scores",
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 25747,
+            "end": 26167,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [
+            {
+              "start": 32052,
+              "end": 33589,
+              "table": 21,
+              "format": "html",
+              "score": 4,
+              "owned": false,
+              "basis": {
+                "title": false,
+                "heading": true,
+                "standard_code": false,
+                "owned": false
+              },
+              "tables": [
+                21
+              ]
+            },
+            {
+              "start": 35151,
+              "end": 35445,
+              "table": 23,
+              "format": "html",
+              "score": 4,
+              "owned": false,
+              "basis": {
+                "title": false,
+                "heading": true,
+                "standard_code": false,
+                "owned": false
+              },
+              "tables": [
+                23
+              ]
+            },
+            {
+              "start": 38606,
+              "end": 40745,
+              "table": 26,
+              "format": "html",
+              "score": 4,
+              "owned": false,
+              "basis": {
+                "title": false,
+                "heading": true,
+                "standard_code": false,
+                "owned": false
+              },
+              "tables": [
+                26
+              ]
+            },
+            {
+              "start": 42813,
+              "end": 44489,
+              "table": 28,
+              "format": "html",
+              "score": 4,
+              "owned": false,
+              "basis": {
+                "title": false,
+                "heading": true,
+                "standard_code": false,
+                "owned": false
+              },
+              "tables": [
+                28
+              ]
+            },
+            {
+              "start": 46335,
+              "end": 47308,
+              "table": 31,
+              "format": "html",
+              "score": 4,
+              "owned": false,
+              "basis": {
+                "title": false,
+                "heading": true,
+                "standard_code": false,
+                "owned": false
+              },
+              "tables": [
+                31
+              ]
+            }
+          ],
+          "cluster": "복수 세부표 후보·소유 미확정"
+        }
+      ]
+    },
+    {
+      "cluster": "HTML·세부표 후보·과제 소유 미확정",
+      "count": 6,
+      "missing": {
+        "task_text": 6,
+        "sub_scores": 6,
+        "rubric": 6
+      },
+      "representatives": [
+        {
+          "round": "2026-round-3-dev2",
+          "item_id": "item_7af3f7cdab49470df16a1df24549b186765c7764bdbbf09b06d1703d01871118",
+          "document": "data/derived/segments/2026-round-3-dev2-conversions/child_2ef2eb0acef51d37fc8878f23e7ba523a835a88f3608dfee47f7edc565875f6b.json",
+          "school": "평동중학교",
+          "title": "별의 특성과 우주 구조 원리 서술하기(서술형)",
+          "missing": [
+            "task_text",
+            "sub_scores",
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 54708,
+            "end": 55624,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [
+            {
+              "start": 55860,
+              "end": 64299,
+              "table": 31,
+              "format": "html",
+              "score": 1,
+              "owned": false,
+              "basis": {
+                "title": false,
+                "heading": false,
+                "standard_code": true,
+                "owned": false
+              },
+              "tables": [
+                31
+              ]
+            }
+          ],
+          "cluster": "HTML·세부표 후보·과제 소유 미확정"
+        },
+        {
+          "round": "2026-round-3-dev2",
+          "item_id": "item_d027112f2fdcd27cca4f00ae6ce6027a6d5a86f5e1dc2a6de1c7350cc775ed5f",
+          "document": "data/derived/segments/2026-round-3-dev2-conversions/7f88169129a7124da8aa6b774f476ad3d16914c1a516f2f6ce61d6f29fcd9415.json",
+          "school": "장흥유치중학교",
+          "title": "포트폴리오",
+          "missing": [
+            "task_text",
+            "sub_scores",
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 108051,
+            "end": 109027,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [
+            {
+              "start": 227885,
+              "end": 229568,
+              "table": 61,
+              "format": "html",
+              "score": 4,
+              "owned": false,
+              "basis": {
+                "title": true,
+                "heading": false,
+                "standard_code": false,
+                "owned": false
+              },
+              "tables": [
+                61
+              ]
+            }
+          ],
+          "cluster": "HTML·세부표 후보·과제 소유 미확정"
+        }
+      ]
+    },
+    {
+      "cluster": "평문·표 구조 유실",
+      "count": 4,
+      "missing": {
+        "task_text": 4,
+        "sub_scores": 3,
+        "rubric": 4
+      },
+      "representatives": [
+        {
+          "round": "2026-round-3",
+          "item_id": "item_e5c588fc2e481ad6eed1960ddc88db9929d41563f91ed550661518fdbee4b9f6",
+          "document": "data/derived/segments/2026-round-3-conversions/fce67232660828618e73211131b51832c00c098e053c39eeb4504e263399f5ef.json",
+          "school": "판교중학교",
+          "title": "▸행성의 특성을 분석하여 탐사 및 이주 가능성을 과학적으로 탐구하기",
+          "missing": [
+            "task_text",
+            "sub_scores",
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 63917,
+            "end": 65011,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [
+            {
+              "start": 62897,
+              "end": 66899,
+              "format": "plain",
+              "table": null,
+              "score": 0,
+              "owned": false,
+              "basis": {
+                "flat_title_window": true
+              }
+            }
+          ],
+          "cluster": "평문·표 구조 유실"
+        },
+        {
+          "round": "2026-round-3-dev2",
+          "item_id": "item_420a981b5a927e7e46467f838f1852a4fed46b19eaed1e18b5c08898a48a2aa3",
+          "document": "data/derived/segments/2026-round-3-dev2-conversions/dd2e19032e20626bf9507927bd4229dfa225d091468bd0b92b5bc89952bdc5cc.json",
+          "school": "오현중학교",
+          "title": "녹는점 측정하기",
+          "missing": [
+            "task_text",
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 90408,
+            "end": 91375,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [
+            {
+              "start": 88362,
+              "end": 92367,
+              "format": "plain",
+              "table": null,
+              "score": 0,
+              "owned": false,
+              "basis": {
+                "flat_title_window": true
+              }
+            }
+          ],
+          "cluster": "평문·표 구조 유실"
+        }
+      ]
+    },
+    {
+      "cluster": "HTML·페이지 분할·후속 채점표·병합",
+      "count": 3,
+      "missing": {
+        "rubric": 1,
+        "sub_scores": 2
+      },
+      "representatives": [
+        {
+          "round": "2026-round-3",
+          "item_id": "item_bd594bf833dbcbfa84bdb3f10d98d1926f16f9dfcfe039b1143637fbd06d8432",
+          "document": "data/derived/segments/2026-round-3-conversions/fb55edf6c846786c7f13069c19ca57dbe66fdd4697710e997ca9ffd846e3b1ad.json",
+          "school": "서산중학교",
+          "title": "영양소 검출과 소화 과정 탐구 보고서 작성하기",
+          "missing": [
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 75637,
+            "end": 78433,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [
+            {
+              "start": 75702,
+              "end": 81212,
+              "table": 40,
+              "format": "html",
+              "score": 13,
+              "owned": true,
+              "basis": {
+                "title": false,
+                "heading": true,
+                "standard_code": true,
+                "owned": true
+              },
+              "tables": [
+                40,
+                41
+              ]
+            }
+          ],
+          "cluster": "HTML·페이지 분할·후속 채점표·병합"
+        },
+        {
+          "round": "2026-round-3-dev2",
+          "item_id": "item_d26bb1969b2b5f1d565fd3e975f8fb94889df1bbe46fd9bb597bea2094da5494",
+          "document": "data/derived/segments/2026-round-3-dev2-conversions/a26ba58244debcd70f30d01c3dd89ed26731cf3b1ef3b83f82e5d1e39f86d14a.json",
+          "school": "갈산중학교",
+          "title": "교과서 및 학습지 정리, 과제수행, 모둠활동, 발표",
+          "missing": [
+            "sub_scores"
+          ],
+          "item_locator": {
+            "start": 30075,
+            "end": 32011,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [
+            {
+              "start": 29976,
+              "end": 32030,
+              "table": 19,
+              "format": "html",
+              "score": 13,
+              "owned": true,
+              "basis": {
+                "title": true,
+                "heading": false,
+                "standard_code": true,
+                "owned": true
+              },
+              "tables": [
+                19,
+                20
+              ]
+            }
+          ],
+          "cluster": "HTML·페이지 분할·후속 채점표·병합"
+        }
+      ]
+    },
+    {
+      "cluster": "마크다운·페이지 분할·후속 채점표·병합",
+      "count": 1,
+      "missing": {
+        "sub_scores": 1,
+        "rubric": 1
+      },
+      "representatives": [
+        {
+          "round": "2026-round-1-dev2",
+          "item_id": "item_3ad6134fd1c74416511e23428a7b600b6e1ee9110e49c7f95a58554185b05bba",
+          "document": "data/derived/segments/2026-round-1-dev2-conversions/23317f7583861ccda5c14364b5859b17f9cc1ecc77deb10709cea3fc89cbc257.json",
+          "school": "장흥유치중학교",
+          "title": "프로젝트",
+          "missing": [
+            "sub_scores",
+            "rubric"
+          ],
+          "item_locator": {
+            "start": 346292,
+            "end": 348221,
+            "offset_unit": "unicode_codepoint",
+            "end_exclusive": true,
+            "converter": "kordoc"
+          },
+          "candidates": [
+            {
+              "start": 346291,
+              "end": 348240,
+              "table": 111,
+              "format": "markdown",
+              "score": 13,
+              "owned": true,
+              "basis": {
+                "title": true,
+                "heading": false,
+                "standard_code": true,
+                "owned": true
+              },
+              "tables": [
+                111,
+                112
+              ]
+            }
+          ],
+          "cluster": "마크다운·페이지 분할·후속 채점표·병합"
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "round": "2026-round-3",
+      "item_id": "item_0a680c9138aef1c48764a5bad9ec1e4cd6125ff84685329d9cc8fdfb1aded7e0",
+      "document": "data/derived/segments/2026-round-3-conversions/2e6d90ed99f34011e629b9a8d38667d6ab7f3b6b325c3e81ab02fc5c9455e879.json",
+      "school": "대치중학교",
+      "title": "달의 위상 변화 관찰",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 150728,
+        "end": 151688,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 150712,
+          "end": 151707,
+          "table": 159,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            159
+          ]
+        }
+      ],
+      "cluster": "HTML·요소·배점 행/열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_1ce326727545593e94b83dfe2110ec0c7aea9aa60e88fdae46c840ce545114df",
+      "document": "data/derived/segments/2026-round-3-conversions/2e6d90ed99f34011e629b9a8d38667d6ab7f3b6b325c3e81ab02fc5c9455e879.json",
+      "school": "대치중학교",
+      "title": "상태변화와 열에너지",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 151725,
+        "end": 152703,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 151709,
+          "end": 152722,
+          "table": 160,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            160
+          ]
+        }
+      ],
+      "cluster": "HTML·요소·배점 행/열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_61aa30cefa057345a45e4191b317e4bd3aaa557d57fc9cc2a999f6e1280fa2e9",
+      "document": "data/derived/segments/2026-round-3-conversions/2e6d90ed99f34011e629b9a8d38667d6ab7f3b6b325c3e81ab02fc5c9455e879.json",
+      "school": "대치중학교",
+      "title": "달의 위상 변화 분석",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 152740,
+        "end": 153746,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 152724,
+          "end": 153765,
+          "table": 161,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            161
+          ]
+        }
+      ],
+      "cluster": "HTML·요소·배점 행/열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_6e81d3cafe986498e960d7172f10800565baf935560b7c34522e6442ef433a3b",
+      "document": "data/derived/segments/2026-round-3-conversions/2e6d90ed99f34011e629b9a8d38667d6ab7f3b6b325c3e81ab02fc5c9455e879.json",
+      "school": "대치중학교",
+      "title": "물질의 상태 변화 분석",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 153783,
+        "end": 154932,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 153767,
+          "end": 154951,
+          "table": 162,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            162
+          ]
+        }
+      ],
+      "cluster": "HTML·요소·배점 행/열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_16ad2eacab3ce24455c898937f830412c18b1daa1119c6e0c6decf2f5feb265e",
+      "document": "data/derived/segments/2026-round-3-conversions/2e6d90ed99f34011e629b9a8d38667d6ab7f3b6b325c3e81ab02fc5c9455e879.json",
+      "school": "대치중학교",
+      "title": "자기장 안에 놓인 전류가 흐르는 코일이 받는 힘",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 170139,
+        "end": 171143,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 170123,
+          "end": 171162,
+          "table": 174,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            174
+          ]
+        }
+      ],
+      "cluster": "HTML·요소·배점 행/열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_17d15ebe0c62d2a3a8208fa8de809f1ca2e97bcd67fde675f69ee95d51d6e334",
+      "document": "data/derived/segments/2026-round-3-conversions/2e6d90ed99f34011e629b9a8d38667d6ab7f3b6b325c3e81ab02fc5c9455e879.json",
+      "school": "대치중학교",
+      "title": "음식물 속에 들어 있는 영양소 검출하기",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 171180,
+        "end": 172124,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 171164,
+          "end": 172143,
+          "table": 175,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            175
+          ]
+        }
+      ],
+      "cluster": "HTML·요소·배점 행/열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_740fd36ad6d4c2f66943654e419a01d81acc72f4fb68c78898130450c4858780",
+      "document": "data/derived/segments/2026-round-3-conversions/2e6d90ed99f34011e629b9a8d38667d6ab7f3b6b325c3e81ab02fc5c9455e879.json",
+      "school": "대치중학교",
+      "title": "자기장 안에 놓인 전류가 흐르는 코일이 받는 힘과 전동기",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 172161,
+        "end": 173208,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 172145,
+          "end": 173227,
+          "table": 176,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            176
+          ]
+        }
+      ],
+      "cluster": "HTML·요소·배점 행/열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_8227264045977c72a74a7ba26ed6237151a70fcb2422b3e510d759ce01d36e86",
+      "document": "data/derived/segments/2026-round-3-conversions/2e6d90ed99f34011e629b9a8d38667d6ab7f3b6b325c3e81ab02fc5c9455e879.json",
+      "school": "대치중학교",
+      "title": "영양소의 소화 작용",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 173245,
+        "end": 174244,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 173229,
+          "end": 174263,
+          "table": 177,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            177
+          ]
+        }
+      ],
+      "cluster": "HTML·요소·배점 행/열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_d659d8c439a9be5a50626901418739695baedb1ae9bd62b09fa3d7dc66233baa",
+      "document": "data/derived/segments/2026-round-3-conversions/7278b2e1aba867eeb62ab44008396787e7420dfc1e465ece19122a3e2206d1e9.json",
+      "school": "천안불당중학교",
+      "title": "비열 비교하기",
+      "missing": [
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 150723,
+        "end": 154273,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 150695,
+          "end": 154292,
+          "table": 59,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            59
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_aa0bd0a55fae576c8f16ebbdacec25b394b12c6a497b3926b80d38e2a98839ab",
+      "document": "data/derived/segments/2026-round-3-conversions/7278b2e1aba867eeb62ab44008396787e7420dfc1e465ece19122a3e2206d1e9.json",
+      "school": "천안불당중학교",
+      "title": "기체의 압력과 부피 관계",
+      "missing": [
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 154331,
+        "end": 157377,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 154315,
+          "end": 157396,
+          "table": 60,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            60
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_c82389dba24a86fde7a979f86775925c040f55195955eff2619c82d8d00d938d",
+      "document": "data/derived/segments/2026-round-3-conversions/7278b2e1aba867eeb62ab44008396787e7420dfc1e465ece19122a3e2206d1e9.json",
+      "school": "천안불당중학교",
+      "title": "우주여행 일기 쓰기",
+      "missing": [
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 157749,
+        "end": 160637,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 157733,
+          "end": 160321,
+          "table": 62,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            62
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_6e93b857e02adbcab5704bbc8c8d48615b591df65aba245558b4ed15d8cb622b",
+      "document": "data/derived/segments/2026-round-3-conversions/350806ad000ca3aa794c1a4cec47ae5f801899ff0985b7b39899ac61666f673c.json",
+      "school": "천안불당중학교",
+      "title": "영양소 검출 실험 탐구하기",
+      "missing": [
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 141868,
+        "end": 145208,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 141852,
+          "end": 144638,
+          "table": 54,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            54
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_fc65923e872d3e17e063fd353047a2037bfcdd612696695fccfffd8a51e11af5",
+      "document": "data/derived/segments/2026-round-3-conversions/350806ad000ca3aa794c1a4cec47ae5f801899ff0985b7b39899ac61666f673c.json",
+      "school": "천안불당중학교",
+      "title": "정전기 유도 현상의 원리 서술하기",
+      "missing": [
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 145271,
+        "end": 148685,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 145255,
+          "end": 146833,
+          "table": 56,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            56
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_64603e41b18a756460ca081d9841b0ee7672ec94ad76b4ee6a401deef5f8db7d",
+      "document": "data/derived/segments/2026-round-3-conversions/4e12d3e0f9d4df0f5a08c1181b1f5a13f8f30aec5fb384b29cb81e0454eb2122.json",
+      "school": "휘문중학교",
+      "title": "용수철의 탄성력 측정하기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 170067,
+        "end": 171902,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 170082,
+          "end": 171921,
+          "table": 84,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            84
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_d1e1fbd06a9af5f874d23fcc9ad451e305c947bd176db0bf9ecfd2f9bf77cb3e",
+      "document": "data/derived/segments/2026-round-3-conversions/4e12d3e0f9d4df0f5a08c1181b1f5a13f8f30aec5fb384b29cb81e0454eb2122.json",
+      "school": "휘문중학교",
+      "title": "태양의 연주 운동과 별자리 위치 변화",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 171930,
+        "end": 173751,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 171952,
+          "end": 173770,
+          "table": 85,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            85
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_2f1269f7018b7e0dfd6658e0260c4ae794ebb2290a213d4cd2ba2d92b4e81617",
+      "document": "data/derived/segments/2026-round-3-conversions/4e12d3e0f9d4df0f5a08c1181b1f5a13f8f30aec5fb384b29cb81e0454eb2122.json",
+      "school": "휘문중학교",
+      "title": "거울,렌즈의 상관찰",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 184773,
+        "end": 186995,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 184787,
+          "end": 187014,
+          "table": 91,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            91
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_871f7d46cc66fcef21283906691f24a845576e2c5d5cae81dfcb841bd577036e",
+      "document": "data/derived/segments/2026-round-3-conversions/4e12d3e0f9d4df0f5a08c1181b1f5a13f8f30aec5fb384b29cb81e0454eb2122.json",
+      "school": "휘문중학교",
+      "title": "전류에영향을 주는 요인",
+      "missing": [
+        "task_text",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 187023,
+        "end": 189661,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 187042,
+          "end": 189680,
+          "table": 92,
+          "format": "html",
+          "score": 12,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": true
+          },
+          "tables": [
+            92
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_b98982f15eadf4000ced9fd61472df6a4faeddd6e4e438b11079c7cfcab2af6b",
+      "document": "data/derived/segments/2026-round-3-conversions/813777ef20d8c54bb5b293140fb31ca7be8185fe34df5451debaa8e79737bee9.json",
+      "school": "신목중학교",
+      "title": "힘과 운동",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 169,
+        "end": 504,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_43d95d77afa2d655fb6e4269d126d9f5fae13952e9ce8ae947ff4b72f7e20377",
+      "document": "data/derived/segments/2026-round-3-conversions/813777ef20d8c54bb5b293140fb31ca7be8185fe34df5451debaa8e79737bee9.json",
+      "school": "신목중학교",
+      "title": "기체의 성질",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 183,
+        "end": 504,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_a874ceeb8390164400577f78d65f235291692f0900097487b8ffe383320edcc4",
+      "document": "data/derived/segments/2026-round-3-conversions/813777ef20d8c54bb5b293140fb31ca7be8185fe34df5451debaa8e79737bee9.json",
+      "school": "신목중학교",
+      "title": "태양계",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 198,
+        "end": 504,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_4a19950ef1b6a3bcd6fa82de8dfd9a4bcceaaaf777d63535271e0090f97784e0",
+      "document": "data/derived/segments/2026-round-3-conversions/813777ef20d8c54bb5b293140fb31ca7be8185fe34df5451debaa8e79737bee9.json",
+      "school": "신목중학교",
+      "title": "식물과 에너지",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 661,
+        "end": 1049,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_3b05cecc6cd53b707a0b58e4af12bc16bca1229dba9ec16058ddf3deebd67187",
+      "document": "data/derived/segments/2026-round-3-conversions/813777ef20d8c54bb5b293140fb31ca7be8185fe34df5451debaa8e79737bee9.json",
+      "school": "신목중학교",
+      "title": "동물과 에너지",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 677,
+        "end": 1049,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_6e08e22fd6ff46742cf717249134fd6ba898ab7f123430c2a30b2a6c2b58eb69",
+      "document": "data/derived/segments/2026-round-3-conversions/813777ef20d8c54bb5b293140fb31ca7be8185fe34df5451debaa8e79737bee9.json",
+      "school": "신목중학교",
+      "title": "전기와 자기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 693,
+        "end": 1049,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_09c1131a4166f87668a08ad083cbb847e26ca1ef2e290d80cd3deea8ca57e8a4",
+      "document": "data/derived/segments/2026-round-3-conversions/813777ef20d8c54bb5b293140fb31ca7be8185fe34df5451debaa8e79737bee9.json",
+      "school": "신목중학교",
+      "title": "별과 우주",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 708,
+        "end": 1049,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_f367dc31c1522dff4dcbce47639bb45cd2bc3051111870be8e3c1918fb631df1",
+      "document": "data/derived/segments/2026-round-3-conversions/e10ffa1852fc524f758934519d9b004aa9da1c15666da8b4823644ac3e80a58a.json",
+      "school": "중계중학교",
+      "title": "과학A",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 99396,
+        "end": 100207,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_5c375e94d26811e4dcc6fd2972f65c5f78315cdd3b0865326133ce9c3362b9b6",
+      "document": "data/derived/segments/2026-round-3-conversions/e10ffa1852fc524f758934519d9b004aa9da1c15666da8b4823644ac3e80a58a.json",
+      "school": "중계중학교",
+      "title": "과학B",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 99396,
+        "end": 100225,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_8351482668ba9b40d829f93b13bba743eb7d0cfd2feac04e7c418a5d6e43bb09",
+      "document": "data/derived/segments/2026-round-3-conversions/e10ffa1852fc524f758934519d9b004aa9da1c15666da8b4823644ac3e80a58a.json",
+      "school": "중계중학교",
+      "title": "과학A",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 99422,
+        "end": 100257,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_24154753fdc756d10b2413e1c57a6bdd7df18a4d4205ccc687f2ae82ce4ca3a0",
+      "document": "data/derived/segments/2026-round-3-conversions/e10ffa1852fc524f758934519d9b004aa9da1c15666da8b4823644ac3e80a58a.json",
+      "school": "중계중학교",
+      "title": "과학B",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 99422,
+        "end": 100275,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_268893ea185bfbb6a5f1540c734816e5845747a67afc7955a2016a57c5f01398",
+      "document": "data/derived/segments/2026-round-3-conversions/bbdd3f0079f8f651d3b0ee09e640581ea29de15cfe602a00d7ad47e4553b2149.json",
+      "school": "백석중학교",
+      "title": "열에 대해 설명하는 글쓰기(논술형)",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 13459,
+        "end": 14721,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_f5ec4f93be1c8da0b1b2489c723a8ae39bb870587e0e052a78cf82065c49c172",
+      "document": "data/derived/segments/2026-round-3-conversions/bbdd3f0079f8f651d3b0ee09e640581ea29de15cfe602a00d7ad47e4553b2149.json",
+      "school": "백석중학교",
+      "title": "행성의 특징을 작성하고 기준에 따라 분류하기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 13459,
+        "end": 14838,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_eea77ca5b57fbae7a9bf91b659b80c6a8ea94816f41a00e35525f9b6ebb708d9",
+      "document": "data/derived/segments/2026-round-3-conversions/725df352c080269230a1da2aebe3850a590bfbc51947273db7d49d5c216136e5.json",
+      "school": "백석중학교",
+      "title": "식물의 호흡과 광합성에 대한 오개념 관련카드뉴스만들기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 17096,
+        "end": 19285,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_d893b1620baabbd3e8d4edf927e125cd2a647cf332534eec4a5d1134820c80d7",
+      "document": "data/derived/segments/2026-round-3-conversions/725df352c080269230a1da2aebe3850a590bfbc51947273db7d49d5c216136e5.json",
+      "school": "백석중학교",
+      "title": "영양소 확인하기 (논술형)",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 17096,
+        "end": 19376,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_ce194f256a603056cdd0a508cdadf869798131c4d69fd7e69ef3c522fd6cfe7b",
+      "document": "data/derived/segments/2026-round-3-conversions/725df352c080269230a1da2aebe3850a590bfbc51947273db7d49d5c216136e5.json",
+      "school": "백석중학교",
+      "title": "마인드맵포트폴리오",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 17096,
+        "end": 19457,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_ba157fe5ff0c0eef74952f9bc79f0ff06d12ec2a2b802a038ff0bcf02c1f364a",
+      "document": "data/derived/segments/2026-round-3-conversions/fce67232660828618e73211131b51832c00c098e053c39eeb4504e263399f5ef.json",
+      "school": "판교중학교",
+      "title": "Ÿ 물속에서 부력을 측정하고 일상생활에서 부력을 이용하는 구명 조끼나 구명 보트를 디자인하여 각각의 장치에 따른 부력의 차이 표현하기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 62029,
+        "end": 63604,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_e5c588fc2e481ad6eed1960ddc88db9929d41563f91ed550661518fdbee4b9f6",
+      "document": "data/derived/segments/2026-round-3-conversions/fce67232660828618e73211131b51832c00c098e053c39eeb4504e263399f5ef.json",
+      "school": "판교중학교",
+      "title": "▸행성의 특성을 분석하여 탐사 및 이주 가능성을 과학적으로 탐구하기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 63917,
+        "end": 65011,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 62897,
+          "end": 66899,
+          "format": "plain",
+          "table": null,
+          "score": 0,
+          "owned": false,
+          "basis": {
+            "flat_title_window": true
+          }
+        }
+      ],
+      "cluster": "평문·표 구조 유실"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_df2a31a8e11425c9ccb94d6c0d598ae65c083b3c1f5123068b94ee80b7ab5a6e",
+      "document": "data/derived/segments/2026-round-3-conversions/d066f9e65b6f9fec5779c1002fbe9704a9902feac978bb69e3f270caebc28ff8.json",
+      "school": "판교중학교",
+      "title": "▸양성자 수에 따른 원소의 종류 및 주기율표 상 원소 배치 원리 이해",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 85105,
+        "end": 86306,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_b0782a73837c518336903c99cbc7bb54dc830a1b7383bad0b8f17fd635a9a86b",
+      "document": "data/derived/segments/2026-round-3-conversions/975aca37d1b80723978b395fd0321fd5c4bdcd5727179e5dada85cd42576acfb.json",
+      "school": "양평중학교",
+      "title": "세포의 구조와 생물의 구성 탐구하기",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 376318,
+        "end": 378682,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 376339,
+          "end": 378701,
+          "table": 227,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            227
+          ]
+        }
+      ],
+      "cluster": "HTML·기준·점수 한 셀·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_b79528092d4ff59e49edbe0ad56d7e2f799e343b21aa39376c715e874cdcdcd9",
+      "document": "data/derived/segments/2026-round-3-conversions/975aca37d1b80723978b395fd0321fd5c4bdcd5727179e5dada85cd42576acfb.json",
+      "school": "양평중학교",
+      "title": "용수철의 탄성력 측정하기",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 378709,
+        "end": 382044,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 378724,
+          "end": 382063,
+          "table": 228,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            228
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_36da860582a91e94b9c2acfac31c34736b66f296bb86adb081d287269b798152",
+      "document": "data/derived/segments/2026-round-3-conversions/975aca37d1b80723978b395fd0321fd5c4bdcd5727179e5dada85cd42576acfb.json",
+      "school": "양평중학교",
+      "title": "동물과 에너지 관련 탐구",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 421454,
+        "end": 424668,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 421469,
+          "end": 424687,
+          "table": 247,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            247
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_69d565483e0909213cdddbd5d6895bc938f0c28556d269a6d0957f43b5bc2b06",
+      "document": "data/derived/segments/2026-round-3-conversions/975aca37d1b80723978b395fd0321fd5c4bdcd5727179e5dada85cd42576acfb.json",
+      "school": "양평중학교",
+      "title": "전기 관련 탐구",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 424695,
+        "end": 427220,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 424705,
+          "end": 427239,
+          "table": 248,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            248
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_e74957df62d92cd1f4019ed4f23ce75b894a16d5db25db672f0b175f036eebcd",
+      "document": "data/derived/segments/2026-round-3-conversions/a333ed5e12a694969ea6f374ae70c74570fc2f86dfbf99b73e1957b2fa19f46e.json",
+      "school": "공주중학교",
+      "title": "세포의 구조와 기능 탐구",
+      "missing": [
+        "task_text",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 9293,
+        "end": 11429,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 9277,
+          "end": 11448,
+          "table": 3,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            3
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_bbc99bafc303dd7a25cba32d539c5b4e32a72ed931d02bd4a8b6136cbbd11082",
+      "document": "data/derived/segments/2026-round-3-conversions/a333ed5e12a694969ea6f374ae70c74570fc2f86dfbf99b73e1957b2fa19f46e.json",
+      "school": "공주중학교",
+      "title": "달의 위상변화 문제해결",
+      "missing": [
+        "task_text",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 11536,
+        "end": 13340,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 11520,
+          "end": 13359,
+          "table": 5,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            5
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_9580fee1f5a143ed40abfe2b0c12a249d076d423656f90a9d907d44556ac540b",
+      "document": "data/derived/segments/2026-round-3-conversions/a333ed5e12a694969ea6f374ae70c74570fc2f86dfbf99b73e1957b2fa19f46e.json",
+      "school": "공주중학교",
+      "title": "생각이 자라는 과학 활동 포트폴리오",
+      "missing": [
+        "task_text",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 13444,
+        "end": 17519,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 13428,
+          "end": 17538,
+          "table": 7,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            7
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_f18e1507ac0a5f40498d255ee4296aa6045f9950b09df52e974944b57d25a85f",
+      "document": "data/derived/segments/2026-round-3-conversions/91a599a38b1c206c495a7961dba324afa8921be842f924a315c284462982162a.json",
+      "school": "서산중학교",
+      "title": "천체티콘 만들기",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 60948,
+        "end": 62760,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 61045,
+          "end": 62779,
+          "table": 36,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            36
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_831e658c43412df88d2908cf439779eed8d10a4cf81a27ee9c1e966ccc25aeb5",
+      "document": "data/derived/segments/2026-round-3-conversions/91a599a38b1c206c495a7961dba324afa8921be842f924a315c284462982162a.json",
+      "school": "서산중학교",
+      "title": "기체의 성질 탐구 보고서 작성하기",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 63594,
+        "end": 65446,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 63614,
+          "end": 65465,
+          "table": 37,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            37
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_bd594bf833dbcbfa84bdb3f10d98d1926f16f9dfcfe039b1143637fbd06d8432",
+      "document": "data/derived/segments/2026-round-3-conversions/fb55edf6c846786c7f13069c19ca57dbe66fdd4697710e997ca9ffd846e3b1ad.json",
+      "school": "서산중학교",
+      "title": "영양소 검출과 소화 과정 탐구 보고서 작성하기",
+      "missing": [
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 75637,
+        "end": 78433,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 75702,
+          "end": 81212,
+          "table": 40,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            40,
+            41
+          ]
+        }
+      ],
+      "cluster": "HTML·페이지 분할·후속 채점표·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_a64b51bd0e9abb86d2daf251eaa3b59da21f90c8b869384d8713fdf3e3feac60",
+      "document": "data/derived/segments/2026-round-3-conversions/fb55edf6c846786c7f13069c19ca57dbe66fdd4697710e997ca9ffd846e3b1ad.json",
+      "school": "서산중학교",
+      "title": "저항, 전류, 전압 사이의 관계 탐구 보고서 작성하기",
+      "missing": [
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 75671,
+        "end": 81193,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 78454,
+          "end": 81212,
+          "table": 41,
+          "format": "html",
+          "score": 9,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            41
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_2559a156acd28eaeb2b5786c8d8a2aa7d1fbe3c2f0153ef2bbc2aedf8b51b8ae",
+      "document": "data/derived/segments/2026-round-3-conversions/ec938a9eb786991b2df5a4cb50117cb225d06d21315f386e945132c5012db929.json",
+      "school": "홍성중학교",
+      "title": "찬물과 뜨거운 물이 접촉할 때 온도 변화 측정하기",
+      "missing": [
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 109401,
+        "end": 112310,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 109385,
+          "end": 112329,
+          "table": 55,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            55
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_3518bf20420c1fca3611cc02f574b6746f12559e3c72ee264af26b7216da6c4c",
+      "document": "data/derived/segments/2026-round-3-conversions/ec938a9eb786991b2df5a4cb50117cb225d06d21315f386e945132c5012db929.json",
+      "school": "홍성중학교",
+      "title": "물질의 상태가 변할 때 질량과 부피 변화 측정하기",
+      "missing": [
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 112379,
+        "end": 115366,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 112363,
+          "end": 115385,
+          "table": 56,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            56
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_988c509dd2b32cc84a4f797a951727f14097e34549178563d14469d1c842991d",
+      "document": "data/derived/segments/2026-round-3-conversions/ec938a9eb786991b2df5a4cb50117cb225d06d21315f386e945132c5012db929.json",
+      "school": "홍성중학교",
+      "title": "물속에서 부력 측정하기",
+      "missing": [
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 115420,
+        "end": 118340,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 115404,
+          "end": 118359,
+          "table": 57,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            57
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_254c7997878669c32d8e86b9767062b15813c6aeff6e28b15f1b905c87e1c6b4",
+      "document": "data/derived/segments/2026-round-3-conversions/4e700c9202ce7de063532f668ab5a21be6d79d210fb30a6f824e01385a026631.json",
+      "school": "홍성중학교",
+      "title": "나만의 주기율표 만들기",
+      "missing": [
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 101264,
+        "end": 105255,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 101248,
+          "end": 105274,
+          "table": 52,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            52
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3",
+      "item_id": "item_77e59b08e1c1d793e0653aa3b50f21e8ebba2f4a051c26edeba208e1742948ec",
+      "document": "data/derived/segments/2026-round-3-conversions/4e700c9202ce7de063532f668ab5a21be6d79d210fb30a6f824e01385a026631.json",
+      "school": "홍성중학교",
+      "title": "전압, 전류, 저항의 관계 탐구하기",
+      "missing": [
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 105316,
+        "end": 109120,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 105300,
+          "end": 109139,
+          "table": 53,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            53
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_f472e05a62c9f3aa7ec1ef6c0ef7a59d10ff8797da401bb2253af778e930224f",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/a26ba58244debcd70f30d01c3dd89ed26731cf3b1ef3b83f82e5d1e39f86d14a.json",
+      "school": "갈산중학교",
+      "title": "탐구 보고서",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 24556,
+        "end": 25526,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 35151,
+          "end": 35445,
+          "table": 23,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            23
+          ]
+        },
+        {
+          "start": 42813,
+          "end": 44489,
+          "table": 28,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            28
+          ]
+        }
+      ],
+      "cluster": "복수 세부표 후보·소유 미확정"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_a0f567b6e39c80a92883203eddf5e9e2140dec8e28c6f7469fa155cc0c0faf7d",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/a26ba58244debcd70f30d01c3dd89ed26731cf3b1ef3b83f82e5d1e39f86d14a.json",
+      "school": "갈산중학교",
+      "title": "탐구 보고서",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 25747,
+        "end": 26167,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 32052,
+          "end": 33589,
+          "table": 21,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            21
+          ]
+        },
+        {
+          "start": 35151,
+          "end": 35445,
+          "table": 23,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            23
+          ]
+        },
+        {
+          "start": 38606,
+          "end": 40745,
+          "table": 26,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            26
+          ]
+        },
+        {
+          "start": 42813,
+          "end": 44489,
+          "table": 28,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            28
+          ]
+        },
+        {
+          "start": 46335,
+          "end": 47308,
+          "table": 31,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            31
+          ]
+        }
+      ],
+      "cluster": "복수 세부표 후보·소유 미확정"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_d9f6e1021a67bdb8c6146212d6cd606c9d1508b26808288cbea08f3160cc0cbe",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/a26ba58244debcd70f30d01c3dd89ed26731cf3b1ef3b83f82e5d1e39f86d14a.json",
+      "school": "갈산중학교",
+      "title": "탐구 보고서",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 26846,
+        "end": 27795,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 35151,
+          "end": 35445,
+          "table": 23,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            23
+          ]
+        },
+        {
+          "start": 42813,
+          "end": 44489,
+          "table": 28,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            28
+          ]
+        }
+      ],
+      "cluster": "복수 세부표 후보·소유 미확정"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_d26bb1969b2b5f1d565fd3e975f8fb94889df1bbe46fd9bb597bea2094da5494",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/a26ba58244debcd70f30d01c3dd89ed26731cf3b1ef3b83f82e5d1e39f86d14a.json",
+      "school": "갈산중학교",
+      "title": "교과서 및 학습지 정리, 과제수행, 모둠활동, 발표",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 30075,
+        "end": 32011,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 29976,
+          "end": 32030,
+          "table": 19,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            19,
+            20
+          ]
+        }
+      ],
+      "cluster": "HTML·페이지 분할·후속 채점표·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_0f43b4717c8b01317837b9c57c0e647e2132a630cb0072d80a29ff71a44c97c1",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/a26ba58244debcd70f30d01c3dd89ed26731cf3b1ef3b83f82e5d1e39f86d14a.json",
+      "school": "갈산중학교",
+      "title": "열평형 과정을 입자의 모형을 사용으로 표현하고, 열의 이동 방식을 구성 입자의 운동과 관련하여 서술할 수 있다.",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 32038,
+        "end": 33570,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 32052,
+          "end": 33589,
+          "table": 21,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            21
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_9ab236af68f526a25b2557b3fc57126d8d7c54ac35bb7a37b39d80dc35ac3647",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/a26ba58244debcd70f30d01c3dd89ed26731cf3b1ef3b83f82e5d1e39f86d14a.json",
+      "school": "갈산중학교",
+      "title": "과학 논술",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 44497,
+        "end": 44736,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 44510,
+          "end": 44755,
+          "table": 29,
+          "format": "html",
+          "score": 12,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": false,
+            "owned": true
+          },
+          "tables": [
+            29
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_35a2944fe973633c6cd2d663855e49ab6662fb7d45732e7cee06c10432f94350",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/child_2ef2eb0acef51d37fc8878f23e7ba523a835a88f3608dfee47f7edc565875f6b.json",
+      "school": "평동중학교",
+      "title": "기체의 성질(서술형)",
+      "missing": [
+        "task_text",
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 30379,
+        "end": 31826,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_7af3f7cdab49470df16a1df24549b186765c7764bdbbf09b06d1703d01871118",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/child_2ef2eb0acef51d37fc8878f23e7ba523a835a88f3608dfee47f7edc565875f6b.json",
+      "school": "평동중학교",
+      "title": "별의 특성과 우주 구조 원리 서술하기(서술형)",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 54708,
+        "end": 55624,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 55860,
+          "end": 64299,
+          "table": 31,
+          "format": "html",
+          "score": 1,
+          "owned": false,
+          "basis": {
+            "title": false,
+            "heading": false,
+            "standard_code": true,
+            "owned": false
+          },
+          "tables": [
+            31
+          ]
+        }
+      ],
+      "cluster": "HTML·세부표 후보·과제 소유 미확정"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_0b2aaa93c8983b5203648741a7630c17693ad8704cfb43004a8a18534c60b733",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c.json",
+      "school": "대전대화중학교",
+      "title": "부력 측정 실험",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 172879,
+        "end": 174189,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 172889,
+          "end": 174208,
+          "table": 128,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            128
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_21e8004d7f6b45097e0695aaf15ebbbdc7f255ba788907f98c5a99baf6a587aa",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c.json",
+      "school": "대전대화중학교",
+      "title": "기체의 압력과 부피 관계 서술하기",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 174213,
+        "end": 175721,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 174233,
+          "end": 175740,
+          "table": 129,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            129
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_01a6d2591ff1620b2fb1bb1327b194402cf6b390ddd35010a25d077539b01c3c",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c.json",
+      "school": "대전대화중학교",
+      "title": "호흡 운동의 원리 탐구 실험",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 175752,
+        "end": 177315,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 175769,
+          "end": 177334,
+          "table": 130,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            130
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_f00bbff7796ba5b9fd508cfa3547962f397954a4d7a5c52757dbed4ce3264094",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/8227181eaf0f49e01336de981efceb0d6b70ab183ee95fdfcbc2ac6a4b30d91c.json",
+      "school": "대전대화중학교",
+      "title": "광합성 요인 및 과정 서술하기",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 177339,
+        "end": 178800,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 177357,
+          "end": 178819,
+          "table": 131,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            131
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_9bdf19b0ac9023c3270ca4414d19def30138a17a3d045245b0732dfa32c766ca",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/ac639ae2c502329488d4cb9dc1af310654fc2ef4761fb1a15f0a49ed2df07fab.json",
+      "school": "아름중학교",
+      "title": "소화계와 소화효소",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 142810,
+        "end": 144380,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 142794,
+          "end": 144399,
+          "table": 68,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            68
+          ]
+        }
+      ],
+      "cluster": "HTML·기준·점수 한 셀·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_8732990cb5ff9b57343fbfcb3d349c9cb5fed70e1b66f08b24b60599861dbc94",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/ac639ae2c502329488d4cb9dc1af310654fc2ef4761fb1a15f0a49ed2df07fab.json",
+      "school": "아름중학교",
+      "title": "전류의 자기 작용",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 144417,
+        "end": 145951,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 144401,
+          "end": 145970,
+          "table": 69,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            69
+          ]
+        }
+      ],
+      "cluster": "HTML·기준·점수 한 셀·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_4520fc30117ee12384724159bde13884dd05d9a1de001cac5d0a31e15149ded8",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/child_ca4daca33d7bf4f99c58df1554102b771e6d1bc997684776bca7ff4658384ac3.json",
+      "school": "두루중학교",
+      "title": "광합성과 호흡 탐구",
+      "missing": [
+        "task_text",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 23326,
+        "end": 25039,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 23343,
+          "end": 25058,
+          "table": 8,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            8
+          ]
+        }
+      ],
+      "cluster": "HTML·기준·점수 한 셀·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_b8e0db58613b0296c92cc116b82ef9eae56d826ce11fe2717c7e4ea73ab08385",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/child_ca4daca33d7bf4f99c58df1554102b771e6d1bc997684776bca7ff4658384ac3.json",
+      "school": "두루중학교",
+      "title": "전압과 전류의 관계 탐구",
+      "missing": [
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 25063,
+        "end": 26657,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 25083,
+          "end": 26676,
+          "table": 9,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            9
+          ]
+        }
+      ],
+      "cluster": "HTML·기준·점수 한 셀·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_e774751f67898cbc80c1fac592bcc11f895d3abb7502d867764cdf36f8439583",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/694c91d10086dc4ec5c8fbfeed38afbb8c1022ab57207cda6dde32caae28dc87.json",
+      "school": "충주여자중학교",
+      "title": "기체의 성질 실험",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 18100,
+        "end": 19127,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 18121,
+          "end": 18671,
+          "table": 8,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            8
+          ]
+        }
+      ],
+      "cluster": "HTML·요소·배점 행/열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_db19c08de433983fbdead1c0197f1b4421a35498d61cc82d9dfada3404b1208d",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/694c91d10086dc4ec5c8fbfeed38afbb8c1022ab57207cda6dde32caae28dc87.json",
+      "school": "충주여자중학교",
+      "title": "별까지의 거리",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 20333,
+        "end": 21627,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 20352,
+          "end": 21646,
+          "table": 11,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            11,
+            12
+          ]
+        }
+      ],
+      "cluster": "HTML·페이지 분할·후속 채점표·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_7d87e559b072f3a4d7781863a29fd5ddf5b011fb0a0399aff789fbed4c81cbaf",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/694c91d10086dc4ec5c8fbfeed38afbb8c1022ab57207cda6dde32caae28dc87.json",
+      "school": "충주여자중학교",
+      "title": "영양소 검출(보고서 평가)",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 21653,
+        "end": 23012,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 21669,
+          "end": 23031,
+          "table": 13,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            13
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_c9e9e84b3868eeb64e50055c627d71ec9079a144864a8105b36de02d211ab521",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/694c91d10086dc4ec5c8fbfeed38afbb8c1022ab57207cda6dde32caae28dc87.json",
+      "school": "충주여자중학교",
+      "title": "전압과 전류의 관계(보고서 평가)",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 23067,
+        "end": 24509,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 23087,
+          "end": 24528,
+          "table": 14,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            14
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_fbe11992d782d34e4dc4b5f7172c77279c435e31d39dc8136a1e553062094738",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/1fe570d6001ebb9fd8cf7bd52c797da4aa22ca1fa7148156c919c7e43d63841a.json",
+      "school": "단성중학교",
+      "title": "실험·실습",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 6854,
+        "end": 9036,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 6861,
+          "end": 9055,
+          "table": 2,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            2
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_6bdb5f357034d7a5b6bc0a7100ee7471b8d4699f79297237c373fd042374096b",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/1fe570d6001ebb9fd8cf7bd52c797da4aa22ca1fa7148156c919c7e43d63841a.json",
+      "school": "단성중학교",
+      "title": "서·논술형",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 9062,
+        "end": 10924,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 9069,
+          "end": 10943,
+          "table": 3,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            3
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_40722dc19b347ef7a4456858d0a0ee975aa0234ea430d9584dcbec81a52d1099",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/1fe570d6001ebb9fd8cf7bd52c797da4aa22ca1fa7148156c919c7e43d63841a.json",
+      "school": "단성중학교",
+      "title": "나만의 과학노트 만들기",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 10950,
+        "end": 12611,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 10964,
+          "end": 12630,
+          "table": 4,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            4
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_02c2a6f32666bd65a81fdaa180d488f3c19f718d8348ae84426d06aebf1bd6c7",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/be58904db430091128f274637f0ce9df443e57ad1645b8596924021deb886c0a.json",
+      "school": "순천연향중학교",
+      "title": "상태 변화 탐구 과정 수행",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 128523,
+        "end": 131291,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 128507,
+          "end": 134138,
+          "table": 57,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            57
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_bfc5d9d99621532c8f0277074be73319706dbb208511015a9d6221036c6769b3",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/be58904db430091128f274637f0ce9df443e57ad1645b8596924021deb886c0a.json",
+      "school": "순천연향중학교",
+      "title": "힘의 작용에 대한 성찰 및 탐구의 결과 해석 서술하기 과학과 삶을 연결하여 적용하기",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 131310,
+        "end": 134119,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 128507,
+          "end": 134138,
+          "table": 57,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            57
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_10ceefb249109ef00a6237276228a95015ac7e854eca4f57aa2ebed08c6122e4",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/be58904db430091128f274637f0ce9df443e57ad1645b8596924021deb886c0a.json",
+      "school": "순천연향중학교",
+      "title": "과학 포트폴리오",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 134156,
+        "end": 135904,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 134140,
+          "end": 135923,
+          "table": 58,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            58
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_999be2150c2c8c1eb533549114f2208bd17af23a4d57df4d1d008069e5b7e5a9",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/e00b3ca2e3fd3de8c851a392663a117978e158424a8c893bf0832a0beeddb2c6.json",
+      "school": "순천연향중학교",
+      "title": "· 광합성 실험 결과를 분석하여 환경 요인과 광합성 관계 추론하기 · 식물 생장 환경에 대한 일상적 문제 해결에 대한 논리적 글쓰기",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 135377,
+        "end": 137936,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 135361,
+          "end": 137955,
+          "table": 57,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            57
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_223ce8b2ad1867e671a3a55cb26535ea53c7174393028f72cf451b580a83be28",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/e00b3ca2e3fd3de8c851a392663a117978e158424a8c893bf0832a0beeddb2c6.json",
+      "school": "순천연향중학교",
+      "title": "우주 탐사 사례와 인류에 미친 영향을 조사하고, 동료 피드백을 반영하여 최종 소개 자료 제작하기",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 137962,
+        "end": 140624,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 137968,
+          "end": 140643,
+          "table": 58,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            58
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_eadcd895d8572e2e13086d3dedd17927f63de56dfe7a8fb9b166780451b8d63c",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/e00b3ca2e3fd3de8c851a392663a117978e158424a8c893bf0832a0beeddb2c6.json",
+      "school": "순천연향중학교",
+      "title": "생활과 과학",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 140650,
+        "end": 143516,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 140658,
+          "end": 143535,
+          "table": 59,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            59
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_dac98ff6e10a34a1243df46656558ac34447d3d220f8f493b4ac3cf6c661eec4",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/a35241d0d4e7c66d5061d65471103b8d0038c0ea6e5c0021d48650e45bce0811.json",
+      "school": "광양마동중학교",
+      "title": "힘 전람회",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 154741,
+        "end": 158016,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 154713,
+          "end": 158035,
+          "table": 58,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            58
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_3f7261edb6ba80afb933898d00370314bf54108beb5b839750b642e5ea2da34b",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/a35241d0d4e7c66d5061d65471103b8d0038c0ea6e5c0021d48650e45bce0811.json",
+      "school": "광양마동중학교",
+      "title": "입이 트이는 과학",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 160352,
+        "end": 160687,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 158037,
+          "end": 160706,
+          "table": 59,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            59
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_c86af6aeecf96687ca29008f34feb1d9442a2477a7860412499a143cbed5e105",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/7f88169129a7124da8aa6b774f476ad3d16914c1a516f2f6ce61d6f29fcd9415.json",
+      "school": "장흥유치중학교",
+      "title": "탐구활동",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 108355,
+        "end": 108870,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_6c583c67a309f87f70a75b92b5107a9123d1c797eaed6cbfb371c70e58733da2",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/7f88169129a7124da8aa6b774f476ad3d16914c1a516f2f6ce61d6f29fcd9415.json",
+      "school": "장흥유치중학교",
+      "title": "프로젝트",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 108250,
+        "end": 108888,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_40ee347e2ae93080d80ff0f182aa55cac06f3cc438ec7eaf27d4502fade308f2",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/7f88169129a7124da8aa6b774f476ad3d16914c1a516f2f6ce61d6f29fcd9415.json",
+      "school": "장흥유치중학교",
+      "title": "기체의 성질논술형",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 108275,
+        "end": 108906,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_d027112f2fdcd27cca4f00ae6ce6027a6d5a86f5e1dc2a6de1c7350cc775ed5f",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/7f88169129a7124da8aa6b774f476ad3d16914c1a516f2f6ce61d6f29fcd9415.json",
+      "school": "장흥유치중학교",
+      "title": "포트폴리오",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 108051,
+        "end": 109027,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 227885,
+          "end": 229568,
+          "table": 61,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            61
+          ]
+        }
+      ],
+      "cluster": "HTML·세부표 후보·과제 소유 미확정"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_c82a5521a27683bf52766ef839aed8a233dc42dcb30557ac7291fc22ad777315",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/7f88169129a7124da8aa6b774f476ad3d16914c1a516f2f6ce61d6f29fcd9415.json",
+      "school": "장흥유치중학교",
+      "title": "탐구활동",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 109434,
+        "end": 109948,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_293f739985555c58e87c6b97e83699212bcea9025a68bdaf015744d395b22234",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/7f88169129a7124da8aa6b774f476ad3d16914c1a516f2f6ce61d6f29fcd9415.json",
+      "school": "장흥유치중학교",
+      "title": "프로젝트",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 109328,
+        "end": 109966,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_fca0ba09fc8d0afe3a164fffbf779835042992fc0e06e9fafd77e79b7749235e",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/7f88169129a7124da8aa6b774f476ad3d16914c1a516f2f6ce61d6f29fcd9415.json",
+      "school": "장흥유치중학교",
+      "title": "동물과 에너지논술형",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 109353,
+        "end": 109984,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_7975c5d6f8b9919fc0dd569ae33b64fd962755e0bd25812e6abd3d3b30c1e1c4",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/7f88169129a7124da8aa6b774f476ad3d16914c1a516f2f6ce61d6f29fcd9415.json",
+      "school": "장흥유치중학교",
+      "title": "포트폴리오",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 109141,
+        "end": 110105,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 227885,
+          "end": 229568,
+          "table": 61,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            61
+          ]
+        }
+      ],
+      "cluster": "HTML·세부표 후보·과제 소유 미확정"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_bd940cb5c3866d20fa852062247436f498d81a1c4282c72be92658859836e04f",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/13f3006d23c69276f07aee80d09ff0fb87ace46ec9173c9f94e92699b6e78f73.json",
+      "school": "흥해중학교",
+      "title": "순환계의 구조와 기능 분석하기",
+      "missing": [
+        "task_text",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 96617,
+        "end": 99370,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 96589,
+          "end": 102259,
+          "table": 57,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            57
+          ]
+        }
+      ],
+      "cluster": "HTML·기준·점수 한 셀·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_ececa4a8484aedf98c10b1e585a2f9b5bb93b675ce4967a7c5b9ae940c7cbca6",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/13f3006d23c69276f07aee80d09ff0fb87ace46ec9173c9f94e92699b6e78f73.json",
+      "school": "흥해중학교",
+      "title": "전류, 전압, 저항 사이의 관계를 탐구할 수 있다.",
+      "missing": [
+        "task_text",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 99345,
+        "end": 102240,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 96589,
+          "end": 102259,
+          "table": 57,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            57
+          ]
+        }
+      ],
+      "cluster": "HTML·기준·점수 한 셀·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_420a981b5a927e7e46467f838f1852a4fed46b19eaed1e18b5c08898a48a2aa3",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/dd2e19032e20626bf9507927bd4229dfa225d091468bd0b92b5bc89952bdc5cc.json",
+      "school": "오현중학교",
+      "title": "녹는점 측정하기",
+      "missing": [
+        "task_text",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 90408,
+        "end": 91375,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 88362,
+          "end": 92367,
+          "format": "plain",
+          "table": null,
+          "score": 0,
+          "owned": false,
+          "basis": {
+            "flat_title_window": true
+          }
+        }
+      ],
+      "cluster": "평문·표 구조 유실"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_ffd6c4958d69604634d60333517cd3353c2d36fc2fc5761be0d3b130f300eb81",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/dd2e19032e20626bf9507927bd4229dfa225d091468bd0b92b5bc89952bdc5cc.json",
+      "school": "오현중학교",
+      "title": "생활 속 힘과 알짜힘 알아보기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 90425,
+        "end": 91407,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 88362,
+          "end": 92367,
+          "format": "plain",
+          "table": null,
+          "score": 0,
+          "owned": false,
+          "basis": {
+            "flat_title_window": true
+          }
+        }
+      ],
+      "cluster": "평문·표 구조 유실"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_244b455d992c9734ef7f33c460e721f4b7d5ae1ffb90a00502fe64f067c87814",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/dd2e19032e20626bf9507927bd4229dfa225d091468bd0b92b5bc89952bdc5cc.json",
+      "school": "오현중학교",
+      "title": "전기 회로 만들기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 262623,
+        "end": 263518,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_54a768e527367a01aca1525150f3a39acbf022d1369cc3b449e836b41df7bd2a",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/dd2e19032e20626bf9507927bd4229dfa225d091468bd0b92b5bc89952bdc5cc.json",
+      "school": "오현중학교",
+      "title": "밀도 구하기",
+      "missing": [
+        "task_text",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 262653,
+        "end": 263548,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [],
+      "cluster": "미검출·미확정"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_22c3937cbb2766ac841f877cc9f2bca02a8e23ad67131bfbd7ded7af9e23e83f",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/184e6f4f06ad7e8e8a9e054e3549984e09a57841700f4bf47b2007a2019b9128.json",
+      "school": "효돈중학교",
+      "title": "상태 변화에서 열의 출입 분석",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 83659,
+        "end": 84967,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 83677,
+          "end": 84986,
+          "table": 54,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            54
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_e857a1e3b35bbf101740d621fa37380c64e797deabef6d44cfd996ab3d9ea569",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/184e6f4f06ad7e8e8a9e054e3549984e09a57841700f4bf47b2007a2019b9128.json",
+      "school": "효돈중학교",
+      "title": "물체에 작용하는 힘 분석",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 84994,
+        "end": 86075,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 85009,
+          "end": 86094,
+          "table": 55,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            55
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_96cf23ff4d3f19647913c7c449fd7a31e575ee8d32813a0931e74842e8e9e746",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/49c356581c282ff928bdf2486eca18b135057253fe52452e7a39bcc1e74259d3.json",
+      "school": "효돈중학교",
+      "title": "소화 과정 탐구하기",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 55342,
+        "end": 56285,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 55354,
+          "end": 56304,
+          "table": 38,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            38
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "item_id": "item_12f063a6eec81d49ea63492f583fc7cac710d507c180f4dcdece060249ab9dfa",
+      "document": "data/derived/segments/2026-round-3-dev2-conversions/49c356581c282ff928bdf2486eca18b135057253fe52452e7a39bcc1e74259d3.json",
+      "school": "효돈중학교",
+      "title": "저항·전류·전압 사이의 관계 탐구하기",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 56311,
+        "end": 57372,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 56333,
+          "end": 57391,
+          "table": 39,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            39
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_73c65bb7f1748e56144c14b8a1d25027d738fc7923c8d9bea2c915882fcce04e",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/73df81a5f6953bcdb321d9a676eca955b994c776d005eeb1ff0afc48beb96cd7.json",
+      "school": "갈산중학교",
+      "title": "교과서 및 학습지 정리, 과제수행, 모둠활동, 발표",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 28734,
+        "end": 30674,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 28635,
+          "end": 30693,
+          "table": 22,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            22
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_c905a350fca7ff43463b8a950050cab4f4a699124f7ace7f44267792c3e34c80",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/73df81a5f6953bcdb321d9a676eca955b994c776d005eeb1ff0afc48beb96cd7.json",
+      "school": "갈산중학교",
+      "title": "열평형 과정을 입자의 모형을 사용으로 표현하고, 열의 이동 방식을 구성 입자의 운동과 관련하여 서술할 수 있다.",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 30703,
+        "end": 32256,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 30717,
+          "end": 32275,
+          "table": 23,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            23
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_9ee77fbf3f40640d226f6c39fcdd2338b0145700d99e1febab0ead59d48b4b83",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/73df81a5f6953bcdb321d9a676eca955b994c776d005eeb1ff0afc48beb96cd7.json",
+      "school": "갈산중학교",
+      "title": "생물다양성의 필요성과 생물다양성의 감소 원인을 분석하고, 생물다양성 유지 방안을 논리적으로 서술할 수 있다.",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 32285,
+        "end": 33808,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 32298,
+          "end": 33827,
+          "table": 24,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            24
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_15e03379d840fd1099368468c52308b88f25ced6a6fa1e67b6caeaba1a450ceb",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/08ca9b47300ee2d81e69eaf628513d246f75a3fe2ea048046f0010d83889540c.json",
+      "school": "평동중학교",
+      "title": "생물의 다양성 홍보물 제작하기",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 406684,
+        "end": 408320,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 406697,
+          "end": 408339,
+          "table": 279,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            279
+          ]
+        }
+      ],
+      "cluster": "HTML·요소·배점 행/열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_f67e54b465183338f3b7d495c36301ce0cb74dcc58ce4b3e6bad1810cc34321e",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/08ca9b47300ee2d81e69eaf628513d246f75a3fe2ea048046f0010d83889540c.json",
+      "school": "평동중학교",
+      "title": "자연관찰 탐구보고서",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 408355,
+        "end": 409895,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 408367,
+          "end": 409914,
+          "table": 280,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            280
+          ]
+        }
+      ],
+      "cluster": "HTML·요소·배점 행/열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_e8882635aa39bdb99f369f3d0b530c8d3ef3d0e1a2f71d6f946c791e2fc4a862",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/2a37cb67fa457f86c175cc5cb1164163063a17e6f4117ea39f1c05eb4172ca3b.json",
+      "school": "대전대화중학교",
+      "title": "열전달 방법과 실생활 속의 예 서술하기",
+      "missing": [
+        "task_text"
+      ],
+      "item_locator": {
+        "start": 146903,
+        "end": 147793,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 146926,
+          "end": 147812,
+          "table": 126,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            126
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_7bf31102092ed1ca23cbda877eeb311f0dfb8c3bb0782b288bcd515079bcede1",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/2a37cb67fa457f86c175cc5cb1164163063a17e6f4117ea39f1c05eb4172ca3b.json",
+      "school": "대전대화중학교",
+      "title": "금속의 밀도 측정 실험",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 148883,
+        "end": 150179,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 148896,
+          "end": 150198,
+          "table": 128,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            128
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_131f1f273a18f8bcc0b921df6d2b24c43020c2dc23af526dc649a1622f3095f8",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/2a37cb67fa457f86c175cc5cb1164163063a17e6f4117ea39f1c05eb4172ca3b.json",
+      "school": "대전대화중학교",
+      "title": "암석의 순환 과정 서술하기",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 150203,
+        "end": 151360,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 150219,
+          "end": 151379,
+          "table": 129,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            129
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_9be65239d7c5eb2f44049cf2ede6880cfddaae961e2efe8e3de92aafd26a29cf",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/17cbfbb792cc8e317f7578c3902f878fffa56410b43e8cc5ab332aeb215a958c.json",
+      "school": "상북중학교",
+      "title": "열팽창을 활용한 예를 발표하기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 89872,
+        "end": 90007,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 87516,
+          "end": 91521,
+          "format": "plain",
+          "table": null,
+          "score": 0,
+          "owned": false,
+          "basis": {
+            "flat_title_window": true
+          }
+        }
+      ],
+      "cluster": "평문·표 구조 유실"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_9bed092d5262a69945a5e5387833ec215f5241587bbaced9485ecf472427cc44",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/912bff6f1739536fc857495e7b70f2ec360b90335124089f3498e06c60cb485f.json",
+      "school": "아름중학교",
+      "title": "마찰력과 부력 탐구하기",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 137837,
+        "end": 140200,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 137821,
+          "end": 140219,
+          "table": 64,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            64
+          ]
+        }
+      ],
+      "cluster": "HTML·기준·점수 한 셀·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_ab8dc46ae10f41647e5c6cdc101fcc8899f0f9d36493786585f9fea9f8f971ae",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/912bff6f1739536fc857495e7b70f2ec360b90335124089f3498e06c60cb485f.json",
+      "school": "아름중학교",
+      "title": "기체의 부피 변화 탐구하기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 140237,
+        "end": 142121,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 140221,
+          "end": 142140,
+          "table": 65,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            65
+          ]
+        }
+      ],
+      "cluster": "HTML·기준·점수 한 셀·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_2b034427b1c8ee65da3abc988b4a6dafcd4e1980469d6a050f7e891713db8d92",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/9bd94577b2e79b45d32b4ba10dd7778a4ffa354f241b7dbfbffcab1c8b2dfd0c.json",
+      "school": "아름중학교",
+      "title": "암석의 특징과 분류",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 144581,
+        "end": 146267,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 144565,
+          "end": 146286,
+          "table": 66,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            66
+          ]
+        }
+      ],
+      "cluster": "HTML·기준·점수 한 셀·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_588a29749637eeabaf8760a6d85f31a2f8fcd39774a72ddee618787295a5c614",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/9bd94577b2e79b45d32b4ba10dd7778a4ffa354f241b7dbfbffcab1c8b2dfd0c.json",
+      "school": "아름중학교",
+      "title": "거울과 렌즈에 의한 상",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 146304,
+        "end": 147717,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 146288,
+          "end": 147736,
+          "table": 67,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            67
+          ]
+        }
+      ],
+      "cluster": "HTML·기준·점수 한 셀·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_c087218e434731f310888302474cade5e07b74ab8f443fe4f28be436f20f3337",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/child_711c8466cdeac2bc6bfbd0123f9f322c31d95991fc4dfd137d415597be7bf000.json",
+      "school": "두루중학교",
+      "title": "혼합물 분리 실험",
+      "missing": [
+        "task_text",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 21751,
+        "end": 23579,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 21767,
+          "end": 23598,
+          "table": 9,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            9
+          ]
+        }
+      ],
+      "cluster": "HTML·기준·점수 한 셀·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_70719d46938d0b7e9f92ec94e4196938587a3707836e522c56738a315d74197d",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/child_711c8466cdeac2bc6bfbd0123f9f322c31d95991fc4dfd137d415597be7bf000.json",
+      "school": "두루중학교",
+      "title": "암석 분류하고 순환 과정 설명하기",
+      "missing": [
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 23603,
+        "end": 25527,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 23628,
+          "end": 25546,
+          "table": 10,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            10
+          ]
+        }
+      ],
+      "cluster": "HTML·기준·점수 한 셀·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_17cf1fc6d992302420f30b7c6383af3479818b44d778a36c6cfae2f7494a5ac5",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/61e0df2868109472c302f902f8e90a1ec8fbbf19389e141614d07ab3d9d2fad1.json",
+      "school": "충주여자중학교",
+      "title": "비열과 열팽창의 활용",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 18893,
+        "end": 20075,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 18917,
+          "end": 20094,
+          "table": 7,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            7
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_0eb8b6d28edac488dba2b65bfce7762fc9e1db2297dc0ce85d466fd2bcaba9bc",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/61e0df2868109472c302f902f8e90a1ec8fbbf19389e141614d07ab3d9d2fad1.json",
+      "school": "충주여자중학교",
+      "title": "용수철의 탄성력 측정 (보고서 평가)",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 20101,
+        "end": 21651,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 20123,
+          "end": 21670,
+          "table": 8,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            8
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_48e41705fcac572767416187987ba4bdeee660de246967b975217fcb7648be3a",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/61e0df2868109472c302f902f8e90a1ec8fbbf19389e141614d07ab3d9d2fad1.json",
+      "school": "충주여자중학교",
+      "title": "주기율표의 성질",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 21689,
+        "end": 22866,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 21710,
+          "end": 22885,
+          "table": 9,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            9
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_dd041cca193d2e301417472bd4de62d5f2292006cc759033a93d94a3d4e13907",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/61e0df2868109472c302f902f8e90a1ec8fbbf19389e141614d07ab3d9d2fad1.json",
+      "school": "충주여자중학교",
+      "title": "이온의 이동 관찰 (보고서 평가)",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 22892,
+        "end": 24444,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 22912,
+          "end": 24463,
+          "table": 10,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            10
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_4de10c71e5bb0be0cafb0f103b1ca07a3870525a5d40a6f4ca88798a7f6fd6c1",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/5a2bcfababa5bd380cf9b45417cb146678cfb585a5bcd0f007908e1bf3fcac9e.json",
+      "school": "순천연향중학교",
+      "title": "고체·기체의 용해도와 관련된 다양한 현상을 해석하고, 일상생활 사례에 적용하여 설명한다.",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 128266,
+        "end": 131083,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 128274,
+          "end": 131102,
+          "table": 56,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            56
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_2bed26a0be9758649add3918c546851db183d85f560735d282c8a3c617be0cf7",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/5a2bcfababa5bd380cf9b45417cb146678cfb585a5bcd0f007908e1bf3fcac9e.json",
+      "school": "순천연향중학교",
+      "title": "광물이 없을 경우 생활과 기술의 변화 서술하기",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 131110,
+        "end": 133870,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 131119,
+          "end": 133889,
+          "table": 57,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            57
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_852d757b4a632aab6550318ca5e6d0c00d470ddb36fcab8265149cd32b8d35ad",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/5a2bcfababa5bd380cf9b45417cb146678cfb585a5bcd0f007908e1bf3fcac9e.json",
+      "school": "순천연향중학교",
+      "title": "과학 포트폴리오",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 133897,
+        "end": 135634,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 133905,
+          "end": 135653,
+          "table": 58,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            58
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_9db6c8a6f6b99a345bc7a726d970c485fbcdd3041a16f9e6176040c39174eaf1",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/54f85475171f71e26f3c74773efcd9300bc4fee9c25f7d2830eb87b1926e1146.json",
+      "school": "광양마동중학교",
+      "title": "열",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 113183,
+        "end": 113560,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 121329,
+          "end": 123486,
+          "table": 62,
+          "format": "html",
+          "score": 1,
+          "owned": false,
+          "basis": {
+            "title": false,
+            "heading": false,
+            "standard_code": true,
+            "owned": false
+          },
+          "tables": [
+            62
+          ]
+        }
+      ],
+      "cluster": "HTML·세부표 후보·과제 소유 미확정"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_8f2672c4d3e150ed1b9d6e4a8b1c2d52fca65f2c1d7b5fe9e055bdd4085ef57d",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/54f85475171f71e26f3c74773efcd9300bc4fee9c25f7d2830eb87b1926e1146.json",
+      "school": "광양마동중학교",
+      "title": "생물의 구성과 다양성",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 117853,
+        "end": 119504,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 117167,
+          "end": 119523,
+          "table": 60,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            60
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_6b104d8e1736b7ee59d89093eda2fb527b2566f6147c14bb082e4f54340ccffb",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/54f85475171f71e26f3c74773efcd9300bc4fee9c25f7d2830eb87b1926e1146.json",
+      "school": "광양마동중학교",
+      "title": "물질의 상태 변화",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 124014,
+        "end": 132026,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 123998,
+          "end": 125471,
+          "table": 64,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            64
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_3ad6134fd1c74416511e23428a7b600b6e1ee9110e49c7f95a58554185b05bba",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/23317f7583861ccda5c14364b5859b17f9cc1ecc77deb10709cea3fc89cbc257.json",
+      "school": "장흥유치중학교",
+      "title": "프로젝트",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 346292,
+        "end": 348221,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 346291,
+          "end": 348240,
+          "table": 111,
+          "format": "markdown",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            111,
+            112
+          ]
+        }
+      ],
+      "cluster": "마크다운·페이지 분할·후속 채점표·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_fdfd30e860b703f7009c24c512e0e5c26bdd0f0e026ed4095861b2281632f623",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/23317f7583861ccda5c14364b5859b17f9cc1ecc77deb10709cea3fc89cbc257.json",
+      "school": "장흥유치중학교",
+      "title": "탐구활동",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 342460,
+        "end": 343403,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 114949,
+          "end": 123186,
+          "table": 37,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            37
+          ]
+        },
+        {
+          "start": 212663,
+          "end": 234437,
+          "table": 70,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            70
+          ]
+        },
+        {
+          "start": 344706,
+          "end": 346289,
+          "table": 110,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            110
+          ]
+        },
+        {
+          "start": 351867,
+          "end": 355610,
+          "table": 115,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            115
+          ]
+        },
+        {
+          "start": 362275,
+          "end": 364156,
+          "table": 119,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            119
+          ]
+        },
+        {
+          "start": 414159,
+          "end": 420887,
+          "table": 134,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            134
+          ]
+        }
+      ],
+      "cluster": "복수 세부표 후보·소유 미확정"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_3b28fbd8800b8720486688725cea1b21d025adc5632c801a72ff4c237d1cf35b",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/23317f7583861ccda5c14364b5859b17f9cc1ecc77deb10709cea3fc89cbc257.json",
+      "school": "장흥유치중학교",
+      "title": "프로젝트",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 342460,
+        "end": 343403,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 114949,
+          "end": 123186,
+          "table": 37,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            37
+          ]
+        },
+        {
+          "start": 123188,
+          "end": 128145,
+          "table": 38,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            38
+          ]
+        },
+        {
+          "start": 129719,
+          "end": 134363,
+          "table": 40,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            40
+          ]
+        },
+        {
+          "start": 206527,
+          "end": 212661,
+          "table": 68,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            68,
+            69
+          ]
+        },
+        {
+          "start": 210424,
+          "end": 212661,
+          "table": 69,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            69
+          ]
+        },
+        {
+          "start": 212663,
+          "end": 234437,
+          "table": 70,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            70
+          ]
+        },
+        {
+          "start": 271726,
+          "end": 273420,
+          "table": 87,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            87
+          ]
+        },
+        {
+          "start": 273422,
+          "end": 274830,
+          "table": 88,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            88
+          ]
+        },
+        {
+          "start": 344706,
+          "end": 346289,
+          "table": 110,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            110
+          ]
+        },
+        {
+          "start": 346291,
+          "end": 348240,
+          "table": 111,
+          "format": "markdown",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            111,
+            112
+          ]
+        },
+        {
+          "start": 346539,
+          "end": 348240,
+          "table": 112,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            112
+          ]
+        },
+        {
+          "start": 348242,
+          "end": 349566,
+          "table": 113,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            113
+          ]
+        },
+        {
+          "start": 349568,
+          "end": 351865,
+          "table": 114,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            114
+          ]
+        },
+        {
+          "start": 355612,
+          "end": 360048,
+          "table": 116,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            116
+          ]
+        },
+        {
+          "start": 364158,
+          "end": 367166,
+          "table": 120,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            120
+          ]
+        },
+        {
+          "start": 444837,
+          "end": 448207,
+          "table": 144,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            144
+          ]
+        },
+        {
+          "start": 448209,
+          "end": 450933,
+          "table": 145,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            145
+          ]
+        },
+        {
+          "start": 450935,
+          "end": 453809,
+          "table": 146,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            146
+          ]
+        },
+        {
+          "start": 453811,
+          "end": 461757,
+          "table": 147,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            147
+          ]
+        },
+        {
+          "start": 534438,
+          "end": 536549,
+          "table": 177,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            177
+          ]
+        },
+        {
+          "start": 536562,
+          "end": 538797,
+          "table": 178,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            178
+          ]
+        },
+        {
+          "start": 538811,
+          "end": 541068,
+          "table": 179,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            179
+          ]
+        },
+        {
+          "start": 752648,
+          "end": 761520,
+          "table": 238,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            238
+          ]
+        },
+        {
+          "start": 761542,
+          "end": 767365,
+          "table": 239,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            239
+          ]
+        },
+        {
+          "start": 767430,
+          "end": 778633,
+          "table": 240,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            240
+          ]
+        },
+        {
+          "start": 822527,
+          "end": 823015,
+          "table": 256,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            256
+          ]
+        },
+        {
+          "start": 823109,
+          "end": 823774,
+          "table": 257,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            257
+          ]
+        },
+        {
+          "start": 842613,
+          "end": 843732,
+          "table": 272,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            272
+          ]
+        },
+        {
+          "start": 862463,
+          "end": 864113,
+          "table": 281,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            281
+          ]
+        }
+      ],
+      "cluster": "복수 세부표 후보·소유 미확정"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_97325c0d7ca49be00b170c9f50410bb4395984012aa17e290a7cf889d83df4ed",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/23317f7583861ccda5c14364b5859b17f9cc1ecc77deb10709cea3fc89cbc257.json",
+      "school": "장흥유치중학교",
+      "title": "빛과 파동논술형",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 342460,
+        "end": 343403,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 355612,
+          "end": 360048,
+          "table": 116,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            116
+          ]
+        }
+      ],
+      "cluster": "HTML·세부표 후보·과제 소유 미확정"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_d6ba5eaacb52807e9cb9b91f73852833e3eb255c6341224d563ad8222b24611e",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/23317f7583861ccda5c14364b5859b17f9cc1ecc77deb10709cea3fc89cbc257.json",
+      "school": "장흥유치중학교",
+      "title": "포트폴리오",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 342460,
+        "end": 343403,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 114949,
+          "end": 123186,
+          "table": 37,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            37
+          ]
+        },
+        {
+          "start": 128147,
+          "end": 129717,
+          "table": 39,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            39
+          ]
+        },
+        {
+          "start": 206527,
+          "end": 212661,
+          "table": 68,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            68,
+            69
+          ]
+        },
+        {
+          "start": 210424,
+          "end": 212661,
+          "table": 69,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            69
+          ]
+        },
+        {
+          "start": 212663,
+          "end": 234437,
+          "table": 70,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            70
+          ]
+        },
+        {
+          "start": 271726,
+          "end": 273420,
+          "table": 87,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            87
+          ]
+        },
+        {
+          "start": 273422,
+          "end": 274830,
+          "table": 88,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            88
+          ]
+        },
+        {
+          "start": 276326,
+          "end": 282374,
+          "table": 90,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            90
+          ]
+        },
+        {
+          "start": 284550,
+          "end": 286095,
+          "table": 92,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            92
+          ]
+        },
+        {
+          "start": 344706,
+          "end": 346289,
+          "table": 110,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            110
+          ]
+        },
+        {
+          "start": 346291,
+          "end": 348240,
+          "table": 111,
+          "format": "markdown",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            111,
+            112
+          ]
+        },
+        {
+          "start": 348242,
+          "end": 349566,
+          "table": 113,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            113
+          ]
+        },
+        {
+          "start": 349568,
+          "end": 351865,
+          "table": 114,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            114
+          ]
+        },
+        {
+          "start": 360050,
+          "end": 362265,
+          "table": 117,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            117,
+            118
+          ]
+        },
+        {
+          "start": 360871,
+          "end": 362265,
+          "table": 118,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            118
+          ]
+        },
+        {
+          "start": 367458,
+          "end": 370227,
+          "table": 122,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            122
+          ]
+        },
+        {
+          "start": 444837,
+          "end": 448207,
+          "table": 144,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            144
+          ]
+        },
+        {
+          "start": 448209,
+          "end": 450933,
+          "table": 145,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            145
+          ]
+        },
+        {
+          "start": 450935,
+          "end": 453809,
+          "table": 146,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            146
+          ]
+        },
+        {
+          "start": 453811,
+          "end": 461757,
+          "table": 147,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            147
+          ]
+        },
+        {
+          "start": 534438,
+          "end": 536549,
+          "table": 177,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            177
+          ]
+        },
+        {
+          "start": 536562,
+          "end": 538797,
+          "table": 178,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            178
+          ]
+        },
+        {
+          "start": 538811,
+          "end": 541068,
+          "table": 179,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            179
+          ]
+        },
+        {
+          "start": 648138,
+          "end": 653316,
+          "table": 212,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            212
+          ]
+        },
+        {
+          "start": 667669,
+          "end": 669531,
+          "table": 217,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            217
+          ]
+        },
+        {
+          "start": 748797,
+          "end": 750092,
+          "table": 233,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            233
+          ]
+        },
+        {
+          "start": 752648,
+          "end": 761520,
+          "table": 238,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            238
+          ]
+        },
+        {
+          "start": 767430,
+          "end": 778633,
+          "table": 240,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            240
+          ]
+        },
+        {
+          "start": 822527,
+          "end": 823015,
+          "table": 256,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            256
+          ]
+        },
+        {
+          "start": 823788,
+          "end": 824435,
+          "table": 258,
+          "format": "html",
+          "score": 4,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            258
+          ]
+        }
+      ],
+      "cluster": "복수 세부표 후보·소유 미확정"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_287401395efdb187b3613da63f1430908bc2a278dbc5320fca1be68f65b2336c",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/94d7c057f33831367dc8294e9c2b994e57a6303abb2e76ffcf7f08a8881f50f3.json",
+      "school": "흥해중학교",
+      "title": "첨단 과학기술 활용 사례 조사하기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 104958,
+        "end": 106881,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 104942,
+          "end": 106900,
+          "table": 45,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            45
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_267454bb34a5bd3d62fba25b596b6180dca62e292ca84b386a8defe6390af783",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/94d7c057f33831367dc8294e9c2b994e57a6303abb2e76ffcf7f08a8881f50f3.json",
+      "school": "흥해중학교",
+      "title": "우리 학교 생태 지도만들기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 106955,
+        "end": 108805,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 106939,
+          "end": 108824,
+          "table": 46,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            46
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_3287b90d331e98016d1a55a92513e6d079cc391bee125ebc17c90d6e40adaefd",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/94d7c057f33831367dc8294e9c2b994e57a6303abb2e76ffcf7f08a8881f50f3.json",
+      "school": "흥해중학교",
+      "title": "다양한 액체의 비열 측정하기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 108866,
+        "end": 110817,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 108850,
+          "end": 110836,
+          "table": 47,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            47
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_dc6b576bea192452313050c8318ca378b78c8f973b79aa25a656c7c9edbb61ae",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/38727048013989343376e1bc38d4e2b63738dd192d602e8c1daa7e31e80d9425.json",
+      "school": "흥해중학교",
+      "title": "빛과 파동의 원리 분석하기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 86112,
+        "end": 88698,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 86126,
+          "end": 88717,
+          "table": 47,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            47
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_d5ed9fee42319d9a75cae47616a3f9f6e43e548d8607a4a1441069fe822e8fe9",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/38727048013989343376e1bc38d4e2b63738dd192d602e8c1daa7e31e80d9425.json",
+      "school": "흥해중학교",
+      "title": "암석의 순환 과정을 설명할 수 있다.",
+      "missing": [
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 88726,
+        "end": 90317,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 88742,
+          "end": 90336,
+          "table": 48,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            48
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_33ac99b7eec52dfa5d0ebc0d4c9c4c5fdd0caab7e3073ddf0d81b58fffabd783",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/8859f3d8ea0f7197a247c01fc7f57fb0bc7068207a57f6386672a1876c0e80c3.json",
+      "school": "울진중학교",
+      "title": "우리동네 생태지도 만들기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 101354,
+        "end": 102635,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 101338,
+          "end": 104697,
+          "table": 75,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            75
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_412672dfdd658587dff9095f88069acd6f023ce5ba791f973c3d2fb6d8f18950",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/8859f3d8ea0f7197a247c01fc7f57fb0bc7068207a57f6386672a1876c0e80c3.json",
+      "school": "울진중학교",
+      "title": "디지털 탐구 도구를 활용한 열평형 관찰하기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 102609,
+        "end": 104678,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 101338,
+          "end": 104697,
+          "table": 75,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            75
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_f22f21c455f766bcf91a26bfd62eacdba9c63be41c514dba0973b8d1759df390",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/0f9b389c095ef11668c3387308ae7a4efca8e1629c101fa7ed80251affba08a7.json",
+      "school": "울진중학교",
+      "title": "원소와 화합물 구분하기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 94795,
+        "end": 95601,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 84579,
+          "end": 88584,
+          "format": "plain",
+          "table": null,
+          "score": 0,
+          "owned": false,
+          "basis": {
+            "flat_title_window": true
+          }
+        },
+        {
+          "start": 85246,
+          "end": 89248,
+          "format": "plain",
+          "table": null,
+          "score": 0,
+          "owned": false,
+          "basis": {
+            "flat_title_window": true
+          }
+        },
+        {
+          "start": 85354,
+          "end": 89358,
+          "format": "plain",
+          "table": null,
+          "score": 0,
+          "owned": false,
+          "basis": {
+            "flat_title_window": true
+          }
+        }
+      ],
+      "cluster": "복수 세부표 후보·소유 미확정"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_bd57dc9b6126c568aa2a70cc7772fece0a852b3638fcd400c24e2f13c08fe02c",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/6837a62d2c87d85bede2517927a2209cb73686f84f9afb9394b83b199961eafc.json",
+      "school": "오현중학교",
+      "title": "세포 관찰하기",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 88632,
+        "end": 89449,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 88641,
+          "end": 89468,
+          "table": 45,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            45
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_8503ce70bd1d6c3ec9ec21fc612ab9878140b7f3cdc9a6caff07073931eba59d",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/6837a62d2c87d85bede2517927a2209cb73686f84f9afb9394b83b199961eafc.json",
+      "school": "오현중학교",
+      "title": "온도가 다른 두 물체의 온도 변화 표현하기",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 89477,
+        "end": 90384,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 89502,
+          "end": 90403,
+          "table": 46,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            46
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_769965f0e0365bc6ed917f705f842119d0ab81c4f28851293e3f9e1906c4bda0",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/6837a62d2c87d85bede2517927a2209cb73686f84f9afb9394b83b199961eafc.json",
+      "school": "오현중학교",
+      "title": "지권의 층상 구조 모형 표현",
+      "missing": [
+        "task_text",
+        "sub_scores"
+      ],
+      "item_locator": {
+        "start": 349205,
+        "end": 351024,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 349222,
+          "end": 351043,
+          "table": 180,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            180
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_0adaaba9677827524ab656aa37dbd30b571edb096e364471d1d4d285f52bd972",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/772531abaaf6edf56c71475f1159a733300d6e7b8569e65e05ba071a1ea7d531.json",
+      "school": "효돈중학교",
+      "title": "열평형 과정에서 입자의 운동 변화 탐구",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 76147,
+        "end": 76632,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 76029,
+          "end": 76651,
+          "table": 39,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": false,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            39
+          ]
+        }
+      ],
+      "cluster": "HTML·요소·배점 행/열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_31bdf8ff190b118d5473ba20e52a4ab5fd21139c8369e17af1186f8f5671a375",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/772531abaaf6edf56c71475f1159a733300d6e7b8569e65e05ba071a1ea7d531.json",
+      "school": "효돈중학교",
+      "title": "생물 다양성 보전 방안 탐구",
+      "missing": [
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 76683,
+        "end": 77157,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 76700,
+          "end": 77176,
+          "table": 40,
+          "format": "html",
+          "score": 13,
+          "owned": true,
+          "basis": {
+            "title": false,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            40
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_6dd65740937fe52c94b88bef9f70b5cc2478514b3bd6a50625d78b15247c28ec",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/6cbcd92b09a5d86c73863e2ff9e64c5a6958bb0cbca296d8beb55828f04c3991.json",
+      "school": "효돈중학교",
+      "title": "볼록렌즈에 의한 상 작도 하기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 71536,
+        "end": 72152,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 73608,
+          "end": 74860,
+          "table": 42,
+          "format": "html",
+          "score": 8,
+          "owned": false,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": false,
+            "owned": false
+          },
+          "tables": [
+            42
+          ]
+        }
+      ],
+      "cluster": "HTML·세부표 후보·과제 소유 미확정"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "item_id": "item_9b98da779f53e0305730b2ef541800d1508a976a1000267e90800d7c544d81a5",
+      "document": "data/derived/segments/2026-round-1-dev2-conversions/6cbcd92b09a5d86c73863e2ff9e64c5a6958bb0cbca296d8beb55828f04c3991.json",
+      "school": "효돈중학교",
+      "title": "밀도 측정하기",
+      "missing": [
+        "task_text",
+        "sub_scores",
+        "rubric"
+      ],
+      "item_locator": {
+        "start": 72379,
+        "end": 73445,
+        "offset_unit": "unicode_codepoint",
+        "end_exclusive": true,
+        "converter": "kordoc"
+      },
+      "candidates": [
+        {
+          "start": 72388,
+          "end": 73464,
+          "table": 41,
+          "format": "html",
+          "score": 17,
+          "owned": true,
+          "basis": {
+            "title": true,
+            "heading": true,
+            "standard_code": true,
+            "owned": true
+          },
+          "tables": [
+            41
+          ]
+        }
+      ],
+      "cluster": "HTML·수준·기준/점수 열·병합"
+    }
+  ],
+  "access_violations": []
+}

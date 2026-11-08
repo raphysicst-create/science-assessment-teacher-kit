@@ -14,9 +14,12 @@ from collections import defaultdict
 if __package__:
     from .assessment_symbols import BOX_RE, marker_state
     from .middle_fields import (
+        LEVEL_RE,
         enrich_claims,
         free_semester_field,
+        judgment,
         method_literal,
+        plain_detail_claims,
         reference_codes,
         sub_score_field,
         title_alias_key,
@@ -28,9 +31,12 @@ if __package__:
 else:
     from assessment_symbols import BOX_RE, marker_state
     from middle_fields import (
+        LEVEL_RE,
         enrich_claims,
         free_semester_field,
+        judgment,
         method_literal,
+        plain_detail_claims,
         reference_codes,
         sub_score_field,
         title_alias_key,
@@ -40,7 +46,7 @@ else:
     from middle_segments import visible as structural_visible
     from middle_subjects import classify_subject, table_spans
 
-RULE_VERSION = "middle-items-v14"
+RULE_VERSION = "middle-items-v15"
 IDENTITY_VERSION = "middle-items-v2"  # Field-only changes retain source identities.
 FIELDS = (
     "title",
@@ -155,6 +161,14 @@ LABELS = {
     "평가척도": "rubric",
     "평가항목": "elements",
     "핵심아이디어": "competency",
+    "과제개요": "task_text",
+    "활동개요": "task_text",
+    "주요활동": "task_text",
+    "척도": "rubric",
+    "척도별수행특성(기대수행)": "rubric",
+    "기대수행": "elements",
+    "수행특성": "rubric",
+    "성취수준별수행특성": "levels",
 }
 TITLE_ROLES = {"title", "task", "task_no", "assessment_area"}
 TASK_NO_RE = re.compile(
@@ -1313,10 +1327,16 @@ def connect_tables(
         blank_gap = not re.sub(r"\s|\f|<!--\s*page\s*\d+\s*-->", "", gap)
         roles = {label_role(c["text"]) for c in cells}
         heading_owners = [s for s in structures if s["layout"] == "form"
-                          and s.get("adjacent_task_heading")
+                          and (s.get("adjacent_task_heading") or (
+                              "rubric" in roles and "standards" not in roles and any(
+                                  s["claims"].get(role) for role in ("task", "title"))))
                           and (s["links"][-1]["table"] if s["links"] else s["table"])
                           == table["table"] - 1]
-        if (blank_gap and len(heading_owners) == 1 and not roles & TITLE_ROLES
+        field_gap = not re.sub(
+            r"\s|\f|<!--\s*page\s*\d+\s*-->|[ #*]*(?:채점\s*기준|평가\s*기준|"
+            r"평가\s*요소\s*및\s*배점|세부\s*배점)[ #*]*|(?m:^\s*-?\s*\d+\s*-?\s*$)",
+            "", gap)
+        if ((blank_gap or field_gap) and len(heading_owners) == 1 and not roles & TITLE_ROLES
                 and roles & {"rubric", "elements"}):
             owner = heading_owners[0]
             owner["cells"].extend(cells)
@@ -1326,6 +1346,39 @@ def connect_tables(
             continuation_claims(owner, table)
             used.add(table["table"])
             continue
+        # Headerless page tails need both a page marker and a matching printed
+        # criterion/scale column schema from one preceding task form.
+        page_break = bool(re.search(r"\f|<!--\s*page\s*\d+\s*-->", gap))
+        if page_break and blank_gap and not any(roles):
+            owners = [s for s in structures if s["layout"] == "form"
+                      and (s["links"][-1]["table"] if s["links"] else s["table"])
+                      == table["table"] - 1]
+            proven = []
+            for owner in owners:
+                # Use the actual previous table number, retaining its header locator.
+                previous_cells = [c for c in owner["cells"]
+                                  if c.get("table") == table["table"] - 1]
+                headers = [c for c in previous_cells if label_role(c["text"]) == "rubric"]
+                for header in headers:
+                    scale_cols = {c["col"] for c in previous_cells
+                                  if c["row"] > header["row"] and LEVEL_RE.fullmatch(c["text"])}
+                    pairs = [(c, v) for row in table["rows"] for c in row for v in row
+                             if header["col"] <= c["col"]
+                             < header["col"] + header["colspan"]
+                             and judgment(c["text"]) and v["col"] in scale_cols
+                             and LEVEL_RE.fullmatch(v["text"])]
+                    if pairs and len({c["row"] for c, _ in pairs}) == len(table["rows"]):
+                        proven.append((owner, header, pairs))
+            if len(proven) == 1:
+                owner, header, pairs = proven[0]
+                owner["cells"].extend(cells)
+                owner.setdefault("continuation_rubric", []).extend(
+                    (c, header) for pair in pairs for c in pair)
+                owner["links"].append({"table": table["table"], "start": table["start"],
+                                        "end": table["end"],
+                                        "basis": "페이지 표지·채점기준/수준 열 일치·새 라벨 없음"})
+                used.add(table["table"])
+                continue
         physical_owners = []
         for s in structures:
             if s["layout"] != "form":
@@ -1492,6 +1545,7 @@ def split_standard_forms(tables: list[dict], text: str, section: dict) -> list[d
 
 def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     claims = structure["claims"]
+    plain_detail_claims(structure, section, conversion)
     sub_scores = enrich_claims(structure) + structure.get("column_sub_scores", [])
     # A single, explicitly spanned activity under the task's element header
     # names the task. Ordinary rubric criteria and multiple elements do not.
@@ -1988,7 +2042,10 @@ def extract_middle_items(
                     )
     occupied = [(t["start"], t["end"]) for t in tables]
     # Flat PDF labels and hints locate candidates only. Do not infer cell edges.
-    pattern = re.compile(r"(?m)^\s*(?:수행\s*과제|평가\s*영역(?:명)?|평가\s*과제)\s*[:：]?\s*$")
+    pattern = re.compile(r"(?m)^[^\S\n]*(?:수행\s*과제|평가\s*영역(?:명)?|평가\s*과제)"
+                         r"[^\S\n]*(?:[:：][^\S\n]*(?P<title>[^\r\n]+))?[^\S\n]*$")
+    inline_titles = {m.end(): m.span("title") for m in pattern.finditer(text, start, end)
+                     if m["title"]}
     candidates = [(m.start(), m.end()) for m in pattern.finditer(text, start, end)]
     for hint in title_hints:
         if hint:
@@ -2002,7 +2059,9 @@ def extract_middle_items(
             continue
         after = re.match(r"[^\S\n]*\n([^\n]+)", text[right:end])
         candidate_left, candidate_right = left, right
-        if after and title_gate(after[1].strip())["accepted"]:
+        if right in inline_titles:
+            candidate_left, candidate_right = inline_titles[right]
+        elif after and title_gate(after[1].strip())["accepted"]:
             candidate_left = right + after.start(1)
             candidate_right = right + after.end(1)
         cell = {

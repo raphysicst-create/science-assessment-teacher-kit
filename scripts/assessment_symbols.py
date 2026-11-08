@@ -2,7 +2,7 @@
 
 import re
 
-SELECTED_BOXES = frozenset("■☑✅✓✔þ▣☒●√")
+SELECTED_BOXES = frozenset("■☑✅✓✔þ▣☒●√∨")
 UNSELECTED_BOXES = frozenset("□☐○▢")
 # PDF/HWP Wingdings text substitutions. Longest token must match first.
 FONT_MARKERS = {"gfedcb": "checked", "gfedc": "unchecked"}
