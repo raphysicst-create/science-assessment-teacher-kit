@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 from collections import Counter
 from pathlib import Path
@@ -13,10 +14,10 @@ ROOT = Path(__file__).resolve().parents[1]
 ROUND = "2026-round-3"
 
 
-def read(previous: bool = False) -> dict:
+def read(previous: bool = False, round_key: str = ROUND) -> dict:
     suffix = ".prev-s6c2" if previous else ""
     return json.loads(
-        (ROOT / f"data/derived/items/{ROUND}{suffix}.json").read_text(encoding="utf-8")
+        (ROOT / f"data/derived/items/{round_key}{suffix}.json").read_text(encoding="utf-8")
     )
 
 
@@ -180,8 +181,21 @@ def evidence_label(item: dict) -> str:
     return label
 
 
-def markdown() -> str:
-    old, new = read(True), read()
+def markdown(round_key: str = ROUND) -> str:
+    previous_path = ROOT / f"data/derived/items/{round_key}.prev-s6c2.json"
+    if not previous_path.exists():
+        new = read(round_key=round_key)
+        lines = [
+            f"# S6 감사 · {round_key}", "",
+            "이 회차에 보존된 이전 실행이 없어 전후 비교는 생략한다.", "",
+            "| 관찰치 | 현재 |", "|---|---:|",
+            f"| bounded | {new['summary']['bounded']} |",
+            f"| 독립 검토 후보 | {new['summary']['review']} |",
+            "", "## 구조 위반 지표", "", "| 지표 | 현재 |", "|---|---:|",
+        ]
+        lines.extend(f"| {key} | {value} |" for key, value in safety_counts(new).items())
+        return "\n".join(lines) + "\n"
+    old, new = read(True, round_key), read(round_key=round_key)
     before, after = old["summary"], new["summary"]
     old_roles = Counter(i["candidate_role"] for i in old["items"])
     lines = [
@@ -407,6 +421,9 @@ def markdown() -> str:
 
 
 if __name__ == "__main__":
-    output = ROOT / f"data/derived/items/{ROUND}.compare.md"
-    atomic_write(output, markdown())
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--round-key", default=ROUND)
+    args = parser.parse_args()
+    output = ROOT / f"data/derived/items/{args.round_key}.compare.md"
+    atomic_write(output, markdown(args.round_key))
     print(output.relative_to(ROOT).as_posix())

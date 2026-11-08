@@ -187,7 +187,11 @@ def audit(input_path: Path) -> dict:
         "schema_version": 1,
         "rule_version": RULE_VERSION,
         "round": s4["round"],
-        "scope": "개발 12개교, S4 중1·중2 구간. 판본을 합산하며 원문 항목 수와 구별",
+        "scope": (
+            "정답 10개교, 보존된 전체 문서의 S4 중1·중2 구간. 판본 합산"
+            if s4["round"].endswith("-gold") else
+            "개발 12개교, S4 중1·중2 구간. 판본을 합산하며 원문 항목 수와 구별"
+        ),
         "curriculum_status": "미확정. S7에서 검토",
         "public_eligible": False,
         "known_prefixes": MIDDLE_SUBJECT_PREFIXES,
@@ -457,17 +461,19 @@ def review_row(section: dict) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--input", type=Path, default=ROOT / "data/derived/segments/2026-round-3.json"
-    )
+    parser.add_argument("--round-key", default="2026-round-3")
+    parser.add_argument("--input", type=Path)
     parser.add_argument("--output-dir", type=Path, default=ROOT / "data/derived/subjects")
     args = parser.parse_args()
-    report = audit(args.input)
+    report = audit(args.input or ROOT / f"data/derived/segments/{args.round_key}.json")
     atomic_write(
-        args.output_dir / "2026-round-3.json",
+        args.output_dir / f"{args.round_key}.json",
         json.dumps(report, ensure_ascii=False, indent=2) + "\n",
     )
-    atomic_write(args.output_dir / "2026-round-3.md", markdown(report))
+    body = markdown(report)
+    if args.round_key.endswith("-gold"):
+        body = body.replace("개발 12개교", "정답 10개교")
+    atomic_write(args.output_dir / f"{args.round_key}.md", body)
     print(json.dumps(report["summary"], ensure_ascii=False))
 
 

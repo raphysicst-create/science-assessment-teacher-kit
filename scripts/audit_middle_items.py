@@ -26,10 +26,11 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def audit(input_path: Path) -> dict:
     subjects = json.loads(input_path.read_text(encoding="utf-8"))
-    s4 = json.loads((ROOT / "data/derived/segments/2026-round-3.json").read_text(encoding="utf-8"))
+    round_key = subjects["round"]
+    s4 = json.loads((ROOT / f"data/derived/segments/{round_key}.json").read_text(encoding="utf-8"))
     parents = {s["segment_id"]: s for d in s4["documents"] for s in d["segments"]}
     source_documents = {d["converted_path"]: d for d in s4["documents"]}
-    comparison_path = ROOT / "data/derived/conversion_audit/2026-round-3.json"
+    comparison_path = ROOT / f"data/derived/conversion_audit/{round_key}.json"
     comparison_report = (
         json.loads(comparison_path.read_text(encoding="utf-8"))
         if comparison_path.exists()
@@ -44,7 +45,9 @@ def audit(input_path: Path) -> dict:
     items, documents, excluded, sections = [], [], [], []
     trace_errors = []
     for document in subjects["documents"]:
-        chosen = not (document["school"] == "영통중학교" and "(최종)" not in document["filename"])
+        chosen = round_key != "2026-round-3" or not (
+            document["school"] == "영통중학교" and "(최종)" not in document["filename"]
+        )
         documents.append({**document, "development_selected": chosen})
         if not chosen:
             excluded.append({**document, "reason": "총괄 결정·영통 (최종) 판으로 개발"})
@@ -188,7 +191,11 @@ def audit(input_path: Path) -> dict:
         "schema_version": 1,
         "rule_version": RULE_VERSION,
         "round": subjects["round"],
-        "scope": "개발 12개교 S5 target 중1·중2. 영통 (최종) 판. 원문 정답 대조 전",
+        "scope": (
+            "정답 10개교 전체 보존 문서의 S5 target 중1·중2. S9 공식 측정용"
+            if round_key.endswith("-gold") else
+            "개발 12개교 S5 target 중1·중2. 영통 (최종) 판. 원문 정답 대조 전"
+        ),
         "public_eligible": False,
         "documents": documents,
         "sections": sections,
@@ -525,17 +532,16 @@ def markdown(report: dict) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--input", type=Path, default=ROOT / "data/derived/subjects/2026-round-3.json"
-    )
+    parser.add_argument("--round-key", default="2026-round-3")
+    parser.add_argument("--input", type=Path)
     parser.add_argument("--output-dir", type=Path, default=ROOT / "data/derived/items")
     args = parser.parse_args()
-    report = audit(args.input)
+    report = audit(args.input or ROOT / f"data/derived/subjects/{args.round_key}.json")
     atomic_write(
-        args.output_dir / "2026-round-3.json",
+        args.output_dir / f"{args.round_key}.json",
         json.dumps(report, ensure_ascii=False, indent=2) + "\n",
     )
-    atomic_write(args.output_dir / "2026-round-3.md", markdown(report))
+    atomic_write(args.output_dir / f"{args.round_key}.md", markdown(report))
     print(json.dumps(report["summary"], ensure_ascii=False))
 
 
