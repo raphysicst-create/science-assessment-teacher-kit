@@ -1,6 +1,7 @@
 """Synthetic gold scoring regressions, with no corpus dependency."""
 
 import sys
+from copy import deepcopy
 from pathlib import Path
 
 import pytest
@@ -10,7 +11,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "scripts"))
 from gold_score import (  # noqa: E402
     FIELD_MAP,
     SourceMap,
+    compare_item_metrics,
     confirmed,
+    field_locators,
     field_result,
     independent,
     method_tokens,
@@ -95,11 +98,129 @@ def test_false_value_missing_and_both_absent():
     g["fields"]["max_score"] = envelope({"values": [{"raw": "100", "norm": 100}]})
     assert field_result("max_score", g, p)["result"] == "누락"
     g["fields"]["max_score"]["status"] = "source_absent"
+    assert field_result("max_score", g, p)["result"] == "누락"
+    p["fields"]["score"] = {"status": "source_absent", "value": None}
     assert field_result("max_score", g, p)["result"] == "둘다없음"
     p["fields"]["score"] = {"status": "present", "value": 100}
     assert field_result("max_score", g, p)["result"] == "허위값"
     p["fields"]["score"]["status"] = "unconfirmed"
-    assert field_result("max_score", g, p)["result"] == "둘다없음"
+    assert field_result("max_score", g, p)["result"] == "누락"
+
+
+@pytest.mark.parametrize("expected_status", ["present", "source_absent", "conflict"])
+def test_unconfirmed_is_missing_even_with_stale_value(expected_status):
+    g, p = gold(), pipeline()
+    g["fields"]["task_text"] = envelope(text_value("관찰하기"), expected_status)
+    p["fields"]["task_text"] = envelope(["관찰하기"], "unconfirmed")
+    assert field_result("task_text", g, p)["result"] == "누락"
+
+
+@pytest.mark.parametrize("status", ["present", "ambiguous", "conflict"])
+def test_source_absent_requires_pipeline_source_absent_for_both_absent(status):
+    g, p = gold(), pipeline()
+    g["fields"]["task_text"] = envelope(None, "source_absent")
+    p["fields"]["task_text"] = envelope(None, status)
+    assert field_result("task_text", g, p)["result"] == "누락"
+
+
+@pytest.mark.parametrize(
+    "actual,outcome",
+    [
+        ("<b>관찰</b> 하기", "정답"),
+        (["관찰 하기", "관찰하기"], "정답"),
+        (["관찰하기", "보고서 작성하기"], "부분"),
+        ("관찰하기 및 보고서 작성하기", "부분"),
+        ("관찰", "부분"),
+        (["실험 설계하기"], "오값"),
+        ([], "누락"),
+    ],
+)
+def test_task_text_normalizes_strings_and_lists_and_separates_partial(actual, outcome):
+    g, p = gold(), pipeline()
+    g["fields"]["task_text"] = envelope(text_value("관찰하기"))
+    p["fields"]["task_text"] = envelope(actual)
+    assert field_result("task_text", g, p)["result"] == outcome
+
+
+@pytest.mark.parametrize(
+    "actual,outcome",
+    [
+        (["보고서 작성하기", "관찰하기"], "정답"),
+        (["관찰하기"], "부분"),
+        ("관찰하기 보고서 작성하기", "부분"),
+        (["관찰하기", "다른 활동"], "부분"),
+    ],
+)
+def test_task_text_gold_step_list_comparison(actual, outcome):
+    g, p = gold(), pipeline()
+    g["fields"]["task_text"] = envelope(
+        {"values": [{"raw": "관찰하기"}, {"raw": "보고서 작성하기"}]}
+    )
+    p["fields"]["task_text"] = envelope(actual)
+    assert field_result("task_text", g, p)["result"] == outcome
+
+
+def test_task_text_accepted_alternative_can_be_exact_after_partial():
+    g, p = gold(), pipeline()
+    g["fields"]["task_text"] = envelope(text_value("관찰하기 보고서 작성하기"))
+    g["fields"]["task_text"]["accepted"].append(text_value("관찰하기"))
+    p["fields"]["task_text"] = envelope(["관찰하기"])
+    assert field_result("task_text", g, p)["result"] == "정답"
+
+
+@pytest.mark.parametrize(
+    "actual,outcome",
+    [
+        (
+            [{"element": "실험<br>설계", "score": 40.0},
+             {"element": "실험 수행", "score": 20.0}],
+            "정답",
+        ),
+        (
+            [{"element": "실험 수행", "score": 20},
+             {"element": "실험 설계", "score": 40},
+             {"element": "실험 설계", "score": 40}],
+            "정답",
+        ),
+        (
+            [{"element": "실험 설계", "score": 20},
+             {"element": "실험 수행", "score": 40}],
+            "오값",
+        ),
+        (
+            [{"element": "다른 요소", "score": 40},
+             {"element": "실험 수행", "score": 20}],
+            "오값",
+        ),
+        ([{"element": "실험 설계", "score": 40}], "오값"),
+        ([], "누락"),
+    ],
+)
+def test_sub_scores_compares_element_score_pairs(actual, outcome):
+    g, p = gold(), pipeline()
+    g["fields"]["sub_scores"] = envelope(
+        {"values": [
+            {"name": "실험 설계", "norm": 40, "raw": "(40)"},
+            {"name": "실험 수행", "raw": "20점"},
+        ]}
+    )
+    p["fields"]["sub_scores"] = envelope(actual)
+    p["fields"]["points"] = envelope(999)
+    assert FIELD_MAP["sub_scores"] == "sub_scores"
+    assert field_result("sub_scores", g, p)["result"] == outcome
+
+
+def test_sub_scores_preserves_legacy_gold_value_shape_and_conflict_alternatives():
+    g, p = gold(), pipeline()
+    value = {"values": [{"name": "요소 1", "norm": 0, "raw": "0점"}]}
+    g["fields"]["sub_scores"] = envelope(value, "conflict")
+    g["fields"]["sub_scores"]["accepted"].append(
+        {"values": [{"name": "요소 1", "raw": "2.5점"}]}
+    )
+    p["fields"]["sub_scores"] = envelope([{"element": "요소 1", "score": 2.5}])
+    assert field_result("sub_scores", g, p)["result"] == "정답"
+    p["fields"]["sub_scores"] = envelope(value)
+    assert field_result("sub_scores", g, p)["result"] == "정답"
 
 
 def test_misattribution_counts_field_once_and_respects_group():
@@ -299,6 +420,73 @@ def test_rubric_requires_source_overlap():
     assert field_result("rubric", g, p)["result"] == "오값"
 
 
+@pytest.mark.parametrize(
+    "source", ["evidence", "table_locators", "value_evidence", "value_locator"]
+)
+@pytest.mark.parametrize("line,outcome", [(12, "정답"), (20, "오값")])
+def test_rubric_new_schema_locators_map_to_gold_table(source, line, outcome):
+    g, p = gold(), pipeline()
+    g["fields"]["rubric"] = envelope(
+        {"values": [{"raw": "채점표", "loc": {"doc_id": "doc", "line": 12}}]}
+    )
+    locator = {"start": line - 1, "end": line}
+    field = envelope(["정답과 전사가 다른 수준 문장", "A"])
+    if source == "evidence":
+        field["evidence"] = [{"locator": locator}]
+    elif source == "table_locators":
+        field["table_locators"] = [locator]
+    elif source == "value_evidence":
+        field["value"] = [{"text": "수준 문장", "evidence": [{"locator": locator}]}]
+    else:
+        field["value"] = [{"text": "수준 문장", "locator": locator}]
+    # Header/alternate observation locations must not turn a wrong table into a hit.
+    field["header_locator"] = {"start": 11, "end": 12}
+    field["source_observations"] = [{"locator": {"start": 11, "end": 12}}]
+    p["fields"]["rubric"] = field
+    mapper = SourceMap.__new__(SourceMap)
+    mapper.records = {
+        "source": [{
+            "doc_id": "doc",
+            "start": 0,
+            "end": 30,
+            "pack_offset": 0,
+            "line_starts": list(range(30)),
+        }]
+    }
+    p["field_locations"] = {
+        "rubric": [loc for pos in field_locators(field) for loc in mapper.locate("source", pos)]
+    }
+    assert field_result("rubric", g, p)["result"] == outcome
+
+
+def test_rubric_uses_accepted_locations_but_excludes_reference_only_locations():
+    g, p = gold(), pipeline()
+    g["fields"]["rubric"] = envelope(
+        {"values": [{"raw": "채점표", "loc": {"doc_id": "doc", "line": 10}}]}
+    )
+    g["fields"]["rubric"]["accepted"].append(
+        {"values": [{"raw": "채점표", "loc": {"doc_id": "doc", "line": 12}}]}
+    )
+    g["fields"]["rubric"]["references"] = [{"doc_id": "doc", "line": 20}]
+    p["fields"]["rubric"] = envelope(["수준 문장"])
+    p["field_locations"] = {"rubric": [{"doc_id": "doc", "line": 12}]}
+    assert field_result("rubric", g, p)["result"] == "정답"
+    p["field_locations"]["rubric"] = [{"doc_id": "doc", "line": 20}]
+    assert field_result("rubric", g, p)["result"] == "오값"
+    p["field_locations"]["rubric"] = [{"doc_id": "another", "line": 12}]
+    assert field_result("rubric", g, p)["result"] == "오값"
+
+
+def test_rubric_present_source_location_suffices_without_transcription():
+    g, p = gold(), pipeline()
+    g["fields"]["rubric"] = envelope({"values": [{"loc": {"doc_id": "doc", "line": 12}}]})
+    p["fields"]["rubric"] = envelope(None)
+    p["field_locations"] = {"rubric": [{"doc_id": "doc", "line": 12}]}
+    assert field_result("rubric", g, p)["result"] == "정답"
+    p["fields"]["rubric"]["status"] = "unconfirmed"
+    assert field_result("rubric", g, p)["result"] == "누락"
+
+
 def test_method_checked_only_no_semantic_expansion():
     value = {
         "options": [
@@ -309,6 +497,24 @@ def test_method_checked_only_no_semantic_expansion():
     }
     assert method_tokens(value) == method_tokens(["실험·실습", "관찰", "보고서"])
     assert method_tokens(value) != method_tokens(["실험", "관찰", "보고서"])
+
+
+def test_method_new_schema_selected_list_ignores_unchecked_option_metadata():
+    g, p = gold(), pipeline()
+    g["fields"]["method"] = envelope(
+        {
+            "options": [
+                {"text": "실험·실습", "state": "checked"},
+                {"text": "논술", "state": "unchecked"},
+            ],
+            "plain_text": "관찰/보고서",
+        }
+    )
+    p["fields"]["method"] = envelope(["실험·실습", "보고서", "관찰", "보고서"])
+    p["fields"]["method"]["options"] = [{"text": "논술", "state": "unchecked"}]
+    assert field_result("method", g, p)["result"] == "정답"
+    p["fields"]["method"]["value"].append("논술")
+    assert field_result("method", g, p)["result"] == "오값"
 
 
 @pytest.mark.parametrize(
@@ -332,6 +538,43 @@ def test_false_free_semester_is_present():
     g["fields"]["free_semester"] = envelope(False)
     p["fields"]["free_semester"] = {"value": False, "status": "present"}
     assert field_result("free_semester", g, p)["result"] == "정답"
+
+
+@pytest.mark.parametrize("value", [0, 1, "false", "true", None, []])
+def test_free_semester_requires_bool(value):
+    g, p = gold(), pipeline()
+    g["fields"]["free_semester"] = envelope(False)
+    p["fields"]["free_semester"] = envelope(value)
+    assert field_result("free_semester", g, p)["result"] == "누락"
+
+
+def test_item_metric_comparison_ignores_field_changes_and_detects_pair_changes():
+    before = {
+        "stages": {"confirmed": {
+            "recall": wilson(1, 2),
+            "precision": wilson(1, 1),
+            "role_counts": {"performance": 1},
+            "missing_gold_keys": ["g2"],
+            "pairs": [{
+                "gold_key": "g1",
+                "pipeline_key": "p1",
+                "basis": {"task_no_used": False},
+                "fields": {"task_text": "오값"},
+            }],
+        }},
+        "loss_map": {"confirmed": 1},
+        "raw_independent_diagnostic": {"count": 1},
+        "excluded_summary_aliases": [],
+    }
+    after = deepcopy(before)
+    after["stages"]["confirmed"]["pairs"][0]["fields"]["task_text"] = "부분"
+    assert compare_item_metrics(before, after) == {"equal": True, "differences": []}
+    after["stages"]["confirmed"]["pairs"][0]["pipeline_key"] = "p2"
+    assert compare_item_metrics(before, after) == {
+        "equal": False, "differences": ["stages.confirmed.pairs"],
+    }
+    after["stages"]["confirmed"]["recall"] = wilson(2, 2)
+    assert "stages.confirmed.recall" in compare_item_metrics(before, after)["differences"]
 
 
 def test_wilson_zero_and_known_interval():

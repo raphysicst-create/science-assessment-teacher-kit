@@ -25,12 +25,37 @@ FIELD_MAP = {
     "method": "method",
     "standards": "standards",
     "max_score": "score",
-    "sub_scores": "points",
+    "sub_scores": "sub_scores",
     "ratio": "weight",
     "rubric": "rubric",
     "free_semester": "free_semester",
 }
-OUTCOMES = ("정답", "누락", "오값", "허위값", "둘다없음")
+OUTCOMES = ("정답", "부분", "누락", "오값", "허위값", "둘다없음")
+FIELD_RULES = {
+    "title": "대표 제목·별칭·승인된 제목 중 하나와 정규화 일치",
+    "task_text": (
+        "문자열·문자열 목록·정답 raw 목록을 정규화한 집합의 완전 일치. "
+        "완전 일치 없이 공통 원소 또는 원소 간 문자열 포함 관계가 있으면 부분. "
+        "순서·중복은 무시하고 HTML·공백·문장부호를 제거하며 의미 유사도는 사용하지 않음"
+    ),
+    "period": "timing과 정답 raw 값의 정규화 집합 일치",
+    "method": (
+        "선택값 목록과 정답 checked/selected·plain_text·other_text를 "
+        "쉼표·슬래시·세미콜론·줄바꿈으로 나눈 정규화 집합 일치. 동의어 확장 없음"
+    ),
+    "standards": "성취기준 코드 집합 일치. equal/subset/excess/different 별도 집계",
+    "max_score": "score와 정답 norm 또는 raw에서 읽은 숫자 집합 일치",
+    "sub_scores": (
+        "sub_scores의 (element, score) 목록과 정답 (name, norm/raw) 목록을 "
+        "(정규화 요소명, 숫자) 집합으로 비교. 순서·중복·근거 메타데이터는 비교에서 제외"
+    ),
+    "ratio": "weight와 정답 norm 또는 raw에서 읽은 숫자 집합 일치",
+    "rubric": (
+        "필드 evidence·값 내부 evidence/locator·table_locators를 pack 줄로 변환해 "
+        "승인된 정답 채점표 위치와 하나 이상 겹치면 정답. 수준 문장 일치는 요구하지 않음"
+    ),
+    "free_semester": "명시된 bool의 동일성. false도 값이 있는 것으로 처리하고 추론하지 않음",
+}
 UNMATCHED_CATEGORIES = (
     "다른 교과",
     "중3",
@@ -99,6 +124,15 @@ def content(name: str, value):
         return value if isinstance(value, bool) else None
     if name == "method":
         return method_tokens(value)
+    if name == "task_text":
+        return frozenset(norm(s) for s in raw_values(value) if norm(s))
+    if name == "sub_scores" and isinstance(value, (dict, list)):
+        values = value.get("values", [value]) if isinstance(value, dict) else value
+        return frozenset(
+            (norm(v.get("element", v.get("name", ""))), n)
+            for v in values
+            for n in (content("max_score", v["score"]) if "score" in v else numeric_values(v))
+        )
     if name == "standards":
         if isinstance(value, list) and all(isinstance(v, dict) for v in value):
             return frozenset(norm(c) for v in value for c in v.get("codes", []))
@@ -110,10 +144,6 @@ def content(name: str, value):
             return frozenset([float(value)])
         if isinstance(value, dict):
             values = value.get("values", [value])
-            if name == "sub_scores":
-                return frozenset(
-                    (norm(v.get("name", "")), n) for v in values for n in numeric_values(v)
-                )
             return frozenset(n for v in values for n in numeric_values(v))
         numbers = re.findall(r"[-+]?\d+(?:\.\d+)?", str(value).replace(",", ""))
         return frozenset(float(n) for n in numbers)
@@ -126,6 +156,22 @@ def pipeline_field(item: dict, name: str) -> dict:
     return item.get("fields", {}).get(FIELD_MAP[name], {"status": "unconfirmed", "value": None})
 
 
+def field_locators(field: dict) -> list[dict]:
+    """Read field-owned source positions, excluding headers and alternate observations."""
+    nodes = [field]
+    value = field.get("value")
+    if isinstance(value, dict):
+        nodes.append(value)
+    elif isinstance(value, list):
+        nodes.extend(v for v in value if isinstance(v, dict))
+    return [
+        observation["locator"]
+        for node in nodes
+        for observation in [node, *node.get("evidence", [])]
+        if "locator" in observation
+    ] + field.get("table_locators", [])
+
+
 def field_result(name: str, gold: dict, item: dict) -> dict:
     expected = gold["fields"].get(name, {"status": "source_absent", "value": None})
     actual = pipeline_field(item, name)
@@ -133,6 +179,8 @@ def field_result(name: str, gold: dict, item: dict) -> dict:
     emitted = actual.get("status") == "present" and actual.get("value") not in (None, "", [])
     if name == "free_semester" and actual.get("status") == "present":
         emitted = isinstance(actual.get("value"), bool)
+    if name == "rubric" and actual.get("status") == "present":
+        emitted = emitted or bool(item.get("field_locations", {}).get(name))
     result = {
         "gold_status": expected.get("status"),
         "pipeline_status": actual.get("status"),
@@ -143,18 +191,28 @@ def field_result(name: str, gold: dict, item: dict) -> dict:
     }
     if conflict and actual.get("status") == "conflict":
         return {**result, "result": "정답", "basis": "conflict 보존"}
+    if actual.get("status") == "unconfirmed":
+        return {**result, "result": "누락"}
     if expected.get("status") == "source_absent":
-        return {**result, "result": "허위값" if emitted else "둘다없음"}
+        if emitted:
+            return {**result, "result": "허위값"}
+        return {
+            **result,
+            "result": "둘다없음" if actual.get("status") == "source_absent" else "누락",
+        }
     if not emitted:
         return {**result, "result": "누락"}
-    observed = content(name, actual["value"])
+    observed = content(name, actual.get("value"))
     options = [content(name, v) for v in alternatives(expected)]
     if name == "title":
         correct = bool(observed & gold_titles(gold, task=False))
     elif name == "rubric":
         # Gold rubric is a source range, not a verbatim transcription requirement.
         correct = bool(
-            overlap(locations(expected.get("value")), item.get("field_locations", {}).get(name, []))
+            overlap(
+                [loc for value in alternatives(expected) for loc in locations(value)],
+                item.get("field_locations", {}).get(name, []),
+            )
         )
     else:
         correct = observed in options
@@ -179,6 +237,13 @@ def field_result(name: str, gold: dict, item: dict) -> dict:
             else ("subset" if observed < union else "excess" if observed > union else "different")
         )
         result["standards_relation"] = relation
+    if name == "task_text" and not correct and any(
+        left in right or right in left
+        for option in options
+        for left in observed
+        for right in option
+    ):
+        return {**result, "result": "부분", "basis": "정규화 원소 일치·문자열 부분 포함"}
     return {**result, "result": "정답" if correct else "오값"}
 
 
@@ -661,8 +726,8 @@ def score(
             row["field_locations"] = {
                 n: [
                     loc
-                    for obs in pipeline_field(row, n).get("evidence", [])
-                    for loc in mapper.locate(row["converted_path"], obs["locator"])
+                    for locator in field_locators(pipeline_field(row, n))
+                    for loc in mapper.locate(row["converted_path"], locator)
                 ]
                 for n in names
             }
@@ -941,11 +1006,12 @@ def score(
         if case_by_key[row["gold_key"]]["cause"] == "짝짓기 실패"
     ]
     return {
-        "version": "gold-v1.1" if use_task_no else "gold-v1",
+        "version": "gold-v1.2",
         "gold_sha256": meta["sha256"],
         "rounds": rounds,
         "scored_fields": names,
         "field_map": FIELD_MAP,
+        "field_rules": FIELD_RULES,
         "acceptance_thresholds": {
             "recall_min": 0.95,
             "precision_min": 0.99,
@@ -1026,10 +1092,30 @@ def location_text(row: dict) -> str:
     return "; ".join(parts) or "위치 없음"
 
 
+def compare_item_metrics(before: dict, after: dict) -> dict:
+    """Compare item metrics and pairing evidence independently of field scoring."""
+    differences = []
+    for stage, result in after["stages"].items():
+        previous = before["stages"][stage]
+        for key in ("recall", "precision", "role_counts", "missing_gold_keys"):
+            if previous[key] != result[key]:
+                differences.append(f"stages.{stage}.{key}")
+        old_pairs, new_pairs = (
+            [(p["gold_key"], p["pipeline_key"], p["basis"]) for p in source["pairs"]]
+            for source in (previous, result)
+        )
+        if old_pairs != new_pairs:
+            differences.append(f"stages.{stage}.pairs")
+    for key in ("loss_map", "raw_independent_diagnostic", "excluded_summary_aliases"):
+        if before[key] != after[key]:
+            differences.append(key)
+    return {"equal": not differences, "differences": differences}
+
+
 def markdown(report: dict) -> str:
     stages = report["stages"]
     lines = [
-        "# S9 ⑧ 채점기 v1.1 · 정답 v1",
+        "# S9 ⑧ 채점기 v1.2 · 정답 v1",
         "",
         "두 공시 회차·10개교·정답 83항목. 추출 규칙·패턴·임계값 변경 0. 오프라인 실행.",
         "",
@@ -1046,7 +1132,7 @@ def markdown(report: dict) -> str:
         "잇는다. 기존 gold_diff.match_items를 재사용했다. "
         "각 단계에서 따로 짝지으므로 같은 정답에 대응하는 요약·상세 행은 단계별로 달라질 수 있다.",
         "",
-        "v1.1은 기존 위치·제목 짝을 먼저 보존한 뒤 미짝 항목만 task_no로 보완한다. "
+        "v1.1에서 도입한 규칙대로 위치·제목 짝을 먼저 보존한 뒤 미짝 항목만 task_no로 보완한다. "
         "정답 task_no 값과 파이프라인 task_no 또는 번호뿐인 제목(수행평가 1·1·① 등)을 "
         "NFKC·공백·문장부호 정규화해 번호를 얻는다. 같은 학교·학년·학기의 해당 단계 "
         "입력 전체에서 양방향 유일할 때만 잇고, 여러 번호·충돌·남은 동률은 보류한다. "
@@ -1062,30 +1148,35 @@ def markdown(report: dict) -> str:
         "S4 실제 텍스트와 pack kordoc 본문이 완전 일치할 때만 문자 위치를 줄로 바꾼다. "
         "pymupdf 사본 위치만 있는 정답은 제목 짝짓기로 복구할 수 있다.",
         "",
-        "제목은 대표 제목·aliases·승인된 제목 중 하나와 정규화 일치하면 정답이다. "
-        "HTML·공백·문장부호를 제거하고 소문자화한다. 방법은 checked/selected 선택지만 "
-        "포함하고 plain_text·other_text를 합쳐 쉼표·슬래시·줄바꿈으로 나눈 집합을 비교한다. "
-        "동의어 확장은 하지 않는다. 성취기준은 코드 집합, 숫자는 norm 값, 세부배점은 "
-        "요소명·숫자 집합으로 비교한다. 채점기준은 추출 근거가 정답 전용 채점표 위치와 "
-        "겹쳐야 한다. free_semester는 명시된 bool 필드만 채점하며 추론하지 않는다.",
-        "",
         "conflict는 원문 보존 값 하나 이상 또는 파이프라인 conflict 표시를 인정하고 "
-        "별도 집계한다. 미확정 필드는 누락으로, source_absent 정답에 확정 값을 내면 "
-        "허위값으로 센다. task_no는 채점에서 제외한다.",
+        "별도 집계한다. 파이프라인 unconfirmed는 정답의 상태와 무관하게 누락이다. "
+        "정답과 파이프라인이 모두 source_absent이면 둘다없음이며, source_absent 정답에 "
+        "확정 값을 내면 허위값으로 센다. task_no는 채점에서 제외한다. "
+        "부분은 정답 수에 합산하지 않는다.",
         "",
-        "## v1과 v1.1 성적 비교",
+        "## 필드별 비교 규칙",
         "",
-        "수치 괄호는 Wilson 95% 구간이다.",
+        "| 정답 필드 | S6 필드 | 비교 규칙 |",
+        "|---|---|---|",
+        *[f"| {n} | {FIELD_MAP[n]} | {cell(rule)} |" for n, rule in FIELD_RULES.items()],
         "",
-        "동일 입력으로 v1 기존 규칙과 v1.1 번호 보완 규칙을 각각 재계산한다. "
-        "기존 gold-v1 산출물은 덮어쓰지 않는다. 재현율 기준 ≥95%, 정밀도 기준 ≥99%.",
+        "## v1.1과 v1.2 성적 비교",
         "",
-        "| 단계 | v1 재현율 | v1.1 재현율 | v1 정밀도 | v1.1 정밀도 | 번호 직접 사용 |",
+        "수치 괄호는 Wilson 95% 구간이다. v1.1은 보존된 JSON의 실제 측정값이다. "
+        "재현율 기준 ≥95%, 정밀도 기준 ≥99%.",
+        "",
+        f"기준 파일 `{report['baseline']['path']}` · SHA-256 `{report['baseline']['sha256']}`.",
+        "",
+        "항목 지표·짝·짝짓기 근거·손실 지도 대조 결과 "
+        + ("동일." if report["item_metric_comparison"]["equal"] else
+           "차이 있음. " + cell(report["item_metric_comparison"]["differences"])),
+        "",
+        "| 단계 | v1.1 재현율 | v1.2 재현율 | v1.1 정밀도 | v1.2 정밀도 | 번호 직접 사용 |",
         "|---|---|---|---|---|---:|",
     ]
     for key, label in (("confirmed", "확정"), ("all_candidates", "전체 후보")):
         s = stages[key]
-        before = report["comparison"]["v1"]["stages"][key]
+        before = report["comparison"]["v1.1"]["stages"][key]
         lines.append(
             f"| {label} | {metric(before['recall'])} | {metric(s['recall'])} | "
             f"{metric(before['precision'])} | {metric(s['precision'])} | "
@@ -1160,7 +1251,7 @@ def markdown(report: dict) -> str:
         "S5의 합친 텍스트에서 사용되는 기존 경로에서 관찰했다. 실제 S6 근거가 가리키는 "
         "본문으로 채점했으며 개별 충돌은 JSON에 보존했다.",
         "",
-        "## 짝 없는 확정 파이프라인 항목 전부 · v1.1",
+        "## 짝 없는 확정 파이프라인 항목 전부 · v1.2",
         "",
         f"{len(report['unmatched_confirmed_pipeline'])}개. 역할 제외·중복 별칭을 포함해 원본 "
         "파이프라인의 모든 bounded/public_eligible 행을 검사한다. 공식 정밀도 분모 포함 "
@@ -1181,7 +1272,7 @@ def markdown(report: dict) -> str:
         lines.append("| - | - | - | - | - | - | 없음 | - | - |")
     lines += [
         "",
-        "## 남은 짝짓기 실패 정답 전부 · v1.1 전체 후보 기준",
+        "## 남은 짝짓기 실패 정답 전부 · v1.2 전체 후보 기준",
         "",
         f"{len(report['remaining_pairing_failures'])}개. 손실 지도에서 짝짓기 실패로 남은 "
         "정답을 모두 싣는다. 후보 목록은 같은 학교·학년·학기 원본 행 전체이며 "
@@ -1213,8 +1304,9 @@ def markdown(report: dict) -> str:
             "",
             f"## {label} 필드",
             "",
-            "| 필드 | 정답 | 누락 | 오값 | 허위값 | 둘다없음 | conflict 정답/대상 | 오귀속 |",
-            "|---|---:|---:|---:|---:|---:|---:|---:|",
+            "| 필드 | 정답 | 부분 | 누락 | 오값 | 허위값 | 둘다없음 | "
+            "conflict 정답/대상 | 오귀속 |",
+            "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
         ]
         for n, counts in s["fields"].items():
             conflict = s["conflict_fields"][n]
@@ -1225,6 +1317,22 @@ def markdown(report: dict) -> str:
                 + " | ".join(str(counts[o]) for o in OUTCOMES)
                 + f" | {conflict.get('정답', 0)}/{sum(conflict.values())} | "
                 f"{s['misattributions_by_field'].get(n, 0)} |"
+            )
+        lines += [
+            "",
+            f"### {label} 필드 전후 비교",
+            "",
+            "각 칸은 v1.1 → v1.2 건수다. v1.1에 없던 부분은 0으로 표시한다.",
+            "",
+            "| 필드 | 정답 | 부분 | 누락 | 오값 | 허위값 | 둘다없음 |",
+            "|---|---:|---:|---:|---:|---:|---:|",
+        ]
+        for n, counts in s["fields"].items():
+            before = report["comparison"]["v1.1"]["stages"][key]["fields"][n]
+            lines.append(
+                f"| {n} | "
+                + " | ".join(f"{before.get(o, 0)} → {counts[o]}" for o in OUTCOMES)
+                + " |"
             )
         lines += [
             "",
@@ -1351,10 +1459,24 @@ def main() -> None:
     parser.add_argument("--gold", type=Path, default=ROOT / "data/gold/gold_v1.jsonl")
     parser.add_argument("--meta", type=Path, default=ROOT / "data/gold/gold_v1.meta.json")
     parser.add_argument("--round-keys", nargs="+", default=list(ROUNDS))
-    parser.add_argument("--output-dir", type=Path, default=ROOT / "data/derived/gold_score")
+    parser.add_argument("--output-dir", type=Path, default=ROOT / "data/derived/gold_score/v2")
+    parser.add_argument(
+        "--baseline", type=Path,
+        default=ROOT / "data/derived/gold_score/v2/gold-v1.1.json",
+        help="Preserved v1.1 JSON used for comparison",
+    )
     args = parser.parse_args()
-    baseline_report = score(ROOT, args.gold, args.meta, args.round_keys, use_task_no=False)
+    baseline_path = args.baseline.resolve()
+    baseline_report = read(baseline_path)
     report = score(ROOT, args.gold, args.meta, args.round_keys)
+    report["baseline"] = {
+        "path": (
+            baseline_path.relative_to(ROOT).as_posix()
+            if baseline_path.is_relative_to(ROOT) else baseline_path.as_posix()
+        ),
+        "sha256": hashlib.sha256(baseline_path.read_bytes()).hexdigest(),
+    }
+    report["item_metric_comparison"] = compare_item_metrics(baseline_report, report)
     report["comparison"] = {
         version: {
             "stages": {
@@ -1368,7 +1490,7 @@ def main() -> None:
             },
             "loss_map": source["loss_map"],
         }
-        for version, source in (("v1", baseline_report), ("v1.1", report))
+        for version, source in (("v1.1", baseline_report), ("v1.2", report))
     }
     args.output_dir.mkdir(parents=True, exist_ok=True)
     baseline = args.output_dir / "development-before.json"
@@ -1381,12 +1503,12 @@ def main() -> None:
                 {"path": path, "before": before, "after": after, "equal": before == after}
             )
         report["development_hashes"] = hashes
-    (args.output_dir / "gold-v1.1.json").write_text(
+    (args.output_dir / "gold-v1.2.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
-    (args.output_dir / "gold-v1.1.md").write_text(markdown(report), encoding="utf-8")
+    (args.output_dir / "gold-v1.2.md").write_text(markdown(report), encoding="utf-8")
     columns = list(dict.fromkeys(k for row in report["cases"] for k in row))
-    csv_path = args.output_dir / "gold-v1.1.cases.csv"
+    csv_path = args.output_dir / "gold-v1.2.cases.csv"
     with csv_path.open("w", encoding="utf-8-sig", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=columns)
         writer.writeheader()
