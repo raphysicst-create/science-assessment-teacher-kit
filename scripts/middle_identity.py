@@ -69,8 +69,9 @@ def independent_matches(a, b):
         matched.append("standards")
     if af["timing"]["value"] and compact(af["timing"]["value"]) == compact(bf["timing"]["value"]):
         matched.append("timing")
-    # Points/weight are not additional independent votes for the same score.
-    if af["score"]["value"] not in ("", None) and af["score"]["value"] == bf["score"]["value"]:
+    # Maximum and percentage constitute one allocation vote.
+    if any(af[name]["value"] not in ("", None)
+           and af[name]["value"] == bf[name]["value"] for name in ("score", "weight")):
         matched.append("score")
     return matched, sorted(codes)
 
@@ -116,7 +117,8 @@ def merge_pair(summary, detail, proof):
     ]
     if any("평가유형" in h for h in method_headers) and method_headers[0] != method_headers[1]:
         comparable.discard("method")  # Type and method are separate source concepts.
-    if summary.get("title_role") == detail.get("title_role"):
+    if (titles(summary) & titles(detail) or proof["basis"] == "unique_task_number"
+            and summary.get("title_role") == detail.get("title_role")):
         comparable.add("title")
     for name, target in detail["fields"].items():
         source = summary["fields"][name]
@@ -137,6 +139,15 @@ def merge_pair(summary, detail, proof):
         present_a, present_b = av not in ("", [], None), bv not in ("", [], None)
         if name not in comparable:
             target["comparison_status"] = "different_source_scope"
+            if name == "title":
+                if (summary.get("title_role") == "task"
+                        and source["value"] and source["status"] == "present"
+                        and detail.get("title_role") != "task"):
+                    target.update(value=copy.deepcopy(source["value"]),
+                                  status=source["status"], value_source="summary",
+                                  value_source_item_id=summary["item_id"])
+                    detail["title_role"] = summary["title_role"]
+                target["alternative_source_values"] = [s["value"] for s in snapshots]
             continue
         if present_a and present_b and not equal_value(name, av, bv):
             for f in (source, target):
@@ -209,19 +220,34 @@ def reconcile_items(items):
             # Column/detail order is one structural vote only when a complete
             # one-to-one sequence exists in this exact source/grade/term scope.
             local_summaries = sorted(
-                [i for i in local if i.get("table_role") == "summary"],
+                [i for i in local if i.get("table_role") == "summary"
+                 and i["layout_position"]["table"] == summary["layout_position"]["table"]],
                 key=lambda i: (i["layout_position"]["table"],
                                i["layout_position"].get("col") or 0),
             )
+            next_summary = min((i["locator"]["start"] for i in local
+                                if i.get("table_role") == "summary"
+                                and i["layout_position"]["table"]
+                                > summary["layout_position"]["table"]), default=float("inf"))
             local_details = sorted(
-                [i for i in local if i["layout"] == "form"],
+                [i for i in local if i["layout"] == "form"
+                 and summary["locator"]["start"] < i["locator"]["start"] < next_summary
+                 and not any("학년 귀속 충돌" in r or "다른 프로그램" in r
+                             for r in i["review_reasons"])],
                 key=lambda i: i["locator"]["start"],
             )
             ordered = (len(local_summaries) == len(local_details)
                        and len(local_details) > 1
+                       and detail in local_details
                        and local_summaries.index(summary) == local_details.index(detail))
             if ordered:
                 matched.append("column_detail_order")
+            containment = any(
+                min(len(a), len(b)) >= 4 and a != b and (a in b or b in a)
+                for a in titles(summary) for b in titles(detail)
+            )
+            if containment:
+                matched.append("title_containment")
             # Generic/competency area labels are comparison evidence only when
             # each occurs once in a complete ordered sequence, with another vote.
             same_title |= bool(ordered and any(
@@ -229,7 +255,10 @@ def reconcile_items(items):
                 and sum(k in area_titles(i) for i in local_details) == 1
                 for k in area_overlap
             ))
-            if not unique_number and not (same_title and len(matched) >= 2):
+            structural_pair = ordered and "standards" in matched and len(matched) >= 2
+            if not unique_number and not (
+                len(matched) >= 2 and (same_title or containment or structural_pair)
+            ):
                 if same_title:
                     summary["extraction_status"] = "review"
                     reason = "요약표·상세표 항목 동일성 미확정"

@@ -10,6 +10,7 @@ from pathlib import Path
 
 from audit_middle_subjects import atomic_write, escape, location
 from middle_identity import reconcile_items
+from middle_item_editions import edition_history, select_editions
 from middle_items import (
     FIELDS,
     ROLE_LABELS,
@@ -17,6 +18,7 @@ from middle_items import (
     extract_middle_items,
     field_state_counts,
     ownership_errors,
+    source_tables,
     visible,
 )
 from middle_pdf_cells import verified_title_splits
@@ -46,20 +48,15 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
     matched_comparison_documents = 0
     items, documents, excluded, sections = [], [], [], []
     trace_errors = []
-    for document in subjects["documents"]:
+    edition_documents = select_editions([
+        {**d, "edition": source_documents[d["converted_path"]]["edition"]}
+        for d in subjects["documents"]
+        if schools is None or str(d["school_code"]) in schools
+    ])
+    for document in edition_documents:
         if schools is not None and str(document["school_code"]) not in schools:
             continue
-        # Preserve the original development edition choice using edition metadata,
-        # rather than an institution-specific condition. Other rounds keep all.
-        has_final = any(
-            d["school_code"] == document["school_code"] and "(최종)" in d["filename"]
-            for d in subjects["documents"]
-        )
-        chosen = round_key != "2026-round-3" or not has_final or "(최종)" in document["filename"]
-        documents.append({**document, "development_selected": chosen})
-        if not chosen:
-            excluded.append({**document, "reason": "기존 개발 회차의 (최종) 판 선택 유지"})
-            continue
+        documents.append(document)
         conversion = json.loads((ROOT / document["converted_path"]).read_text(encoding="utf-8"))
         source_document = source_documents[document["converted_path"]]
         conversion["sha256"] = source_document["sha256"]
@@ -68,6 +65,12 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
             conversion["method_check_comparison"] = comparison
             matched_comparison_documents += 1
         text = conversion["text"]
+        from middle_item_scope import structural_context
+
+        conversion["item_source_tables"] = source_tables(text)
+        conversion["item_structure_context"] = structural_context(
+            text, conversion["item_source_tables"],
+        )
         if document.get("physical_path"):
             from middle_physical import RULE_VERSION as PHYSICAL_RULE_VERSION
 
@@ -157,6 +160,7 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
                 for i in found
             )
     reconcile_items(items)
+    items, history = edition_history(documents, items)
     errors = ownership_errors(items)
     # Cross-section checks also guard repeated source cells in S4 table fragments.
     conflict_ids = {key for error in errors for key in error["item_ids"]}
@@ -202,13 +206,14 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
         "scope": (
             "정답 10개교 전체 보존 문서의 S5 target 중1·중2. S9 공식 측정용"
             if round_key.endswith("-gold") else
-            "개발 명단의 S5 target 중1·중2. 기존 회차 최종 판 선택 유지. 원문 정답 대조 전"
+            "개발 명단의 S5 target 중1·중2. 일반 판본 대표 선택·이력 보존. 원문 대조 전"
         ),
         "public_eligible": False,
         "documents": documents,
         "sections": sections,
         "items": items,
         "excluded": excluded,
+        "edition_history": history,
         "ownership_errors": errors,
         "source_trace_errors": trace_errors,
         "school_grades": school_grades,

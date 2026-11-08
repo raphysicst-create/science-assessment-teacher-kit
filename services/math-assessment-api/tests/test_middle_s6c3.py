@@ -226,7 +226,9 @@ def test_identity_and_field_comparison_are_separate_and_never_union(mutation):
     elif mutation == "summary_only":
         d["fields"]["weight"].update(value="", status="unconfirmed")
     reconcile_items(items)
-    linked = mutation in {"equal", "weight", "codes", "summary_only"}
+    # S6d-2c permits an explicit percentage as the allocation vote when the
+    # maximum is absent. The unchanged code set supplies the independent vote.
+    linked = mutation in {"equal", "weight", "codes", "summary_only", "one_vote"}
     assert bool(d.get("identity_relation")) == linked
     if linked:
         assert s["candidate_role"] == "summary_duplicate"

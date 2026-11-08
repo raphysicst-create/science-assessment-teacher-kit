@@ -37,7 +37,7 @@ else:
     from middle_segments import digest_id, text_locator, visible
     from middle_subjects import classify_subject, table_spans
 
-RULE_VERSION = "middle-items-v8"
+RULE_VERSION = "middle-items-v9"
 IDENTITY_VERSION = "middle-items-v2"  # Field-only changes retain source identities.
 FIELDS = (
     "title",
@@ -178,6 +178,11 @@ ROLE_LABELS = {
 
 def label_role(text: str) -> str | None:
     key = re.sub(r"\s+", "", text)
+    key = re.sub(r"^[➊-➓❶-❿①-⑳]+", "", key)
+    if key in {"영역(단원)", "평가영역(관련단원)"}:
+        return "unit"
+    if key == "평가시기(횟수)":
+        return "timing"
     if key in {"영역만점(반영비율)", "만점(반영비율)", "영역만점(학기말반영비율)"}:
         return "score_weight"
     if "반영비율" in key and re.search(r"논술|서술", key):
@@ -201,7 +206,7 @@ def title_gate(value: str) -> dict:
         or BOX_RE.search(value)
         or re.match(r"^(?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+|[IVX]+)\s*[.．]", value)
         or re.fullmatch(r"과학적\s*(?:사고력|탐구\s*능력|문제\s*해결력|의사소통\s*능력)", value)
-        or method_only(value)
+        or method_only(value) and not AREA_TITLE_RE.fullmatch(value)
         or re.fullmatch(r"[가-힣]{2,}에", value)
         or re.fullmatch(r"\d{1,2}월(?:\s*\d주)?(?:\s*[~∼～-]\s*\d{1,2}월(?:\s*\d주)?)?", value)
     )
@@ -243,6 +248,7 @@ def source_tables(text: str) -> list[dict]:
     for number, span in enumerate(table_spans(text)):
         raw = text[span["start"] : span["end"]]
         rows, cells, occupied = [], [], {}
+        empty_overlaps = []
         verified = (
             span["format"] != "html"
             or len(re.findall(r"<table\b", raw, re.I)) == 1
@@ -290,7 +296,15 @@ def source_tables(text: str) -> list[dict]:
                 for r in range(row_index, row_index + rowspan):
                     for c in range(column, column + colspan):
                         if (r, c) in occupied:
-                            verified = False
+                            previous = occupied[r, c]
+                            if previous["text"]:
+                                verified = False
+                            else:
+                                empty_overlaps.append({
+                                    "row": r, "col": c,
+                                    "previous_start": previous["start"], "start": cell["start"],
+                                    "basis": "empty_span_has_no_field_value",
+                                })
                         occupied[r, c] = cell
                 column += colspan
             rows.append(row_cells)
@@ -302,6 +316,7 @@ def source_tables(text: str) -> list[dict]:
                 "cells": cells,
                 "grid": occupied,
                 "structure_verified": verified,
+                "empty_span_overlaps": empty_overlaps,
             }
         )
     return tables
@@ -533,6 +548,7 @@ def new_structure(table: dict, cells: list[dict], claims: dict, layout: str) -> 
         "links": [],
         "review_reasons": [],
         "shared_fields": [],
+        "empty_span_overlaps": table.get("empty_span_overlaps", []),
     }
 
 
@@ -652,7 +668,8 @@ def preceding_task(table: dict, tables: list[dict], text: str, section: dict) ->
         previous = lines[-2]
         other = re.fullmatch(r"[\s#*\-]*(?:[가-하]|\d+)\s*[.)]\s*(.+)", previous[1])
         if (other and title_gate(visible(other[1]))["accepted"]
-                and not re.search(r"학년\s*$|계획\s*$|세부기준\s*$", previous[1])):
+                and not re.search(r"학년\s*$|계획\s*$|세부\s*기준\s*$"
+                                  r"|수행평가.*(?:세부|기준|영역별)", previous[1])):
             return None  # Multiple task headings require physical correspondence.
     match = re.fullmatch(
         r"[\s#*\-]*(?:[가-하]|\d+)\s*[.)]\s*(?:\(\s*(.+?)\s*\)"
@@ -779,6 +796,15 @@ def form_structures(table: dict) -> list[dict]:
                 and not label_role(c["text"])
             )
         structure = new_structure(table, cells, claims, "form")
+        previous = [c for c in table["cells"] if c["row"] == start - 1]
+        if len(previous) == 1:
+            cell = previous[0]
+            heading = re.search(r"(?:^|<br\s*/?>)\s*[가-하]\s*[.)]\s*(.+?)\s*$",
+                                cell["raw"], re.I | re.S)
+            if heading and title_gate(visible(heading[1]))["accepted"]:
+                part = cell_part(cell, *heading.span(1))
+                claims["task"].append((part, None))
+                cells.insert(0, cell)
         for header in cells:
             if re.fullmatch(r"평가과제(?:\s*\(배점\))?", re.sub(r"\s+", "", header["text"])):
                 below = [
@@ -794,7 +820,8 @@ def form_structures(table: dict) -> list[dict]:
                     if amount:
                         claims["score"].append((cell_part(below[0], *amount.span(1)), header))
         for role in TITLE_ROLES:
-            titles = {c["text"] for c, _ in claims.get(role, []) if c["text"]}
+            titles = {c["text"] for c, _ in claims.get(role, [])
+                      if title_gate(c["text"])["accepted"]}
             if len(titles) > 1:
                 structure["review_reasons"].append("동일 제목 라벨 복수 값·항목 경계 미확정")
                 break
@@ -849,7 +876,8 @@ def row_structures(table: dict) -> list[dict]:
 def column_structures(table: dict, section: dict) -> list[dict]:
     """The explicit performance group licenses leaf columns, never exam columns."""
     groups = [c for c in table["cells"] if re.fullmatch(
-        r"(?:수행평가(?:\((?:\d+(?:\.\d+)?[%％]|과정중심평가)\))?|과정중심평가)",
+        r"(?:수행평가(?:\((?:\d+(?:\.\d+)?[%％]|과정중심평가)\))?"
+        r"|과정중심평가(?:\(\d+(?:\.\d+)?[%％]\))?)",
         re.sub(r"\s+", "", c["text"]),
     )]
     groups = [c for c in groups if not any(
@@ -888,6 +916,10 @@ def column_structures(table: dict, section: dict) -> list[dict]:
                 labeled = [h for h in left if label_role(h["text"])]
                 header = labeled[-1] if labeled else None
                 role = label_role(header["text"]) if header else None
+                if (role == "method" and title_gate(cell["text"])["accepted"]
+                        and not method_literal(cell["text"])
+                        and title_content_role(cell["text"], "assessment_area") == "task"):
+                    role = "task"
                 if role == "weight" and any(
                     re.fullmatch(r"서[·ㆍ･・]?논술형?|논술형", re.sub(r"\s+", "", h["text"]))
                     for h in left
@@ -1117,6 +1149,16 @@ def continuation_claims(owner: dict, table: dict) -> None:
 def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     claims = structure["claims"]
     sub_scores = enrich_claims(structure)
+    # A single, explicitly spanned activity under the task's element header
+    # names the task. Ordinary rubric criteria and multiple elements do not.
+    activities = {c["start"]: (c, h) for c, h in claims.get("elements", [])
+                  if c.get("rowspan", 1) > 1
+                  and re.search(r"(?:하기|작성하기|제작하기)\s*$", c["text"])
+                  and title_gate(c["text"])["accepted"]}
+    if len(activities) == 1 and not any(
+        title_gate(c["text"])["accepted"] for c, _ in claims.get("task", [])
+    ):
+        claims["task"].extend(activities.values())
     for role in ("task", "title", "assessment_area"):
         pairs = []
         for cell, header in claims.get(role, []):
@@ -1156,9 +1198,15 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
             else:
                 observations[field].append(obs)
     title_candidates = []
-    for role in ("task", "title", "assessment_area", "task_no"):
+    for role in ("task", "title", "task_text", "assessment_area", "task_no"):
         for cell, header in claims.get(role, []):
             cell = title_cell(cell)
+            if role == "task_text" and (
+                not title_gate(cell["text"])["accepted"]
+                or title_content_role(cell["text"], "assessment_area") != "task"
+                or re.search(r"<br|[\r\n]|^\s*\d+[.)]", cell["raw"], re.I)
+            ):
+                continue
             if title_gate(cell["text"])["accepted"] or re.fullmatch(r"\d+", cell["text"]):
                 content_role = title_content_role(cell["text"], role)
                 title_candidates.append((content_role, cell, header, role))
@@ -1219,6 +1267,12 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
     anchor = structure.get("anchor") or (cells[0] if cells else section["locator"])
     left, right = min(c["start"] for c in cells), max(c["end"] for c in cells)
     reasons = list(structure["review_reasons"])
+    if __package__:
+        from .middle_item_scope import item_scope
+    else:
+        from middle_item_scope import item_scope
+    scope_reasons, scope_evidence = item_scope(structure, section, conversion)
+    reasons.extend(scope_reasons)
     if conversion.get("conversion_status") == "fallback_text_only":
         reasons.append("PDF 평문 폴백·표 구조 미보존")
     if any(
@@ -1298,6 +1352,8 @@ def finalize(structure: dict, section: dict, conversion: dict) -> dict:
             "col": structure.get("column"),
         },
         "boundary_evidence": {
+            "empty_span_overlaps": structure.get("empty_span_overlaps", []),
+            "item_scope": scope_evidence,
             "section_locator": section["locator"],
             "adjacent_task_heading": evidence(structure["adjacent_task_heading"], conversion)
             if structure.get("adjacent_task_heading") else None,
@@ -1390,7 +1446,13 @@ def extract_middle_items(
         raise ValueError("S4/S5 locator outside converter text")
     if section.get("grade") not in {1, 2} or section.get("status") != "target":
         return []
-    all_tables = source_tables(text)
+    all_tables = conversion.get("item_source_tables") or source_tables(text)
+    if __package__:
+        from .middle_item_scope import structural_context
+    else:
+        from middle_item_scope import structural_context
+    if "item_structure_context" not in conversion:
+        conversion["item_structure_context"] = structural_context(text, all_tables)
     tables = [t for t in all_tables if t["start"] < end and t["end"] > start]
     structures = []
     for table in tables:
