@@ -7,9 +7,9 @@ import re
 from collections import defaultdict
 
 if __package__:
-    from .middle_items import AREA_TITLE_RE, TASK_NO_RE
+    from .middle_items import AREA_TITLE_RE, TASK_NO_RE, title_gate
 else:
-    from middle_items import AREA_TITLE_RE, TASK_NO_RE
+    from middle_items import AREA_TITLE_RE, TASK_NO_RE, title_gate
 
 
 def compact(value):
@@ -19,7 +19,8 @@ def compact(value):
 def title_key(value):
     value = re.sub(r"\(\s*\d+(?:\.\d+)?\s*점\s*\)\s*$", "", value)
     value = re.sub(r"\((?:실험탐구논술형|논술형|실험[·ㆍ]?실습|서[·ㆍ]?논술형)\)\s*$", "", value)
-    return compact(value)
+    value = re.sub(r"\((?:프로젝트|실험[·ㆍ]실습|서[·ㆍ]논술형?)\s*평가\)\s*$", "", value)
+    return re.sub(r"[·ㆍ･‧]", "", compact(value)).strip("'\"‘’“”")
 
 
 def titles(item):
@@ -27,9 +28,21 @@ def titles(item):
     for name in ("title", "task_text", "assessment_area"):
         value = item["fields"][name]["value"]
         for v in value if isinstance(value, list) else [value]:
-            if v and not AREA_TITLE_RE.fullmatch(v) and not TASK_NO_RE.fullmatch(v):
+            if (v and title_gate(v)["accepted"] and not AREA_TITLE_RE.fullmatch(v)
+                    and not TASK_NO_RE.fullmatch(v)):
                 keys.add(title_key(v))
     return keys
+
+
+def area_titles(item):
+    """Literal non-unit area labels may identify a task, including competencies.
+
+    They are comparison evidence only, never representative titles.
+    """
+    values = [o["text"] for name in ("assessment_area", "title")
+              for o in item["fields"][name]["evidence"]]
+    return {title_key(v) for v in values if v
+            and not re.match(r"^[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩIVX]+\s*\.", v)}
 
 
 def scope(item):
@@ -95,6 +108,12 @@ def merge_pair(summary, detail, proof):
     comparable = {
         "score", "points", "weight", "essay_weight", "timing", "standards", "method", "task_no"
     }
+    method_headers = [
+        {compact(o.get("header_raw", "")) for o in i["fields"]["method"]["evidence"]}
+        for i in (summary, detail)
+    ]
+    if any("평가유형" in h for h in method_headers) and method_headers[0] != method_headers[1]:
+        comparable.discard("method")  # Type and method are separate source concepts.
     if summary.get("title_role") == detail.get("title_role"):
         comparable.add("title")
     for name, target in detail["fields"].items():
@@ -178,6 +197,30 @@ def reconcile_items(items):
             )
             matched, codes = independent_matches(summary, detail)
             same_title = bool(titles(summary) & titles(detail))
+            area_overlap = area_titles(summary) & area_titles(detail)
+            # Column/detail order is one structural vote only when a complete
+            # one-to-one sequence exists in this exact source/grade/term scope.
+            local_summaries = sorted(
+                [i for i in local if i.get("table_role") == "summary"],
+                key=lambda i: (i["layout_position"]["table"],
+                               i["layout_position"].get("col") or 0),
+            )
+            local_details = sorted(
+                [i for i in local if i["layout"] == "form"],
+                key=lambda i: i["locator"]["start"],
+            )
+            ordered = (len(local_summaries) == len(local_details)
+                       and len(local_details) > 1
+                       and local_summaries.index(summary) == local_details.index(detail))
+            if ordered:
+                matched.append("column_detail_order")
+            # Generic/competency area labels are comparison evidence only when
+            # each occurs once in a complete ordered sequence, with another vote.
+            same_title |= bool(ordered and any(
+                sum(k in area_titles(i) for i in local_summaries) == 1
+                and sum(k in area_titles(i) for i in local_details) == 1
+                for k in area_overlap
+            ))
             if not unique_number and not (same_title and len(matched) >= 2):
                 if same_title:
                     summary["extraction_status"] = "review"

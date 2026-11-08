@@ -13,7 +13,7 @@ import re
 from collections import defaultdict
 from difflib import SequenceMatcher
 
-RULE_VERSION = "middle-segments-v3"
+RULE_VERSION = "middle-segments-v4"
 IDENTITY_VERSION = "middle-segments-v2"  # Unchanged source spans retain their IDs.
 STATUS_DEFINITIONS = {
     "normal": "중1·중2 학년 식별. 과목·교육과정·공개 여부는 후속 단계 검토",
@@ -357,9 +357,12 @@ def structural_events(text: str) -> tuple[list[dict], list[dict]]:
                 r"[123]\s*학년\s*(?:교수[·ㆍ\s-]*학습|성취기준별|수행평가|평가)"
                 r"[가-힣·ㆍ\s()/-]*(?:방법|계획|기준|평가|개요|학습)", label,
             )
-            if grade_label or overview or grade_section:
+            grade_term = re.fullmatch(r"[123]\s*학년\s*[12]\s*학기", label)
+            if grade_label or overview or grade_section or grade_term:
                 grades.extend(
-                    {**g, "role": "grade_heading", "boundary_start": offset}
+                    {**g, "role": "grade_heading", "boundary_start": offset,
+                     **({"semester": int(SEMESTER_RE.search(label)[1]),
+                         "cell_text": line, "cell_start": offset} if grade_term else {})}
                     for g in extract_grade_evidence(
                         line,
                         offset=offset,
@@ -434,7 +437,10 @@ def split_subject_run(start: int, end: int, grades: list[dict]) -> list[dict]:
         current = spans[-1]
         if current["grade"] is None:
             current["grade"] = grade["grade"]
-        elif current["grade"] != grade["grade"]:
+        elif current["grade"] != grade["grade"] or (
+            grade.get("semester") and current["grade_evidence"]
+            and grade.get("semester") != current["grade_evidence"][-1].get("semester")
+        ):
             previous = current["grade_evidence"][-1]
             if previous.get("boundary_start") == grade.get("boundary_start") or (
                 grade["source"] == "table_cell"

@@ -1,0 +1,380 @@
+{
+  "rounds": {
+    "2026-round-3": {
+      "before": {
+        "bounded": 55,
+        "review": 125,
+        "roles": {
+          "teaching_plan": 56,
+          "performance": 76,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "all_roles": {
+          "teaching_plan": 56,
+          "summary_duplicate": 31,
+          "performance": 76,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 56,
+          "원문 제목 셀 미확정": 111,
+          "행·열·셀 소유 범위 미입증": 104,
+          "별도 표 연결 미확정": 46,
+          "동일 항목 필드 복수 관측값·확정 보류": 5,
+          "원문 내부 충돌 (method)": 1,
+          "원문 내부 충돌 (standards)": 2,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 2,
+          "S5 과목 경계 미확정": 9,
+          "원문 내부 충돌 (title)": 1,
+          "요약표·상세표 항목 동일성 미확정": 5,
+          "원문 내부 충돌 (weight)": 1,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 1
+        },
+        "title_roles": {
+          "과제명": 50,
+          "영역": 19,
+          "번호": 0,
+          "미확정": 111
+        },
+        "bounded_title_roles": {
+          "과제명": 38,
+          "영역": 17,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "after": {
+        "bounded": 59,
+        "review": 116,
+        "roles": {
+          "teaching_plan": 56,
+          "performance": 71,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "all_roles": {
+          "teaching_plan": 56,
+          "summary_duplicate": 36,
+          "performance": 71,
+          "general_standards": 41,
+          "other": 2,
+          "affective": 5
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 56,
+          "원문 제목 셀 미확정": 107,
+          "행·열·셀 소유 범위 미입증": 104,
+          "별도 표 연결 미확정": 46,
+          "동일 항목 필드 복수 관측값·확정 보류": 5,
+          "원문 내부 충돌 (standards)": 2,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 2,
+          "S5 과목 경계 미확정": 9,
+          "원문 내부 충돌 (title)": 1,
+          "원문 내부 충돌 (weight)": 1,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 1
+        },
+        "title_roles": {
+          "과제명": 52,
+          "영역": 16,
+          "번호": 0,
+          "미확정": 107
+        },
+        "bounded_title_roles": {
+          "과제명": 43,
+          "영역": 16,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "audit": {
+        "제목 생성": 0,
+        "항목 간 필드 소유 충돌": 0,
+        "기존 근거 추적 오류": 0,
+        "변환본 범위 밖 locator": 0,
+        "근거·머리글 원문 슬라이스 불일치": 0,
+        "bounded 필드의 소유 범위 이탈": 0,
+        "bounded 경계 미입증·검토 사유 잔존": 0,
+        "bounded 타 교과·대상 외 학년": 0,
+        "평문 폴백 bounded": 0,
+        "충돌 필드 값 확정": 0,
+        "재귀속 요약 근거·학년 추적 오류": 0,
+        "요약 참조 값·소유 출처 오류": 0,
+        "일반 동일성 독립 근거·문서 범위 오류": 0,
+        "열 필드 소유 범위 오류": 0,
+        "병합셀 공유 근거 오류": 0,
+        "참고표 bounded": 0
+      },
+      "resegmented_documents": [
+        "doc_fce67232660828618e73211131b51832c00c098e053c39eeb4504e263399f5ef",
+        "doc_d066f9e65b6f9fec5779c1002fbe9704a9902feac978bb69e3f270caebc28ff8",
+        "doc_bc35078703350fdbf6ae8d953e9dc6f14ad65797139efefb122e756c0a4703ec"
+      ]
+    },
+    "2026-round-3-dev2": {
+      "before": {
+        "bounded": 49,
+        "review": 222,
+        "roles": {
+          "teaching_plan": 71,
+          "performance": 105,
+          "general_standards": 58,
+          "other": 37
+        },
+        "all_roles": {
+          "teaching_plan": 71,
+          "performance": 105,
+          "general_standards": 58,
+          "other": 37,
+          "summary_duplicate": 6
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 71,
+          "원문 제목 셀 미확정": 211,
+          "행·열·셀 소유 범위 미입증": 195,
+          "중첩·불완전 표 구조 미확정": 9,
+          "별도 표 연결 미확정": 92,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 21,
+          "단원·성취기준·성취수준 머리글·항목 근거 제외": 2,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 4,
+          "동일 항목 필드 복수 관측값·확정 보류": 4,
+          "원문 내부 충돌 (method)": 1,
+          "원문 내부 충돌 (standards)": 4,
+          "S5 과목 경계 미확정": 7,
+          "항목 과목 판정 unknown": 7,
+          "요약표·상세표 항목 동일성 미확정": 2
+        },
+        "title_roles": {
+          "과제명": 34,
+          "영역": 26,
+          "번호": 0,
+          "미확정": 211
+        },
+        "bounded_title_roles": {
+          "과제명": 29,
+          "영역": 20,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "after": {
+        "bounded": 72,
+        "review": 226,
+        "roles": {
+          "teaching_plan": 71,
+          "performance": 135,
+          "other": 36,
+          "general_standards": 56
+        },
+        "all_roles": {
+          "teaching_plan": 71,
+          "performance": 135,
+          "summary_duplicate": 26,
+          "other": 36,
+          "general_standards": 56
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 71,
+          "원문 제목 셀 미확정": 197,
+          "행·열·셀 소유 범위 미입증": 175,
+          "동일 항목 필드 복수 관측값·확정 보류": 1,
+          "요약표·상세표 항목 동일성 미확정": 11,
+          "별도 표 연결 미확정": 67,
+          "변환 손실": 2,
+          "평문 변환·표 구조 미보존": 1,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 25,
+          "중첩·불완전 표 구조 미확정": 9,
+          "단원·성취기준·성취수준 머리글·항목 근거 제외": 2,
+          "원문 내부 충돌 (method)": 9,
+          "원문 내부 충돌 (standards)": 5,
+          "S5 과목 경계 미확정": 7,
+          "항목 과목 판정 unknown": 7
+        },
+        "title_roles": {
+          "과제명": 73,
+          "영역": 28,
+          "번호": 0,
+          "미확정": 197
+        },
+        "bounded_title_roles": {
+          "과제명": 53,
+          "영역": 19,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "audit": {
+        "제목 생성": 0,
+        "항목 간 필드 소유 충돌": 0,
+        "기존 근거 추적 오류": 0,
+        "변환본 범위 밖 locator": 0,
+        "근거·머리글 원문 슬라이스 불일치": 0,
+        "bounded 필드의 소유 범위 이탈": 0,
+        "bounded 경계 미입증·검토 사유 잔존": 0,
+        "bounded 타 교과·대상 외 학년": 0,
+        "평문 폴백 bounded": 0,
+        "충돌 필드 값 확정": 0,
+        "재귀속 요약 근거·학년 추적 오류": 0,
+        "요약 참조 값·소유 출처 오류": 0,
+        "일반 동일성 독립 근거·문서 범위 오류": 0,
+        "열 필드 소유 범위 오류": 0,
+        "병합셀 공유 근거 오류": 0,
+        "참고표 bounded": 0
+      },
+      "resegmented_documents": [
+        "doc_e2089c105fe50971dde0f939dd4b976cccac438dfa9961e92a01ed078cf137a7",
+        "doc_0985d965136be74df405951a3cb09d430a5d2bab9f61710e7a28e41c4d3e673e",
+        "doc_84051df6cc0391b0033845f206fc0e11241a054ef02cf86accd7fede3228a8fb",
+        "doc_d030957b1250e231addd776d038524edb4d527a11ce12c8b1a474472739e43a1",
+        "doc_ddd8ca7e7a462ce443c4c187e1eb5171fdf7d4aef1902ce84c5fa44048a2ed5e",
+        "doc_3c1ee4c4e9b5e8abe111e9d50629e74200f8bf8c6c2c9807dfb14e730e7671e5",
+        "doc_24beb481992b89239ac473d18d81bb39f2a9043ce5ec9ce6d19169093a751f49",
+        "doc_abec5c9b33f634a7e993e6eb0b34c9864eb493aa19c11483608624ffdfac5a76",
+        "doc_c48bd54b466768653114edcd03fb1f046d42cdc3c84b5f1109da03ecf00b6a1b",
+        "doc_17545a2c1ea0ce2d8ef44756224ab757fc0a6c6d702db62382807351779e7133",
+        "doc_fba4e21839a1834e60f848b812f559f84760242c2939baf1509687aeccf4feea",
+        "doc_a26ba58244debcd70f30d01c3dd89ed26731cf3b1ef3b83f82e5d1e39f86d14a",
+        "doc_d1c9f0565f5cf79686762ef449599e6301a226c6586a3d7312f3875a75ce8567",
+        "doc_67f624ec89c30d3fea371d3c66015c6a848c7eb9eb155a637f518ba45552f9bb",
+        "doc_a35241d0d4e7c66d5061d65471103b8d0038c0ea6e5c0021d48650e45bce0811",
+        "doc_1ee76f612d7a2fb7018d819821cfe8449bc5fb84ecb7f78ca7df4e9ecae553c0",
+        "doc_f974e0f6e7d31932e7b64f5786e2099d45876f47861f99e837848bca0251374c"
+      ]
+    },
+    "2026-round-1-dev2": {
+      "before": {
+        "bounded": 90,
+        "review": 301,
+        "roles": {
+          "teaching_plan": 70,
+          "performance": 190,
+          "general_standards": 97,
+          "other": 34
+        },
+        "all_roles": {
+          "teaching_plan": 70,
+          "performance": 190,
+          "general_standards": 97,
+          "other": 34
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 70,
+          "원문 제목 셀 미확정": 274,
+          "행·열·셀 소유 범위 미입증": 235,
+          "별도 표 연결 미확정": 140,
+          "중첩·불완전 표 구조 미확정": 6,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 10,
+          "동일 항목 필드 복수 관측값·확정 보류": 13,
+          "요약표·상세표 항목 동일성 미확정": 11,
+          "단원·성취기준·성취수준 머리글·항목 근거 제외": 8,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 9,
+          "제목 셀에 필드 라벨 혼입·경계 미확정": 4,
+          "S5 과목 경계 미확정": 7,
+          "평문 변환·표 구조 미보존": 1
+        },
+        "title_roles": {
+          "과제명": 66,
+          "영역": 51,
+          "번호": 0,
+          "미확정": 274
+        },
+        "bounded_title_roles": {
+          "과제명": 47,
+          "영역": 43,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "after": {
+        "bounded": 138,
+        "review": 289,
+        "roles": {
+          "teaching_plan": 70,
+          "performance": 242,
+          "other": 18,
+          "general_standards": 97
+        },
+        "all_roles": {
+          "teaching_plan": 70,
+          "performance": 242,
+          "summary_duplicate": 23,
+          "other": 18,
+          "general_standards": 97
+        },
+        "review_reasons": {
+          "단원·일정 또는 수업·평가 연계 머리글·방법은 참고": 70,
+          "원문 제목 셀 미확정": 249,
+          "행·열·셀 소유 범위 미입증": 197,
+          "동일 항목 필드 복수 관측값·확정 보류": 6,
+          "구간 내 수행 항목 구조 미식별·전수 대조 필요": 15,
+          "별도 표 연결 미확정": 97,
+          "원문 내부 충돌 (standards)": 4,
+          "동일 제목 라벨 복수 값·항목 경계 미확정": 3,
+          "중첩·불완전 표 구조 미확정": 6,
+          "요약표·상세표 항목 동일성 미확정": 17,
+          "단원·성취기준·성취수준 머리글·항목 근거 제외": 8,
+          "원문 내부 충돌 (method)": 8,
+          "제목 셀에 필드 라벨 혼입·경계 미확정": 4,
+          "S5 과목 경계 미확정": 8,
+          "평문 변환·표 구조 미보존": 1
+        },
+        "title_roles": {
+          "과제명": 103,
+          "영역": 75,
+          "번호": 0,
+          "미확정": 249
+        },
+        "bounded_title_roles": {
+          "과제명": 77,
+          "영역": 61,
+          "번호": 0,
+          "미확정": 0
+        }
+      },
+      "audit": {
+        "제목 생성": 0,
+        "항목 간 필드 소유 충돌": 0,
+        "기존 근거 추적 오류": 0,
+        "변환본 범위 밖 locator": 0,
+        "근거·머리글 원문 슬라이스 불일치": 0,
+        "bounded 필드의 소유 범위 이탈": 0,
+        "bounded 경계 미입증·검토 사유 잔존": 0,
+        "bounded 타 교과·대상 외 학년": 0,
+        "평문 폴백 bounded": 0,
+        "충돌 필드 값 확정": 0,
+        "재귀속 요약 근거·학년 추적 오류": 0,
+        "요약 참조 값·소유 출처 오류": 0,
+        "일반 동일성 독립 근거·문서 범위 오류": 0,
+        "열 필드 소유 범위 오류": 0,
+        "병합셀 공유 근거 오류": 0,
+        "참고표 bounded": 0
+      },
+      "resegmented_documents": [
+        "doc_539551201f0354eae7b0315a06a09695053a845ae563d5a1c34494e62e8c48b4",
+        "doc_9b921a8259729c7d3922228bfe2501d6813a7ef4f85f1f81b48eced4a3faaa38",
+        "doc_199d184883e6a19ee9736c4cc9ea21323b7518eeedf165eddbd2fd6d12b3229c",
+        "doc_970f8dee6b006c18bcb337a0b6437d45f5651566896c4f34b4954cf71f52c0cd",
+        "doc_0f514d27c70c8d8c6b4eeb67f202e17c2e953850f8aa92f3c028090db3dcbb52",
+        "doc_18cae8350dd46a38de49fd1a8e8a76263c98fff9568f265d08df72246523ddf8",
+        "doc_73df81a5f6953bcdb321d9a676eca955b994c776d005eeb1ff0afc48beb96cd7",
+        "doc_0e92fdd0fdd0af10f1c45db02fadb09385b0b6f48f910e28a45d8da20a306f7f",
+        "doc_65f07c3aed0a44ebcf424de4328f78912ef738ffc99ba6cc79fd7cb24b8af23c",
+        "doc_81b92c1edafe1b57106cdc3c615b4a315bc8693fa07c6a2b0717de4b4dd599d3",
+        "doc_940276fb5730af3b61da54dce451e8686b09cff9b560985a969a422d2ea6873e",
+        "doc_1855cd731507e878900fb16fae953b55f2daba6be568ed24f5995c6f1871cbd5",
+        "doc_f83fa2a09a5b20e90ee88254b10b05d11e16eb03ca27dad43e9b60c69f1f7f16",
+        "doc_17e2a7ea4ac4146bfcbc6486ab8099ea59309c18c53af137d0337ae4bfad8549",
+        "doc_5e9f27994ea4929250d12b283ab330f88a9550cbc2edb31cb4e341ca4f6d7b2a",
+        "doc_c3dbc4579af8aa012a3f9c270e99c620b8bf52103f34b9b4d41988f8d6e1e88c",
+        "doc_54f85475171f71e26f3c74773efcd9300bc4fee9c25f7d2830eb87b1926e1146",
+        "doc_d1187c738475c2b244e337dd3625e9980156ba941939698f142423258af1c795",
+        "doc_96c3a8d4cd06f40ca22e55575880e650c8d8910c5022365ae858e76d514bb675"
+      ]
+    }
+  },
+  "access_violations": []
+}
