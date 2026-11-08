@@ -15,8 +15,10 @@ from extract_math_assessment_batch import (
     CHECKED_SYMBOLS,
     EMPTY_SYMBOLS,
     STATUS_DEFINITIONS,
+    conversion_metadata,
     convert_kordoc,
     convert_pdf,
+    extract_document,
     source_provenance,
 )
 
@@ -50,6 +52,62 @@ def compare_pdf(direct: dict, structured: dict) -> dict:
     }
 
 
+def audit_zip(path: Path, kordoc: Path, root: Path, source: dict) -> dict:
+    extracted = extract_document(path, kordoc, root, source, pdf_converter="kordoc")
+    children = []
+    for child in extracted["children"]:
+        # The extraction path keeps both PDF observations, including a failed
+        # kordoc result when it falls back to the text layer.
+        result = {key: value for key, value in child.items() if key not in {
+            "pymupdf", "kordoc", "table_structure", "text_layer_status",
+            "method_check_comparison",
+        }}
+        kind = Path(child["member_name"]).suffix.lower().lstrip(".")
+        converters = {child["converter"]: result}
+        comparisons = {}
+        if kind == "pdf":
+            # A member read failure has no converter observations, but still
+            # counts as an unavailable PDF comparison.
+            comparisons["pdf_comparison"] = compare_pdf(result, result)
+        if kind == "pdf" and ("pymupdf" in child or "kordoc" in child):
+            if "pymupdf" in child:
+                direct, structured = child["pymupdf"], result
+            else:
+                direct = {**result, "conversion_status": child.get(
+                    "text_layer_status", child["conversion_status"],
+                )}
+                structured = child["kordoc"]
+            converters = {"pymupdf": direct, "kordoc": structured}
+            comparisons = {
+                "pdf_comparison": compare_pdf(direct, structured),
+                "method_check_comparison": compare_method_rows(
+                    direct, structured, child["sha256"],
+                ),
+            }
+        children.append(conversion_metadata({
+            **result, "filename": child["member_name"], "format": kind,
+            "sha256_prefix": child.get("sha256", "")[:12], "audit_status": "converted",
+            "converters": converters, **comparisons,
+        }))
+    return {
+        "conversion_status": extracted["conversion_status"], "children": children,
+        "converters": {"zip": conversion_metadata({
+            key: value for key, value in extracted.items() if key != "children"
+        })},
+    }
+
+
+def audit_entries(documents: list[dict]):
+    """Visit originals and their children for reporting and completion checks."""
+    for document in documents:
+        yield document
+        for child in document.get("children", []):
+            yield {
+                **child, "school_name": document["school_name"],
+                "filename": f"{document['filename']}!/{child['member_name']}",
+            }
+
+
 def audit_document(row: dict, root: Path, kordoc: Path) -> dict:
     path = root / row["saved_path"]
     provenance = source_provenance(path, row)
@@ -64,6 +122,11 @@ def audit_document(row: dict, root: Path, kordoc: Path) -> dict:
         raise ValueError(f"source size mismatch: {path}")
     if plan_status(row["candidate_name"]) == "non_plan_filename":
         return {**record, "audit_status": "excluded_non_plan", "reason": "비평가계획 문서"}
+    if record["format"] == "zip":
+        record.update(audit_zip(path, kordoc, root, row))
+        # ZIP extraction uses temporary files. Verify the preserved archive too.
+        source_provenance(path, {"sha256": provenance["sha256"]})
+        return {**record, "audit_status": "converted"}
     converters = {}
     if record["format"] == "pdf":
         converters["pymupdf"] = convert_pdf(path)
@@ -101,6 +164,10 @@ def aggregate(documents: list[dict]) -> dict:
                 )) for name in sorted({name for row in included for name in row["converters"]})
             },
         }
+        if kind == "zip":
+            summary[kind]["children"] = aggregate([
+                child for document in included for child in document.get("children", [])
+            ])
     return summary
 
 
@@ -146,11 +213,16 @@ def markdown_report(report: dict) -> str:
     unavailable = []
     image_documents = []
     warnings = []
-    for document in report["documents"]:
+    for document in audit_entries(report["documents"]):
         converters = document.get("converters", {})
         comparison = document.get("pdf_comparison", {})
         decision = document.get("reason", "—")
         identity = f"{document['school_name']} · {document['filename']}"
+        if document["format"] == "zip" and "conversion_status" in document:
+            decision = f"자식 {len(document['children'])}개 · {document['conversion_status']}"
+            error = converters["zip"].get("error")
+            if error:
+                decision += f" · {error}"
         if comparison:
             if comparison["available"]:
                 decision = "/".join(str(comparison["delta"][key]) for key in COMPARISON_FIELDS)
@@ -185,7 +257,7 @@ def markdown_report(report: dict) -> str:
             )
         columns = [
             document["school_name"], document["filename"], document["format"],
-            str(document["size_bytes"]), document["sha256_prefix"],
+            str(document.get("size_bytes", "—")), document["sha256_prefix"],
             metric_line(converters["pymupdf"]) if "pymupdf" in converters else "—",
             metric_line(converters["kordoc"]) if "kordoc" in converters else "—", decision,
         ]
@@ -207,6 +279,12 @@ def markdown_report(report: dict) -> str:
             f"| {kind} | {counts['documents']} | {counts['excluded_non_plan']} | "
             f"{json.dumps(counts['converters'], ensure_ascii=False)} |"
         )
+        for child_kind, child_counts in counts.get("children", {}).items():
+            lines.append(
+                f"| zip 자식 {child_kind} | {child_counts['documents']} | "
+                f"{child_counts['excluded_non_plan']} | "
+                f"{json.dumps(child_counts['converters'], ensure_ascii=False)} |"
+            )
     lines.extend([
         "", "## 해석 범위", "",
         "PDF 텍스트층과 kordoc 사이의 감소는 손실 의심 신호다. "
@@ -219,7 +297,7 @@ def markdown_report(report: dict) -> str:
         "| 학교·파일 | PyMuPDF 방법 행 | kordoc 방법 셀 | 대조 상태 |",
         "|---|---:|---:|---|",
     ])
-    for document in report["documents"]:
+    for document in audit_entries(report["documents"]):
         checks = document.get("method_check_comparison")
         if checks:
             lines.append(
@@ -252,15 +330,16 @@ def main() -> None:
         )
     import fitz
 
-    comparisons = [document["pdf_comparison"] for document in documents
+    entries = list(audit_entries(documents))
+    comparisons = [document["pdf_comparison"] for document in entries
                    if "pdf_comparison" in document]
     report = {
         "schema_version": 1, "round": args.round_key,
         "reproduction_kind": "안전 변환 재현본",
         "school_count": len({row["school_code"] for row in files.values()}),
         "conversion_complete": all(
-            result["conversion_status"] != "failed"
-            for document in documents for result in document.get("converters", {}).values()
+            result["conversion_status"] not in {"failed", "partial"}
+            for document in entries for result in document.get("converters", {}).values()
         ),
         "pdf_comparisons_available": sum(comparison["available"] for comparison in comparisons),
         "pdf_comparison_total": len(comparisons),

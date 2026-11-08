@@ -514,3 +514,150 @@ def test_document_symbol_delta_does_not_create_method_loss(modules):
     direct = {**modules.extract.text_metrics("■" * 100), "method_rows": []}
     structured = {**modules.extract.text_metrics(""), "method_rows": []}
     assert checks.compare_method_rows(direct, structured, "digest")["rows"] == []
+
+
+@pytest.fixture
+def zip_audit_source(tmp_path, modules, monkeypatch):
+    pdf = tmp_path / "synthetic.pdf"
+    make_pdf(pdf, ["text"])
+    archive = tmp_path / "data/raw/schoolinfo/4ga_rounds/synthetic/plans.zip"
+    archive.parent.mkdir(parents=True)
+    with zipfile.ZipFile(archive, "w") as output:
+        output.writestr("../합성 평가계획.hwp", b"synthetic HWP")
+        output.writestr("nested/합성 평가계획.pdf", pdf.read_bytes())
+
+    def run(command, **kwargs):
+        source = Path(command[2])
+        assert source.suffix != ".zip"
+        assert not source.is_relative_to(archive.parent)
+        if source.read_bytes() == b"broken":
+            return SimpleNamespace(returncode=1, stderr="synthetic conversion failure")
+        Path(command[command.index("-o") + 1]).write_text(json.dumps({
+            "success": True, "markdown": "합성 평가계획 ☑ □ [9과01-01] 과학 " * 30,
+            "blocks": [], "pageCount": 1,
+        }), encoding="utf-8")
+        return SimpleNamespace(returncode=0, stderr="")
+
+    monkeypatch.setattr(modules.extract.subprocess, "run", run)
+    return archive
+
+
+@pytest.mark.parametrize("failure,expected", [
+    (None, "ok"), ("hwp", "partial"), ("pdf", "partial"), ("zip", "failed"),
+])
+def test_s3_zip_audit_entry_point(
+    tmp_path, modules, monkeypatch, zip_audit_source, failure, expected,
+):
+    archive = zip_audit_source
+    if failure == "zip":
+        archive.write_bytes(b"synthetic corrupt ZIP")
+    elif failure:
+        with zipfile.ZipFile(archive) as source:
+            members = [(info.filename, source.read(info)) for info in source.infolist()]
+        with zipfile.ZipFile(archive, "w") as output:
+            for name, data in members:
+                output.writestr(name, b"broken" if name.endswith(f".{failure}") else data)
+    original = archive.read_bytes()
+    row = {
+        "saved_path": archive.relative_to(tmp_path).as_posix(),
+        "candidate_name": "2학기 평가계획.zip", "school_name": "가상중학교",
+        "school_code": "SYNTHETIC", "size_bytes": len(original), "result": "downloaded",
+        "sha256": hashlib.sha256(original).hexdigest(),
+    }
+    manifest = tmp_path / "data/derived/schoolinfo_4ga/synthetic/attachments.jsonl"
+    manifest.parent.mkdir(parents=True)
+    manifest.write_text(json.dumps(row) + "\n", encoding="utf-8")
+    for package in ("kordoc", "pdfjs-dist"):
+        version = tmp_path / "node_modules" / package / "package.json"
+        version.parent.mkdir(parents=True)
+        version.write_text('{"version": "synthetic"}', encoding="utf-8")
+    monkeypatch.setattr(modules.audit, "ROOT", tmp_path)
+    monkeypatch.setattr("sys.argv", ["audit_middle_conversion", "--round-key", "synthetic"])
+    modules.audit.main()
+    output = tmp_path / "data/derived/conversion_audit/synthetic"
+    report = json.loads(output.with_suffix(".json").read_text(encoding="utf-8"))
+    markdown = output.with_suffix(".md").read_text(encoding="utf-8")
+    record = report["documents"][0]
+    assert record["conversion_status"] == expected
+    assert report["conversion_complete"] == (expected == "ok")
+    assert report["summary"]["zip"]["converters"] == {"zip": {expected: 1}}
+    assert archive.read_bytes() == original
+    assert not (archive.parent.parent / "합성 평가계획.hwp").exists()
+    assert not list(archive.parent.glob("*.pdf"))
+    if failure == "zip":
+        assert record["children"] == []
+        assert record["converters"]["zip"]["error"]
+        assert report["pdf_comparison_total"] == 0
+        assert "failed" in markdown
+        return
+    children = record["children"]
+    assert [child["filename"] for child in children] == [
+        "../합성 평가계획.hwp", "nested/합성 평가계획.pdf",
+    ]
+    assert [child["format"] for child in children] == ["hwp", "pdf"]
+    for child in children:
+        status = "failed" if child["format"] == failure else "ok"
+        assert child["conversion_status"] == status
+        assert child["converters"]["kordoc"]["conversion_status"] == status
+        assert child["science_code_count"] == (0 if status == "failed" else 30)
+        assert child["check_count"] == (0 if status == "failed" else 30)
+        assert child["parent_sha256"] == row["sha256"]
+        assert child["original_path"] == f"{row['saved_path']}!/{child['member_name']}"
+        assert "text" not in child
+        assert all("text" not in value for value in child["converters"].values())
+        assert child["filename"] in markdown
+        assert report["summary"]["zip"]["children"][child["format"]]["converters"][
+            "kordoc"
+        ] == {status: 1}
+    pdf = children[1]
+    assert pdf["pdf_comparison"] == modules.audit.compare_pdf(
+        pdf["converters"]["pymupdf"], pdf["converters"]["kordoc"],
+    )
+    assert "method_check_comparison" in pdf
+    assert report["pdf_comparison_total"] == 1
+    assert report["pdf_comparisons_available"] == (failure != "pdf")
+    assert "zip 자식 hwp" in markdown
+    assert "zip 자식 pdf" in markdown
+
+
+def test_s3_zip_pdf_fallback_keeps_failed_kordoc_observation(
+    tmp_path, modules, monkeypatch, zip_audit_source,
+):
+    original_converter = modules.extract.convert_kordoc
+
+    def convert(path, *args, **kwargs):
+        if path.suffix == ".pdf":
+            return modules.extract.failed_conversion("kordoc", "synthetic kordoc failure")
+        return original_converter(path, *args, **kwargs)
+
+    monkeypatch.setattr(modules.extract, "convert_kordoc", convert)
+    result = modules.audit.audit_zip(zip_audit_source, Path("cli.js"), tmp_path, {})
+    assert result["conversion_status"] == "partial"
+    child = result["children"][1]
+    assert child["conversion_status"] == "fallback_text_only"
+    assert child["converters"]["pymupdf"]["conversion_status"] == "ok"
+    assert child["converters"]["kordoc"]["conversion_status"] == "failed"
+    assert child["pdf_comparison"] == {
+        "available": False, "delta": None, "suspected_loss": None,
+    }
+
+
+def test_s3_zip_member_read_failure_preserves_unavailable_pdf_comparison(
+    tmp_path, modules, monkeypatch, zip_audit_source,
+):
+    original_read = zipfile.ZipFile.read
+
+    def read(self, member, *args, **kwargs):
+        if member.filename.endswith(".pdf"):
+            raise zipfile.BadZipFile("synthetic CRC failure")
+        return original_read(self, member, *args, **kwargs)
+
+    monkeypatch.setattr(zipfile.ZipFile, "read", read)
+    result = modules.audit.audit_zip(zip_audit_source, Path("cli.js"), tmp_path, {})
+    assert result["conversion_status"] == "partial"
+    child = result["children"][1]
+    assert child["conversion_status"] == "failed"
+    assert child["converters"]["zip"]["error"] == "synthetic CRC failure"
+    assert child["pdf_comparison"] == {
+        "available": False, "delta": None, "suspected_loss": None,
+    }

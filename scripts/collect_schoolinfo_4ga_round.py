@@ -233,11 +233,19 @@ def main() -> None:
     parser.add_argument("--workers", type=int, choices=(1, 2, 3), default=2)
     parser.add_argument("--pause", type=float, default=0.25)
     parser.add_argument("--retry-failed", action="store_true")
+    parser.add_argument(
+        "--run-label", default="",
+        help="optional suffix that keeps a separate scope, e.g. gold -> 2026-round-3-gold",
+    )
     args = parser.parse_args()
     if not 2024 <= args.year <= 2099 or args.limit < 0 or args.pause < 0.2:
         parser.error("invalid year, limit or pause (minimum 0.2 seconds)")
+    if args.run_label and not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", args.run_label):
+        parser.error("run label must be lowercase ASCII words joined by hyphens")
     project = Path(__file__).resolve().parents[1]
     key = f"{args.year}-round-{args.round}"
+    if args.run_label:
+        key = f"{key}-{args.run_label}"
     raw = project / "data" / "raw" / "schoolinfo" / "4ga_rounds" / key
     derived = project / "data" / "derived" / "schoolinfo_4ga" / key
     receipts = derived / "school_receipts"
