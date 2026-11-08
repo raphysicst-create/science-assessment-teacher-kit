@@ -211,8 +211,10 @@ def test_pairing_overlap_largest_unmatched_and_ties(modules):
     )
     assert match([item()], [item("02", 5, 6), item("03", 7, 8)]) == ([], [0], [0, 1])
     assert match([item(), item("02")], [item("03")]) == ([], [0, 1], [0])
-    assert match([item()], [item("03", 10, 15)]) == ([], [0], [0])
-    assert match([item()], [item("03", doc=DOC_B)]) == ([], [0], [0])
+    assert match([item()], [item("03", 10, 15)]) == ([(0, 0)], [], [])
+    assert match([item()], [item("03", doc=DOC_B)]) == ([(0, 0)], [], [])
+    assert match([item()], [item("03", 10, 15)], strict=True) == ([], [0], [0])
+    assert match([item()], [item("03", doc=DOC_B)], strict=True) == ([], [0], [0])
     for key, value in (("school_id", "elsewhere"), ("grade", 2), ("semester", 2)):
         other = item()
         other[key] = value
@@ -286,6 +288,7 @@ def test_disjoint_document_ranges(pack, modules):
 def test_unmatched_reports_and_cli(tmp_path, pack, modules):
     left = documents() + [item(), item("02", 15, 18)]
     right = documents("astra") + [item("99", labeler="astra"), item("03", 25, 28)]
+    right[-1]["title"] = field("별도 과제")
     a_path = write_labels(tmp_path / "a.jsonl", left)
     b_path = write_labels(tmp_path / "b.jsonl", right)
     output = tmp_path / "out/disagreements.csv"
@@ -302,9 +305,234 @@ def test_unmatched_reports_and_cli(tmp_path, pack, modules):
     assert len(rows) == 2
     assert all(row["종류"] == "항목존재" for row in rows)
     markdown = output.with_suffix(".md").read_text(encoding="utf-8")
-    assert markdown.count("판정: A / B / 둘 다 아님(직접 입력)") == 2
+    assert markdown.count("판정: A · B · 둘 다 아님") == 2
     summary = json.loads((output.parent / "agreement.json").read_text(encoding="utf-8"))
-    assert summary["item_pairing"]["ratio"] == 0.5
+    assert summary["v2"]["item_pairing"]["ratio"] == 0.5
+    assert summary["v1"]["item_pairing"]["ratio"] == 0.5
+    assert sum(t["count"] for t in summary["v2"]["disagreement_types"]) == 2
+    assert {row["A상태"] for row in rows} == {"present", "missing"}
+    assert all(len(row[side + "값요약"]) <= 150 for row in rows for side in ("A", "B"))
+
+
+def test_content_pairing_same_line_uses_title_and_task_text(modules):
+    left = [item("01"), item("02")]
+    right = [item("98"), item("99")]
+    left[0]["title"] = field("용수철 (실험)")
+    left[1]["title"] = field("행성, 탐구!")
+    right[0]["title"] = field("다른 평가영역")
+    right[0]["task_text"] = field(" 행성<br/>탐구 ")
+    right[1]["title"] = field("용수철<br>실험")
+    match = modules.diff.match_items
+    assert match(left, right) == ([(0, 1), (1, 0)], [], [])
+    assert match(left, right, strict=True) == ([], [0, 1], [0, 1])
+    assert match(list(reversed(left)), right) == ([(0, 0), (1, 1)], [], [])
+
+
+def test_content_pairing_reconsiders_candidates_after_confirmed_pair(modules):
+    left = [item("01", 1, 10), item("02", 1, 2)]
+    right = [item("98", 1, 10), item("99", 1, 5)]
+    for records in (left, right):
+        records[0]["title"] = field("첫 과제")
+        records[1]["title"] = field("둘째 과제")
+    assert modules.diff.match_items(left, right) == ([(0, 0), (1, 1)], [], [])
+    assert modules.diff.match_items(left, right, strict=True) == ([(0, 0)], [1], [1])
+
+
+def test_content_pairing_title_fallback_unique_and_empty_titles(modules):
+    left, right = item(), item("99", 30, 35)
+    left["title"] = field(" Task (A) ")
+    right["title"] = field()
+    right["task_text"] = field("task<br>A!")
+    assert modules.diff.match_items([left], [right]) == ([(0, 0)], [], [])
+    assert modules.diff.match_items([left], [right, copy.deepcopy(right)]) == ([], [0], [0, 1])
+    left["title"], right["task_text"] = field("()"), field(" \n")
+    assert modules.diff.match_items([left], [right]) == ([], [0], [0])
+
+
+@pytest.mark.parametrize("name", ["title", "task_text", "task_no", "period",
+                                 "max_score", "ratio", "sub_scores"])
+def test_content_value_sets_ignore_duplicate_locations(pack, modules, name):
+    left, right = item(), item("99")
+    sample = field("4월 (5월)") if name in {"title", "task_text", "task_no", "period"} else (
+        field("20점", norm=20)
+    )
+    if name == "sub_scores":
+        sample["values"][0]["name"] = "실험 (수행)"
+    left[name], right[name] = copy.deepcopy(sample), copy.deepcopy(sample)
+    right[name]["values"] += [
+        {**copy.deepcopy(sample["values"][0]), "loc": {**loc(20, 22), "page": 2}},
+        {**copy.deepcopy(sample["values"][0]), "loc": loc(30, 32, DOC_B)},
+    ]
+    rows, _ = modules.diff.compare_labels([left], [right], pack)
+    assert rows == []
+    strict_rows, _ = modules.diff.compare_labels([left], [right], pack, strict=True)
+    assert [r["필드"] for r in strict_rows] == [name]
+
+
+def test_content_ignores_notes_identity_and_link_basis(pack, modules):
+    left, right = item(), item("99")
+    for name in modules.diff.FIELDS:
+        if isinstance(right[name], dict):
+            left[name]["note"], right[name]["note"] = "설명 A", "설명 B"
+    left["rubric"] = {**field("표 A"), "link_basis": "근거 A"}
+    right["rubric"] = {**field("표 B"), "link_basis": "근거 B"}
+    right["identity_basis"], right["notes"] = "다른 설명", "다른 메모"
+    assert modules.diff.compare_labels([left], [right], pack)[0] == []
+
+
+def test_content_role_is_separate_and_summary_is_bounded(pack, modules):
+    left, right = item(), item("99")
+    right["title"]["role"] = "평가영역"
+    rows, summary = modules.diff.compare_labels([left], [right], pack)
+    assert [r["필드"] for r in rows] == ["title_role"]
+    assert summary["fields"]["title"]["agreement"] == 1
+    assert rows[0]["A상태"] == rows[0]["B상태"] == "present"
+    assert summary["disagreement_types"] == [
+        {"field": "title_role", "a_status": "present", "b_status": "present", "count": 1},
+    ]
+    assert len(modules.diff.value_summary("period", field("가" * 200), "present")) == 150
+
+
+@pytest.mark.parametrize("name", ["title", "task_text", "task_no", "period", "max_score",
+                                 "ratio", "sub_scores", "standards", "method", "rubric"])
+def test_content_preserves_status_disagreements(pack, modules, name):
+    left, right = item(), item("99")
+    target = right[name][0] if name == "standards" else right[name]
+    target.update(status="ambiguous", note="검토 필요")
+    rows, _ = modules.diff.compare_labels([left], [right], pack)
+    assert [r["필드"] for r in rows] == [name]
+    assert rows[0]["B상태"] == "ambiguous"
+
+
+def test_content_numbers_sub_scores_and_real_changes(pack, modules):
+    left, right = item(), item("99")
+    left["ratio"], right["ratio"] = field("(20%)"), field("20", norm=20.0)
+    left["max_score"], right["max_score"] = field("1,000.5점"), field("1000.5", norm=1000.5)
+    left["sub_scores"] = field("(10점)")
+    left["sub_scores"]["values"][0]["name"] = "실험 (수행)"
+    right["sub_scores"] = field("10", norm=10)
+    right["sub_scores"]["values"][0]["name"] = "실험<br>수행"
+    assert modules.diff.compare_labels([left], [right], pack)[0] == []
+    right["ratio"]["values"][0]["norm"] = 30
+    right["sub_scores"]["values"][0]["name"] = "다른 요소"
+    right["free_semester"] = True
+    rows, _ = modules.diff.compare_labels([left], [right], pack)
+    assert {r["필드"] for r in rows} == {"ratio", "sub_scores", "free_semester"}
+    assert json.loads(next(r["B값"] for r in rows if r["필드"] == "ratio")) == right["ratio"]
+
+
+def test_content_standards_union_and_group_statuses(pack, modules):
+    left, right = item(), item("99")
+    first = {**field("코드 묶음"), "codes": ["[9과01-01]", "[9과01-02]"],
+             "area_name_raw": "물질 (성질)", "text": "설명 A"}
+    left["standards"] = [first]
+    right["standards"] = [
+        {**copy.deepcopy(first), "codes": [code], "text": "설명 B",
+         "area_name_raw": "물질<br>성질"} for code in first["codes"]
+    ]
+    assert modules.diff.compare_labels([left], [right], pack)[0] == []
+    right["standards"][0]["status"] = "conflict"
+    rows, _ = modules.diff.compare_labels([left], [right], pack)
+    assert [r["필드"] for r in rows] == ["standards"]
+    assert rows[0]["B상태"] == "conflict | present"
+    right["standards"][0]["status"] = "present"
+    right["standards"][0]["area_name_raw"] = "다른 영역"
+    assert [r["필드"] for r in modules.diff.compare_labels([left], [right], pack)[0]] == [
+        "standards",
+    ]
+
+
+def test_content_method_options_text_and_marks(pack, modules):
+    left, right = item(), item("99")
+    left["method"] = {**field("표기 A"), "plain_text": "서술 (평가)", "other_text": "보고서!",
+                      "options": [{"text": "실험 (평가)", "state": "checked", "mark": "■"}]}
+    right["method"] = {**field("표기 B"), "plain_text": "서술<br>평가", "other_text": "보고서",
+                       "options": [{"text": "실험평가", "state": "checked", "mark": "☑"}] * 2}
+    assert modules.diff.compare_labels([left], [right], pack)[0] == []
+    right["method"]["options"][0] = {"text": "실험평가", "state": "unchecked"}
+    assert [r["필드"] for r in modules.diff.compare_labels([left], [right], pack)[0]] == ["method"]
+    right["method"] = copy.deepcopy(left["method"])
+    right["method"]["other_text"] = "다른 내용"
+    assert [r["필드"] for r in modules.diff.compare_labels([left], [right], pack)[0]] == ["method"]
+
+
+@pytest.mark.parametrize(("status", "other_loc", "equal"), [
+    ("present", loc(8, 12), True),
+    ("present", loc(9, 12), False),
+    ("present", loc(doc=DOC_B), False),
+    ("ambiguous", loc(20, 22), True),
+    ("conflict", loc(20, 22), True),
+])
+def test_content_rubric_requires_any_same_document_overlap(pack, modules, status, other_loc, equal):
+    left, right = item(), item("99")
+    left["rubric"] = field("기준 A", status=status)
+    right["rubric"] = field("기준 B", status=status)
+    right["rubric"]["values"][0]["loc"] = other_loc
+    rows, _ = modules.diff.compare_labels([left], [right], pack)
+    assert [r["필드"] for r in rows] == ([] if equal else ["rubric"])
+
+
+def test_content_document_ignores_pymupdf_and_clips_crossing_range(pack, modules):
+    path = pack / f"{DOC_A}.md"
+    lines = modules.validate.pack_lines(path)
+    lines[19] = "## pymupdf"
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    left, right = documents(), documents("astra")
+    left[0]["science_sections"][0].update(line_end=19)
+    right[0]["science_sections"] += [
+        {"grade": 2, "semester": 2, "line_start": 21, "line_end": 40},
+    ]
+    assert modules.diff.compare_labels(left, right, pack)[0] == []
+    assert [r["필드"] for r in modules.diff.compare_labels(left, right, pack, strict=True)[0]] == [
+        "science_sections",
+    ]
+    right[0]["science_sections"][0].update(line_start=20)
+    assert [r["필드"] for r in modules.diff.compare_labels(left, right, pack)[0]] == [
+        "science_sections",
+    ]
+
+
+def test_content_report_groups_fields_per_item_and_atomic_files(
+    tmp_path, pack, modules, monkeypatch,
+):
+    left, right = item(), item("99")
+    right["period"], right["ratio"] = field("5월"), field("30%")
+    rows, metrics = modules.diff.compare_labels([left], [right], pack)
+    output = tmp_path / "reports/disagreements.csv"
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("report directories must use ordinary mkdir for inherited ACLs")
+
+    monkeypatch.setattr("tempfile.mkdtemp", forbidden)
+    modules.diff.write_reports(rows, {"v2": metrics}, output)
+    markdown = output.with_suffix(".md").read_text(encoding="utf-8")
+    assert markdown.count("## 가상학교\n") == 1
+    assert markdown.count("### 1학년 1학기\n") == 1
+    assert markdown.count("#### 가상 과제\n") == 1
+    assert markdown.count("판정: A · B · 둘 다 아님") == 2
+    excerpts = markdown.split("원문 발췌:\n\n")[1:]
+    assert all(len(part.split("\n\n판정:")[0].replace("> ", "").replace("\\|", "|")) <= 300
+               for part in excerpts)
+    assert not list(output.parent.glob(".*.tmp"))
+
+
+def test_strict_cli_keeps_v1_and_v2_metrics(tmp_path, pack, modules):
+    left, right = item(), item("99")
+    right["title"]["values"] *= 2
+    a_path = write_labels(tmp_path / "a.jsonl", documents() + [left])
+    b_path = write_labels(tmp_path / "b.jsonl", documents("astra") + [right])
+    output = tmp_path / "strict.csv"
+    result = subprocess.run(
+        [sys.executable, "-X", "utf8", str(PROJECT / "scripts/gold_diff.py"),
+         str(a_path), str(b_path), "--strict", "--pack-dir", str(pack), "--out", str(output)],
+        capture_output=True, text=True, encoding="utf-8", check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    summary = json.loads((output.parent / "agreement.json").read_text(encoding="utf-8"))
+    assert summary["v1"]["difference_count"] == 1
+    assert summary["v2"]["difference_count"] == 0
+    with output.open(encoding="utf-8-sig", newline="") as handle:
+        assert [r["필드"] for r in csv.DictReader(handle)] == ["title"]
 
 
 def test_conversion_only_never_calls_semantic_modules(tmp_path, modules, monkeypatch):
