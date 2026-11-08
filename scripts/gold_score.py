@@ -373,12 +373,17 @@ class SourceMap:
         self.diagnostics = []
         for report in s4:
             for doc in report["documents"]:
-                digest = doc["sha256"]
+                # S6d-1: ZIP members are independent S4 documents keyed by the
+                # parent archive hash and member name.
+                digest = doc.get("parent_sha256") or doc["sha256"]
                 source = self.sources.get(digest)
                 if not source or source["original_path"] != doc["original_path"]:
                     raise ValueError(f"unsealed pipeline source {doc['original_path']}")
                 conversion = read(root / doc["converted_path"])
-                children = conversion.get("children", [conversion])
+                if doc.get("parent_sha256") and doc.get("member_name") is not None:
+                    children = [{**conversion, "member_name": doc["member_name"]}]
+                else:
+                    children = conversion.get("children", [conversion])
                 cursor = 0
                 for child in children:
                     rows = [
