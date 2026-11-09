@@ -4,7 +4,11 @@
 `audit_science_gold.py`가 내지 않는 Q2-2 보조 지표를 `public-stage.json`으로 낸다.
 채점을 다시 하지 않는다.
 돌리기:
-  .venv/Scripts/python.exe scripts/audit_science_gold_public_stage.py     --score S.json --axes-score X.json     --database data/publish/science/math_assessment_catalog_detail.sqlite     --risk-queue data/derived/science_audit/risk-queue.csv --out OUT.json     [--merged-title-substring 문구]
+  .venv/Scripts/python.exe scripts/audit_science_gold_public_stage.py \
+    --score S.json --axes-score X.json \
+    --database data/publish/science/math_assessment_catalog_detail.sqlite \
+    --risk-queue data/derived/science_audit/risk-queue.csv --out OUT.json \
+    [--merged-title-substring 문구]
 검증: 출력의 public_stage.confirmed가 S.json stages.rule_ai.pairs 길이와 같다.
 """
 
@@ -94,7 +98,8 @@ def build(score: dict, axes: dict, status, merged_substring: str) -> dict:
                        "denominator": standards["정답"] + standards["누락"] + standards["오값"]},
             "precision": {"numerator": standards["정답"],
                           "denominator": standards["정답"] + standards["오값"]},
-            "definition": "항목 단위. fields.per_field.standards: 정답/(정답+누락+오값), 정답/(정답+오값)"},
+            "definition": ("항목 단위. fields.per_field.standards: "
+                           "정답/(정답+누락+오값), 정답/(정답+오값)")},
         "overall_primary_accuracy": axes["metrics"]["overall_primary_accuracy"]["fraction"],
     }
 
