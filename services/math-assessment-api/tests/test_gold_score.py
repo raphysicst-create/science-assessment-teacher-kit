@@ -1,16 +1,22 @@
 """Synthetic gold scoring regressions, with no corpus dependency."""
 
+import hashlib
+import json
 import sys
 from copy import deepcopy
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "scripts"))
 
+import gold_score  # noqa: E402
 from gold_score import (  # noqa: E402
     FIELD_MAP,
     SourceMap,
+    ai_window_coverage,
+    combined_items,
     compare_item_metrics,
     confirmed,
     field_locators,
@@ -18,7 +24,9 @@ from gold_score import (  # noqa: E402
     independent,
     method_tokens,
     misattributions,
+    pair_combined_items,
     pair_items,
+    score,
     task_number,
     wilson,
 )
@@ -581,3 +589,238 @@ def test_wilson_zero_and_known_interval():
     assert wilson(0, 0)["value"] is None
     lower, upper = wilson(10, 10)["ci95"]
     assert lower == pytest.approx(0.7224672) and upper == pytest.approx(1)
+
+
+def score_row(key, title="실험", line=10, status="bounded"):
+    return {
+        **pipeline(key, title, line, status),
+        "item_id": key, "school": "학교", "converted_path": "conversion",
+        "original_path": "source", "locator": {"start": line, "end": line + 1},
+    }
+
+
+@pytest.fixture
+def synthetic_score(monkeypatch):
+    """Exercise score's normal loading path entirely in memory."""
+    root = Path("synthetic-root")
+    mapper = SimpleNamespace(
+        index=[{"school_name": "학교", "school_id": "school"}],
+        records={"conversion": [{"doc_id": "doc", "child_id": None}]},
+        diagnostics=[],
+        locate=lambda path, loc: [
+            {"doc_id": "doc", "line_start": loc["start"], "line_end": loc["end"] - 1}
+        ],
+    )
+    monkeypatch.setattr(gold_score, "SourceMap", lambda root, reports: mapper)
+    monkeypatch.setattr(gold_score, "seal_check", lambda root: {"checked": 0, "mismatches": []})
+    read_text = Path.read_text
+    monkeypatch.setattr(
+        Path, "read_text",
+        lambda path, **kwargs: "" if path.name == "targets.jsonl" else read_text(path, **kwargs),
+    )
+
+    def run(items, *, ai=False, items_dir=None, gs=None, relations=None):
+        payload = "\n".join(json.dumps({"type": "item", **g}) for g in (gs or [gold()])).encode()
+        labels = SimpleNamespace(
+            read_text=lambda **kw: payload.decode(), read_bytes=lambda: payload,
+        )
+        s6 = {"round": "round", "items": items, "excluded": []}
+        if ai:
+            s6["ai_relations"] = relations or {}
+        reports = {
+            "meta.json": {
+                "sha256": hashlib.sha256(payload).hexdigest(),
+                "scored_fields": list(FIELD_MAP), "not_scored": [],
+            },
+            "segments": {"round": "round", "documents": [], "excluded_non_plan": [],
+                         "incomplete_sources": []},
+            "subjects": {"sections": []}, "items": s6, "items_ai": s6,
+        }
+        loaded = []
+
+        def load(path):
+            key = path.name if path.name == "meta.json" else path.parent.name
+            loaded.append(key)
+            return deepcopy(reports[key])
+
+        monkeypatch.setattr(gold_score, "read", load)
+        report = score(root, labels, root / "meta.json", ["round"], items_dir=items_dir)
+        return report, loaded
+
+    return run
+
+
+def test_default_items_dir_matches_explicit_default(synthetic_score):
+    rows = [score_row("p1"), score_row("review", "관찰", 20, "review")]
+    implicit, loaded = synthetic_score(rows)
+    explicit, _ = synthetic_score(rows, items_dir=Path("data/derived/items"))
+    assert implicit == explicit
+    assert "items" in loaded and "items_ai" not in loaded
+    assert set(implicit["stages"]) == {"confirmed", "all_candidates"}
+
+
+def test_ai_items_do_not_change_either_legacy_stage(synthetic_score):
+    rules = [score_row("p1"), score_row("review", "관찰", 20, "review")]
+    base, _ = synthetic_score(rules)
+    with_ai, _ = synthetic_score(
+        [*rules, score_row("ai", "관찰", 30, "ai_verified")], ai=True,
+        items_dir=Path("data/derived/items_ai"),
+    )
+    assert base["stages"] == {k: with_ai["stages"][k] for k in base["stages"]}
+    assert compare_item_metrics(base, with_ai) == {"equal": True, "differences": []}
+
+
+def test_combined_union_deduplicates_support_and_excludes_other_relations():
+    rows = [score_row("a"), score_row("b", status="ai_verified")]
+    rows[0].update(extraction_status="review", public_eligible=True)
+    rows += [score_row(key, status="review") for key in ("c", "ct", "held", "bounded_rel")]
+    rows = [{**p, "score_id": "r/" + p["item_id"]} for p in rows]
+    relations = {
+        "agrees": [
+            {"rule_item_id": "c", "ai_task_id": "t1", "bounded": False},
+            {"rule_item_id": "bounded_rel", "ai_task_id": "t2", "bounded": True},
+            {"rule_item_id": "a", "ai_task_id": "t3", "bounded": False},
+        ],
+        "agrees_by_title": [
+            {"rule_item_ids": ["c", "ct"], "ai_task_id": "t4", "bounded": False},
+        ],
+        "agrees_by_evidence": [
+            {"rule_item_ids": ["held"], "ai_task_id": "t5", "bounded": False},
+        ],
+        "conflict": [{"rule_item_ids": ["held"]}],
+        "ai_split_suggested": [{"rule_item_id": "held"}],
+    }
+    before = deepcopy(rows)
+    selected = combined_items(rows, [{"round": "r", "ai_relations": relations}])
+    assert {p["item_id"]: p["contributions"] for p in selected} == {
+        "a": ["a", "c_location"], "b": ["b"],
+        "c": ["c_location", "c_title"], "ct": ["c_title"],
+    }
+    assert rows == before
+    # Identical local item IDs in another round must not inherit this support.
+    assert not combined_items([{**rows[2], "score_id": "other/c"}], [
+        {"round": "r", "ai_relations": relations},
+    ])
+
+
+def test_combined_stage_counts_ai_false_positives_and_unextracted_fields(synthetic_score):
+    gs = [gold(), gold("g2", "관찰", 20)]
+    rows = [score_row("p1"), score_row("ai", "관찰", 20, "ai_verified"),
+            score_row("extra", "새로운 과제", 999, "ai_verified")]
+    report, _ = synthetic_score(rows, ai=True, gs=gs)
+    stage = report["stages"]["rule_ai"]
+    assert stage["recall"] == wilson(2, 2)
+    assert stage["precision"] == wilson(2, 3)
+    assert stage["contribution_counts"]["b"] == {
+        "input": 2, "matched": 1, "unmatched": 1, "new_gold": 1,
+    }
+    assert len(report["unmatched_ai_pipeline"]) == 1
+    extra = report["unmatched_ai_pipeline"][0]
+    assert extra["title"] == "새로운 과제" and extra["estimated_reason"] == "정답 누락 가능성"
+    assert stage["title_accuracy"] == wilson(2, 2)
+    assert stage["fields"]["ratio"]["미추출"] == 1
+    assert stage["fields"]["ratio"]["누락"] == 1  # Rule item only.
+    assert stage["ai_unextracted_fields"]["ratio"] == {"input": 2, "matched": 1}
+    assert report["newly_matched_gold"][0]["gold_key"] == "g2"
+    assert any(c["type"] == "ai_unmatched" for c in report["cases"])
+
+
+def test_owned_ranges_fallback_has_separate_basis_and_does_not_mutate_items():
+    p = pipeline("ai", "다른 제목", 999, "ai_verified")
+    p["owned_occurrences"] = [{"doc_id": "doc", "line": 10}]
+    before = deepcopy(p)
+    pairs, missing, extra = pair_combined_items([gold()], [p])
+    assert not missing and not extra
+    assert pairs[0]["basis"]["owned_ranges_used"] is True
+    assert pairs[0]["basis"]["overlap_pack_lines"] == 1
+    assert pairs[0]["basis"]["locator_overlap_pack_lines"] == 0
+    assert pairs[0]["basis"]["pairing_phase"] == "owned_ranges"
+    assert p == before
+
+
+def test_score_maps_owned_ranges_and_reports_fallback(synthetic_score):
+    ai = score_row("ai", "다른 제목", 999, "ai_verified")
+    ai["owned_ranges"] = [{"start": 20, "end": 21}]
+    report, _ = synthetic_score(
+        [score_row("a"), ai], ai=True, gs=[gold(), gold("g2", "관찰", 20)],
+    )
+    pair = report["stages"]["rule_ai"]["pairs"][1]
+    assert pair["gold_key"] == "g2" and pair["basis"]["owned_ranges_used"]
+    assert pair["pipeline_locations"] == [{"doc_id": "doc", "line_start": 20, "line_end": 20}]
+    assert report["newly_matched_gold"][0]["basis"]["owned_ranges_used"]
+
+
+def test_score_counts_location_and_title_support_separately(synthetic_score):
+    relations = {
+        "agrees": [{"rule_item_id": "c1", "ai_task_id": "t1", "bounded": False}],
+        "agrees_by_title": [{"rule_item_ids": ["c2"], "ai_task_id": "t2", "bounded": False}],
+    }
+    rows = [score_row("a"), score_row("b", "관찰", 20, "ai_verified"),
+            score_row("c1", "보고서", 30, "review"), score_row("c2", "발표", 40, "review")]
+    gs = [gold(), gold("g2", "관찰", 20), gold("g3", "보고서", 30), gold("g4", "발표", 40)]
+    report, _ = synthetic_score(rows, ai=True, gs=gs, relations=relations)
+    stage = report["stages"]["rule_ai"]
+    assert stage["input_count"] == 4 and stage["recall"] == wilson(4, 4)
+    assert stage["contribution_counts"]["c_location"]["new_gold"] == 1
+    assert stage["contribution_counts"]["c_title"]["new_gold"] == 1
+    assert [p["contributions"] for p in stage["pairs"]] == [
+        ["a"], ["b"], ["c_location"], ["c_title"],
+    ]
+
+
+def test_primary_locator_and_title_pairs_precede_owned_ranges():
+    p = pipeline("ai", "실험", 999, "ai_verified")
+    p["owned_occurrences"] = [{"doc_id": "doc", "line": 20}]
+    pairs, missing, _ = pair_combined_items([gold(), gold("g2", "관찰", 20)], [p])
+    assert pairs[0]["gold_key"] == "g1" and missing == [1]
+    assert pairs[0]["basis"]["owned_ranges_used"] is False
+
+
+def test_owned_ranges_fallback_preserves_ambiguous_ties():
+    ps = [pipeline(k, "미상", 999, "ai_verified") for k in ("a", "b")]
+    for p in ps:
+        p["owned_occurrences"] = [{"doc_id": "doc", "line": 10}]
+    pairs, missing, extra = pair_combined_items([gold()], ps)
+    assert not pairs and missing == [0] and extra == [0, 1]
+
+
+def test_owned_fallback_keeps_unmatched_rule_competitors():
+    ps = [pipeline(k, "미상") for k in ("rule1", "rule2")]
+    ai = pipeline("ai", "미상", 999, "ai_verified")
+    ai["owned_occurrences"] = [{"doc_id": "doc", "line": 10}]
+    pairs, missing, extra = pair_combined_items([gold()], [*ps, ai])
+    assert not pairs and missing == [0] and extra == [0, 1, 2]
+
+
+def test_window_coverage_uses_mapped_source_positions():
+    windows = [
+        {"target_id": "in", "locations": [{"doc_id": "doc", "line_start": 5, "line_end": 10}]},
+        {"target_id": "other", "locations": [{"doc_id": "other", "line": 10}]},
+    ]
+    assert ai_window_coverage(gold(), windows)["ai_window_ids"] == ["in"]
+    assert ai_window_coverage(gold(line=11), windows)["ai_window_status"] == "창 밖"
+
+
+def test_unmatched_ai_method_diagnosis_does_not_create_a_pair():
+    g = gold()
+    g["fields"]["method"] = envelope({
+        "plain_text": "실험 보고서 평가",
+        "values": [{"raw": "실험 보고서 평가", "loc": {"doc_id": "doc", "line": 999}}],
+    })
+    p = score_row("ai", "실험 보고서 평가", 999, "ai_verified")
+    assert not pair_combined_items([g], [p])[0]
+    record = gold_score.unmatched_ai_record(p, [g], [])
+    assert record["estimated_reason"] == "수행평가 아님"
+    assert record["method_diagnostic_gold_keys"] == ["g1"]
+
+
+def test_v13_markdown_keeps_korean_and_does_not_mutate_counts(synthetic_score):
+    report, _ = synthetic_score([score_row("ai", status="ai_verified")], ai=True)
+    report.update(
+        baseline={"path": "baseline", "sha256": "test"}, item_metric_comparison={"equal": True},
+        comparison={"v1.2": {"stages": deepcopy(report["stages"])}},
+    )
+    before = deepcopy(report)
+    rendered = gold_score.markdown(report)
+    assert "규칙+AI" in rendered and "미추출" in rendered and "제목 정확도" in rendered
+    assert report == before

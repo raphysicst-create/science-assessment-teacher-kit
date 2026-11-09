@@ -282,6 +282,83 @@ def confirmed(item: dict) -> bool:
     return item.get("extraction_status") == "bounded" or item.get("public_eligible") is True
 
 
+def ai_item(item: dict) -> bool:
+    return (
+        item.get("extraction_status") == "ai_verified" or item.get("extraction_method") == "ai_read"
+    )
+
+
+def combined_items(pipeline: list[dict], reports: list[dict]) -> list[dict]:
+    """Deduplicate the a/b/c union by round-qualified item ID, retaining all support."""
+    support = defaultdict(list)
+    for report in reports:
+        for relation in ("agrees", "agrees_by_title"):
+            for row in report.get("ai_relations", {}).get(relation, []):
+                if row.get("bounded") is not False:
+                    continue
+                ids = [row["rule_item_id"]] if relation == "agrees" else row["rule_item_ids"]
+                for item_id in ids:
+                    support[report["round"] + "/" + item_id].append({
+                        "relation": relation, "ai_task_id": row["ai_task_id"],
+                    })
+    selected = []
+    for item in pipeline:
+        sources = []
+        if not ai_item(item) and independent(item) and item.get("candidate_role") == "performance":
+            if confirmed(item):
+                sources.append("a")
+        if item.get("extraction_status") == "ai_verified":
+            sources.append("b")
+        evidence = support[item["score_id"]] if not ai_item(item) else []
+        sources += [
+            "c_location" if relation == "agrees" else "c_title"
+            for relation in ("agrees", "agrees_by_title")
+            if any(row["relation"] == relation for row in evidence)
+        ]
+        if sources:
+            selected.append({**item, "contributions": sources, "ai_support": evidence})
+    return selected
+
+
+def pair_combined_items(
+    gold: list[dict], pipeline: list[dict], *, use_task_no: bool = True,
+) -> tuple[list[dict], list[int], list[int]]:
+    """Preserve primary locator/title/number pairs before AI-owned evidence fallback."""
+    pairs, missing, extra = pair_items(gold, pipeline, use_task_no=use_task_no)
+    for pair in pairs:
+        pair["basis"]["owned_ranges_used"] = False
+    fallback = [
+        {
+            **pipeline[j],
+            "occurrences": pipeline[j].get("owned_occurrences") or pipeline[j]["occurrences"],
+        }
+        for j in extra
+    ]
+    more, _, _ = pair_items([gold[i] for i in missing], fallback, use_task_no=False)
+    for pair in more:
+        gi, pi = missing[pair["gold_index"]], extra[pair["pipeline_index"]]
+        owned_used = (
+            ai_item(pipeline[pi]) and bool(pipeline[pi].get("owned_occurrences"))
+            and pair["basis"]["overlap_pack_lines"] > 0
+        )
+        pair.update(gold_index=gi, pipeline_index=pi)
+        pair["basis"].update(
+            owned_ranges_used=owned_used,
+            locator_overlap_pack_lines=overlap(
+                gold[gi]["occurrences"], pipeline[pi]["occurrences"],
+            ),
+            pairing_phase="owned_ranges" if owned_used else "location_title_after_owned_ranges",
+        )
+        pairs.append(pair)
+    paired_gold = {p["gold_index"] for p in pairs}
+    paired_pipeline = {p["pipeline_index"] for p in pairs}
+    return (
+        sorted(pairs, key=lambda p: p["gold_index"]),
+        [i for i in missing if i not in paired_gold],
+        [j for j in extra if j not in paired_pipeline],
+    )
+
+
 def task_number(value) -> str | None:
     """Read a single identity number, never a number embedded in task prose."""
     numbers = set()
@@ -694,6 +771,7 @@ def seal_check(root: Path) -> dict:
 
 def score(
     root: Path, gold_path: Path, meta_path: Path, rounds: list[str], *, use_task_no: bool = True,
+    items_dir: Path | None = None,
 ) -> dict:
     labels = [json.loads(line) for line in gold_path.read_text(encoding="utf-8").splitlines()]
     meta = read(meta_path)
@@ -703,7 +781,9 @@ def score(
     names = [n for n in FIELD_MAP if n in meta["scored_fields"] and n not in meta["not_scored"]]
     s4 = [read(root / f"data/derived/segments/{r}.json") for r in rounds]
     s5 = [read(root / f"data/derived/subjects/{r}.json") for r in rounds]
-    s6 = [read(root / f"data/derived/items/{r}.json") for r in rounds]
+    items_dir = root / (items_dir or Path("data/derived/items"))
+    s6 = [read(items_dir / f"{r}.json") for r in rounds]
+    ai_enabled = any("ai_relations" in report for report in s6)
     mapper = SourceMap(root, s4)
     schools = {r["school_name"]: r["school_id"] for r in mapper.index}
     pipeline = []
@@ -715,6 +795,12 @@ def score(
                 "score_id": report["round"] + "/" + row["item_id"],
             }
             row["occurrences"] = mapper.locate(row["converted_path"], row["locator"])
+            if ai_item(row):
+                ai_enabled = True
+                row["owned_occurrences"] = [
+                    loc for pos in row.get("owned_ranges", [])
+                    for loc in mapper.locate(row["converted_path"], pos)
+                ]
             row["expected_child_doc_ids"] = [
                 r["doc_id"]
                 for r in mapper.records[row["converted_path"]]
@@ -732,35 +818,55 @@ def score(
                 for n in names
             }
             pipeline.append(row)
+    combined = combined_items(pipeline, s6) if ai_enabled else []
+    ai_pipeline = pipeline
+    pipeline = [p for p in pipeline if not ai_item(p)]
     # Explicit non-performance roles remain in the diagnostic inventory only.
     raw_independent = [p for p in pipeline if independent(p)]
     candidates = [p for p in raw_independent if p.get("candidate_role") == "performance"]
     nonperformance = [p for p in raw_independent if p.get("candidate_role") != "performance"]
     stages = {}
     cases = []
-    for stage, selected in (
+    stage_inputs = [
         ("confirmed", [p for p in candidates if confirmed(p)]),
         ("all_candidates", candidates),
-    ):
-        pairs, missing, extra = pair_items(gold, selected, use_task_no=use_task_no)
+    ]
+    if ai_enabled:
+        stage_inputs.append(("rule_ai", combined))
+    for stage, selected in stage_inputs:
+        pairing = pair_combined_items if stage == "rule_ai" else pair_items
+        pairs, missing, extra = pairing(gold, selected, use_task_no=use_task_no)
         counters = {n: Counter({o: 0 for o in OUTCOMES}) for n in names}
         conflict_counts = {n: Counter() for n in names}
         relations = Counter()
         attributed = []
         for pair in pairs:
             g, p = gold[pair["gold_index"]], selected[pair["pipeline_index"]]
-            results = {n: field_result(n, g, p) for n in names}
+            results = {
+                n: {"result": "미추출", "gold_conflict": False, "standards_relation": None}
+                if ai_item(p) and n != "title" else field_result(n, g, p)
+                for n in names
+            }
             pair["fields"] = results
-            pair["pipeline_locations"] = p["occurrences"]
+            pair["pipeline_locations"] = (
+                p.get("owned_occurrences", []) if pair["basis"].get("owned_ranges_used")
+                else p["occurrences"]
+            )
             pair["pipeline_title"] = pipeline_field(p, "title").get("value")
+            if stage == "rule_ai":
+                pair["contributions"] = p["contributions"]
+                pair["ai_support"] = p["ai_support"]
             for n, result in results.items():
                 counters[n][result["result"]] += 1
                 if result["gold_conflict"]:
                     conflict_counts[n][result["result"]] += 1
                 if n == "standards" and result["standards_relation"]:
                     relations[result["standards_relation"]] += 1
-            attributed.extend(misattributions(g, p, gold, names))
+            attributed.extend(misattributions(g, p, gold, ["title"] if ai_item(p) else names))
         unmatched = [unmatched_record(selected[j], gold, pairs) for j in extra]
+        if stage == "rule_ai":
+            for row in unmatched:
+                row["included_in_precision"] = True
         stages[stage] = {
             "recall": wilson(len(pairs), len(gold)),
             "precision": wilson(len(pairs), len(selected)),
@@ -768,7 +874,9 @@ def score(
             "pairs": pairs,
             "missing_gold_keys": [gold[j]["item_key"] for j in missing],
             "unmatched_gold": [
-                pairing_failure(gold[j], pipeline, pairs, gold, selected) for j in missing
+                pairing_failure(
+                    gold[j], ai_pipeline if stage == "rule_ai" else pipeline, pairs, gold, selected,
+                ) for j in missing
             ],
             "unmatched_pipeline": unmatched,
             "unmatched_classification_counts": {
@@ -1005,8 +1113,8 @@ def score(
         for row in stages["all_candidates"]["unmatched_gold"]
         if case_by_key[row["gold_key"]]["cause"] == "짝짓기 실패"
     ]
-    return {
-        "version": "gold-v1.2",
+    report = {
+        "version": "gold-v1.3",
         "gold_sha256": meta["sha256"],
         "rounds": rounds,
         "scored_fields": names,
@@ -1065,6 +1173,256 @@ def score(
             if p["semester"] not in {1, 2} and p["title"]
         ],
     }
+    if ai_enabled:
+        add_ai_report(report, gold, combined, s6, mapper, root, rounds)
+    return report
+
+
+def unmatched_ai_record(item: dict, gold: list[dict], pairs: list[dict]) -> dict:
+    row = unmatched_record(item, gold, pairs)
+    title = norm(row["title"] or "")
+    same_school = [g for g in gold if g["school_id"] == item["school_id"]]
+    identity_matches = [
+        g for g in same_school
+        if title in gold_titles(g) or overlap(item["occurrences"], g["occurrences"])
+    ]
+    peers = [
+        g for g in identity_matches
+        if all(g[k] == item[k] for k in ("grade", "semester"))
+    ]
+    # Diagnostic only. Method values never participate in pair_items or pair_combined_items.
+    method_peers = [
+        g for g in same_school
+        if all(g[k] == item[k] for k in ("grade", "semester"))
+        and any(title in method_tokens(v) for v in alternatives(g["fields"].get("method", {})))
+        and overlap(item["occurrences"], locations(g["fields"].get("method", {})))
+    ]
+    matched = {p["gold_key"] for p in pairs}
+    if item.get("grade") not in {1, 2} or item.get("semester") not in {1, 2} or (
+        identity_matches and not peers
+    ):
+        reason = "학년·학기 오류"
+        detail = "대상 학년·학기가 없거나 제목·위치가 대응하는 정답의 학년·학기와 다름"
+    elif method_peers and not any(title in gold_titles(g) for g in peers):
+        reason = "수행평가 아님"
+        detail = "같은 위치의 평가방법과 제목이 일치. 평가방법을 독립 과제로 읽은 것으로 추정"
+    elif any(g["item_key"] in matched for g in peers):
+        reason = "중복(같은 과제의 다른 위치)"
+        detail = "같은 학교·학년·학기의 이미 연결된 정답과 제목 또는 위치가 대응함"
+    elif row["classification"] in {"다른 교과", "지필평가", "운영표·규정"}:
+        reason = "수행평가 아님"
+        detail = row["classification"]
+    else:
+        reason = "정답 누락 가능성"
+        detail = (
+            "같은 집단 정답과 대응하지만 1대1 짝을 확정하지 못함"
+            if peers else "같은 집단에서 제목·위치가 대응하는 정답을 찾지 못함"
+        )
+    evidence = item.get("boundary_evidence", {}).get("ai_evidence", [])
+    if not evidence:
+        evidence = pipeline_field(item, "title").get("evidence", [])
+    return {
+        **row, "estimated_reason": reason, "reason_detail": detail,
+        "included_in_precision": True,
+        "evidence_quotes": [e.get("raw", e.get("text", "")) for e in evidence],
+        "owned_ranges": item.get("owned_ranges", []),
+        "owned_locations": item.get("owned_occurrences", []),
+        "method_diagnostic_gold_keys": [g["item_key"] for g in method_peers],
+    }
+
+
+def ai_window_coverage(gold: dict, windows: list[dict]) -> dict:
+    """Compare sealed pack coordinates, without filtering a window by inferred grade."""
+    hits = [w for w in windows if overlap(gold["occurrences"], w["locations"])]
+    return {
+        "ai_window_status": "창 안" if hits else "창 밖",
+        "ai_window_ids": [w["target_id"] for w in hits],
+        "ai_window_basis": "정답 occurrence와 AI 대상 창의 pack 줄 겹침",
+    }
+
+
+def add_ai_report(
+    report: dict, gold: list[dict], selected: list[dict], sources: list[dict],
+    mapper: SourceMap, root: Path, rounds: list[str],
+) -> None:
+    stage = report["stages"]["rule_ai"]
+    confirmed_keys = {p["gold_key"] for p in report["stages"]["confirmed"]["pairs"]}
+    paired_keys = {p["gold_key"] for p in stage["pairs"]}
+    by_id = {p["score_id"]: p for p in selected}
+    case_by_key = {c["key"]: c for c in report["cases"] if c["type"] == "gold"}
+    verified = {}
+    windows = []
+    for round_key in rounds:
+        directory = root / "data/derived/ai_read" / round_key
+        verified_path = directory / "verified.json"
+        if verified_path.exists():
+            verified.update({
+                round_key + "/" + task["ai_task_id"]: task
+                for task in read(verified_path)["kept"]
+            })
+        target_path = directory / "targets.jsonl"
+        for line in target_path.read_text(encoding="utf-8").splitlines():
+            window = json.loads(line)
+            windows.append({
+                "target_id": window["target_id"], "round": round_key,
+                "converted_path": window["converted_path"],
+                "start": window["start"], "end": window["end"],
+                "locations": mapper.locate(window["converted_path"], window),
+            })
+    newly_matched = []
+    for pair in stage["pairs"]:
+        item = by_id[pair["pipeline_key"]]
+        round_key = pair["pipeline_key"].split("/", 1)[0]
+        pair["ai_titles"] = (
+            [pair["pipeline_title"]] if ai_item(item) else [
+                verified.get(round_key + "/" + s["ai_task_id"], {}).get("title")
+                for s in pair["ai_support"]
+            ]
+        )
+        if pair["gold_key"] not in confirmed_keys:
+            case = case_by_key[pair["gold_key"]]
+            newly_matched.append({
+                "gold_key": pair["gold_key"],
+                **{k: case[k] for k in ("school", "grade", "semester", "title")},
+                "pipeline_key": pair["pipeline_key"], "pipeline_title": pair["pipeline_title"],
+                "contributions": pair["contributions"], "ai_titles": pair["ai_titles"],
+                "basis": pair["basis"], "locations": pair["pipeline_locations"],
+            })
+    contribution_counts = {}
+    paired_ids = {p["pipeline_key"] for p in stage["pairs"]}
+    for source in ("a", "b", "c_location", "c_title"):
+        members = [p for p in selected if source in p["contributions"]]
+        contribution_counts[source] = {
+            "input": len(members),
+            "matched": sum(p["score_id"] in paired_ids for p in members),
+            "unmatched": sum(p["score_id"] not in paired_ids for p in members),
+            "new_gold": sum(source in p["contributions"] for p in newly_matched),
+        }
+    stage["contribution_counts"] = contribution_counts
+    stage["input_count"] = len(selected)
+    stage["owned_ranges_pair_count"] = sum(p["basis"]["owned_ranges_used"] for p in stage["pairs"])
+    stage["retained_confirmed_gold_count"] = len(paired_keys & confirmed_keys)
+    stage["lost_confirmed_gold_keys"] = sorted(confirmed_keys - paired_keys)
+    stage["title_accuracy"] = (
+        wilson(stage["fields"]["title"]["정답"], len(stage["pairs"]))
+        if "title" in stage["fields"] else wilson(0, 0)
+    )
+    stage["ai_unextracted_fields"] = {
+        n: {
+            "input": sum(ai_item(p) for p in selected),
+            "matched": stage["fields"][n].get("미추출", 0),
+        }
+        for n in report["scored_fields"] if n != "title"
+    }
+    unmatched_ai = [
+        unmatched_ai_record(p, gold, stage["pairs"])
+        for p in selected if ai_item(p) and p["score_id"] not in paired_ids
+    ]
+    remaining = []
+    for failure in stage["unmatched_gold"]:
+        case = case_by_key[failure["gold_key"]]
+        g = next(g for g in gold if g["item_key"] == failure["gold_key"])
+        coverage = ai_window_coverage(g, windows)
+        findings = []
+        for task_key, task in verified.items():
+            if any(task.get(k) != case[k] for k in ("school", "grade", "semester")):
+                continue
+            primary = mapper.locate(task["converted_path"], task["locator"])
+            owned = [
+                loc for pos in task.get("locators", [])
+                for loc in mapper.locate(task["converted_path"], pos)
+            ]
+            title_match = norm(task["title"]) in gold_titles(g)
+            primary_overlap = overlap(g["occurrences"], primary)
+            owned_overlap = overlap(g["occurrences"], owned)
+            if not (title_match or primary_overlap or owned_overlap):
+                continue
+            task_round, task_id = task_key.split("/", 1)
+            relation_types = [
+                name for source in sources if source["round"] == task_round
+                for name, rows in source.get("ai_relations", {}).items()
+                if any(
+                    row.get("ai_task_id") == task_id or task_id in row.get("ai_task_ids", [])
+                    for row in rows
+                )
+            ]
+            findings.append({
+                "ai_task_key": task_key, "title": task["title"],
+                "title_match": title_match, "locator_overlap_pack_lines": primary_overlap,
+                "owned_overlap_pack_lines": owned_overlap, "relations": relation_types,
+            })
+        ai_reason = (
+            "AI 검증 과제 후보 " + ", ".join(
+                f"{f['title']} ({'/'.join(f['relations']) or '관계 없음'}, "
+                f"{'제목 일치' if f['title_match'] else '위치 근거만 겹침'})"
+                for f in findings
+            ) + ". " if findings else "대응하는 AI 검증 보존 과제 없음. "
+        )
+        row = {
+            **failure, "school": case["school"], **coverage,
+            "rule_cause": case["cause"],
+            "ai_findings": findings,
+            "cause": (
+                "AI 창 안에서 미회복. " if coverage["ai_window_status"] == "창 안"
+                else "AI 창 밖. "
+            ) + ai_reason + failure["reason"].replace("; ", ". "),
+        }
+        remaining.append(row)
+    recovered = paired_keys | {
+        p["gold_key"] for p in report["stages"]["all_candidates"]["pairs"]
+    }
+    ai_loss = Counter({k: 0 for k in report["loss_map"]})
+    ai_loss["gold"] = len(gold)
+    for g in gold:
+        case = case_by_key[g["item_key"]]
+        paired = g["item_key"] in recovered
+        generated = case["candidate_generated"] or any(
+            all(p[k] == g[k] for k in ("school_id", "grade"))
+            and overlap(g["occurrences"], p["occurrences"] + p.get("owned_occurrences", []))
+            for p in selected
+        )
+        ai_loss["document"] += case["document_found"] or paired
+        ai_loss["section"] += case["section_found"] or paired
+        ai_loss["candidate"] += paired or (case["section_found"] and generated)
+        ai_loss["matched"] += paired
+        ai_loss["confirmed"] += g["item_key"] in paired_keys
+    report.update(
+        newly_matched_gold=newly_matched,
+        unmatched_ai_pipeline=unmatched_ai,
+        remaining_rule_ai_misses=remaining,
+        ai_windows=windows,
+        ai_window_counts={
+            status: sum(r["ai_window_status"] == status for r in remaining)
+            for status in ("창 안", "창 밖")
+        },
+        loss_maps={"rule_only": report["loss_map"], "rule_ai": ai_loss},
+        ai_relation_counts={
+            relation: sum(len(s.get("ai_relations", {}).get(relation, [])) for s in sources)
+            for relation in ("agrees", "agrees_by_title", "agrees_by_evidence",
+                             "ai_split_suggested", "conflict", "new")
+        },
+    )
+    for case in case_by_key.values():
+        pair = next((p for p in stage["pairs"] if p["gold_key"] == case["key"]), None)
+        case.update(
+            rule_ai_found=pair is not None,
+            rule_ai_pipeline_key=pair["pipeline_key"] if pair else "",
+            rule_ai_pipeline_title=pair["pipeline_title"] if pair else "",
+            rule_ai_ai_titles=pair["ai_titles"] if pair else [],
+            rule_ai_newly_matched=bool(pair) and case["key"] not in confirmed_keys,
+            rule_ai_pair_basis=pair["basis"] if pair else {},
+            rule_ai_contributions=pair["contributions"] if pair else [],
+            rule_ai_field_results=(
+                {n: r["result"] for n, r in pair["fields"].items()} if pair else {}
+            ),
+        )
+        if not pair:
+            failure = next(r for r in remaining if r["gold_key"] == case["key"])
+            case.update({k: failure[k] for k in ("ai_window_status", "ai_window_ids")})
+            case["rule_ai_cause"] = failure["cause"]
+            case["rule_ai_ai_findings"] = failure["ai_findings"]
+    report["cases"].extend({"type": "ai_unmatched", "key": r["pipeline_key"], **r}
+                           for r in unmatched_ai)
 
 
 def metric(value: dict) -> str:
@@ -1095,8 +1453,8 @@ def location_text(row: dict) -> str:
 def compare_item_metrics(before: dict, after: dict) -> dict:
     """Compare item metrics and pairing evidence independently of field scoring."""
     differences = []
-    for stage, result in after["stages"].items():
-        previous = before["stages"][stage]
+    for stage, previous in before["stages"].items():
+        result = after["stages"][stage]
         for key in ("recall", "precision", "role_counts", "missing_gold_keys"):
             if previous[key] != result[key]:
                 differences.append(f"stages.{stage}.{key}")
@@ -1112,10 +1470,20 @@ def compare_item_metrics(before: dict, after: dict) -> dict:
     return {"equal": not differences, "differences": differences}
 
 
-def markdown(report: dict) -> str:
+def pair_basis_text(basis: dict) -> str:
+    if basis.get("owned_ranges_used"):
+        return f"owned_ranges 보조 겹침 {basis['overlap_pack_lines']}줄"
+    if basis.get("task_no_used"):
+        return f"연결용 task_no {basis['normalized_task_no']}"
+    if basis.get("overlap_pack_lines"):
+        return f"locator 겹침 {basis['overlap_pack_lines']}줄"
+    return "제목 일치 " + ", ".join(basis.get("normalized_title_matches", []))
+
+
+def rule_markdown(report: dict) -> str:
     stages = report["stages"]
     lines = [
-        "# S9 ⑧ 채점기 v1.2 · 정답 v1",
+        "# S9 ⑧ 채점기 v1.3 · 정답 v1",
         "",
         "두 공시 회차·10개교·정답 83항목. 추출 규칙·패턴·임계값 변경 0. 오프라인 실행.",
         "",
@@ -1132,7 +1500,7 @@ def markdown(report: dict) -> str:
         "잇는다. 기존 gold_diff.match_items를 재사용했다. "
         "각 단계에서 따로 짝지으므로 같은 정답에 대응하는 요약·상세 행은 단계별로 달라질 수 있다.",
         "",
-        "v1.1에서 도입한 규칙대로 위치·제목 짝을 먼저 보존한 뒤 미짝 항목만 task_no로 보완한다. "
+        "기존 규칙대로 위치·제목 짝을 먼저 보존한 뒤 미짝 항목만 task_no로 보완한다. "
         "정답 task_no 값과 파이프라인 task_no 또는 번호뿐인 제목(수행평가 1·1·① 등)을 "
         "NFKC·공백·문장부호 정규화해 번호를 얻는다. 같은 학교·학년·학기의 해당 단계 "
         "입력 전체에서 양방향 유일할 때만 잇고, 여러 번호·충돌·남은 동률은 보류한다. "
@@ -1160,9 +1528,9 @@ def markdown(report: dict) -> str:
         "|---|---|---|",
         *[f"| {n} | {FIELD_MAP[n]} | {cell(rule)} |" for n, rule in FIELD_RULES.items()],
         "",
-        "## v1.1과 v1.2 성적 비교",
+        "## v1.2과 v1.3 성적 비교",
         "",
-        "수치 괄호는 Wilson 95% 구간이다. v1.1은 보존된 JSON의 실제 측정값이다. "
+        "수치 괄호는 Wilson 95% 구간이다. v1.2은 보존된 JSON의 실제 측정값이다. "
         "재현율 기준 ≥95%, 정밀도 기준 ≥99%.",
         "",
         f"기준 파일 `{report['baseline']['path']}` · SHA-256 `{report['baseline']['sha256']}`.",
@@ -1171,12 +1539,12 @@ def markdown(report: dict) -> str:
         + ("동일." if report["item_metric_comparison"]["equal"] else
            "차이 있음. " + cell(report["item_metric_comparison"]["differences"])),
         "",
-        "| 단계 | v1.1 재현율 | v1.2 재현율 | v1.1 정밀도 | v1.2 정밀도 | 번호 직접 사용 |",
+        "| 단계 | v1.2 재현율 | v1.3 재현율 | v1.2 정밀도 | v1.3 정밀도 | 번호 직접 사용 |",
         "|---|---|---|---|---|---:|",
     ]
     for key, label in (("confirmed", "확정"), ("all_candidates", "전체 후보")):
         s = stages[key]
-        before = report["comparison"]["v1.1"]["stages"][key]
+        before = report["comparison"]["v1.2"]["stages"][key]
         lines.append(
             f"| {label} | {metric(before['recall'])} | {metric(s['recall'])} | "
             f"{metric(before['precision'])} | {metric(s['precision'])} | "
@@ -1251,7 +1619,7 @@ def markdown(report: dict) -> str:
         "S5의 합친 텍스트에서 사용되는 기존 경로에서 관찰했다. 실제 S6 근거가 가리키는 "
         "본문으로 채점했으며 개별 충돌은 JSON에 보존했다.",
         "",
-        "## 짝 없는 확정 파이프라인 항목 전부 · v1.2",
+        "## 짝 없는 확정 파이프라인 항목 전부 · v1.3",
         "",
         f"{len(report['unmatched_confirmed_pipeline'])}개. 역할 제외·중복 별칭을 포함해 원본 "
         "파이프라인의 모든 bounded/public_eligible 행을 검사한다. 공식 정밀도 분모 포함 "
@@ -1272,7 +1640,7 @@ def markdown(report: dict) -> str:
         lines.append("| - | - | - | - | - | - | 없음 | - | - |")
     lines += [
         "",
-        "## 남은 짝짓기 실패 정답 전부 · v1.2 전체 후보 기준",
+        "## 남은 짝짓기 실패 정답 전부 · v1.3 전체 후보 기준",
         "",
         f"{len(report['remaining_pairing_failures'])}개. 손실 지도에서 짝짓기 실패로 남은 "
         "정답을 모두 싣는다. 후보 목록은 같은 학교·학년·학기 원본 행 전체이며 "
@@ -1322,13 +1690,13 @@ def markdown(report: dict) -> str:
             "",
             f"### {label} 필드 전후 비교",
             "",
-            "각 칸은 v1.1 → v1.2 건수다. v1.1에 없던 부분은 0으로 표시한다.",
+            "각 칸은 v1.2 → v1.3 건수다. v1.2에 없던 부분은 0으로 표시한다.",
             "",
             "| 필드 | 정답 | 부분 | 누락 | 오값 | 허위값 | 둘다없음 |",
             "|---|---:|---:|---:|---:|---:|---:|",
         ]
         for n, counts in s["fields"].items():
-            before = report["comparison"]["v1.1"]["stages"][key]["fields"][n]
+            before = report["comparison"]["v1.2"]["stages"][key]["fields"][n]
             lines.append(
                 f"| {n} | "
                 + " | ".join(f"{before.get(o, 0)} → {counts[o]}" for o in OUTCOMES)
@@ -1454,21 +1822,148 @@ def markdown(report: dict) -> str:
     return "\n".join(lines)
 
 
+def ai_markdown(report: dict) -> str:
+    stages = report["stages"]
+    lines = [
+        "# 채점기 v1.3 · 규칙+AI",
+        "",
+        "오프라인 측정. a는 기존 확정 단계의 독립 수행 항목(bounded 또는 public_eligible), "
+        "b는 ai_verified 새 항목, c는 bounded=false인 agrees·agrees_by_title의 규칙 항목이다. "
+        "agrees는 위치 확인, agrees_by_title은 제목 확인으로 구분한다. "
+        "합집합은 회차·항목 ID로 중복 제거한다. c의 위치·제목 지원이 겹치면 "
+        "각각의 지원 건수에 포함되므로 기여 행의 합은 합집합과 다를 수 있다.",
+        "",
+        "학교·학년·학기가 같은 항목을 기존 위치 겹침 → 제목 → 연결용 task_no로 짝짓는다. "
+        "채점할 필드 값은 짝짓기에 사용하지 않는다. AI locator의 기본 짝을 보존한 뒤 "
+        "남은 AI 항목에 owned_ranges 위치 보조 짝짓기를 적용한다. 모든 짝은 1대1이다.",
+        "",
+        f"기준 파일 `{report['baseline']['path']}`. 항목 지표·짝·짝 근거·손실 지도 "
+        + ("일치." if report["item_metric_comparison"]["equal"] else
+           "차이 있음. " + cell(report["item_metric_comparison"]["differences"])),
+        "",
+        "## 확정 대 규칙+AI",
+        "",
+        "재현율·정밀도 괄호는 Wilson 95% 구간이다. 필드 오귀속은 짝지어진 항목에서 집계한다.",
+        "",
+        "| 단계 | 재현율 | 정밀도 | 필드 오귀속 | 공개 필드 오귀속 |",
+        "|---|---|---|---:|---:|",
+    ]
+    for key, label in (("confirmed", "확정(규칙만)"), ("rule_ai", "규칙+AI"),
+                       ("all_candidates", "전체 후보(규칙만)")):
+        if key in stages:
+            stage = stages[key]
+            lines.append(f"| {label} | {metric(stage['recall'])} | {metric(stage['precision'])} | "
+                         f"{len(stage['misattributions'])} | {stage['public_misattributions']} |")
+    if "rule_ai" in stages:
+        stage = stages["rule_ai"]
+        lines += ["", "| 기여 | 입력 | 맞힘 | 미짝 | 확정 대비 새 정답 |",
+                  "|---|---:|---:|---:|---:|"]
+        labels = {"a": "a 확정 규칙", "b": "b AI 새 항목",
+                  "c_location": "c 위치 확인", "c_title": "c 제목 확인"}
+        for key, label in labels.items():
+            counts = stage["contribution_counts"][key]
+            lines.append(f"| {label} | {counts['input']} | {counts['matched']} | "
+                         f"{counts['unmatched']} | {counts['new_gold']} |")
+        lines += ["", f"합집합 입력 {stage['input_count']}개. 기존 확정 정답 유지 "
+                  f"{stage['retained_confirmed_gold_count']}개. 잃은 확정 정답 "
+                  f"{cell(stage['lost_confirmed_gold_keys'])}. "
+                  f"owned_ranges 보조 짝 {stage['owned_ranges_pair_count']}개.", "",
+                  "## 새로 맞힌 정답 전부", "",
+                  "| 정답 키 | 학교 | 학년 | 학기 | 정답 제목 | 기여 | "
+                  "항목 키 · 규칙/AI 제목 | AI 제목 | 짝 근거 |",
+                  "|---|---|---:|---:|---|---|---|---|---|"]
+        for row in report["newly_matched_gold"]:
+            values = (row["gold_key"], row["school"], row["grade"], row["semester"], row["title"],
+                      ", ".join(row["contributions"]),
+                      f"{row['pipeline_key']} · {row['pipeline_title'] or '(제목 미추출)'}",
+                      row["ai_titles"], pair_basis_text(row["basis"]))
+            lines.append("| " + " | ".join(cell(v) for v in values) + " |")
+        lines += ["", "## 짝 없는 AI 항목 전부", "",
+                  "추정 이유는 검토용 분류다. 위치의 문자 끝은 제외한다. 근거는 원문 인용이다.", "",
+                  "| 학교 | 학년 | 학기 | AI 제목 | 항목 키 | 위치 | 근거 인용 | "
+                  "추정 이유 · 설명 |",
+                  "|---|---:|---:|---|---|---|---|---|"]
+        for row in report["unmatched_ai_pipeline"]:
+            values = (row["school"], row["grade"], row["semester"], row["title"],
+                      row["pipeline_key"], location_text(row),
+                      " / ".join(row["evidence_quotes"]),
+                      f"{row['estimated_reason']} · {row['reason_detail']}")
+            lines.append("| " + " | ".join(cell(html.escape(str(v))) for v in values) + " |")
+        if not report["unmatched_ai_pipeline"]:
+            lines.append("| - | - | - | 없음 | - | - | - | - |")
+        lines += ["", "## 손실 지도", "",
+                  "문서·구간은 규칙 검출 범위에 위치·제목·번호 복구를 포함한다. 후보·1대1 짝은 "
+                  "전체 규칙 후보와 AI 보완의 포괄 범위다. 마지막 행은 단계별 채점 대상이다.", "",
+                  "| 지점 | 규칙만 | 규칙+AI |", "|---|---:|---:|"]
+        for key, label in (("gold", "정답"), ("document", "문서"), ("section", "구간"),
+                           ("candidate", "후보"), ("matched", "1대1 짝"),
+                           ("confirmed", "확정 / 규칙+AI")):
+            lines.append(f"| {label} | {report['loss_maps']['rule_only'][key]} | "
+                         f"{report['loss_maps']['rule_ai'][key]} |")
+        lines += ["", "## 규칙+AI의 남은 놓침 전부", "",
+                  "창 안·밖은 targets.jsonl의 문자 범위를 pack 줄로 변환해 "
+                  "정답 occurrence와 대조한다. "
+                  "창 안의 미회복은 AI 미검출·병합 보류·짝짓기 실패를 포함한다. "
+                  "창 밖은 이 좌표 대조에서 정답 근거와 겹치는 대상 창이 없음을 뜻한다.", "",
+                  "| 정답 키 | 학교 | 학년 | 학기 | 정답 제목 | AI 창 | 대상 창 ID | 원인 |",
+                  "|---|---|---:|---:|---|---|---|---|"]
+        for row in report["remaining_rule_ai_misses"]:
+            values = (row["gold_key"], row["school"], row["grade"], row["semester"], row["title"],
+                      row["ai_window_status"], row["ai_window_ids"], row["cause"])
+            lines.append("| " + " | ".join(cell(v) for v in values) + " |")
+        if not report["remaining_rule_ai_misses"]:
+            lines.append("| - | - | - | - | 없음 | - | - | - |")
+        lines += ["", "## 규칙+AI 제목과 미추출 필드", "",
+                  f"짝지어진 항목의 제목 정확도 {metric(stage['title_accuracy'])}.", "",
+                  "AI 새 항목은 제목만 채점한다. 나머지 필드는 미추출로 분리한다. "
+                  "c 항목의 필드는 보존된 규칙 값을 채점한다.", "",
+                  "| AI 새 항목의 미추출 필드 | 입력 전체 | 짝지어진 항목 |",
+                  "|---|---:|---:|"]
+        for name, counts in stage["ai_unextracted_fields"].items():
+            lines.append(f"| {name} | {counts['input']} | {counts['matched']} |")
+    for key, stage in stages.items():
+        lines += ["", f"## {key} 필드 채점", "",
+                  "| 필드 | 정답 | 부분 | 누락 | 오값 | 허위값 | 둘다없음 | 미추출 | 오귀속 |",
+                  "|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
+        for name, counts in stage["fields"].items():
+            values = [name, *(counts.get(o, 0) for o in (*OUTCOMES, "미추출")),
+                      stage["misattributions_by_field"].get(name, 0)]
+            lines.append("| " + " | ".join(map(cell, values)) + " |")
+        if stage["misattributions"]:
+            lines.append("")
+        for error in stage["misattributions"]:
+            lines.append(f"- `{error['gold_key']}` · {error['field']} · "
+                         f"{cell(error['value'])} · 다른 정답 {cell(error['other_gold_keys'])}")
+    lines += ["", "## 봉인 검증", "",
+              f"{report['seal']['checked']}개 해시 대조. "
+              f"불일치 {report['seal']['mismatches']}.", ""]
+    return "\n".join(lines)
+
+
+def markdown(report: dict) -> str:
+    rules = rule_markdown(report)
+    if "rule_ai" in report["stages"]:
+        return ai_markdown(report) + "\n\n" + rules
+    return rules
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--gold", type=Path, default=ROOT / "data/gold/gold_v1.jsonl")
     parser.add_argument("--meta", type=Path, default=ROOT / "data/gold/gold_v1.meta.json")
     parser.add_argument("--round-keys", nargs="+", default=list(ROUNDS))
-    parser.add_argument("--output-dir", type=Path, default=ROOT / "data/derived/gold_score/v2")
+    parser.add_argument("--items-dir", type=Path, default=ROOT / "data/derived/items")
+    parser.add_argument("--output-dir", type=Path, default=ROOT / "data/derived/gold_score/v4")
     parser.add_argument(
         "--baseline", type=Path,
-        default=ROOT / "data/derived/gold_score/v2/gold-v1.1.json",
-        help="Preserved v1.1 JSON used for comparison",
+        default=ROOT / "data/derived/gold_score/v3/gold-v1.2.json",
+        help="Preserved v1.2 JSON used for comparison",
     )
     args = parser.parse_args()
     baseline_path = args.baseline.resolve()
     baseline_report = read(baseline_path)
-    report = score(ROOT, args.gold, args.meta, args.round_keys)
+    report = score(ROOT, args.gold, args.meta, args.round_keys, items_dir=args.items_dir)
+    report["items_dir"] = args.items_dir.as_posix()
     report["baseline"] = {
         "path": (
             baseline_path.relative_to(ROOT).as_posix()
@@ -1490,7 +1985,7 @@ def main() -> None:
             },
             "loss_map": source["loss_map"],
         }
-        for version, source in (("v1.1", baseline_report), ("v1.2", report))
+        for version, source in (("v1.2", baseline_report), ("v1.3", report))
     }
     args.output_dir.mkdir(parents=True, exist_ok=True)
     baseline = args.output_dir / "development-before.json"
@@ -1503,12 +1998,12 @@ def main() -> None:
                 {"path": path, "before": before, "after": after, "equal": before == after}
             )
         report["development_hashes"] = hashes
-    (args.output_dir / "gold-v1.2.json").write_text(
+    (args.output_dir / "gold-v1.3.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
-    (args.output_dir / "gold-v1.2.md").write_text(markdown(report), encoding="utf-8")
+    (args.output_dir / "gold-v1.3.md").write_text(markdown(report), encoding="utf-8")
     columns = list(dict.fromkeys(k for row in report["cases"] for k in row))
-    csv_path = args.output_dir / "gold-v1.2.cases.csv"
+    csv_path = args.output_dir / "gold-v1.3.cases.csv"
     with csv_path.open("w", encoding="utf-8-sig", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=columns)
         writer.writeheader()
