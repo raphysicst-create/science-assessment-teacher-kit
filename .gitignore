@@ -39,3 +39,6 @@ data/roster.csv
 *.partial
 services/math-assessment-api/data/
 .env.local
+
+# 정답 세트(맹검 자료)는 git에 넣지 않는다 (계획서 S9, 2026-11-09)
+data/gold/
