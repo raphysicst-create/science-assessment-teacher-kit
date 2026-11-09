@@ -22,7 +22,7 @@
 |---|---|---|---|
 | 1 | 공개 수행평가명마다 원문 근거 위치 또는 원문 조각 해시가 있는가 | 예 | `data/derived/science_audit_public/validation.json`(감사 묶음의 validation 단계 출력): passed true, checks.locators_valid·all_item_segments_exist true, counts.invalid_locators 0·missing_segments 0. 공개 항목은 `extraction_status='bounded'`만 |
 | 2 | 다른 과목의 성취기준·운영표·수행평가가 섞이지 않았는가 | 예 | gold2 혼입 0(`items.contamination`), 공개판 subject 감사 blocking 0. 전체 빌드 B2 1건은 제외 |
-| 3 | 여러 수행평가가 하나의 카드로 남아 있지 않은가 | 예(gold2 표본 범위) | gold2에서 합친 항목은 1건(김해모산중 자유학기 두 과제)이고 감사 B3 title_fragment로 차단돼 공개판에 없다(`public-stage.json` merged_items 1, `unmatched_pipeline_public_status` 정답 누락 가능성\|차단 5에 포함). 반대 방향 오류인 요약표 중복 4건(같은 과제가 두 카드)은 공개판에 남아 있다(`요약·중복\|공개` 4) — 이 질문의 대상은 아니지만 공개 품질 문제로 기록 |
+| 3 | 여러 수행평가가 하나의 카드로 남아 있지 않은가 | 예(gold2 표본 범위) | gold2에서 합친 항목은 1건(김해모산중 자유학기 두 과제)이고 감사에 차단돼 공개판에 없다(`public-stage.json` merged_items 1; `data/derived/science_audit/risk-queue.csv`의 김해모산중학교 행 "탐구 문제 발견하고 탐구 계획서 작성하기, 탐구 결과 보고서 작성 및 발표하기" blocking_codes B3:title_fragment). 반대 방향 오류인 요약표 중복 4건(같은 과제가 두 카드)은 공개판에 남아 있다(`요약·중복\|공개` 4) — 이 질문의 대상은 아니지만 공개 품질 문제로 기록 |
 | 4 | 원문 표 렌더링 후 텍스트 손실과 구조 오류가 0인가 | 예 | 렌더러 감사 0·0(위 게이트 5) |
 | 5 | 데스크톱·390px 모바일에서 페이지 전체 가로 넘침이 없는가 | 예 | 390px `.tmp/s16/overflow-390.json`·1280px `.tmp/s16/overflow-1280.json`: 홈·`/references`·`/references?unit=03&activity=experiment`·`/cases` 모두 overflow_px 0·offenders 0(공개판 DB, API 8010/8011 + next 3100/3101) |
 | 6 | 공개 원문은 범위가 제한되고 개인정보 패턴·정정 요청·원문 대조 안내가 있는가 | 예 | 게이트 6과 같음(`privacy-check.json` 0·0·0, bounded 구간만, 스크린샷 390-1 하단의 정정 요청·학교알리미 대조 안내) |
@@ -37,8 +37,12 @@
 | `package:vercel` | **실패**: `data/publish/official_math_source_registry.json`이 없어 `FileNotFoundError`(원판 수학 출처 레지스트리를 과학판이 만들지 않음, API `/api/v1/sources`도 이 파일을 읽음). `package_catalog` 함수로 공개판 카탈로그·원문 포함판을 만들어 개인정보 검사와 검색 검사(교차 0)는 통과시켰다(`data/publish/science/{math_assessment_catalog,packaged_detail}.public.sqlite`). 과학판 출처 레지스트리 작성은 사람·dev 결정 |
 | `stage:vercel` | 실행하지 않음(외부, 사람 결정) |
 
+## 확인 범위
+- 이 점검표의 수치는 각 행에 적은 파일에서 왔다. 바닥글의 정정 요청·학교알리미 대조 안내 문구와 bounded 구간만 패키징한다는 구현은 스크린샷(`docs/missions/2026-11-10-s16-s17-390-1.png`)과 `scripts/package_math_assessment_vercel_data.py`(`publication_html_select`)에서 확인했고, 독립 검수자에게는 범위 밖이었다.
+- 검토 대상 제목 121·패키징 실패 원인·회차별 항목 수(331+49)는 임무 기록 `docs/missions/2026-11-09-s16-s17-gate.md` 라운드 2의 명령 출력이 출처다.
+
 ## 이 임무가 정한 공개 정책(총괄·사용자가 뒤집을 수 있음)
 - 감사 차단 항목은 공개 DB에서 `extraction_status='review'`로 바꿔 뺀다(`scripts/apply_science_publication_exclusions.py`, 처리 결정 기록으로 면제하지 않음). 제외 114건의 목록·코드는 `publication-exclusions.json`.
-- `priority_score >= 38` 문턱: 전체 빌드 bounded 380항목 중 58이 38 미만이고 그중 42가 정답 회차(gold 26·gold2 16)다(`assessment_item_rankings` 조회, 임무 기록 라운드 2; 수학 데이터로 정한 점수가 새 학교 양식에서 낮게 나옴). **다음 임무에서 과학판 문턱을 0으로 낮추고(감사가 품질 관문) 개발 라벨로 확인한다.** 이번에는 코드를 바꾸지 않았다(맹검 측정 중 API 수정 금지 원칙 아님, 범위 통제).
+- `priority_score >= 38` 문턱: 전체 빌드 bounded 380항목 중 58이 38 미만이고 그중 42가 정답 회차(gold 26·gold2 16)다(출처: 임무 기록 `docs/missions/2026-11-09-s16-s17-gate.md` 라운드 2의 SQL 조회 `select … from assessment_items i join assessment_item_rankings r …`; 수학 데이터로 정한 점수가 새 학교 양식에서 낮게 나옴). **다음 임무에서 과학판 문턱을 0으로 낮추고(감사가 품질 관문) 개발 라벨로 확인한다.** 이번에는 코드를 바꾸지 않았다(맹검 측정 중 API 수정 금지 원칙 아님, 범위 통제).
 - 활동 탭 정책: `all_reference` 유지(10개 탭 + "자동 분류(참고)" 표시). gold2 분류한 항목 정확도 0.938이지만 macro-F1이 합격선 미달이라 `high_accuracy_only`로 좁힐 근거도, 그대로 둘 근거도 측정으로는 약하다. 공개 결정 때 사용자가 고른다.
 - 검토 대상 제목 121(`과학A`·`힘과 운동`·`탐구활동`)은 막지 않는다(원판과 같음). 다음 방향의 제목 정책(영역명+방법 결합 표기)에 넣는다.

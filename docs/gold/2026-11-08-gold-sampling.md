@@ -465,7 +465,7 @@
 | 확정 `…confirmed` | 35 | 38 | 74 |
 
 - 놓친 4항목(`items.recall` 분모 42 − 38)은 전부 방어진중 1학기 중1·2 문서 2개의 항목이고(`per_school[3]` 방어진중 rule_ai_found 4/8) 과학 문서 검출 단계에서 떨어졌다(`gold-v1.4.cases.csv` type=gold 행의 `document_found` False·`rule_ai_cause` "AI 창 밖"). 이 두 문서가 DRM HWPX 평문이라는 사실은 `data/derived/conversion_audit/2026-round-1-gold2.json` documents[].converters.kordoc.warnings `DRM_COM_FALLBACK`에서 온다.
-- 정밀도 분모 50의 짝 없는 12항목(`items.unmatched_classification_counts`): 요약·중복 5, 정답 누락 가능성 7. 건별 학교·제목은 `gold-v1.4.json` `stages.rule_ai.unmatched_pipeline[]`(school·title·classification): 요약·중복 = 숭덕여중 "탐구보고서" 2·"과학 논술" 1·"포트폴리오" 1, 김해모산중 "빛과 파동 탐구 수행 및 보고서 작성하기" 1(요약표 행과 세부표 항목이 따로 확정됨); 정답 누락 가능성 = 김해모산중 "정기시험 계획" 3·"보고서 작성" 1·"탐구 문제 발견하고 탐구 계획서 작성하기, 탐구 결과 보고서 작성 및 발표하기" 1(정답은 두 과제, 합침 1), 감천중 "생물의 구성과 다양성"·"물질의 상태 변화" 2(단원명 행). 합침 1·과분할 0·중복 5(`audit/gold2/public-stage.json` merged_items·split_items·duplicate_items). 이 7건이 정답 라벨 두 벌 어느 쪽에도 없다는 것은 `data/gold2/agreement.json` `v2.item_pairing`(A 42·B 42·짝 42)과 정답 42에서 따른다.
+- 정밀도 분모 50의 짝 없는 12항목(`items.unmatched_classification_counts`): 요약·중복 5, 정답 누락 가능성 7. 건별 학교·제목은 `gold-v1.4.json` `stages.rule_ai.unmatched_pipeline[]`(school·title·classification): 요약·중복 = 숭덕여중 "탐구보고서" 2·"과학 논술" 1·"포트폴리오" 1, 김해모산중 "빛과 파동 탐구 수행 및 보고서 작성하기" 1(요약표 행과 세부표 항목이 따로 확정됨); 정답 누락 가능성 = 김해모산중 "정기시험 계획" 3·"보고서 작성" 1·"탐구 문제 발견하고 탐구 계획서 작성하기, 탐구 결과 보고서 작성 및 발표하기" 1(정답은 두 과제, 합침 1), 감천중 "생물의 구성과 다양성"·"물질의 상태 변화" 2(단원명 행). 합침 1·과분할 0·중복 5(`audit/gold2/public-stage.json` merged_items·split_items·duplicate_items). 채점기가 이 7건을 정답 42와 짝짓지 못했다는 것까지가 JSON의 사실이고, 7건이 수행평가 항목이 아니라는 판단은 부서장이 원문 묶음에서 확인해 임무 기록 `docs/missions/2026-11-09-s16-s17-gate.md` 라운드 2에 적었다.
 - 공개 DB 대조(`audit/gold2/public-stage.json` `unmatched_pipeline_public_status`): 12건 중 차단 6(요약·중복 1 + 정답 누락 가능성 5), 공개 6(요약·중복 4 + 정답 누락 가능성 2 = 감천중 단원명 행). 짝 맞은 38항목은 공개 29·차단 8·DB 없음 1(`matched_pairs_public_status`).
 
 **필드** (`fields.per_field.*`, 짝 38: 정답/부분/누락/오값/허위값/둘다없음, 누락률 `fields.missing_rate.*`)
@@ -484,7 +484,7 @@
 | free_semester | 35 | 0 | 0 | 3 | 0 | 0 | 0/38 = 0.00 |
 
 - 오귀속(다른 항목 값이 들어간 칸) 0(`fields.misattributions_by_field` 빈 객체).
-- method 오값 24건(`stages.rule_ai.pairs[].fields.method.pipeline_value`, 유형 집계 `public-stage.json` `method_wrong_value_types`): 선택지 2개 이상이 값으로 들어간 것 19(예: 숭덕여중 "서·논술, 구술·발표, 토의·토론, 실험·실습, 포트폴리오, 교사관찰및기록, 자기평가, 동료평가", 감천중 "서·논술, 실험·실습, 관찰"), 선택지 1개("서·논술")인데 정답과 다른 것 5. 5개교 전부에서 나왔다(`pairs[].gold_key` 접두).
+- method 오값 24건(`stages.rule_ai.pairs[].fields.method.pipeline_value`, 유형 집계 `public-stage.json` `method_wrong_value_types`): 선택지 2개 이상이 값으로 들어간 것 19(예: 숭덕여중 "서·논술, 구술·발표, 토의·토론, 실험·실습, 포트폴리오, 교사관찰및기록, 자기평가, 동료평가", 감천중 "서·논술, 실험·실습, 관찰"), 선택지 1개("서·논술")인데 정답과 다른 것 5. 학교별(`public-stage.json` `method_wrong_value_schools`): 숭덕여중 12·감천중 7·방어진중 4·치평중 1·김해모산중 0(체크란 없는 평문 양식).
 - title 오값 9건(`pairs[].fields.title.pipeline_value`, 집계 `public-stage.json` `title_wrong_value_types`): "평가 영역명: " 접두가 붙은 셀 값 8(감천중), "세부평가기준" 1(김해모산중).
 
 **활동 축** (`activity.all.*`, 짝 37/42 `metrics.paired`; 두 번째 분모 = 방법 정답∧과제 설명 정답/부분인 항목 `activity.fields_correct.*`)
@@ -503,9 +503,9 @@
 
 활동별(`activity.all.per_activity`, 양성 / 정밀도 / 재현율 / F1): 추론·설명 10 / 7/7 / 7/10 / 0.82 · 분석 6 / 6/8 / 6/6 / 0.86 · 과정평가 5 / 4/4 / 4/5 / 0.89 · 실험평가 4 / 4/5 / 4/4 / 0.89 · 작성 4 / 4/4 / 4/4 / 1.00 · 탐구 3 / 3/3 / 3/3 / 1.00 · 제작 1 / 1/1 / 1/1 / 1.00 · 계산·측정 1 / 1/1 / 1/1 / 1.00 · 발표·토론 0 / 0/0 / — · 문제해결 0 / 0/0 / —.
 
-- 짝 37 중 `result` 불일치 5(`gold2-axes-v1.json` `items[]`): 분류값이 다른 3(치평중 「물질의 상태 변화분석하기」·「전구의 직렬연결과 병렬연결의 특징비교하기」 정답 추론·설명 → 분류기 분석; 방어진중 「영양소 검출하기」 정답 기권 → 분류기 실험평가)과 분류기 기권 2(숭덕여중 2학년 1학기 과학 논술·포트폴리오, `abstain_reason` 근거 동률).
+- 짝 37 중 `result` 불일치 5(`gold2-axes-v1.json` `items[]`): 분류값이 다른 3(치평중 g1-s2-02 「보일-샤를 법칙분석하기」·g2-s2-02 「전구의 직렬연결과 병렬연결의 특징비교하기」 정답 추론·설명 → 분류기 분석(rule_applied R7); 방어진중 g2-s2-01 「영양소 검출하기」 정답 기권 → 분류기 실험평가)과 분류기 기권 2(숭덕여중 g2-s1-01 「탐구보고서」·g2-s1-03 「포트폴리오」, `abstain_reason` 근거 동률). 제목은 `gold-v1.4.json` `pairs[].fields.title.gold_accepted`.
 - 두 번째 분모(방법·요소 필드가 맞는 항목)는 6항목뿐이고 그 6항목은 전부 일치했다. 방법 필드 오값 24건 때문에 분모가 작아, 활동 축의 손실이 분류기 쪽인지 추출 쪽인지 이 표로는 가를 수 없다.
-- **정의 v3 규칙 두 개가 바꾼 정답 항목 2건에서 분류기(science-axes-v3, 정의 v2 구현)와 정답이 다른 수: 0**(최대 2). 두 항목(김해모산중 「탐구보고서」 탐구, 치평중 「생물의 분류 만들기」 분석)은 `gold2-axes-v1.json` `items[]`에서 result 일치(rule_applied R5-④·R5-③). 즉 정의 v3 적용이 이번 활동 지표를 올리거나 내리지 않았다(결정 출처 `data/gold2/activity_decisions.csv`).
+- **정의 v3 규칙 두 개가 바꾼 정답 항목 2건에서 분류기(science-axes-v3, 정의 v2 구현)와 정답이 다른 수: 0**(최대 2). 두 항목(김해모산중 「탐구보고서」 탐구, 치평중 「생물의 분류 만들기」 분석)은 `gold2-axes-v1.json` `items[]`에서 result 일치(rule_applied R5-④·R5-③). 즉 이 두 항목에서는 정의 v3 적용이 분류기와의 불일치를 만들지 않았다(결정 출처 `data/gold2/activity_decisions.csv`; 분류기가 정의 v2 구현이라는 것은 `data/derived/axes/2026-round-{1,3}-gold2.json`의 `definition_version` activity-def-v2). 정의 v2로 채점한 전후 비교는 하지 않았다.
 
 **단원 축** (`units.*`, 분모 = 짝 항목 중 정답에 코드가 있는 34. 원문 코드 추출·귀속 P/R은 `fields.per_field.standards`에서: 재현율 29/38(정답/(정답+누락+오값)), 정밀도 29/30(정답/(정답+오값)), 코드 오귀속 0 — `public-stage.json` `standards_code`)
 
@@ -527,9 +527,9 @@
 | 방어진중(울산 동구, HWPX·1학기 DRM) | 8 | 6 | 6 | 4 | 4/8 | 4/4 | 3/5 | 4/4 | 4/8 |
 | 감천중(부산 사하구, HWP) | 8 | 6 | 6 | 8 | 8/8 | 8/10 | 7/7 | 8/8 | 1/8 |
 
-**AI 읽기 호출** (출처: 실행 로그 `.tmp/s16/ai-run-r{3,1}.out`·`fields-run-r{3,1}.out`의 `valid`·`unknown_events`, 임무 기록 라운드 2): 항목 읽기 2학기 4회·1학기 3회(유효 7/7, 이벤트 위반 0), 필드 읽기 2학기 2회·1학기 0회(유효 2/2). AI가 더한 항목 3(`stages.rule_ai.contribution_counts.b.new_gold` 3, 모두 정답과 짝), 확인한 후보 1(`c_location.matched`). 규칙 변경 0의 근거: `git diff --stat 49d8d0b HEAD -- scripts/middle_*.py scripts/science_axes.py scripts/science_rules.py scripts/science_title_rules.py scripts/prompts/` 빈 출력(임무 기록 라운드 2).
+**AI 읽기 호출** (출처: 실행 로그 `.tmp/s16/ai-run-r{3,1}.out`·`fields-run-r{3,1}.out`의 `valid`·`unknown_events`, 임무 기록 라운드 2): 항목 읽기 2학기 4회·1학기 3회(유효 7/7, 이벤트 위반 0), 필드 읽기 2학기 2회·1학기 0회(유효 2/2). AI가 더한 항목 3(`stages.rule_ai.contribution_counts.b.new_gold` 3, 모두 정답과 짝), 확인한 후보 1(`c_location.matched`). 총 호출 수(창 4·3, 필드 창 2·0)는 `targets`·`fields-targets` 출력의 `expected_calls`이고 임무 기록 `docs/missions/2026-11-09-s16-s17-gate.md` 라운드 2에 적었다. 규칙 변경 0의 근거: `git diff --stat 49d8d0b HEAD -- scripts/middle_*.py scripts/science_axes.py scripts/science_rules.py scripts/science_title_rules.py scripts/prompts/` 빈 출력(같은 임무 기록 라운드 2).
 
-**공개 단계와 끝까지 맞은 비율** (`audit/gold2/public-stage.json`): 확정 38 → 공개 DB에 남은 짝 29(차단 8·DB 없음 1, `public_stage`). 추출→분류 모두 맞은 항목(짝·주활동 일치·단원 완전 일치 또는 정답 코드 없음) 30/42(`end_to_end_correct`), 그중 공개판에 남은 것 24/42(`end_to_end_correct_public`).
+**공개 단계와 끝까지 맞은 비율** (`audit/gold2/public-stage.json`, 기존 세트는 `audit/gold/public-stage.json`): 확정 38 → 공개 DB에 남은 짝 29(차단 8·DB 없음 1, `public_stage`; 기존 세트 74 → 공개 58·차단 12·DB 없음 4). 짝·주활동·단원 일치율(필드 제외) 30/42(`pair_activity_unit_match`; 기존 34/83), 그중 공개판에 남은 것 24/42(`pair_activity_unit_match_public`; 기존 28/83). 여기에 방법 필드 정답(또는 둘다없음)과 제목 필드 정답까지 더한 **추출~분류 모두 맞은 비율 6/42**(`end_to_end_correct_with_fields`; 기존 20/83). 기존 세트의 합침·과분할·코드 P/R·중복도 같은 파일에 있다(합침은 표지가 없어 null, 과분할 0, 중복 1, 코드 재현율 48/74·정밀도 48/50).
 
 **표본·통계 한계** (출처: 표본 기록 `docs/gold/2026-11-10-gold2-sampling.md`, 계획서 Q2-2 통계 한계)
 - 5개교 42항목이라 재현율 95% 합격선을 가르기에 좁다(38/42의 Wilson 95% 구간 0.78–0.96이 합격선을 품는다). 정밀도 0.76(0.63–0.86)은 구간 전체가 합격선 아래다.
