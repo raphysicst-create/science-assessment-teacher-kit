@@ -48,3 +48,6 @@ data/dev_labels/
 
 # Codex 샌드박스 테스트 임시 폴더(ACL로 삭제 불가, 2026-11-10)
 .science-axes-tmp/
+
+# 두 번째 맹검 세트 gold2도 git 제외 (2026-11-10)
+data/gold2/

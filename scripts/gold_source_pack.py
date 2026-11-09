@@ -27,10 +27,12 @@ def write_json(path: Path, value: object) -> None:
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def sources(root: Path) -> list[dict]:
+def sources(root: Path, run_label: str = "gold", rounds: tuple[int, ...] = (1, 3)) -> list[dict]:
     rows = []
-    for number in (1, 3):
-        manifest = root / f"data/derived/schoolinfo_4ga/2026-round-{number}-gold/attachments.jsonl"
+    for number in rounds:
+        manifest = root / (
+            f"data/derived/schoolinfo_4ga/2026-round-{number}-{run_label}/attachments.jsonl"
+        )
         for line in manifest.read_text(encoding="utf-8-sig").splitlines():
             row = json.loads(line)
             # Collection already excluded regulation filenames. Keep every downloaded
@@ -85,13 +87,20 @@ def markdown_index(records: list[dict]) -> str:
     return "\n".join(lines) + "\n"
 
 
-def build_pack(root: Path, output: Path, kordoc: Path) -> dict:
+def build_pack(
+    root: Path, output: Path, kordoc: Path, *, run_label: str = "gold",
+    guide: Path = GUIDE, schema: Path = SCHEMA, rounds: tuple[int, ...] = (1, 3),
+) -> dict:
+    if not run_label or not all(c.isalnum() or c == "-" for c in run_label):
+        raise ValueError("run label must contain only letters, digits and hyphens")
     output.parent.mkdir(parents=True, exist_ok=True)
     if output.exists() and any(output.iterdir()):
         raise FileExistsError(f"existing source pack must be preserved: {output}")
-    inputs = sources(root)
-    guide_hash = sha256(root / GUIDE)
-    schema_hash = sha256(root / SCHEMA)
+    inputs = sources(root) if run_label == "gold" and rounds == (1, 3) else sources(
+        root, run_label, rounds,
+    )
+    guide_hash = sha256(root / guide)
+    schema_hash = sha256(root / schema)
     records, originals, archive_counts = [], [], []
     # Ordinary mkdir preserves inherited ACLs when this directory is published.
     stage = output.parent / f".source-build-{uuid4().hex}"
@@ -148,7 +157,7 @@ def build_pack(root: Path, output: Path, kordoc: Path) -> dict:
             print(f"converted {number}/{len(inputs)} documents={len(records)}", flush=True)
         write_json(stage / "pack/index.json", records)
         (stage / "pack/INDEX.md").write_text(markdown_index(records), encoding="utf-8")
-        if sha256(root / GUIDE) != guide_hash or sha256(root / SCHEMA) != schema_hash:
+        if sha256(root / guide) != guide_hash or sha256(root / schema) != schema_hash:
             raise ValueError("guide or schema changed during generation")
         seal = {
             "created_at": datetime.now(UTC).isoformat(),
@@ -158,8 +167,9 @@ def build_pack(root: Path, output: Path, kordoc: Path) -> dict:
                 {"path": f"pack/{path.name}", "sha256": sha256(path)}
                 for path in sorted((stage / "pack").iterdir())
             ],
-            "guide": {"path": GUIDE.as_posix(), "sha256": guide_hash},
-            "schema": {"path": SCHEMA.as_posix(), "sha256": schema_hash},
+            "guide": {"path": guide.as_posix(), "sha256": guide_hash},
+            "schema": {"path": schema.as_posix(), "sha256": schema_hash},
+            "run_label": run_label, "rounds": list(rounds),
         }
         write_json(stage / "SEAL.json", seal)
         # Publish raw, pack and seal together after every check. A failed build
@@ -184,8 +194,15 @@ def main() -> None:
     parser.add_argument("--project-root", type=Path, default=PROJECT)
     parser.add_argument("--output", type=Path, default=PROJECT / "data/gold")
     parser.add_argument("--kordoc", type=Path, default=PROJECT / "node_modules/kordoc/dist/cli.js")
+    parser.add_argument("--run-label", default="gold")
+    parser.add_argument("--guide", type=Path, default=GUIDE)
+    parser.add_argument("--schema", type=Path, default=SCHEMA)
+    parser.add_argument("--rounds", type=int, nargs="+", default=[1, 3])
     args = parser.parse_args()
-    print(json.dumps(build_pack(args.project_root, args.output, args.kordoc), ensure_ascii=False))
+    print(json.dumps(build_pack(
+        args.project_root, args.output, args.kordoc, run_label=args.run_label,
+        guide=args.guide, schema=args.schema, rounds=tuple(args.rounds),
+    ), ensure_ascii=False))
 
 
 if __name__ == "__main__":

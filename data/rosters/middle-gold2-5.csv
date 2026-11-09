@@ -1,0 +1,6 @@
+school_id,school_name,region_sido,region_sgg,school_code,neis_school_code,education_office_code,school_kind
+ms-gold2-gwangju-city,치평중학교,광주광역시,서구,7402277,7402277,F10,중학교
+ms-gold2-incheon-city,숭덕여자중학교,인천광역시,남동구,7341100,7341100,E10,중학교
+ms-gold2-gyeongnam-city,김해모산중학교,경상남도,김해시,9091226,9091226,S10,중학교
+ms-gold2-ulsan-city,방어진중학교,울산광역시,동구,7491158,7491158,H10,중학교
+ms-gold2-busan-city,감천중학교,부산광역시,사하구,7171010,7171010,C10,중학교

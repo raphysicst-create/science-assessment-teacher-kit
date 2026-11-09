@@ -15,6 +15,7 @@ from uuid import uuid4
 
 from gold_validate import (
     DEFAULT_PACK,
+    DEFAULT_SCHEMA,
     line_range,
     load_index,
     pack_lines,
@@ -306,6 +307,7 @@ def compare_labels(
     fields = FIELDS if strict else CONTENT_FIELDS
     totals = {field: {"matched": 0, "total": 0}
               for field in (*fields, "document.edition", "document.science_sections")}
+    activity = {"pairs_with_both": 0, "primary_agree": 0, "secondary_agree": 0}
 
     def count(field: str, equal: bool) -> None:
         totals[field]["total"] += 1
@@ -356,6 +358,26 @@ def compare_labels(
                             if field == "title_role" else None)
                 add("필드", field, left, right, a_value, b_value,
                     locs or left["occurrences"] + right["occurrences"], statuses)
+        if not strict:
+            activity_fields = []
+            if "activity" in left and "activity" in right:
+                activity["pairs_with_both"] += 1
+                equal_primary = ((left["activity"]["primary"] or "(기권)")
+                                 == (right["activity"]["primary"] or "(기권)"))
+                equal_secondary = (set(left["activity"]["secondary"])
+                                   == set(right["activity"]["secondary"]))
+                activity["primary_agree"] += int(equal_primary)
+                activity["secondary_agree"] += int(equal_secondary)
+                if not equal_primary:
+                    activity_fields.append("activity.primary")
+                if not equal_secondary:
+                    activity_fields.append("activity.secondary")
+            elif ("activity" in left) != ("activity" in right):
+                activity_fields.append("activity.missing")
+            for field in activity_fields:
+                add("필드", field, left, right, None, None, [])
+                for column in ("A값", "B값", "A값요약", "B값요약"):
+                    differences[-1][column] = ""
     docs_a = {row["doc_id"]: row for row in a if row["type"] == "document"}
     docs_b = {row["doc_id"]: row for row in b if row["type"] == "document"}
     for doc_id in sorted(docs_a.keys() | docs_b.keys()):
@@ -400,6 +422,9 @@ def compare_labels(
             )
         ],
     }
+    # Preserve legacy report bytes when neither labeler supplied activities.
+    if not strict and any("activity" in row for row in items_a + items_b):
+        summary["activity"] = activity
     return differences, summary
 
 
@@ -466,10 +491,11 @@ def main() -> int:
     parser.add_argument("b", type=Path)
     parser.add_argument("--out", type=Path, help="CSV 출력 경로 (기본 파일명은 모드에 따름)")
     parser.add_argument("--pack-dir", type=Path, default=DEFAULT_PACK)
+    parser.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA)
     parser.add_argument("--strict", action="store_true", help="v1 전체 비교 결과를 출력")
     args = parser.parse_args()
     for path in (args.a, args.b):
-        errors = validate_file(path, args.pack_dir)
+        errors = validate_file(path, args.pack_dir, args.schema)
         if errors:
             print(f"입력 검사 실패 {path}")
             for error in errors:
@@ -481,7 +507,7 @@ def main() -> int:
     v2_rows, v2 = compare_labels(a, b, args.pack_dir)
     summary = {"version": 2, "inputs": {"A": str(args.a), "B": str(args.b)}, "v1": v1, "v2": v2}
     rows, metrics = (v1_rows, v1) if args.strict else (v2_rows, v2)
-    output = args.out or DEFAULT_PACK.parent / (
+    output = args.out or args.pack_dir.parent / (
         "disagreements_strict.csv" if args.strict else "disagreements.csv"
     )
     write_reports(rows, summary, output)

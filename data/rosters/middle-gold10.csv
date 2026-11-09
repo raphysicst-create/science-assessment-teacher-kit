@@ -1,0 +1,11 @@
+﻿school_id,school_name,region_sido,region_sgg,school_code,neis_school_code,education_office_code,school_kind
+ms-gold-busan-city,부산남중학교,부산광역시,영도구,7171018,7171018,C10,중학교
+ms-gold-busan-gun,신정중학교,부산광역시,기장군,7211033,7211033,C10,중학교
+ms-gold-daegu-city,경상중학교,대구광역시,남구,7271010,7271010,D10,중학교
+ms-gold-daegu-gun,한울안중학교,대구광역시,달성군,7281118,7281118,D10,중학교
+ms-gold-jeonbuk-city,왕신여자중학교,전북특별자치도,정읍시,8362095,8362095,P10,중학교
+ms-gold-jeonbuk-gun,자유중학교,전북특별자치도,고창군,8452059,8452059,P10,중학교
+ms-gold-gangwon-city,강원중학교,강원특별자치도,춘천시,7812108,7812108,K10,중학교
+ms-gold-gangwon-gun,사내중학교,강원특별자치도,화천군,7942031,7942031,K10,중학교
+ms-gold-gyeongnam-city,보광중학교,경상남도,양산시,9151050,9151050,S10,중학교
+ms-gold-gyeongnam-gun,함안여자중학교,경상남도,함안군,9131033,9131033,S10,중학교

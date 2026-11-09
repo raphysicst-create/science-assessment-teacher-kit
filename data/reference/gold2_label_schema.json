@@ -1,0 +1,816 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:math-assessment:gold2-label:v1",
+  "title": "gold2 라벨 스키마 v1 (항목·필드 v1 + 활동 v2)",
+  "description": "One JSONL record. Field values preserve source raw text and pack locations. standards is an array of status-bearing groups, each with codes and values. Represent absent standards with one source_absent group and empty codes/values. title.role and method.options live on their field objects. free_semester is boolean. Numeric norm is optional. Activities are excluded in v1. gold2: 항목 줄에 선택 키 activity(활동 라벨, 정의 activity-def-v2)를 더한다. item_key 접두는 ms-gold2-.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/document"
+    },
+    {
+      "$ref": "#/$defs/item"
+    }
+  ],
+  "$defs": {
+    "doc_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{12}(?:-c[0-9]{2,})?$"
+    },
+    "loc": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "doc_id": {
+          "$ref": "#/$defs/doc_id"
+        },
+        "line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "line_start": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "line_end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "doc_id"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "line"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "line_start"
+                ]
+              },
+              {
+                "required": [
+                  "line_end"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "line_start",
+            "line_end"
+          ],
+          "not": {
+            "required": [
+              "line"
+            ]
+          }
+        }
+      ]
+    },
+    "value": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw",
+        "loc"
+      ],
+      "properties": {
+        "raw": {
+          "type": "string"
+        },
+        "norm": {
+          "type": "number"
+        },
+        "loc": {
+          "$ref": "#/$defs/loc"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "present",
+            "source_absent",
+            "ambiguous",
+            "conflict"
+          ]
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/value"
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "values"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "ambiguous"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "note"
+            ],
+            "properties": {
+              "note": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "source_absent"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "values": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grade",
+        "semester",
+        "line_start",
+        "line_end"
+      ],
+      "properties": {
+        "grade": {
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "semester": {
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "line_start": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "line_end": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "title": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "present",
+            "source_absent",
+            "ambiguous",
+            "conflict"
+          ]
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/value"
+          }
+        },
+        "note": {
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "평가영역",
+            "과제명",
+            "번호",
+            "기타"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "values"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "ambiguous"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "note"
+            ],
+            "properties": {
+              "note": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "source_absent"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "values": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "method": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "present",
+            "source_absent",
+            "ambiguous",
+            "conflict"
+          ]
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/value"
+          }
+        },
+        "note": {
+          "type": "string"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "text",
+              "state"
+            ],
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "state": {
+                "enum": [
+                  "checked",
+                  "unchecked",
+                  "no_box",
+                  "unreadable"
+                ]
+              },
+              "mark": {
+                "type": "string"
+              },
+              "loc": {
+                "$ref": "#/$defs/loc"
+              }
+            }
+          }
+        },
+        "other_text": {
+          "type": "string"
+        },
+        "plain_text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "values"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "ambiguous"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "note"
+            ],
+            "properties": {
+              "note": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "source_absent"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "values": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "standard": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "present",
+            "source_absent",
+            "ambiguous",
+            "conflict"
+          ]
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/value"
+          }
+        },
+        "note": {
+          "type": "string"
+        },
+        "codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^\\[9과\\d{2}-\\d{2}\\]$"
+          }
+        },
+        "text": {
+          "type": "string"
+        },
+        "area_name_raw": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "values",
+        "codes"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "ambiguous"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "note"
+            ],
+            "properties": {
+              "note": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "source_absent"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "values": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "rubric": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "present",
+            "source_absent",
+            "ambiguous",
+            "conflict"
+          ]
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/value"
+          }
+        },
+        "note": {
+          "type": "string"
+        },
+        "link_basis": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "values"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "ambiguous"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "note"
+            ],
+            "properties": {
+              "note": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "source_absent"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "values": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "doc_id",
+        "school_id",
+        "labeler",
+        "edition",
+        "edition_note",
+        "science_sections",
+        "notes"
+      ],
+      "properties": {
+        "school_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "school_name": {
+          "type": "string"
+        },
+        "labeler": {
+          "enum": [
+            "claude",
+            "astra"
+          ]
+        },
+        "type": {
+          "const": "document"
+        },
+        "doc_id": {
+          "$ref": "#/$defs/doc_id"
+        },
+        "edition": {
+          "enum": [
+            "valid",
+            "superseded",
+            "conflict"
+          ]
+        },
+        "edition_note": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "science_sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/section"
+          }
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "school_id",
+        "labeler",
+        "grade",
+        "semester",
+        "item_key",
+        "occurrences",
+        "identity_basis",
+        "free_semester",
+        "title",
+        "task_text",
+        "task_no",
+        "period",
+        "method",
+        "standards",
+        "max_score",
+        "sub_scores",
+        "ratio",
+        "rubric"
+      ],
+      "properties": {
+        "school_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "school_name": {
+          "type": "string"
+        },
+        "labeler": {
+          "enum": [
+            "claude",
+            "astra"
+          ]
+        },
+        "type": {
+          "const": "item"
+        },
+        "grade": {
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "semester": {
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "item_key": {
+          "type": "string",
+          "pattern": "^.+-g[12]-s[12]-(?:0[1-9]|[1-9][0-9]+)$"
+        },
+        "occurrences": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/loc"
+          }
+        },
+        "identity_basis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "free_semester": {
+          "type": "boolean"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "title": {
+          "$ref": "#/$defs/title"
+        },
+        "task_text": {
+          "$ref": "#/$defs/field"
+        },
+        "task_no": {
+          "$ref": "#/$defs/field"
+        },
+        "period": {
+          "$ref": "#/$defs/field"
+        },
+        "method": {
+          "$ref": "#/$defs/method"
+        },
+        "standards": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/standard"
+          }
+        },
+        "max_score": {
+          "$ref": "#/$defs/field"
+        },
+        "sub_scores": {
+          "$ref": "#/$defs/field"
+        },
+        "ratio": {
+          "$ref": "#/$defs/field"
+        },
+        "rubric": {
+          "$ref": "#/$defs/rubric"
+        },
+        "activity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "definition_version",
+            "primary",
+            "secondary",
+            "evidence"
+          ],
+          "properties": {
+            "definition_version": {
+              "type": "string",
+              "pattern": "^activity-def-v[0-9]+$"
+            },
+            "primary": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/activity_activity"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "secondary": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/activity_activity"
+              },
+              "uniqueItems": true
+            },
+            "abstain_reason": {
+              "type": "string",
+              "enum": [
+                "근거 없음",
+                "근거 동률",
+                "체크 여러 개·요소 근거 없음",
+                "체크 판독 불가"
+              ]
+            },
+            "evidence": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "type",
+                  "quote",
+                  "loc"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "checkbox",
+                      "method_text",
+                      "assessment_area",
+                      "rubric",
+                      "title_verb"
+                    ]
+                  },
+                  "quote": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "activity": {
+                    "$ref": "#/$defs/activity_activity"
+                  },
+                  "loc": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "doc_id"
+                    ],
+                    "properties": {
+                      "doc_id": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{12}(?:-c[0-9]{2,})?$"
+                      },
+                      "line": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "line_start": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "line_end": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "page": {
+                        "type": "integer",
+                        "minimum": 1
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "votes": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "rule_applied": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "description": "활동 라벨(지침 v2, 정의 activity-def-v2). 주활동 null이면 abstain_reason 필수."
+        }
+      }
+    },
+    "activity_activity": {
+      "type": "string",
+      "enum": [
+        "탐구",
+        "실험평가",
+        "작성",
+        "제작",
+        "분석",
+        "추론·설명",
+        "발표·토론",
+        "계산·측정",
+        "과정평가",
+        "문제해결"
+      ]
+    }
+  }
+}

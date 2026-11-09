@@ -3,8 +3,10 @@
 무엇을 하는가: data/gold/activity/labels/<A>.jsonl과 <B>.jsonl을 item_key로 맞춰
   - 주활동 일치율(기권 포함), 보조활동 집합 일치율, 라벨러별 주활동 분포, 혼동표(A 주 × B 주)
   - 불일치 목록(항목·학교·제목·A 주/보조·B 주/보조·각자의 근거 인용)을 CSV와 MD로 쓴다.
-판정(정의로 풀리는지, 사람에게 물을지)은 사람(부서장)이 MD를 보고 한다. 이 스크립트는 판단하지 않는다.
-돌리기: .venv/Scripts/python.exe scripts/gold_activity_diff.py --a data/gold/activity/labels/claude.jsonl
+판정(정의로 풀리는지, 사람에게 물을지)은 사람(부서장)이 MD를 보고 한다.
+이 스크립트는 판단하지 않는다.
+돌리기: .venv/Scripts/python.exe scripts/gold_activity_diff.py
+      --a data/gold/activity/labels/claude.jsonl
       --b data/gold/activity/labels/astra.jsonl --out data/gold/activity/disagreements
 """
 
@@ -113,13 +115,17 @@ def write_outputs(report: dict, out_prefix: Path, a_name: str, b_name: str) -> N
         lines.append(f"| {pa} | " + " | ".join(str(grid.get((pa, pb), "")) for pb in cols) + " |")
     lines += ["", "## 불일치 목록", ""]
     for row in rows:
-        lines += [f"### {row['item_key']} · {row['school_id']} {row['grade']}-{row['semester']} · {row['title']}",
+        lines += [f"### {row['item_key']} · {row['school_id']} "
+                  f"{row['grade']}-{row['semester']} · {row['title']}",
                   f"- 종류: {row['kind']}",
-                  f"- {a_name}: 주 **{row['A_primary']}** · 보조 {row['A_secondary'] or '-'} · 근거 {row['A_evidence'] or '-'}"
+                  f"- {a_name}: 주 **{row['A_primary']}** · 보조 {row['A_secondary'] or '-'} · "
+                  f"근거 {row['A_evidence'] or '-'}"
                   + (f" · 메모 {row['A_note']}" if row['A_note'] else ""),
-                  f"- {b_name}: 주 **{row['B_primary']}** · 보조 {row['B_secondary'] or '-'} · 근거 {row['B_evidence'] or '-'}"
+                  f"- {b_name}: 주 **{row['B_primary']}** · 보조 {row['B_secondary'] or '-'} · "
+                  f"근거 {row['B_evidence'] or '-'}"
                   + (f" · 메모 {row['B_note']}" if row['B_note'] else ""), ""]
-    (out_prefix.with_suffix(".md")).write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    (out_prefix.with_suffix(".md")).write_text(
+        "\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def main(argv: list[str] | None = None) -> int:

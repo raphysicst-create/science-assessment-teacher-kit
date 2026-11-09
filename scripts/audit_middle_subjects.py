@@ -220,8 +220,9 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
         "round": s4["round"],
         "roster": str(roster) if roster else s4.get("roster"),
         "scope": (
-            "정답 10개교, 보존된 전체 문서의 S4 중1·중2 구간. 판본 합산"
-            if s4["round"].endswith("-gold") else
+            f"정답 {len(schools) if schools is not None else 10}개교, "
+            "보존된 전체 문서의 S4 중1·중2 구간. 판본 합산"
+            if "-gold" in s4["round"] else
             "개발 명단의 S4 중1·중2 구간. 판본을 합산하며 원문 항목 수와 구별"
         ),
         "curriculum_status": "미확정. S7에서 검토",
@@ -507,8 +508,8 @@ def main() -> None:
         json.dumps(report, ensure_ascii=False, indent=2) + "\n",
     )
     body = markdown(report)
-    if args.round_key.endswith("-gold"):
-        body = body.replace("개발 12개교", "정답 10개교")
+    if "-gold" in args.round_key:
+        body = body.replace("개발 12개교", f"정답 {len(roster_codes(roster))}개교")
     atomic_write(args.output_dir / f"{args.round_key}.md", body)
     print(json.dumps(report["summary"], ensure_ascii=False))
 

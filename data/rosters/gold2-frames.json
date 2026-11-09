@@ -1,0 +1,427 @@
+[
+ {
+  "sido": "광주광역시",
+  "stratum": "city",
+  "sgg": "서구",
+  "private_only": false,
+  "queried_at": "2026-11-10",
+  "schools": [
+   {
+    "name": "광덕중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "광주동명중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "광주서석중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "광주중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "광주화정중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "광주효광중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "금호중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "상무중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "상일중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "치평중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "풍암중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "전남중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "운리중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "대자중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "유덕중학교",
+    "founding": "공립"
+   }
+  ]
+ },
+ {
+  "sido": "인천광역시",
+  "stratum": "city",
+  "sgg": "남동구",
+  "private_only": true,
+  "queried_at": "2026-11-10",
+  "schools": [
+   {
+    "name": "간석여자중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "구월여자중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "구월중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "남동중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "논곡중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "동인천중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "만성중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "만수북중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "만수여자중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "만수중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "만월중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "상인천여자중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "상인천중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "숭덕여자중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "석정중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "인천논현중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "인천성리중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "인천동방중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "인천정각중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "인천서창중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "인천고잔중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "인천사리울중학교",
+    "founding": "공립"
+   }
+  ]
+ },
+ {
+  "sido": "경상남도",
+  "stratum": "city",
+  "sgg": "김해시",
+  "private_only": false,
+  "queried_at": "2026-11-10",
+  "schools": [
+   {
+    "name": "가야중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "경운중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "김해대동중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "김해서중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "김해여자중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "김해중앙여자중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "김해중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "내동중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "삼정중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "생림중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "신어중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "영운중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "월산중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "임호중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "장유중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "진례중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "진영장등중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "한림중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "한얼중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "김해구산중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "김해삼계중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "능동중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "관동중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "분성중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "내덕중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "김해대곡중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "진영중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "봉명중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "율하중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "활천중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "대청중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "수남중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "김해모산중학교",
+    "founding": "공립"
+   }
+  ]
+ },
+ {
+  "sido": "울산광역시",
+  "stratum": "city",
+  "sgg": "동구",
+  "private_only": false,
+  "queried_at": "2026-11-10",
+  "schools": [
+   {
+    "name": "대송중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "명덕중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "방어진중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "일산중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "현대청운중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "현대중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "화진중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "화암중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "남목중학교",
+    "founding": "공립"
+   }
+  ]
+ },
+ {
+  "sido": "부산광역시",
+  "stratum": "city",
+  "sgg": "사하구",
+  "private_only": false,
+  "queried_at": "2026-11-10",
+  "schools": [
+   {
+    "name": "감천중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "건국중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "다대중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "다선중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "다송중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "대동중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "동주여자중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "당리중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "사하중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "삼성중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "영남중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "장림여자중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "장평중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "하남중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "하단중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "두송중학교",
+    "founding": "공립"
+   }
+  ]
+ }
+]

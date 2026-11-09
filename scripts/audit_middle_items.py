@@ -235,8 +235,9 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
         "rule_version": RULE_VERSION,
         "round": subjects["round"],
         "scope": (
-            "정답 10개교 전체 보존 문서의 S5 target 중1·중2. S9 공식 측정용"
-            if round_key.endswith("-gold") else
+            f"정답 {len(schools) if schools is not None else 10}개교 "
+            "전체 보존 문서의 S5 target 중1·중2. S9 공식 측정용"
+            if "-gold" in round_key else
             "개발 명단의 S5 target 중1·중2. 일반 판본 대표 선택·이력 보존. 원문 대조 전"
         ),
         "public_eligible": False,

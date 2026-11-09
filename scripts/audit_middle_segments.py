@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import csv
 import hashlib
 import html
 import json
@@ -189,7 +188,7 @@ def markdown_report(report: dict) -> str:
     lines = [
         "# 중학교 문서·구간 식별 실측",
         "",
-        f"{'정답용' if report.get('round', '').endswith('-gold') else '개발용'} "
+        f"{'정답용' if '-gold' in report.get('round', '') else '개발용'} "
         f"{len(summary['schools'])}개교 평가계획 {summary['documents']}개. "
         f"구간 후보 {summary['segment_count']}개.",
         "과목 머리글 후보의 원문 표기를 기록했다. "
@@ -370,16 +369,11 @@ def main() -> None:
     observed = {p.relative_to(ROOT).as_posix() for p in raw.rglob("*") if p.is_file()}
     if observed != set(sources):
         raise ValueError("raw originals and attachment manifest do not reconcile")
-    if args.round_key.endswith("-gold"):
-        with (ROOT / "data/rosters/middle-gold10.csv").open(encoding="utf-8-sig") as handle:
-            schools = {r["school_code"] for r in csv.DictReader(handle)}
-        sources = {p: r for p, r in sources.items() if str(r["school_code"]) in schools}
-    else:
-        schools = roster_codes(roster_path(ROOT, args.round_key, args.roster))
-        sources = {p: r for p, r in sources.items() if str(r["school_code"]) in schools}
+    schools = roster_codes(roster_path(ROOT, args.round_key, args.roster))
+    sources = {p: r for p, r in sources.items() if str(r["school_code"]) in schools}
     excluded = [
         r for r in sources.values()
-        if not args.round_key.endswith("-gold")
+        if "-gold" not in args.round_key
         and plan_status(r["candidate_name"]) == "non_plan_filename"
     ]
     plans = [r for r in sources.values() if r not in excluded]

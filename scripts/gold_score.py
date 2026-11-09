@@ -516,13 +516,14 @@ def wilson(success: int, total: int) -> dict:
 class SourceMap:
     """Map actual S4 character offsets to sealed pack lines by exact text equality."""
 
-    def __init__(self, root: Path, s4: list[dict]):
+    def __init__(self, root: Path, s4: list[dict], gold_dir: Path | None = None):
         self.root = root
-        self.index = read(root / "data/gold/pack/index.json")
-        seal = read(root / "data/gold/SEAL.json")
+        gold_dir = root / "data/gold" if gold_dir is None else root / gold_dir
+        self.index = read(gold_dir / "pack/index.json")
+        seal = read(gold_dir / "SEAL.json")
         self.sources = {s["sha256"]: s for s in seal["sources"]}
         self.pack = {
-            r["doc_id"]: (root / f"data/gold/pack/{r['doc_id']}.md").read_text(encoding="utf-8")
+            r["doc_id"]: (gold_dir / f"pack/{r['doc_id']}.md").read_text(encoding="utf-8")
             for r in self.index
         }
         self.records = defaultdict(list)
@@ -769,14 +770,15 @@ def pairing_failure(
     }
 
 
-def seal_check(root: Path) -> dict:
-    seal = read(root / "data/gold/SEAL.json")
+def seal_check(root: Path, gold_dir: Path | None = None) -> dict:
+    gold_dir = root / "data/gold" if gold_dir is None else root / gold_dir
+    seal = read(gold_dir / "SEAL.json")
     records = [(root / r["original_path"], r["sha256"]) for r in seal["sources"]]
-    records += [(root / "data/gold" / r["raw_path"], r["sha256"]) for r in seal["sources"]]
-    records += [(root / "data/gold" / r["path"], r["sha256"]) for r in seal["pack_files"]]
+    records += [(gold_dir / r["raw_path"], r["sha256"]) for r in seal["sources"]]
+    records += [(gold_dir / r["path"], r["sha256"]) for r in seal["pack_files"]]
     records += [(root / seal[k]["path"], seal[k]["sha256"]) for k in ("guide", "schema")]
     errors = [
-        str(p.relative_to(root))
+        str(p.relative_to(root) if p.is_relative_to(root) else p)
         for p, digest in records
         if not p.exists() or hashlib.sha256(p.read_bytes()).hexdigest() != digest
     ]
@@ -786,6 +788,7 @@ def seal_check(root: Path) -> dict:
 def score(
     root: Path, gold_path: Path, meta_path: Path, rounds: list[str], *, use_task_no: bool = True,
     items_dir: Path | None = None,
+    gold_dir: Path | None = None,
 ) -> dict:
     labels = [json.loads(line) for line in gold_path.read_text(encoding="utf-8").splitlines()]
     meta = read(meta_path)
@@ -798,7 +801,7 @@ def score(
     items_dir = root / (items_dir or Path("data/derived/items"))
     s6 = [read(items_dir / f"{r}.json") for r in rounds]
     ai_enabled = any("ai_relations" in report for report in s6)
-    mapper = SourceMap(root, s4)
+    mapper = SourceMap(root, s4) if gold_dir is None else SourceMap(root, s4, gold_dir)
     schools = {r["school_name"]: r["school_id"] for r in mapper.index}
     pipeline = []
     for report in s6:
@@ -1143,7 +1146,7 @@ def score(
         "documents": docs,
         "failures_exclusions": failures,
         "source_mapping": mapper.diagnostics,
-        "seal": seal_check(root),
+        "seal": seal_check(root) if gold_dir is None else seal_check(root, gold_dir),
         "zip_coordinate_conflicts": [
             {
                 "pipeline_key": p["score_id"],
@@ -1636,10 +1639,13 @@ def pair_basis_text(basis: dict) -> str:
 
 def rule_markdown(report: dict) -> str:
     stages = report["stages"]
+    rounds = "두" if len(report["rounds"]) == 2 else str(len(report["rounds"]))
+    schools = len({document["school_id"] for document in report["documents"]})
     lines = [
         "# S9 ⑧ 채점기 v1.4 · 정답 v1",
         "",
-        "두 공시 회차·10개교·정답 83항목. 추출 규칙·패턴·임계값 변경 0. 오프라인 실행.",
+        f"{rounds} 공시 회차·{schools}개교·정답 {report['loss_map']['gold']}항목. "
+        "추출 규칙·패턴·임계값 변경 0. 오프라인 실행.",
         "",
         "## 단계와 비교 규칙",
         "",
@@ -2171,6 +2177,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--gold", type=Path, default=ROOT / "data/gold/gold_v1.jsonl")
     parser.add_argument("--meta", type=Path, default=ROOT / "data/gold/gold_v1.meta.json")
+    parser.add_argument("--gold-dir", type=Path, default=ROOT / "data/gold")
     parser.add_argument("--round-keys", nargs="+", default=list(ROUNDS))
     parser.add_argument("--items-dir", type=Path, default=ROOT / "data/derived/items")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "data/derived/gold_score/v5")
@@ -2189,7 +2196,8 @@ def main() -> None:
     baseline_report = read(baseline_path)
     v13_path = args.v13_baseline.resolve()
     v13_report = read(v13_path)
-    report = score(ROOT, args.gold, args.meta, args.round_keys, items_dir=args.items_dir)
+    report = score(ROOT, args.gold, args.meta, args.round_keys,
+                   items_dir=args.items_dir, gold_dir=args.gold_dir)
     report["items_dir"] = args.items_dir.as_posix()
     report["baseline"] = {
         "path": (

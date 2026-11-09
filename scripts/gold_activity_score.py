@@ -5,7 +5,7 @@ Run: .venv/Scripts/python.exe scripts/gold_activity_score.py --axes A.json B.jso
      --gold-activity LABELS.jsonl --gold-items ITEMS.jsonl --pairs CASES.csv --out-dir OUT
 Verify: .venv/Scripts/python.exe -m pytest -q -p no:cacheprovider
         services/math-assessment-api/tests/test_gold_activity_score.py
-정답 83개를 전체 분모로 고정한다. 빈 보조 집합끼리의 Jaccard는 1이다.
+정답 파일의 항목 수를 전체 분모로 쓴다. 빈 보조 집합끼리의 Jaccard는 1이다.
 """
 
 import argparse
@@ -16,7 +16,6 @@ import sys
 from fractions import Fraction
 from pathlib import Path
 
-GOLD_TOTAL = 83
 ACTIVITIES = ("탐구", "실험평가", "작성", "제작", "분석", "추론·설명", "발표·토론",
               "계산·측정", "과정평가", "문제해결")
 ABSTAIN = "기권"
@@ -105,7 +104,8 @@ def make_row(key, label, truth_item, prediction):
     truth_secondary = set(label.get("secondary") or [])
     row = {"item_key": key, "item_id": "", "gold_unit": sorted(truth_areas),
            "predicted_unit": [], "unit_result": "짝 없음", "gold_primary": label.get("primary"),
-           "predicted_primary": None, "result": "짝 없음", "gold_secondary": sorted(truth_secondary),
+           "predicted_primary": None, "result": "짝 없음",
+           "gold_secondary": sorted(truth_secondary),
            "predicted_secondary": [], "abstain_reason": "", "rule_applied": ""}
     if prediction is None:
         return row
@@ -124,7 +124,8 @@ def make_row(key, label, truth_item, prediction):
                unit_result=unit_result, predicted_primary=activity.get("primary"),
                result="일치" if label.get("primary") == activity.get("primary") else "불일치",
                predicted_secondary=sorted(set(activity.get("secondary") or [])),
-               abstain_reason=activity.get("abstain_reason"), rule_applied=activity.get("rule_applied"))
+               abstain_reason=activity.get("abstain_reason"),
+               rule_applied=activity.get("rule_applied"))
     return row
 
 
@@ -134,9 +135,11 @@ def unit_metrics(rows):
     exact = sum(row["gold_unit"] == row["predicted_unit"] for row in has_truth)
     partial = sum(bool(set(row["gold_unit"]) & set(row["predicted_unit"])) for row in has_truth)
     return {"exact": metric(exact, len(has_truth)), "partial": metric(partial, len(has_truth)),
-            "undetermined": metric(sum(not row["predicted_unit"] for row in has_truth), len(has_truth)),
+            "undetermined": metric(sum(not row["predicted_unit"] for row in has_truth),
+                                    len(has_truth)),
             "gold_unit_absent": metric(len(no_truth), len(rows)),
-            "prediction_without_gold": metric(sum(bool(row["predicted_unit"]) for row in no_truth), len(no_truth))}
+            "prediction_without_gold": metric(
+                sum(bool(row["predicted_unit"]) for row in no_truth), len(no_truth))}
 
 
 def per_activity_metrics(rows):
@@ -147,7 +150,8 @@ def per_activity_metrics(rows):
     for label in sorted(labels):
         support = sum(row["gold_primary"] == label for row in rows)
         predicted = sum(row["predicted_primary"] == label for row in rows)
-        true_positive = sum(row["gold_primary"] == label == row["predicted_primary"] for row in rows)
+        true_positive = sum(row["gold_primary"] == label == row["predicted_primary"]
+                            for row in rows)
         scores[label] = {"gold_positive": support, "predicted_positive": predicted,
                          "true_positive": true_positive,
                          "precision": metric(true_positive, predicted),
@@ -161,14 +165,16 @@ def activity_metrics(rows, scores):
     classified = [row for row in active if row["predicted_primary"] is not None]
     gold_abstain = [row for row in rows if row["gold_primary"] is None]
     correct = sum(row["result"] == "일치" for row in active)
-    eligible = {label: score["gold_positive"] for label, score in scores.items() if score["gold_positive"] >= 10}
+    eligible = {label: score["gold_positive"] for label, score in scores.items()
+                if score["gold_positive"] >= 10}
     f1_values = [Fraction(scores[label]["f1"]["numerator"], scores[label]["f1"]["denominator"])
                  for label in eligible]
     return {"accuracy_all": metric(correct, len(active)),
             "accuracy_classified": metric(correct, len(classified)),
             "coverage": metric(len(classified), len(active)),
             "abstention": metric(sum(row["predicted_primary"] is None for row in rows), len(rows)),
-            "gold_abstention_agreement": metric(sum(row["predicted_primary"] is None for row in gold_abstain), len(gold_abstain)),
+            "gold_abstention_agreement": metric(
+                sum(row["predicted_primary"] is None for row in gold_abstain), len(gold_abstain)),
             "macro_f1": average_metric(f1_values), "macro_f1_activities": eligible}
 
 
@@ -185,9 +191,13 @@ def secondary_metrics(rows):
             "gold_subset": metric(subset, len(rows))}
 
 
-def evaluate(axes, labels, items, pairs):
+def evaluate(axes, labels, items, pairs, gold_total=None):
     label_index = unique_index(labels, "item_key")
     item_index = unique_index((row for row in items if row.get("type") == "item"), "item_key")
+    if gold_total is None:
+        gold_total = len(item_index)
+    if gold_total < 0:
+        raise ValueError("gold total must be nonnegative")
     pair_index = unique_index((row for row in pairs if row.get("type") == "gold"), "key")
     rows = []
     for key, label in label_index.items():
@@ -200,17 +210,19 @@ def evaluate(axes, labels, items, pairs):
         rows.append(make_row(key, label, item_index[key], prediction))
     paired = [row for row in rows if row["result"] != "짝 없음"]
     scores = per_activity_metrics(paired)
-    confusion = {label: dict.fromkeys((*ACTIVITIES, ABSTAIN), 0) for label in (*ACTIVITIES, ABSTAIN)}
+    confusion = {label: dict.fromkeys((*ACTIVITIES, ABSTAIN), 0)
+                 for label in (*ACTIVITIES, ABSTAIN)}
     for row in paired:
         truth, prediction = row["gold_primary"] or ABSTAIN, row["predicted_primary"] or ABSTAIN
         confusion.setdefault(truth, {}).setdefault(prediction, 0)
         confusion[truth][prediction] += 1
-    metrics = {"paired": metric(len(paired), GOLD_TOTAL),
-               "unmatched": metric(GOLD_TOTAL - len(paired), GOLD_TOTAL),
+    metrics = {"paired": metric(len(paired), gold_total),
+               "unmatched": metric(gold_total - len(paired), gold_total),
                "units": unit_metrics(paired), "activity": activity_metrics(paired, scores),
                "secondary": secondary_metrics(paired),
-               "overall_primary_accuracy": metric(sum(row["result"] == "일치" for row in paired), GOLD_TOTAL)}
-    return {"gold_total": GOLD_TOTAL, "label_count": len(rows), "metrics": metrics,
+               "overall_primary_accuracy": metric(
+                   sum(row["result"] == "일치" for row in paired), gold_total)}
+    return {"gold_total": gold_total, "label_count": len(rows), "metrics": metrics,
             "per_activity": scores, "confusion": confusion, "items": rows}
 
 
@@ -229,16 +241,20 @@ def markdown(report):
                 if isinstance(subvalue, dict) and "fraction" in subvalue:
                     lines.append(f"| {name}.{subname} | {metric_text(subvalue)} |")
     eligible = report["metrics"]["activity"]["macro_f1_activities"]
-    lines += ["", "macro-F1 대상(정답 양성 ≥10개) " + (", ".join(f"{k} {v}개" for k, v in eligible.items()) or "없음"),
+    lines += ["", "macro-F1 대상(정답 양성 ≥10개) "
+              + (", ".join(f"{k} {v}개" for k, v in eligible.items()) or "없음"),
               "", "| 활동 | 정답 양성 | Precision | Recall | F1 |", "|---|---|---|---|---|"]
     for label, scores in report["per_activity"].items():
-        values = [label, str(scores["gold_positive"])] + [metric_text(scores[key]) for key in ("precision", "recall", "f1")]
+        values = [label, str(scores["gold_positive"])] + [
+            metric_text(scores[key]) for key in ("precision", "recall", "f1")]
         lines.append("| " + " | ".join(values) + " |")
-    columns = list(dict.fromkeys(label for counts in report["confusion"].values() for label in counts))
+    columns = list(dict.fromkeys(label for counts in report["confusion"].values()
+                                 for label in counts))
     lines += ["", "## 혼동표", "", "| 정답 주 / 분류기 주 | " + " | ".join(columns) + " |",
               "|---|" + "---|" * len(columns)]
     for label, counts in report["confusion"].items():
-        lines.append("| " + label + " | " + " | ".join(str(counts.get(column, 0)) for column in columns) + " |")
+        lines.append("| " + label + " | "
+                     + " | ".join(str(counts.get(column, 0)) for column in columns) + " |")
     return "\n".join(lines) + "\n"
 
 
@@ -248,13 +264,15 @@ def write_report(report, out_dir, name):
     directory = Path(out_dir)
     directory.mkdir(parents=True, exist_ok=True)
     prefix = directory / name
-    Path(str(prefix) + ".json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    Path(str(prefix) + ".json").write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     Path(str(prefix) + ".md").write_text(markdown(report), encoding="utf-8")
     with Path(str(prefix) + ".csv").open("w", encoding="utf-8-sig", newline="") as target:
         writer = csv.DictWriter(target, fieldnames=CSV_FIELDS)
         writer.writeheader()
         for row in report["items"]:
-            writer.writerow({key: " | ".join(value) if isinstance(value, list) else value for key, value in row.items()})
+            writer.writerow({key: " | ".join(value) if isinstance(value, list) else value
+                             for key, value in row.items()})
 
 
 def main(argv=None):
@@ -262,6 +280,7 @@ def main(argv=None):
     parser.add_argument("--axes", nargs="+", required=True)
     parser.add_argument("--gold-activity", required=True)
     parser.add_argument("--gold-items", required=True)
+    parser.add_argument("--gold-total", type=int)
     parser.add_argument("--pairs", required=True)
     parser.add_argument("--out-dir", required=True)
     parser.add_argument("--name", default="gold-axes-v1")
@@ -269,7 +288,8 @@ def main(argv=None):
     try:
         with Path(args.pairs).open(encoding="utf-8-sig", newline="") as source:
             pairs = list(csv.DictReader(source))
-        report = evaluate(load_axes(args.axes), read_jsonl(args.gold_activity), read_jsonl(args.gold_items), pairs)
+        report = evaluate(load_axes(args.axes), read_jsonl(args.gold_activity),
+                          read_jsonl(args.gold_items), pairs, args.gold_total)
         write_report(report, args.out_dir, args.name)
     except (OSError, ValueError, KeyError, TypeError) as error:
         print(str(error), file=sys.stderr)

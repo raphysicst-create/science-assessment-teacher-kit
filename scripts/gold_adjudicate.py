@@ -1020,8 +1020,13 @@ def run(a_path, b_path, disagreements, pack_path, output, answers_path=None):
         any(x[c] != y[c] for c in columns) for x, y in zip(rows, fresh, strict=True)
     ):
         raise ValueError("disagreements.csv가 현재 입력의 v2 비교 결과와 다름")
+    # Activity is retained for a separate merge and never enters rules 0–6.
+    rows = [row for row in rows if not row["필드"].startswith("activity.")]
+    fresh = [row for row in fresh if not row["필드"].startswith("activity.")]
     items_a = sorted((x for x in a if x["type"] == "item"), key=lambda x: x["item_key"])
     items_b = sorted((x for x in b if x["type"] == "item"), key=lambda x: x["item_key"])
+    # Enrich every slot in an activity run, including slots with two missing labels.
+    has_activity = any("activity" in item for item in items_a + items_b)
     lookup_a = {x["item_key"]: x for x in items_a}
     lookup_b = {x["item_key"]: x for x in items_b}
     pack = Pack(pack_path)
@@ -1054,6 +1059,9 @@ def run(a_path, b_path, disagreements, pack_path, output, answers_path=None):
             "A": left["item_key"] if left else None,
             "B": right["item_key"] if right else None,
         }
+        if has_activity:
+            record["activity_a"] = (left or {}).get("activity")
+            record["activity_b"] = (right or {}).get("activity")
         record["adjudication_key"] = (
             f"A:{record['input_keys']['A'] or ''}|B:{record['input_keys']['B'] or ''}"
         )

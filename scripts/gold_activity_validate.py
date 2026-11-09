@@ -6,9 +6,11 @@
   - definition_version이 모두 같고 기대 버전과 같다
   - primary는 활동 10개 중 하나 또는 null, null이면 abstain_reason 필수
   - secondary는 활동 이름 배열, 중복 없음, primary 포함 안 함
-  - evidence는 type(5종)·quote·loc(doc_id, line 또는 line_start/line_end) 구조. primary가 있으면 evidence ≥1
+  - evidence는 type(5종)·quote·loc(doc_id, line 또는 line_start/line_end) 구조.
+    primary가 있으면 evidence ≥1
 표준 라이브러리만 쓴다(jsonschema 없음).
-돌리기: .venv/Scripts/python.exe scripts/gold_activity_validate.py data/gold/activity/labels/claude.jsonl
+돌리기: .venv/Scripts/python.exe scripts/gold_activity_validate.py
+      data/gold/activity/labels/claude.jsonl
       --expect-version activity-def-v1  → 오류 0이면 종료 코드 0
 """
 
@@ -24,7 +26,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ITEMS_PATH = ROOT / "data/gold/activity/items_v1.jsonl"
 SCHEMA_PATH = ROOT / "data/reference/activity_label_schema.json"
-ITEM_KEY_RE = re.compile(r"^ms-gold-[a-z]+-(city|gun)-g[12]-s[12]-[0-9]{2}$")
 DOC_ID_RE = re.compile(r"^[0-9a-f]{12}(?:-c[0-9]{2,})?$")
 
 
@@ -112,12 +113,13 @@ def check_record(record: dict, schema: dict, item: dict | None) -> list[str]:
 def validate(labels_path: Path, items_path: Path = ITEMS_PATH, schema_path: Path = SCHEMA_PATH,
              expect_version: str | None = None) -> dict:
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    item_key_re = re.compile(schema["properties"]["item_key"]["pattern"])
     items = {i["item_key"]: i for i in load_jsonl(items_path)}
     records = load_jsonl(labels_path)
     errors = []
     keys = Counter(r.get("item_key") for r in records)
     for key, count in keys.items():
-        if not isinstance(key, str) or not ITEM_KEY_RE.match(key):
+        if not isinstance(key, str) or not item_key_re.match(key):
             errors.append(f"{key!r}: item_key 형식 오류")
         elif key not in items:
             errors.append(f"{key}: 묶음에 없는 항목")
