@@ -3,42 +3,36 @@ from fastapi.testclient import TestClient
 from app.main import app
 
 
-def test_reference_page_applies_subject_region_and_category_before_limiting() -> None:
-    client = TestClient(app)
-    subjects = client.get("/api/v1/subjects").json()["items"]
-    selected = next(
-        item
-        for item in subjects
-        if item["curriculum"] == "2022" and item["subject"] == "대수"
-    )
-
+def test_reference_page_applies_subject_region_and_category_before_limiting(science_demo) -> None:
+    client = science_demo["client"]
     response = client.get(
         "/api/v1/references",
         params={
-            "curriculum": selected["curriculum"],
-            "subject": selected["subject"],
-            "category": "inquiry",
-            "limit": 30,
+            "unit": "14",
+            "activity": "presentation",
+            "region": "서울특별시",
+            "limit": 1,
         },
     )
 
     assert response.status_code == 200
     payload = response.json()
     assert payload["items"]
-    assert payload["total"] >= len(payload["items"])
+    assert payload["total"] == len(payload["items"]) == 1
     assert payload["subjects"]
     assert payload["facets"]["regions"]
     assert all(
-        item["curriculum"] == "2022"
-        and item["subject"] == "대수"
-        and item["category"] == "inquiry"
+        item["subject"] == "과학"
+        and item["region"] == "서울특별시"
+        and item["activity"]["primary"]["value"] == "presentation"
+        and any(unit["value"] == "14" for unit in item["units"])
         for item in payload["items"]
     )
 
 
-def test_reference_page_can_be_narrowed_to_one_district() -> None:
-    client = TestClient(app)
-    base = {"curriculum": "2022", "subject": "대수", "category": "inquiry"}
+def test_reference_page_can_be_narrowed_to_one_district(science_demo) -> None:
+    client = science_demo["client"]
+    base = {"grade": 1}
     facets = client.get("/api/v1/references", params=base).json()["facets"]
     region = facets["regions"][0]["value"]
     district = client.get(
@@ -52,6 +46,8 @@ def test_reference_page_can_be_narrowed_to_one_district() -> None:
 
     assert response.status_code == 200
     assert response.json()["items"]
+    assert response.json()["total_items"] == 2
+    assert response.json()["total_cases"] == 1
     assert all(
         item["region"] == region and item["district"] == district
         for item in response.json()["items"]

@@ -1,9 +1,11 @@
 "use client";
 
+// Case search with grade and regional filters. Verify: npm run test:web && npm run lint:web.
+
 import Link from "../SiteLink";
 import MathText from "../MathText";
 import { useRouter, useSearchParams } from "next/navigation";
-import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 
 import {
   apiParameters,
@@ -11,8 +13,6 @@ import {
   type CaseItem,
   type CaseListResponse,
   type FacetResponse,
-  type SubjectItem,
-  type SubjectListResponse,
 } from "../lib/catalog-api";
 import { loadReviewState, queueCase, saveReviewState } from "../review/review-store";
 
@@ -27,24 +27,14 @@ function safeOffset(value: string | null) {
   return Number.isFinite(page) && page > 0 ? Math.min(page - 1, 999) * PAGE_SIZE : 0;
 }
 
-function uniqueSubjectOptions(subjects: SubjectItem[], curriculum: string) {
-  const totals = new Map<string, number>();
-  for (const item of subjects) {
-    if (curriculum && item.curriculum !== curriculum) continue;
-    totals.set(item.subject, (totals.get(item.subject) ?? 0) + item.documents);
-  }
-  return [...totals.entries()].map(([subject, documents]) => ({ subject, documents }));
-}
-
 export default function CasesExplorer() {
   const searchParameters = useSearchParams();
   const router = useRouter();
   const initialCurriculum = safeCurriculum(searchParameters.get("curriculum"));
-  const initialSubject = searchParameters.get("subject") || "";
+  const initialGrade = searchParameters.get("grade");
   const initialQuery = searchParameters.get("q") || "";
-  const [subjects, setSubjects] = useState<SubjectItem[]>([]);
   const [curriculum, setCurriculum] = useState(initialCurriculum);
-  const [subject, setSubject] = useState(initialSubject);
+  const [grade, setGrade] = useState(initialGrade === "1" || initialGrade === "2" ? initialGrade : "");
   const [region, setRegion] = useState(searchParameters.get("region") || "");
   const [district, setDistrict] = useState(searchParameters.get("district") || "");
   const [tag, setTag] = useState(searchParameters.get("tag") || "");
@@ -57,27 +47,11 @@ export default function CasesExplorer() {
   const [caution, setCaution] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [subjectNotice, setSubjectNotice] = useState("");
   const [facetNotice, setFacetNotice] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
-    fetchCatalog<SubjectListResponse>("subjects", controller.signal)
-      .then((payload) => {
-        setSubjects(payload.items.filter((item) => item.curriculum !== "shared"));
-        setSubjectNotice("");
-      })
-      .catch(() => {
-        if (!controller.signal.aborted) {
-          setSubjectNotice("과목 목록을 불러오지 못했습니다. 사례 검색은 계속 사용할 수 있습니다.");
-        }
-      });
-    return () => controller.abort();
-  }, []);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const parameters = apiParameters({ curriculum, subject, region });
+    const parameters = apiParameters({ curriculum, grade, region });
     fetchCatalog<FacetResponse>(`facets?${parameters}`, controller.signal)
       .then((payload) => {
         setFacets(payload);
@@ -89,13 +63,13 @@ export default function CasesExplorer() {
         }
       });
     return () => controller.abort();
-  }, [curriculum, subject, region]);
+  }, [curriculum, grade, region]);
 
   useEffect(() => {
     const controller = new AbortController();
     const parameters = apiParameters({
       curriculum,
-      subject,
+      grade,
       region,
       district,
       tag,
@@ -113,23 +87,19 @@ export default function CasesExplorer() {
       .catch((reason: Error) => { if (!controller.signal.aborted) setError(reason.message); })
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
-  }, [curriculum, subject, region, district, tag, query, offset]);
+  }, [curriculum, grade, region, district, tag, query, offset]);
 
   useEffect(() => {
     const parameters = apiParameters({
-      curriculum, subject, region, district, tag, q: query,
+      curriculum, grade, region, district, tag, q: query,
       page: offset ? Math.floor(offset / PAGE_SIZE) + 1 : undefined,
     });
     router.replace(parameters ? `/cases?${parameters}` : "/cases", { scroll: false });
-  }, [curriculum, subject, region, district, tag, query, offset, router]);
+  }, [curriculum, grade, region, district, tag, query, offset, router]);
 
-  const courseOptions = useMemo(
-    () => uniqueSubjectOptions(subjects, curriculum),
-    [curriculum, subjects],
-  );
   const currentPage = Math.floor(offset / PAGE_SIZE) + 1;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const activeFilterCount = [curriculum, subject, region, district, tag, query].filter(Boolean).length;
+  const activeFilterCount = [curriculum, grade, region, district, tag, query].filter(Boolean).length;
 
   function beginReload() {
     setLoading(true);
@@ -137,19 +107,17 @@ export default function CasesExplorer() {
   }
 
   function changeCurriculum(value: string) {
-    const nextCourses = uniqueSubjectOptions(subjects, value);
     beginReload();
     setCurriculum(value);
-    setSubject(nextCourses.some((item) => item.subject === subject) ? subject : "");
     setRegion("");
     setDistrict("");
     setTag("");
     setOffset(0);
   }
 
-  function changeSubject(value: string) {
+  function changeGrade(value: string) {
     beginReload();
-    setSubject(value);
+    setGrade(value);
     setRegion("");
     setDistrict("");
     setTag("");
@@ -159,7 +127,7 @@ export default function CasesExplorer() {
   function clearFilters() {
     beginReload();
     setCurriculum("");
-    setSubject("");
+    setGrade("");
     setRegion("");
     setDistrict("");
     setTag("");
@@ -194,7 +162,7 @@ export default function CasesExplorer() {
         <div className="caseFilterTopline"><div><span className="stepPill">필터</span><h2 id="case-filter-title">전체 라이브러리 찾기</h2></div><button type="button" onClick={clearFilters}>전체로 초기화{activeFilterCount ? ` (${activeFilterCount})` : ""}</button></div>
         <div className="filterControls caseCourseControls">
           <label><span>교육과정</span><select value={curriculum} onChange={(event) => changeCurriculum(event.target.value)}><option value="">전체 교육과정</option><option value="2015">2015 개정</option><option value="2022">2022 개정</option></select></label>
-          <label className="wideControl"><span>수학 과목</span><select value={subject} onChange={(event) => changeSubject(event.target.value)}><option value="">전체 수학 과목</option>{courseOptions.map((item) => <option key={item.subject} value={item.subject}>{item.subject} · {item.documents.toLocaleString()}건</option>)}</select></label>
+          <label className="wideControl"><span>학년</span><select value={grade} onChange={(event) => changeGrade(event.target.value)}><option value="">전체</option><option value="1">1학년</option><option value="2">2학년</option></select></label>
           <label><span>시·도</span><select value={region} onChange={(event) => { beginReload(); setRegion(event.target.value); setDistrict(""); setOffset(0); }}><option value="">전국</option>{facets.regions.map((item) => <option key={item.value} value={item.value}>{item.value} · {item.count}</option>)}</select></label>
           <label><span>시·군·구</span><select value={district} onChange={(event) => { beginReload(); setDistrict(event.target.value); setOffset(0); }} disabled={!region}><option value="">{region ? "전체 시·군·구" : "시·도를 먼저 선택"}</option>{region ? facets.districts.map((item) => <option key={item.value} value={item.value}>{item.value} · {item.count}</option>) : null}</select></label>
         </div>
@@ -207,12 +175,12 @@ export default function CasesExplorer() {
           <button type="button" className={!tag ? "selected" : ""} onClick={() => { beginReload(); setTag(""); setOffset(0); }}>전체</button>
           {facets.action_tags.slice(0, 9).map((item) => <button type="button" className={tag === item.value ? "selected" : ""} aria-pressed={tag === item.value} key={item.value} onClick={() => { beginReload(); setTag(item.value === tag ? "" : item.value); setOffset(0); }}>{item.value}<span>{item.count}</span></button>)}
         </fieldset>
-        <div className="activeFilters caseActiveFilters" aria-label="적용된 필터"><span>적용</span><strong>{curriculum ? `${curriculum} 개정` : "전체 교육과정"}</strong><strong>{subject || "전체 수학 과목"}</strong><strong>원문 경계 확인 자료만</strong>{region ? <button type="button" onClick={() => { beginReload(); setRegion(""); setDistrict(""); setOffset(0); }}>{region} ×</button> : null}{district ? <button type="button" onClick={() => { beginReload(); setDistrict(""); setOffset(0); }}>{district} ×</button> : null}{tag ? <button type="button" onClick={() => { beginReload(); setTag(""); setOffset(0); }}>{tag} ×</button> : null}{query ? <button type="button" onClick={() => { beginReload(); setQuery(""); setQueryInput(""); setOffset(0); }}>{query} ×</button> : null}</div>
-        {subjectNotice || facetNotice ? <p className="filterNotice" role="status">{[subjectNotice, facetNotice].filter(Boolean).join(" ")}</p> : null}
+        <div className="activeFilters caseActiveFilters" aria-label="적용된 필터"><span>적용</span><strong>{curriculum ? `${curriculum} 개정` : "전체 교육과정"}</strong><strong>{grade ? `${grade}학년` : "전체 학년"}</strong><strong>원문 경계 확인 자료만</strong>{region ? <button type="button" onClick={() => { beginReload(); setRegion(""); setDistrict(""); setOffset(0); }}>{region} ×</button> : null}{district ? <button type="button" onClick={() => { beginReload(); setDistrict(""); setOffset(0); }}>{district} ×</button> : null}{tag ? <button type="button" onClick={() => { beginReload(); setTag(""); setOffset(0); }}>{tag} ×</button> : null}{query ? <button type="button" onClick={() => { beginReload(); setQuery(""); setQueryInput(""); setOffset(0); }}>{query} ×</button> : null}</div>
+        {facetNotice ? <p className="filterNotice" role="status">{facetNotice}</p> : null}
       </section>
 
       <section className="caseResults" aria-labelledby="case-results-title" aria-busy={loading}>
-        <div className="resultHeading"><div><span className="stepPill">결과</span><div><h2 id="case-results-title">평가 구조 표</h2><p>{total.toLocaleString()}건 중 {total ? offset + 1 : 0}–{Math.min(offset + PAGE_SIZE, total)}건</p></div></div><Link href={`/trends?${apiParameters({ curriculum, subject })}`}>과목별 경향 보기</Link></div>
+        <div className="resultHeading"><div><span className="stepPill">결과</span><div><h2 id="case-results-title">평가 구조 표</h2><p>{total.toLocaleString()}건 중 {total ? offset + 1 : 0}–{Math.min(offset + PAGE_SIZE, total)}건</p></div></div><Link href={`/trends?${apiParameters({ curriculum })}`}>과목별 경향 보기</Link></div>
         {loading ? <CaseSkeletons /> : null}
         {error ? <div className="errorPanel" role="alert"><strong>자료를 불러오지 못했습니다.</strong><p>{error}</p></div> : null}
         {!loading && !error && cases.length === 0 ? <div className="emptyPanel"><strong>조건에 맞는 사례가 없습니다.</strong><p>검색어 또는 필터를 조정해 보세요.</p></div> : null}

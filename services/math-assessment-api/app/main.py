@@ -4,7 +4,7 @@ import json
 import os
 from typing import Annotated, Final
 
-from fastapi import FastAPI, HTTPException, Path, Query, Request, Response
+from fastapi import Depends, FastAPI, HTTPException, Path, Query, Request, Response
 
 from app.repository import CatalogRepository
 from app.request_guard import client_key, limiter
@@ -22,6 +22,8 @@ from app.schemas import (
     TrendListResponse,
     VisitorCountResponse,
 )
+from app.science_filters import science_query
+from app.science_repository import ScienceRepository
 from app.settings import (
     catalog_database_path,
     detail_catalog_database_path,
@@ -209,6 +211,7 @@ def cases(
     region: Annotated[str | None, Query(min_length=1, max_length=40)] = None,
     district: Annotated[str | None, Query(min_length=1, max_length=40)] = None,
     query: Annotated[str | None, Query(min_length=1, max_length=100)] = None,
+    grade: Annotated[int | None, Query(ge=1, le=2)] = None,
     include_ambiguous: bool = True,
     limit: Annotated[int, Query(ge=1, le=30)] = 20,
     offset: Annotated[int, Query(ge=0)] = 0,
@@ -223,6 +226,7 @@ def cases(
         source_status="confirmed",
         query=query,
         include_ambiguous=include_ambiguous,
+        grade=grade,
         limit=limit,
         offset=offset,
     )
@@ -236,88 +240,10 @@ def cases(
 
 
 @app.get("/api/v1/curated", response_model=CuratedCaseListResponse, tags=["catalog"])
-def curated_cases(
-    category: Annotated[
-        str,
-        Query(pattern="^(inquiry|modeling|problem|presentation|portfolio|reading)$"),
-    ] = "inquiry",
-    curriculum: Annotated[str | None, Query(pattern="^(2015|2022)$")] = None,
-    subject: Annotated[str | None, Query(min_length=1, max_length=40)] = None,
-    region: Annotated[str | None, Query(min_length=1, max_length=40)] = None,
-    district: Annotated[str | None, Query(min_length=1, max_length=40)] = None,
-    limit: Annotated[int, Query(ge=1, le=30)] = 12,
-) -> dict[str, object]:
-    require_region_for_district(region, district)
-    catalog = ready_repository()
-    items = catalog.curated_items(
-        curriculum=curriculum,
-        subject=subject,
-        region=region,
-        district=district,
-        category=category,
-        limit=limit,
-    )
-    return {
-        "category": category,
-        "items": items,
-        "total": catalog.curated_total(
-            curriculum=curriculum,
-            subject=subject,
-            region=region,
-            district=district,
-            category=category,
-        ),
-        "interpretation": (
-            "공개 평가계획에서 과제명, 성취기준, 채점기준, 평가방법과 과정 증거가 "
-            "함께 확인되는 사례를 설계 참고 우선순위로 정리했습니다. 학교나 교사의 서열이 아닙니다."
-        ),
-    }
-
-
 @app.get("/api/v1/references", response_model=ReferencePageResponse, tags=["catalog"])
-def references(
-    category: Annotated[
-        str,
-        Query(pattern="^(inquiry|modeling|problem|presentation|portfolio|reading)$"),
-    ] = "inquiry",
-    curriculum: Annotated[str | None, Query(pattern="^(2015|2022)$")] = None,
-    subject: Annotated[str | None, Query(min_length=1, max_length=40)] = None,
-    region: Annotated[str | None, Query(min_length=1, max_length=40)] = None,
-    district: Annotated[str | None, Query(min_length=1, max_length=40)] = None,
-    limit: Annotated[int, Query(ge=1, le=30)] = 30,
-) -> dict[str, object]:
-    require_region_for_district(region, district)
+def references(filters: Annotated[dict, Depends(science_query)]) -> dict[str, object]:
     catalog = ready_repository()
-    items = catalog.curated_items(
-        curriculum=curriculum,
-        subject=subject,
-        region=region,
-        district=district,
-        category=category,
-        limit=limit,
-    )
-    return {
-        "subjects": catalog.subjects(),
-        "facets": catalog.curated_facets(
-            curriculum=curriculum,
-            subject=subject,
-            region=region,
-            category=category,
-        ),
-        "category": category,
-        "items": items,
-        "total": catalog.curated_total(
-            curriculum=curriculum,
-            subject=subject,
-            region=region,
-            district=district,
-            category=category,
-        ),
-        "interpretation": (
-            "공개 평가계획에서 과제명, 성취기준, 채점기준, 평가방법과 과정 증거가 함께 "
-            "확인되는 사례를 설계 참고 우선순위로 정리했습니다. 학교나 교사의 서열이 아닙니다."
-        ),
-    }
+    return ScienceRepository(catalog.database_path).reference_page(filters)
 
 
 @app.get("/api/v1/facets", response_model=FacetResponse, tags=["catalog"])
@@ -354,12 +280,15 @@ def case_detail(
 @app.get(
     "/api/v1/assessment-items/{item_id}",
     response_model=AssessmentItemDetail,
+    response_model_exclude_unset=True,
     tags=["catalog"],
 )
 def assessment_item(
     item_id: Annotated[str, Path(pattern="^[0-9a-f]{28}$")],
 ) -> dict[str, object]:
-    item = ready_detail_repository().assessment_item(item_id)
+    catalog = ready_detail_repository()
+    item = catalog.assessment_item(item_id)
     if item is None:
         raise HTTPException(status_code=404, detail="수행평가 항목을 찾을 수 없습니다.")
+    item.update(ScienceRepository(catalog.database_path).detail_axes(item_id))
     return item

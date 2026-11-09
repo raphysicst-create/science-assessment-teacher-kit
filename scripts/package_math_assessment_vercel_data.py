@@ -1,4 +1,8 @@
-"""Copy only publish-safe math assessment data into the Vercel API service."""
+"""Copy publish-safe assessment data into the Vercel API service.
+
+Run with --detail-database and --target-directory to select local inputs/output.
+Verify with pytest services/math-assessment-api/tests/test_detail_api.py.
+"""
 
 from __future__ import annotations
 
@@ -11,6 +15,7 @@ import re
 import shutil
 import sqlite3
 import zlib
+from contextlib import closing
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +29,16 @@ INCLUDED_FILES = ("official_math_source_registry.json",)
 CATALOG_DATABASE_NAME = "math_assessment_catalog.sqlite"
 DETAIL_DATABASE_NAME = "math_assessment_catalog_detail.sqlite"
 DATABASE_ARCHIVE_CHUNK_BYTES = 4_000_000
+SCIENCE_TABLES = ("source_segments", "assessment_item_methods", "assessment_item_axes")
+SCIENCE_ITEM_COLUMNS = (
+    "segment_id", "task_no", "locator", "grade", "semester", "unit_status",
+    "unit_reason", "activity_abstain_reason", "source_item_id", "source_round",
+    "source_extraction_status",
+)
+SCIENCE_PRIVACY_COLUMNS = {
+    "assessment_item_axes": ("evidence", "locator"),
+    "assessment_item_methods": ("custom_text", "locator"),
+}
 HIGH_RISK_PERSONAL_DATA_PATTERNS = {
     "resident_registration_number": re.compile(
         r"(?<![0-9])[0-9]{6}\s*-\s*[1-4][0-9]{6}(?![0-9])"
@@ -84,6 +99,59 @@ CASE_SELECTS = (
 )
 
 
+CATALOG_SCHEMA_SQL = """
+CREATE TABLE cases AS
+SELECT
+    {column_sql}
+FROM source.cases;
+
+CREATE UNIQUE INDEX idx_cases_case_id ON cases(case_id);
+CREATE INDEX idx_cases_curriculum_subject_review
+    ON cases(curriculum, subject, review_score DESC, case_id);
+CREATE INDEX idx_cases_category_priority
+    ON cases(category, priority_score DESC, case_id);
+
+CREATE TABLE subject_stats AS SELECT * FROM source.subject_stats;
+CREATE UNIQUE INDEX idx_subject_stats_key
+    ON subject_stats(curriculum, subject);
+
+CREATE TABLE subject_action_tags AS
+SELECT * FROM source.subject_action_tags;
+CREATE UNIQUE INDEX idx_subject_action_tags_key
+    ON subject_action_tags(curriculum, subject, tag);
+
+CREATE TABLE case_detail_status AS
+SELECT * FROM source.case_detail_status;
+CREATE UNIQUE INDEX idx_case_detail_status_case
+    ON case_detail_status(case_id);
+
+CREATE TABLE assessment_items AS
+SELECT item_id, case_id, item_order, title, title_raw, title_basis,
+       CASE WHEN item_id IN (SELECT item_id FROM publication_review_items)
+            THEN 'table_structure_review' ELSE extraction_status END
+            AS extraction_status,
+       source_start, source_end, overview, method,
+       timing, score, weight, standards_json,
+       {source_html_select},
+       {rubric_html_select},
+       source_html_char_count, rubric_html_char_count{science_select}
+FROM source.assessment_items;
+CREATE UNIQUE INDEX idx_assessment_items_item
+    ON assessment_items(item_id);
+CREATE INDEX idx_assessment_items_case_order
+    ON assessment_items(case_id, item_order);
+CREATE INDEX idx_assessment_items_ranked
+    ON assessment_items(extraction_status, title_basis, item_id, case_id);
+
+CREATE TABLE assessment_item_rankings AS
+SELECT * FROM source.assessment_item_rankings;
+CREATE UNIQUE INDEX idx_assessment_item_rankings_item
+    ON assessment_item_rankings(item_id);
+CREATE INDEX idx_assessment_item_rankings_category_priority
+    ON assessment_item_rankings(category, priority_score DESC, item_id);
+"""
+
+
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -110,6 +178,16 @@ def table_structure_review_item_ids(path: Path) -> set[str]:
     return review_ids
 
 
+def publication_html_select(column: str, include_source_html: bool) -> str:
+    if not include_source_html:
+        return f"NULL AS {column}"
+    return (
+        "CASE WHEN extraction_status = 'bounded' "
+        "AND item_id NOT IN (SELECT item_id FROM publication_review_items) "
+        f"THEN {column} ELSE NULL END AS {column}"
+    )
+
+
 def package_catalog(
     source: Path,
     target: Path,
@@ -118,23 +196,7 @@ def package_catalog(
     review_item_ids: set[str],
 ) -> None:
     """Build a read-only catalog, with source HTML only in the detail package."""
-    source_html_select = (
-        "CASE WHEN extraction_status = 'bounded' "
-        "AND item_id NOT IN (SELECT item_id FROM publication_review_items) "
-        "THEN source_html_zlib "
-        "ELSE NULL END AS source_html_zlib"
-        if include_source_html
-        else "NULL AS source_html_zlib"
-    )
-    rubric_html_select = (
-        "CASE WHEN extraction_status = 'bounded' "
-        "AND item_id NOT IN (SELECT item_id FROM publication_review_items) "
-        "THEN rubric_html_zlib "
-        "ELSE NULL END AS rubric_html_zlib"
-        if include_source_html
-        else "NULL AS rubric_html_zlib"
-    )
-    with sqlite3.connect(target) as destination:
+    with closing(sqlite3.connect(target)) as destination, destination:
         destination.execute("PRAGMA journal_mode = OFF")
         destination.execute("PRAGMA synchronous = OFF")
         destination.execute("ATTACH DATABASE ? AS source", (str(source.resolve()),))
@@ -146,61 +208,47 @@ def package_catalog(
             ((item_id,) for item_id in sorted(review_item_ids)),
         )
         column_sql = ",\n    ".join(CASE_SELECTS)
+        item_columns = {
+            row[1] for row in destination.execute("PRAGMA source.table_info(assessment_items)")
+        }
+        science_columns = [name for name in SCIENCE_ITEM_COLUMNS if name in item_columns]
+        science_select = "".join(f", {name}" for name in science_columns)
         destination.executescript(
-            f"""
-            CREATE TABLE cases AS
-            SELECT
-                {column_sql}
-            FROM source.cases;
-
-            CREATE UNIQUE INDEX idx_cases_case_id ON cases(case_id);
-            CREATE INDEX idx_cases_curriculum_subject_review
-                ON cases(curriculum, subject, review_score DESC, case_id);
-            CREATE INDEX idx_cases_category_priority
-                ON cases(category, priority_score DESC, case_id);
-
-            CREATE TABLE subject_stats AS SELECT * FROM source.subject_stats;
-            CREATE UNIQUE INDEX idx_subject_stats_key
-                ON subject_stats(curriculum, subject);
-
-            CREATE TABLE subject_action_tags AS
-            SELECT * FROM source.subject_action_tags;
-            CREATE UNIQUE INDEX idx_subject_action_tags_key
-                ON subject_action_tags(curriculum, subject, tag);
-
-            CREATE TABLE case_detail_status AS
-            SELECT * FROM source.case_detail_status;
-            CREATE UNIQUE INDEX idx_case_detail_status_case
-                ON case_detail_status(case_id);
-
-            CREATE TABLE assessment_items AS
-            SELECT item_id, case_id, item_order, title, title_raw, title_basis,
-                   CASE WHEN item_id IN (SELECT item_id FROM publication_review_items)
-                        THEN 'table_structure_review' ELSE extraction_status END
-                        AS extraction_status,
-                   source_start, source_end, overview, method,
-                   timing, score, weight, standards_json,
-                   {source_html_select},
-                   {rubric_html_select},
-                   source_html_char_count, rubric_html_char_count
-            FROM source.assessment_items;
-            CREATE UNIQUE INDEX idx_assessment_items_item
-                ON assessment_items(item_id);
-            CREATE INDEX idx_assessment_items_case_order
-                ON assessment_items(case_id, item_order);
-            CREATE INDEX idx_assessment_items_ranked
-                ON assessment_items(extraction_status, title_basis, item_id, case_id);
-
-            CREATE TABLE assessment_item_rankings AS
-            SELECT * FROM source.assessment_item_rankings;
-            CREATE UNIQUE INDEX idx_assessment_item_rankings_item
-                ON assessment_item_rankings(item_id);
-            CREATE INDEX idx_assessment_item_rankings_category_priority
-                ON assessment_item_rankings(category, priority_score DESC, item_id);
-            """
+            CATALOG_SCHEMA_SQL.format(
+                column_sql=column_sql,
+                source_html_select=publication_html_select("source_html_zlib", include_source_html),
+                rubric_html_select=publication_html_select("rubric_html_zlib", include_source_html),
+                science_select=science_select,
+            )
         )
+        copy_science_tables(destination)
+        if "grade" in science_columns:
+            destination.execute(
+                "CREATE INDEX idx_assessment_items_grade ON assessment_items(grade, item_id)"
+            )
+        destination.commit()
         destination.execute("DETACH DATABASE source")
         destination.execute("VACUUM")
+
+
+def copy_science_tables(destination: sqlite3.Connection) -> None:
+    """Preserve optional science relation schemas, rows, and explicit indexes."""
+    for table in SCIENCE_TABLES:
+        schema = destination.execute(
+            "SELECT sql FROM source.sqlite_schema WHERE type = 'table' AND name = ?",
+            (table,),
+        ).fetchone()
+        if schema is None:
+            continue
+        destination.execute(schema[0])
+        destination.execute(f"INSERT INTO {table} SELECT * FROM source.{table}")
+        indexes = destination.execute(
+            "SELECT sql FROM source.sqlite_schema "
+            "WHERE type = 'index' AND tbl_name = ? AND sql IS NOT NULL",
+            (table,),
+        ).fetchall()
+        for (index_sql,) in indexes:
+            destination.execute(index_sql)
 
 
 def package_catalog_archive(database: Path, target_directory: Path) -> None:
@@ -225,7 +273,7 @@ def package_catalog_archive(database: Path, target_directory: Path) -> None:
 def catalog_counts(database_path: Path) -> dict[str, int]:
     """Read release counts without ever creating a missing SQLite file."""
     database_uri = f"file:{database_path.resolve().as_posix()}?mode=ro"
-    with sqlite3.connect(database_uri, uri=True) as database:
+    with closing(sqlite3.connect(database_uri, uri=True)) as database:
         return {
             "cases": int(database.execute("SELECT COUNT(*) FROM cases").fetchone()[0]),
             "case_details": int(
@@ -264,7 +312,7 @@ def assert_bounded_html_privacy(database_path: Path) -> None:
     """Block release when a public bounded section contains high-risk identifiers."""
     database_uri = f"file:{database_path.resolve().as_posix()}?mode=ro"
     findings: dict[str, int] = {name: 0 for name in HIGH_RISK_PERSONAL_DATA_PATTERNS}
-    with sqlite3.connect(database_uri, uri=True) as database:
+    with closing(sqlite3.connect(database_uri, uri=True)) as database:
         rows = database.execute(
             "SELECT source_html_zlib FROM assessment_items "
             "WHERE extraction_status = 'bounded' AND source_html_zlib IS NOT NULL"
@@ -273,6 +321,16 @@ def assert_bounded_html_privacy(database_path: Path) -> None:
             source_html = zlib.decompress(payload).decode("utf-8", errors="replace")
             for name, pattern in HIGH_RISK_PERSONAL_DATA_PATTERNS.items():
                 findings[name] += int(pattern.search(source_html) is not None)
+        tables = {
+            row[0] for row in database.execute("SELECT name FROM sqlite_schema WHERE type='table'")
+        }
+        for table, columns in SCIENCE_PRIVACY_COLUMNS.items():
+            if table not in tables:
+                continue
+            for row in database.execute(f"SELECT {', '.join(columns)} FROM {table}"):
+                for value in row:
+                    for name, pattern in HIGH_RISK_PERSONAL_DATA_PATTERNS.items():
+                        findings[name] += int(pattern.search(str(value or "")) is not None)
     detected = {name: count for name, count in findings.items() if count}
     if detected:
         raise RuntimeError(

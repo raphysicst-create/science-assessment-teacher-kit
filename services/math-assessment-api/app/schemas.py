@@ -74,6 +74,17 @@ class FacetResponse(StrictModel):
     action_tags: list[FacetItem]
 
 
+class ScienceLocationFacetItem(FacetItem):
+    item_count: int
+    case_count: int
+
+
+class ScienceFacetResponse(StrictModel):
+    regions: list[ScienceLocationFacetItem]
+    districts: list[ScienceLocationFacetItem]
+    action_tags: list[FacetItem]
+
+
 class AssessmentStructure(StrictModel):
     overview: str
     methods: list[str]
@@ -145,6 +156,25 @@ class CaseDetailResponse(StrictModel):
     items: list[AssessmentItemSummary]
 
 
+class AxisEvidence(StrictModel):
+    value: str
+    label: str
+    basis: str
+    evidence: str
+    locator: dict[str, object]
+
+
+class UnitEvidence(AxisEvidence):
+    status: str
+
+
+class ActivityEvidence(StrictModel):
+    primary: AxisEvidence | None
+    secondary: list[AxisEvidence]
+    abstain_reason: str | None
+    notice: str
+
+
 class AssessmentItemDetail(AssessmentItemSummary):
     case_id: str
     curriculum: str
@@ -156,6 +186,8 @@ class AssessmentItemDetail(AssessmentItemSummary):
     source_url: str
     source_html: str
     rubric_html: str
+    units: list[UnitEvidence] | None = None
+    activity: ActivityEvidence | None = None
 
 
 class CuratedAssessmentItem(AssessmentItemSummary):
@@ -168,22 +200,62 @@ class CuratedAssessmentItem(AssessmentItemSummary):
     category: str
     priority_score: int
     priority_signals: list[str]
+    grade: int | None
+    semester: int | None
+    units: list[UnitEvidence]
+    activity: ActivityEvidence
+
+
+class ScienceFilters(StrictModel):
+    unit: str | None
+    standard: str | None
+    activity: str | None
+    grade: int | None
+    region: str | None
+    district: str | None
+
+
+class AxisCount(StrictModel):
+    value: str | int
+    item_count: int
+    case_count: int
+
+
+class LabeledAxisCount(AxisCount):
+    label: str
+
+
+class ActivityCount(LabeledAxisCount):
+    tab: bool
+
+
+class ScienceAxes(StrictModel):
+    units: list[LabeledAxisCount]
+    activities: list[ActivityCount]
+    grades: list[AxisCount]
+    standards: list[AxisCount]
 
 
 class CuratedCaseListResponse(StrictModel):
+    profile: str
+    activity_policy: str
+    classification_notice: str
+    filters: ScienceFilters
     category: str
     items: list[CuratedAssessmentItem]
     total: int
-    interpretation: str
-
-
-class ReferencePageResponse(StrictModel):
+    total_items: int
+    total_cases: int
+    limit: int
+    offset: int
+    axes: ScienceAxes
     subjects: list[SubjectItem]
-    facets: FacetResponse
-    category: str
-    items: list[CuratedAssessmentItem]
-    total: int
+    facets: ScienceFacetResponse
     interpretation: str
+
+
+class ReferencePageResponse(CuratedCaseListResponse):
+    pass
 
 
 class ProductMetadata(StrictModel):

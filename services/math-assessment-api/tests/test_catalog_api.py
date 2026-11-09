@@ -70,18 +70,22 @@ def test_cases_support_the_whole_library_without_course_filters() -> None:
     )
 
 
-def test_curated_cases_use_transparent_evidence_priority() -> None:
-    response = client.get(
+def test_curated_cases_use_transparent_evidence_priority(science_demo) -> None:
+    response = science_demo["client"].get(
         "/api/v1/curated",
-        params={"category": "reading", "curriculum": "2022", "limit": 5},
+        params={"grade": 1, "limit": 5},
     )
 
     assert response.status_code == 200
     payload = response.json()
     assert payload["items"]
     assert "서열" in payload["interpretation"]
+    assert (payload["total_items"], payload["total_cases"]) == (2, 1)
+    assert payload["items"] == sorted(
+        payload["items"], key=lambda item: (-item["priority_score"], item["item_id"]),
+    )
     for item in payload["items"]:
-        assert item["category"] == "reading"
+        assert item["grade"] == 1
         assert item["title_basis"] in {"table", "heading"}
         assert item["priority_signals"]
         assert "\n" not in item["title"]

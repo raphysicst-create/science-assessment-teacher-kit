@@ -1,3 +1,4 @@
+// Catalog API contracts and fetch helpers. Verify: npm run test:web && npm run build.
 export type Curriculum = "2015" | "2022" | "shared";
 
 export type SubjectItem = {
@@ -136,6 +137,39 @@ export type CuratedAssessmentItem = AssessmentItemSummary & {
   priority_signals: string[];
 };
 
+export type AxisFacet = { value: string; label: string; item_count: number; case_count: number };
+export type ActivityFacet = AxisFacet & { tab: boolean };
+export type Locator = {
+  start?: number; end?: number; table?: number; row?: number | null; col?: number | null;
+  fallback?: string; sha256?: string; segment_id?: string;
+};
+export type AxisValue = {
+  value: string; label: string; basis: string; evidence: string; locator: Locator; status?: string;
+};
+export type ScienceReferenceItem = CuratedAssessmentItem & {
+  grade: number | null; semester: number | null;
+  units: AxisValue[];
+  activity: { primary: AxisValue | null; secondary: AxisValue[]; abstain_reason: string | null; notice: string };
+  locator: Locator;
+};
+export type ScienceReferenceResponse = {
+  profile: "science";
+  activity_policy: "all_reference" | "high_accuracy_only";
+  classification_notice: string;
+  filters: {
+    unit: string | null; standard: string | null; activity: string | null;
+    grade: number | null; region: string | null; district: string | null;
+  };
+  total: number; total_items: number; total_cases: number; limit: number; offset: number; category: string;
+  items: ScienceReferenceItem[];
+  axes: {
+    units: AxisFacet[]; activities: ActivityFacet[];
+    grades: Array<{ value: number; item_count: number; case_count: number }>;
+    standards: Array<{ value: string; item_count: number; case_count: number }>;
+  };
+  facets: FacetResponse; subjects: SubjectItem[]; interpretation: string;
+};
+
 export type CaseDetailResponse = {
   case_id: string;
   source_format: string;
@@ -160,8 +194,8 @@ export type AssessmentItemDetail = AssessmentItemSummary & {
 };
 
 export type FacetResponse = {
-  regions: Array<{ value: string; count: number }>;
-  districts: Array<{ value: string; count: number }>;
+  regions: Array<{ value: string; count: number; item_count?: number; case_count?: number }>;
+  districts: Array<{ value: string; count: number; item_count?: number; case_count?: number }>;
   action_tags: Array<{ value: string; count: number }>;
 };
 

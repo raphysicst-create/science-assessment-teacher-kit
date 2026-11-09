@@ -1,3 +1,13 @@
+"""Check catalog transformations. Run with pytest on this file."""
+
+import json
+import sqlite3
+import subprocess
+import sys
+from pathlib import Path
+
+import pytest
+from scripts.build_math_assessment_demo import build_demo, demo_records
 from scripts.build_math_assessment_publish_db import (
     assessment_category,
     assessment_structure,
@@ -6,6 +16,161 @@ from scripts.build_math_assessment_publish_db import (
     plain_text,
     task_name_is_rejected,
 )
+from scripts.package_math_assessment_vercel_data import (
+    assert_bounded_html_privacy,
+    package_catalog,
+)
+
+ROOT = Path(__file__).resolve().parents[3]
+
+
+def validate_science(database, output):
+    return subprocess.run(
+        [
+            sys.executable, str(ROOT / "scripts/validate_math_assessment_publish_db.py"),
+            "--profile", "science", "--database", str(database), "--output", str(output),
+        ],
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=False,
+    )
+
+
+def test_science_demo_preserves_axes_and_abstention(tmp_path) -> None:
+    database = tmp_path / "science.sqlite"
+    build_demo(database)
+    with sqlite3.connect(database) as connection:
+        assert connection.execute("SELECT COUNT(*) FROM cases").fetchone()[0] == 2
+        assert connection.execute("SELECT COUNT(*) FROM assessment_items").fetchone()[0] == 4
+        axes = connection.execute(
+            "SELECT basis, evidence, locator, rule_version FROM assessment_item_axes"
+        ).fetchall()
+        assert axes
+        for basis, evidence, locator, rule_version in axes:
+            assert all((basis, evidence, locator, rule_version))
+            assert {"start", "end", "sha256", "segment_id"} <= json.loads(locator).keys()
+        for title, unit, activity in (
+            ("열의 이동 실험", "03", "experiment"),
+            ("전기 회로 발표", "14", "presentation"),
+        ):
+            rows = connection.execute(
+                "SELECT a.axis, a.value FROM assessment_item_axes a "
+                "JOIN assessment_items i USING (item_id) WHERE i.title = ? AND a.rank = 1",
+                (title,),
+            ).fetchall()
+            assert dict(rows) == {"unit": unit, "activity": activity}
+        abstentions = connection.execute(
+            "SELECT item_id, activity_abstain_reason FROM assessment_items "
+            "WHERE activity_abstain_reason != ''"
+        ).fetchall()
+        assert len(abstentions) == 1
+        assert connection.execute(
+            "SELECT COUNT(*) FROM assessment_item_axes "
+            "WHERE item_id = ? AND axis = 'activity' AND rank = 1", (abstentions[0][0],),
+        ).fetchone()[0] == 0
+    result = validate_science(database, tmp_path / "validation.json")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert json.loads((tmp_path / "validation.json").read_text(encoding="utf-8"))["passed"]
+
+
+@pytest.mark.parametrize("missing_field", ["evidence", "sha256"])
+def test_science_validation_rejects_missing_axis_evidence(tmp_path, missing_field) -> None:
+    database = tmp_path / "mutation.sqlite"
+    build_demo(database)
+    with sqlite3.connect(database) as connection:
+        if missing_field == "evidence":
+            connection.execute(
+                "UPDATE assessment_item_axes SET evidence = '' WHERE (item_id, axis, value) = "
+                "(SELECT item_id, axis, value FROM assessment_item_axes LIMIT 1)"
+            )
+        else:
+            item_id, axis, value, locator = connection.execute(
+                "SELECT item_id, axis, value, locator FROM assessment_item_axes LIMIT 1"
+            ).fetchone()
+            parsed = json.loads(locator)
+            parsed["sha256"] = ""
+            connection.execute(
+                "UPDATE assessment_item_axes SET locator = ? WHERE item_id = ? AND axis = ? "
+                "AND value = ?", (json.dumps(parsed), item_id, axis, value),
+            )
+    result = validate_science(database, tmp_path / "mutation.json")
+    assert result.returncode == 1, result.stdout + result.stderr
+    assert not json.loads((tmp_path / "mutation.json").read_text(encoding="utf-8"))["passed"]
+
+
+@pytest.mark.parametrize("source_round", ["2026-round-3", "2026-round-1-gold"])
+def test_science_writer_fills_real_input_locator_metadata(source_round) -> None:
+    from scripts.build_science_catalog_db import load_science_records, write_science_catalog
+
+    records = load_science_records(rounds=[source_round])[0:2]
+    assert len(records) == 2
+    reference = json.loads((ROOT / "data/reference/science_axes.json").read_text(encoding="utf-8"))
+    with sqlite3.connect(":memory:") as connection:
+        write_science_catalog(connection, records, reference)
+        for table in ("assessment_items", "assessment_item_axes", "assessment_item_methods"):
+            rows = connection.execute(f"SELECT locator FROM {table}").fetchall()
+            if table == "assessment_items":
+                assert len(rows) == 2
+            for (locator,) in rows:
+                parsed = json.loads(locator)
+                assert parsed["sha256"]
+                assert parsed["segment_id"]
+
+
+def test_science_writer_preserves_numeric_score_and_weight() -> None:
+    from scripts.build_science_catalog_db import write_science_catalog
+
+    records = demo_records()[:1]
+    records[0]["item"]["fields"]["score"]["value"] = 0
+    records[0]["item"]["fields"]["weight"]["value"] = 15.0
+    reference = json.loads((ROOT / "data/reference/science_axes.json").read_text(encoding="utf-8"))
+    with sqlite3.connect(":memory:") as connection:
+        write_science_catalog(connection, records, reference)
+        assert connection.execute("SELECT score, weight FROM assessment_items").fetchone() == (
+            "0", "15.0",
+        )
+        assert connection.execute("SELECT weight_summary FROM cases").fetchone()[0] == "15.0"
+
+
+def test_science_writer_rejects_missing_source_hash() -> None:
+    from scripts.build_science_catalog_db import write_science_catalog
+
+    records = demo_records()[:1]
+    records[0]["item"].pop("source_sha256")
+    records[0]["document"].pop("source_sha256")
+    reference = json.loads((ROOT / "data/reference/science_axes.json").read_text(encoding="utf-8"))
+    with sqlite3.connect(":memory:") as connection, pytest.raises(ValueError, match="SHA-256"):
+        write_science_catalog(connection, records, reference)
+
+
+@pytest.mark.parametrize("include_source_html", [False, True])
+def test_science_packaging_preserves_tables_columns_and_indexes(tmp_path, include_source_html):
+    source = tmp_path / "source.sqlite"
+    target = tmp_path / "packaged.sqlite"
+    build_demo(source)
+    package_catalog(source, target, include_source_html=include_source_html, review_item_ids=set())
+    with sqlite3.connect(source) as original, sqlite3.connect(target) as packaged:
+        for table in ("assessment_item_axes", "assessment_item_methods", "source_segments"):
+            assert packaged.execute(f"SELECT * FROM {table} ORDER BY 1, 2").fetchall() == (
+                original.execute(f"SELECT * FROM {table} ORDER BY 1, 2").fetchall()
+            )
+        columns = {row[1] for row in packaged.execute("PRAGMA table_info(assessment_items)")}
+        assert {"segment_id", "source_item_id", "activity_abstain_reason", "locator"} <= columns
+        assert packaged.execute(
+            "SELECT name FROM sqlite_schema WHERE name = 'idx_axes_axis_value'"
+        ).fetchone()
+    assert_bounded_html_privacy(target)
+
+
+@pytest.mark.parametrize("table,column", [
+    ("assessment_item_axes", "evidence"), ("assessment_item_axes", "locator"),
+    ("assessment_item_methods", "custom_text"), ("assessment_item_methods", "locator"),
+])
+def test_science_privacy_gate_scans_evidence_and_methods(tmp_path, table, column):
+    database = tmp_path / "privacy.sqlite"
+    build_demo(database)
+    with sqlite3.connect(database) as connection:
+        connection.execute(f"UPDATE {table} SET {column} = ?", ("010-1234-5678",))
+    with pytest.raises(RuntimeError, match="personal-data release gate"):
+        assert_bounded_html_privacy(database)
 
 
 def test_plain_text_preserves_html_table_cells() -> None:

@@ -241,6 +241,7 @@ class CatalogRepository:
         source_status: str | None,
         query: str | None,
         include_ambiguous: bool,
+        grade: int | None = None,
         limit: int,
         offset: int,
     ) -> tuple[list[dict[str, object]], int]:
@@ -248,6 +249,9 @@ class CatalogRepository:
         clauses: list[str] = []
         parameters: list[object] = []
         search = search_tokens(query or "")
+        if grade is not None:
+            clauses.append("EXISTS (SELECT 1 FROM json_each(c.grades_json) WHERE value = ?)")
+            parameters.append(grade)
         if tag:
             clauses.append(
                 "EXISTS (SELECT 1 FROM json_each(c.action_tags_json) WHERE value = ?)"

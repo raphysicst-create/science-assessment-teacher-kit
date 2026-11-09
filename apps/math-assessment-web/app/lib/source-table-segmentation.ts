@@ -1,3 +1,4 @@
+// Restore and segment source tables, recognizing middle-school science codes. Verify: npm run test:web.
 export type SegmentedSourceHtml = {
   html: string;
   splitTableCount: number;
@@ -61,7 +62,7 @@ function inferredInitialSection(rows: HTMLTableRowElement[]): SectionKey {
   const explicit = rowSection(rows[0]);
   if (explicit) return explicit;
   const sample = compact(rows.slice(0, 8).map((row) => row.textContent || "").join(" "));
-  if (/\[12[A-Za-z가-힣ⅠⅡ]{1,16}\d{2}[-‐‑‒–—]\d{2}\]/u.test(sample)) return "standards";
+  if (/\[9과\d{2}[-‐‑‒–—]\d{2}\]/u.test(sample)) return "standards";
   if (/(?:^|[^A-Za-z])A(?:[^A-Za-z]|$)/.test(sample) && /수있다/.test(sample)) return "standards";
   if (/평가요소|채점기준|수행수준|배점/.test(sample)) return "rubric";
   return "overview";
@@ -166,7 +167,7 @@ function mergeAchievementLevelContinuations(document: Document) {
     const secondGradeIndex = nextGradeEntries[1].rowIndex;
     const evidence = compact(`${table.textContent || ""} ${next.textContent || ""}`);
     const hasAchievementEvidence = (
-      /(성취기준|성취수준|수준진술문|\[(?:10|12)[A-Za-z가-힣ⅠⅡ])/u.test(evidence)
+      /(성취기준|성취수준|수준진술문|\[9과\d{2})/u.test(evidence)
       && /(수있|수준|뜻을안|이해|작성)/.test(evidence)
     );
     const hasRubricEvidence = (
@@ -296,7 +297,7 @@ function mergeSuffixContinuationTables(document: Document) {
   return reconstructedCellCount;
 }
 
-const ORPHAN_STANDARD_RE = /^\s*(?:\[\s*12[A-Za-z가-힣ⅠⅡ]{1,16}\s*\d{2}\s*[-‐‑‒–—]\s*\d{2}\s*\]\s*)+$/u;
+const ORPHAN_STANDARD_RE = /^\s*(?:\[\s*9과\s*\d{2}\s*[-‐‑‒–—]\s*\d{2}\s*\]\s*)+$/u;
 
 function groupOrphanAchievementStandards(document: Document) {
   let groupCount = 0;
@@ -529,7 +530,7 @@ function markLongHeaderCells(document: Document) {
     const text = compact(cell.textContent || "");
     if (
       text.length < 180
-      || !(/\[(?:10|12)[A-Za-z가-힣ⅠⅡ]/u.test(text) || cell.querySelectorAll("br").length >= 3)
+      || !(/\[9과\d{2}/u.test(text) || cell.querySelectorAll("br").length >= 3)
     ) continue;
     cell.setAttribute("data-source-long-header-cell", "true");
     normalizedCount += 1;

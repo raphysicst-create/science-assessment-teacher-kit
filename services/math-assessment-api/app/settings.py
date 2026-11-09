@@ -10,6 +10,7 @@ import os
 import shutil
 import tempfile
 import threading
+from functools import lru_cache
 from pathlib import Path
 
 _CATALOG_MATERIALIZATION_LOCK = threading.Lock()
@@ -70,6 +71,27 @@ DEFAULT_OFFICIAL_SOURCE_REGISTRY = (
     PROJECT_ROOT / "data" / "publish" / "official_math_source_registry.json"
 )
 PACKAGED_OFFICIAL_SOURCE_REGISTRY = PACKAGED_DATA / "official_math_source_registry.json"
+ACTIVITY_TAB_POLICY_DEFAULT = "all_reference"
+ACTIVITY_TAB_POLICIES = ("all_reference", "high_accuracy_only")
+HIGH_ACCURACY_ACTIVITIES = ("experiment", "making", "process")
+
+
+def activity_tab_policy() -> str:
+    value = os.environ.get("MATH_ASSESSMENT_ACTIVITY_TAB_POLICY", "")
+    return value if value in ACTIVITY_TAB_POLICIES else ACTIVITY_TAB_POLICY_DEFAULT
+
+
+@lru_cache(maxsize=1)
+def science_axes() -> dict:
+    """Load allowed science axes once; verify with test_science_reference_api.py."""
+    source = PROJECT_ROOT / "data/reference/science_axes.json"
+    reference = json.loads(source.read_text(encoding="utf-8"))
+    areas = reference["units"]["areas"]
+    return {
+        "units": {area["area_no"]: area["area"] for area in areas},
+        "activities": {row["id"]: row["name"] for row in reference["activities"]},
+        "standards": {code: area["area_no"] for area in areas for code in area["standards"]},
+    }
 
 
 def materialized_packaged_database(*, detail: bool = False) -> Path:
