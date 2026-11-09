@@ -126,7 +126,7 @@ def test_method_subrows_include_evaluator_but_exclude_competency_and_score_schem
             '<tr><td>주체</td><td>gfedcb 교사평가 gfedc 자기평가</td></tr>'
             '<tr><td>점수부여방법</td><td>gfedcb 원점수(합산) gfedc 평균점</td></tr></table>')
     method = extract(text)[0]["fields"]["method"]
-    assert method["value"] == ["실험·실습", "교사평가"]
+    assert method["value"] == ["실험·실습"]
     assert len(method["options"]) == 4
     assert method["options"][2]["kind"] == "evaluator"
 
@@ -169,7 +169,7 @@ def test_displaced_detail_time_and_compound_numeric_label():
 
 
 @pytest.mark.parametrize("detail_method,expected,status", [
-    ("☑ 서술·논술 ☑ 구술·발표 ☑ 교사평가", ["서·논술", "구술·발표", "교사평가"], "present"),
+    ("☑ 서술·논술 ☑ 구술·발표 ☑ 교사평가", ["서술·논술", "구술·발표"], "present"),
     ("□ 서술·논술 ☑ 구술·발표", [], "conflict"),
     ("[?] 구술·발표", ["서·논술형 평가"], "unconfirmed"),
 ])

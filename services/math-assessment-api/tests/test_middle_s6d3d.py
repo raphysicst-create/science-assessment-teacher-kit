@@ -105,7 +105,7 @@ def test_converted_checkmark_is_selected_only_inside_method_cell():
     text = form([["평가방법", "∨ 서술·논술 □ 프로젝트"],
                  ["평가요소", "기호 ∨를 이용하여 논리를 설명하기"]])
     fields = extract(text)[0]["fields"]
-    assert "서·논술" in fields["method"]["value"]
+    assert "서술·논술" in fields["method"]["value"]
     assert fields["rubric"]["status"] == "unconfirmed"
 
 

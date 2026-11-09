@@ -509,8 +509,7 @@ def value_from_cells(name, observations, source_cells, conversion):
             for raw in re.split(r"<br\s*/?>|\r?\n", obs["raw"], flags=re.I):
                 parts.append({**obs, "raw": raw, "text": items.visible(raw)})
         result = items.method_values(parts)
-        return [re.sub(r"[‧･ㆍ・⋅•]", "·", v) for v in result["value"]
-                if rules.method_literal(v)]
+        return result["value"]
     if name == "sub_scores":
         structure = {"layout": "form", "cells": source_cells,
                      "claims": defaultdict(list)}

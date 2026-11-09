@@ -14,6 +14,7 @@ def roster_path(root: Path, round_key: str, roster: Path | None = None) -> Path:
     name = (
         "middle-dev2-20.csv" if round_key.endswith("-dev2") else
         "middle-gold2-5.csv" if round_key.endswith("-gold2") else
+        "middle-fresh3.csv" if round_key.endswith("-fresh3") else
         "middle-gold10.csv" if round_key.endswith("-gold") else "middle-dev12.csv"
     )
     return root / "data/rosters" / name

@@ -4,6 +4,9 @@ No existing extraction output is mutated. All offsets address the unmodified
 S4 Unicode text and use an exclusive end. Importing this module never runs Codex.
 Codex 실행 파일은 `CODEX_EXE` 환경 변수 또는 `bin/*/codex.exe` 글롭으로 찾는다.
 모든 호출이 실패하면 종료 코드 3.
+실행 .venv/Scripts/python.exe scripts/middle_ai_read.py --help
+검증 .venv/Scripts/python.exe -m pytest -q
+     services/math-assessment-api/tests/test_middle_ai_read_codex.py
 """
 
 from __future__ import annotations
@@ -270,6 +273,30 @@ def merge_signal_windows(windows: list[dict]) -> list[dict]:
     return merged
 
 
+PLAINTEXT_FALLBACK_WARNINGS = {"DRM_COM_FALLBACK"}
+SCIENCE_TEXT_RE = re.compile(r"\[9과\d|과학")
+
+
+def plaintext_fallback_window(conversion: dict, sections: list[dict]) -> list[dict]:
+    """G5: 표 구조 없이 평문만 남은 문서(DRM 한컴 COM 평문 등)는 문서 전체를 AI가 읽는다.
+
+    조건: 변환 경고에 평문 대체 코드가 있거나, 표가 0개인데 과학 신호가 있고 과학 구간이 없다.
+    원문 대조·병합은 다른 신호와 같은 fail-closed 검증을 거친다.
+    """
+    text = conversion.get("text", "")
+    codes = {str(w.get("code", "")) for w in conversion.get("warnings") or []
+             if isinstance(w, dict)}
+    no_tables = not conversion.get("table_count")
+    science_missing = not any(s.get("science_candidate") for s in sections)
+    if not text.strip() or not (codes & PLAINTEXT_FALLBACK_WARNINGS
+                                or no_tables and science_missing and SCIENCE_TEXT_RE.search(text)):
+        return []
+    lines, _ = line_index(text)
+    return [{"line_start": 1, "line_end": len(lines), "signals": ["G5"],
+             "signal_evidence": [{"signal": "G5", "line_start": 1, "line_end": len(lines),
+                                  "warnings": sorted(codes & PLAINTEXT_FALLBACK_WARNINGS)}]}]
+
+
 def gap_windows(text: str, filename: str, document: dict, sections: list[dict],
                 items: list[dict], school_items: list[dict]) -> list[dict]:
     lines, starts = line_index(text)
@@ -400,8 +427,10 @@ def build_targets(root: Path, round_key: str, mode: str = "gaps") -> dict:
         if mode == "gaps":
             school_items = [i for i in rules["items"] if i.get("school") == source["school_name"]]
             signal_windows = gap_windows(text, filename, document, sections, items, school_items)
+            if not signal_windows:
+                signal_windows = plaintext_fallback_window(conversion, sections)
             windows = [(w["line_start"], w["line_end"]) for w in signal_windows]
-            reason = "G1–G4 신호 없음" if not windows else ""
+            reason = "G1–G5 신호 없음" if not windows else ""
         if not windows:
             excluded.append({**description, "reason": reason})
             continue
@@ -558,8 +587,8 @@ def find_codex(pattern: str | None = None, env: Mapping[str, str] | None = None)
 
 
 def codex_command(cwd: Path, answer: Path, codex: str | None = None) -> list[str]:
-    return [codex or find_codex(), "exec", "--strict-config", "--skip-git-repo-check", "-s", "read-only",
-            "-C", str(cwd), "--json", "-o", str(answer), "-"]
+    return [codex or find_codex(), "exec", "--strict-config", "--skip-git-repo-check",
+            "-s", "read-only", "-C", str(cwd), "--json", "-o", str(answer), "-"]
 
 
 def valid_run(output: Path, target: dict) -> tuple[bool, dict]:
@@ -581,14 +610,19 @@ def valid_run(output: Path, target: dict) -> tuple[bool, dict]:
         return False, {"valid": False, "violations": ["유효한 실행 기록 없음"]}
 
 
-def run_targets(root: Path, round_key: str, isolated_cwd: Path, *, workers: int = 4,
+def run_targets(root: Path, round_key: str | None, isolated_cwd: Path, *, workers: int = 4,
                 fake_responses: Path | None = None, dry_run: bool = False,
                 output_dir: Path | None = None) -> dict:
     cwd = isolated_directory(isolated_cwd)
     if workers < 1:
         raise ValueError("--workers는 1 이상이어야 함")
-    output = round_dir(root, round_key)
-    if output_dir is not None:
+    if round_key is None:
+        if output_dir is None:
+            raise ValueError("회차 없이 실행하려면 output_dir가 필요함")
+        output = guard_path(output_dir)
+    else:
+        output = round_dir(root, round_key)
+    if output_dir is not None and round_key is not None:
         output_dir = guard_path(output_dir)
         if not output_dir.is_relative_to(output):
             raise ValueError("실행 산출물은 해당 회차 아래여야 함")
@@ -604,8 +638,8 @@ def run_targets(root: Path, round_key: str, isolated_cwd: Path, *, workers: int 
         prompt = read_text(output / f"prompts/{identity}.md")
         if sha(prompt) != target["prompt_sha256"]:
             raise ValueError("지시문 해시 불일치. targets부터 다시 생성해야 함")
-        command = codex_command(cwd, answer)
         if dry_run:
+            command = codex_command(cwd, answer)
             return {"target_id": identity, "command": subprocess.list2cmdline(command),
                     "stdin": str(output / f"prompts/{identity}.md")}
         if valid_run(output, target)[0]:
@@ -623,6 +657,7 @@ def run_targets(root: Path, round_key: str, isolated_cwd: Path, *, workers: int 
                 failure = "가짜 응답 또는 이벤트 없음"
                 write_text(events, "")
         else:
+            command = codex_command(cwd, answer)
             # The prompt travels only on stdin. The child cwd contains no source files.
             with events.open("w", encoding="utf-8", newline="\n") as event_stream:
                 try:
@@ -957,6 +992,23 @@ def rule_title(item: dict) -> str:
     return value if isinstance(value, str) else ""
 
 
+def title_key(title: str) -> str:
+    """Use gold_diff.normalize's spacing, break and punctuation rules."""
+    title = re.sub(r"<br\s*/?\s*>", "", title, flags=re.IGNORECASE)
+    return "".join(char for char in title.lower()
+                   if not char.isspace() and not unicodedata.category(char).startswith("P"))
+
+
+def same_cell_title_matches(performance: list[dict], task: dict) -> list[dict]:
+    """Find bounded twins throughout the document, including outside the window."""
+    key = title_key(task["title"])
+    scope = ("document_id", "child_id", "grade", "semester")
+    return [item for item in performance if (
+        key and item.get("extraction_status") == "bounded"
+        and all(item.get(name) == task.get(name) for name in scope)
+        and title_key(rule_title(item)) == key)]
+
+
 def merge_report(rules: dict, verified: dict) -> dict:
     result = copy.deepcopy(rules)
     tasks = verified["kept"]
@@ -998,6 +1050,13 @@ def merge_report(rules: dict, verified: dict) -> dict:
                 continue
             if item["extraction_status"] == "bounded":
                 continue
+        title_matches = same_cell_title_matches(performance, task)
+        if title_matches:
+            relations["agrees_by_title"].append({
+                "ai_task_id": task["ai_task_id"],
+                "rule_item_ids": [item["item_id"] for item in title_matches],
+                "bounded": True, "basis": "same_cell_title_key"})
+            continue
         if not matches:
             # Any single evidence span that touches exactly one confirmed rule
             # item means the rules already hold this task (e.g. AI titled it by

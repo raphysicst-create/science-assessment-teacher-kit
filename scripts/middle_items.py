@@ -48,6 +48,10 @@ else:
 
 RULE_VERSION = "middle-items-v15"
 IDENTITY_VERSION = "middle-items-v2"  # Field-only changes retain source identities.
+SCORER_TERMS = frozenset({
+    "교사관찰및기록", "교사관찰", "교사평가", "교사관찰평가", "관찰및기록",
+    "자기평가", "동료평가", "상호평가", "개별", "개인별", "모둠별", "모둠수행",
+})
 FIELDS = (
     "title",
     "assessment_area",
@@ -421,24 +425,20 @@ def evidence(cell: dict, conversion: dict, header: dict | None = None) -> dict:
     return result
 
 
-def method_values(observations: list[dict], *, conversion_loss: bool = False) -> dict:
-    options, plain = [], []
-    for obs in observations:
-        # Split in the *raw* cell so every option locator addresses original text.
-        raw = obs["raw"]
-        markers = list(METHOD_BOX_RE.finditer(raw))
-        if not markers:
-            if method_literal(obs["text"]):
-                plain.append(obs)
-            elif obs["text"]:
-                obs["excluded_reason"] = (
-                    "방법 칸의 과제명·비방법 값" if obs.get("is_task_name") or re.search(
-                        r"(?:하기|쓰기|작성|측정|설명|분석|조사|표현|만들기|그리기|정리|실험|탐구)\s*$",
-                        obs["text"],
-                    ) or obs["text"] in {"-", "—", "없음", "미기재", "해당없음", "해당 없음"}
-                    else "방법 값 판독·용어 확인 필요"
-                )
-            continue
+def scorer_text(text: str, kind: str = "method") -> bool:
+    """Recognize whole evaluator/organization labels, including comma lists."""
+    text = re.sub(r"[ㆍ･・‧⋅•]", "·", re.sub(r"\s+", "", text))
+    return kind in {"evaluator", "organization"} or all(
+        part in SCORER_TERMS for part in re.split(r"[,，]", text)
+    )
+
+
+def method_options(obs: dict) -> list[dict]:
+    """Split the raw cell without changing option metadata or source offsets."""
+    options = []
+    raw = obs["raw"]
+    markers = list(METHOD_BOX_RE.finditer(raw))
+    if markers:
         # Both printed conventions occur. The edge text determines orientation,
         # never the checked/unchecked state or the number of selected options.
         suffix = bool(visible(raw[:markers[0].start()]).strip()) and not bool(
@@ -472,8 +472,51 @@ def method_values(observations: list[dict], *, conversion_loss: bool = False) ->
                     "locator": loc,
                 }
             )
-    selected = [o["normalized"] for o in options if o["state"] == "checked"
-                and o["normalized"]]
+    return options
+
+
+def method_selections(options: list[dict]) -> tuple[list[str], list[str]]:
+    selected, scorers = [], []
+    for option in options:
+        if option["state"] != "checked":
+            continue
+        text = re.sub(r"\s+", " ", option["option_text"]).strip(" ,，/|:：")
+        if scorer_text(text, option["kind"]):
+            scorers.append(text)
+        elif option["other_content"] is not None:
+            selected.append("기타")
+            content = re.sub(r"\s+", " ", option["other_content"]).strip()
+            if content:
+                selected.append(content)
+        elif text:
+            selected.append(text)
+    return selected, scorers
+
+
+def method_observations(observations: list[dict]) -> tuple[list, list, list]:
+    options, plain, plain_scorers = [], [], []
+    for obs in observations:
+        if METHOD_BOX_RE.search(obs["raw"]):
+            options.extend(method_options(obs))
+        elif scorer_text(obs["text"], obs.get("method_kind", "method")):
+            plain_scorers.append(obs["text"])
+            obs["excluded_reason"] = "평가 주체·수행 형태"
+        elif method_literal(obs["text"]):
+            plain.append(obs)
+        elif obs["text"]:
+            obs["excluded_reason"] = (
+                "방법 칸의 과제명·비방법 값" if obs.get("is_task_name") or re.search(
+                    r"(?:하기|쓰기|작성|측정|설명|분석|조사|표현|만들기|그리기|정리|실험|탐구)\s*$",
+                    obs["text"],
+                ) or obs["text"] in {"-", "—", "없음", "미기재", "해당없음", "해당 없음"}
+                else "방법 값 판독·용어 확인 필요"
+            )
+    return options, plain, plain_scorers
+
+
+def method_values(observations: list[dict], *, conversion_loss: bool = False) -> dict:
+    options, plain, plain_scorers = method_observations(observations)
+    selected, scorers = method_selections(options)
     if conversion_loss:
         state, reason, selected = "conversion_loss", "변환 손실", []
     elif any(o["state"] == "unknown" for o in options):
@@ -481,7 +524,7 @@ def method_values(observations: list[dict], *, conversion_loss: bool = False) ->
     elif selected:
         state, reason = "checked", ""
     elif options:
-        state, reason = "all_unselected", "모두 미선택"
+        state, reason = "all_unselected", "평가 방법 미선택" if scorers else "모두 미선택"
     elif plain:
         state, reason = "plain", ""
         selected = [p["text"] for p in plain]
@@ -489,6 +532,7 @@ def method_values(observations: list[dict], *, conversion_loss: bool = False) ->
         state, reason = "no_check", "체크 없음"
     return {
         "value": list(dict.fromkeys(selected)),
+        "scorer_values": list(dict.fromkeys(scorers + plain_scorers)),
         "state": state,
         "reason": reason,
         "options": options,

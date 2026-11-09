@@ -1,6 +1,8 @@
 """Read the existing science item and axis exports without changing them.
 
-Used by build_science_catalog_db.py. Verify with its --output build command.
+Run build_science_catalog_db.py --output DB [--activity-axes-dir DIR].
+Verify .venv/Scripts/python.exe -m pytest -q
+       services/math-assessment-api/tests/test_science_axes_ai.py
 """
 
 from __future__ import annotations
@@ -19,6 +21,8 @@ DEFAULT_ROUNDS = (
     "2026-round-3-gold",
     "2026-round-1-gold2",
     "2026-round-3-gold2",
+    "2026-round-1-fresh3",
+    "2026-round-3-fresh3",
 )
 FORBIDDEN_PARTS = ("data/gold", "data/.gold-before-acl-fix", "docs/missions")
 
@@ -83,12 +87,35 @@ def fallback_region(item: dict) -> str:
     return ""
 
 
-def round_records(root: Path, source_round: str, rosters: dict) -> list[dict]:
+def activity_overrides(root: Path, source_round: str, axes: dict,
+                       directory: Path | None, summary: dict) -> tuple[dict, str | None]:
+    if directory is None:
+        return {}, None
+    path = root / directory / f"{source_round}.json"
+    if not path.exists():
+        summary["missing_rounds"] += 1
+        summary["missing_items"] += len(axes["items"])
+        return {}, None
+    activity_axes = read_json(path)
+    overrides = {item["item_id"]: item["activity"] for item in activity_axes["items"]}
+    present = sum(item["item_id"] in overrides for item in axes["items"])
+    summary["overridden_items"] += present
+    summary["missing_items"] += len(axes["items"]) - present
+    return overrides, activity_axes["rule_version"]
+
+
+def round_records(root: Path, source_round: str, rosters: dict,
+                  activity_axes_dir: Path | None = None,
+                  activity_axes_summary: dict | None = None) -> list[dict]:
     path = root / f"data/derived/items_ai/{source_round}.json"
     if not path.exists():
         path = root / f"data/derived/items/{source_round}.json"
     source = read_json(path)
     axes = read_json(root / f"data/derived/axes/{source_round}.json")
+    overrides, activity_version = activity_overrides(
+        root, source_round, axes, activity_axes_dir,
+        activity_axes_summary if activity_axes_summary is not None else {
+            "overridden_items": 0, "missing_rounds": 0, "missing_items": 0})
     items = {item["item_id"]: item for item in source["items"]}
     documents = {document["document_id"]: document for document in source["documents"]}
     sections = {section["section_id"]: section for section in source.get("sections", [])}
@@ -111,7 +138,8 @@ def round_records(root: Path, source_round: str, rosters: dict) -> list[dict]:
         records.append(
             {
                 "item": item,
-                "axes": axis,
+                "axes": {**axis, "activity": overrides[axis["item_id"]]}
+                if axis["item_id"] in overrides else axis,
                 "document": document,
                 "section": sections.get(item.get("section_id"), {}),
                 "text": conversions[converted]["text"],
@@ -121,6 +149,8 @@ def round_records(root: Path, source_round: str, rosters: dict) -> list[dict]:
                 "source_round": source_round,
                 "item_rule_version": source["rule_version"],
                 "axes_rule_version": axes["rule_version"],
+                **({"activity_axes_rule_version": activity_version}
+                   if axis["item_id"] in overrides else {}),
                 "region": region,
                 "district": district,
             }
@@ -128,8 +158,11 @@ def round_records(root: Path, source_round: str, rosters: dict) -> list[dict]:
     return records
 
 
-def load_science_records(rounds=DEFAULT_ROUNDS, root: Path = ROOT) -> list[dict]:
+def load_science_records(rounds=DEFAULT_ROUNDS, root: Path = ROOT,
+                         activity_axes_dir: Path | None = None,
+                         activity_axes_summary: dict | None = None) -> list[dict]:
     rosters = load_rosters(root)
     return [
-        record for source_round in rounds for record in round_records(root, source_round, rosters)
+        record for source_round in rounds for record in round_records(
+            root, source_round, rosters, activity_axes_dir, activity_axes_summary)
     ]

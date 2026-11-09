@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import re
+import unicodedata
 from collections import defaultdict
 
 if __package__:
@@ -99,7 +100,7 @@ def equal_value(name, a, b):
 
 
 def merge_method(source, target, summary_id):
-    """Combine independently stated methods and task-scoped evaluator choices."""
+    """Prefer detail methods while preserving summary evidence and conflicts."""
     def key(value):
         value = re.sub(r"[ㆍ･・‧⋅]", "·", compact(value))
         value = re.sub(r"(?:형)?평가$|형$", "", value)
@@ -111,6 +112,19 @@ def merge_method(source, target, summary_id):
         if unchecked & {key(v) for v in stated["value"]}:
             target.update(value=[], status="conflict", reason="요약·세부 방법 선택값 충돌")
             return
+    detail, summary = target, source
+    if (source.get("options") and source.get("state") in {"checked", "all_unselected"}
+            and not (target.get("options")
+                     and target.get("state") in {"checked", "all_unselected"})):
+        detail, summary = source, target
+    if detail["value"] and summary.get("state") == "plain":
+        detail_keys = {method_comparison_key(v) for v in detail["value"]}
+        summary_keys = {method_comparison_key(v) for v in summary["value"]}
+        if detail_keys != summary_keys:
+            target["summary_method_differs"] = True
+        target.update(value=list(detail["value"]), reason="",
+                      comparison_status="scoped_method_evidence")
+        return
     values = list(target["value"])
     for value in source["value"]:
         if key(value) not in {key(v) for v in values}:
@@ -124,6 +138,12 @@ def merge_method(source, target, summary_id):
     target.update(value=values, reason="", comparison_status="scoped_method_evidence")
     target["status"] = ("unconfirmed" if target.get("state") in {"unknown", "conversion_loss"}
                         else "present")
+
+
+def method_comparison_key(value):
+    """Ignore only whitespace and punctuation when comparing source values."""
+    return "".join(char for char in value if not char.isspace()
+                   and not unicodedata.category(char).startswith("P"))
 
 
 def merge_pair(summary, detail, proof):

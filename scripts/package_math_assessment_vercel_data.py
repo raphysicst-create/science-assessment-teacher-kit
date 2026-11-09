@@ -1,7 +1,8 @@
-"""Copy publish-safe assessment data into the Vercel API service.
+"""Package the audited public science catalog for the Vercel API service.
 
+Defaults use the science public database and its blocking-risk audit queue.
 Run with --detail-database and --target-directory to select local inputs/output.
-Verify with pytest services/math-assessment-api/tests/test_detail_api.py.
+Verify with pytest services/math-assessment-api/tests/test_s18_registry_package.py.
 """
 
 from __future__ import annotations
@@ -21,9 +22,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_DIRECTORY = ROOT / "data" / "publish"
 TARGET_DIRECTORY = ROOT / "services" / "math-assessment-api" / "data"
-DETAIL_DATABASE = SOURCE_DIRECTORY / "math_assessment_catalog_detail.sqlite"
+DETAIL_DATABASE = SOURCE_DIRECTORY / "science" / "math_assessment_catalog_detail.public.sqlite"
 TABLE_STRUCTURE_QUEUE = (
-    ROOT / "data" / "derived" / "math_assessment_table_structure_queue.csv"
+    ROOT / "data" / "derived" / "science_audit_public" / "risk-queue.csv"
 )
 INCLUDED_FILES = ("official_math_source_registry.json",)
 CATALOG_DATABASE_NAME = "math_assessment_catalog.sqlite"
@@ -161,7 +162,7 @@ def sha256(path: Path) -> str:
 
 
 def table_structure_review_item_ids(path: Path) -> set[str]:
-    """Keep structurally unbounded whole-plan fragments out of the public package."""
+    """Mark blocking audit items and structurally unbounded fragments for review."""
 
     if not path.is_file():
         raise FileNotFoundError(
@@ -172,7 +173,10 @@ def table_structure_review_item_ids(path: Path) -> set[str]:
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         for row in csv.DictReader(handle):
             flags = set(str(row.get("flags") or "").split("|"))
-            if "source:likely_unbounded_public_item" in flags:
+            if (
+                "source:likely_unbounded_public_item" in flags
+                or row.get("severity") == "blocking"
+            ):
                 review_ids.add(str(row.get("item_id") or ""))
     review_ids.discard("")
     return review_ids

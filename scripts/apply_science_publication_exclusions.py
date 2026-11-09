@@ -12,6 +12,9 @@ item_id를 공개판 SQLite 사본에서 `extraction_status='review'`로 바꾼�
     --report data/derived/science_audit/publication-exclusions.json
 검증: 출력 DB에서 큐 item_id의 bounded 수가 0이고, report의 excluded 수가 큐의 blocking 행 수와
 같다.
+여러 큐는 --risk-queue CSV1 CSV2 또는 --risk-queue CSV1 --risk-queue CSV2로 전달한다.
+검증 명령 .venv/Scripts/python.exe -m pytest -q
+  services/math-assessment-api/tests/test_science_card_check.py -k risk_queues
 """
 
 from __future__ import annotations
@@ -22,6 +25,7 @@ import hashlib
 import json
 import shutil
 import sqlite3
+from contextlib import closing
 from pathlib import Path
 
 REVIEW_STATUS = "review"
@@ -37,13 +41,14 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def apply(source: Path, risk_queue: Path, output: Path, report: Path) -> dict:
-    rows = blocking_rows(risk_queue)
+def apply(source: Path, risk_queue: Path | list[Path], output: Path, report: Path) -> dict:
+    queues = [risk_queue] if isinstance(risk_queue, Path) else list(risk_queue)
+    rows = [row for queue in queues for row in blocking_rows(queue)]
     ids = sorted({row["item_id"] for row in rows if row.get("item_id")})
     if output.exists():
         output.unlink()
     shutil.copyfile(source, output)
-    with sqlite3.connect(output) as db:
+    with closing(sqlite3.connect(output)) as db, db:
         marks = ",".join("?" * len(ids))
         before = {r[0]: r[1] for r in db.execute(
             "SELECT item_id, extraction_status FROM assessment_items "
@@ -60,13 +65,14 @@ def apply(source: Path, risk_queue: Path, output: Path, report: Path) -> dict:
             "SELECT COUNT(*) FROM assessment_items WHERE extraction_status = 'bounded'"
         ).fetchone()[0]
         public_before = public_after + sum(1 for v in before.values() if v == "bounded")
-    with sqlite3.connect(output) as db:
+    with closing(sqlite3.connect(output)) as db:
         db.isolation_level = None
         db.execute("VACUUM")
     summary = {
         "source": source.as_posix(), "source_sha256": sha256(source),
         "output": output.as_posix(), "output_sha256": sha256(output),
-        "risk_queue": risk_queue.as_posix(), "risk_queue_sha256": sha256(risk_queue),
+        "risk_queue": queues[0].as_posix() if len(queues) == 1 else [q.as_posix() for q in queues],
+        "risk_queue_sha256": sha256(queues[0]) if len(queues) == 1 else [sha256(q) for q in queues],
         "excluded": len(ids),
         "excluded_was_bounded": sum(1 for v in before.values() if v == "bounded"),
         "not_in_db": sorted(set(ids) - set(before)),
@@ -84,11 +90,12 @@ def apply(source: Path, risk_queue: Path, output: Path, report: Path) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, required=True)
-    parser.add_argument("--risk-queue", type=Path, required=True)
+    parser.add_argument("--risk-queue", type=Path, action="append", nargs="+", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
     args = parser.parse_args()
-    summary = apply(args.source, args.risk_queue, args.output, args.report)
+    queues = [queue for group in args.risk_queue for queue in group]
+    summary = apply(args.source, queues, args.output, args.report)
     print(json.dumps({k: summary[k] for k in (
         "excluded", "excluded_was_bounded", "public_bounded_before", "public_bounded_after",
         "remaining_bounded_blocking", "not_in_db")}, ensure_ascii=False))

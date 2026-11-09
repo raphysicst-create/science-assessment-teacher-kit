@@ -552,7 +552,7 @@ def test_cell_values_override_ai_and_expand_ranges():
 def test_method_text_numeric_and_allocation_normalization():
     source = setup_source(column_text().replace("<td>실험</td>", "<td>서‧논술형 평가</td>"))
     method, _ = verify(source, "method", "서‧논술형 평가", ["서·논술형평가"])
-    assert method["value"] == ["서·논술형 평가"]
+    assert method["value"] == ["서‧논술형 평가"]
     assert "ai_value_mismatch" not in method
     source = setup_source(column_text().replace("100점", "관찰(10점)"))
     allocation, _ = verify(source, "sub_scores", "관찰(10점)", [{"element": "관찰", "score": 5}])

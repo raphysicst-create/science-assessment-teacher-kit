@@ -103,8 +103,8 @@ def test_pdf_auxiliary_labels_stop_title_and_method_cell_ownership():
     assert item["extraction_status"] == "bounded"
     assert value(item, "title") == "합성 힘 탐구"
     assert value(item, "assessment_area") == "합성 힘 탐구"
-    # S6d-3b retains selected evaluator and organization fields in the task form.
-    assert value(item, "method") == ["실험·실습", "교사평가", "개인별수행"]
+    # Evaluator and organization choices retain their source evidence.
+    assert value(item, "method") == ["실험·실습"]
     assert value(item, "timing") == "9월"
 
 
@@ -128,7 +128,7 @@ def test_one_form_one_item_and_all_field_evidence():
     assert value(item, "task_no") == "실험1"
     # A task number alone supplies no subactivity description.
     assert value(item, "task_text") == ""
-    assert value(item, "method") == ["서·논술", "프로젝트", "기타"]
+    assert value(item, "method") == ["서·논술", "프로젝트", "기타", "실험 안전 점검"]
     assert item["fields"]["method"]["options"][-1]["other_content"] == "실험 안전 점검"
     assert value(item, "score") == 100
     assert value(item, "weight") == 30
@@ -152,7 +152,7 @@ def test_one_form_one_item_and_all_field_evidence():
 @pytest.mark.parametrize("separator", ["·", "ㆍ", "･", "・", "‧"])
 def test_checkbox_variants(separator):
     item = extract(form(extra=[("평가방법", f"☑ 서{separator}논술 ☑ 프로젝트")]))[0]
-    assert value(item, "method") == ["서·논술", "프로젝트"]
+    assert value(item, "method") == [f"서{separator}논술", "프로젝트"]
 
 
 @pytest.mark.parametrize("symbol", sorted(SELECTED_BOXES) + ["gfedcb"])

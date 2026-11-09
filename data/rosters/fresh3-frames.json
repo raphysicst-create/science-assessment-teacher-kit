@@ -1,0 +1,149 @@
+[
+ {
+  "sido": "전라남도",
+  "stratum": "city",
+  "sgg": "나주시",
+  "private_only": true,
+  "queried_at": "2026-11-10",
+  "schools": [
+   {
+    "name": "금성중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "나주공산중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "나주금천중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "나주다시중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "나주동강중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "나주문평중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "나주반남중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "나주봉황중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "나주중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "남평중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "노안중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "세지중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "영산포여자중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "영산중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "남평중학교다도분교장",
+    "founding": "공립"
+   },
+   {
+    "name": "빛가람중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "매성중학교",
+    "founding": "공립"
+   }
+  ]
+ },
+ {
+  "sido": "경기도",
+  "stratum": "gun",
+  "sgg": "연천군",
+  "private_only": false,
+  "queried_at": "2026-11-10",
+  "schools": [
+   {
+    "name": "군남중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "대광중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "백학중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "연천중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "전곡중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "청산중학교",
+    "founding": "공립"
+   }
+  ]
+ },
+ {
+  "sido": "전북특별자치도",
+  "stratum": "gun",
+  "sgg": "장수군",
+  "private_only": false,
+  "queried_at": "2026-11-10",
+  "schools": [
+   {
+    "name": "계남중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "계북중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "번암중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "산서중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "장계중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "장수중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "천천중학교",
+    "founding": "공립"
+   }
+  ]
+ }
+]

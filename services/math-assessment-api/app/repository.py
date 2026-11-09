@@ -18,6 +18,8 @@ ROUGH_OVERVIEW_RE = re.compile(
     r"매우\s*(?:부족|미흡)|현저히|보이지\s*않음|평가\(채점\)\s*기준|^\s*\d+\s*$"
 )
 UNCONFIRMED_BUNDLE_TITLE = "수행평가명 미확정 · 원문 묶음"
+# 과학판 S18 결정, 품질 관문은 감사·공개판 제외.
+CURATED_MIN_PRIORITY_SCORE = 0
 
 
 def parse_json_list(value: object) -> list[Any]:
@@ -68,11 +70,11 @@ class CatalogRepository:
     ) -> tuple[list[str], list[object]]:
         clauses = [
             "ranking.category = ?",
-            "ranking.priority_score >= 38",
+            "ranking.priority_score >= ?",
             "item.extraction_status = 'bounded'",
             "item.title_basis IN ('table', 'heading')",
         ]
-        parameters: list[object] = [category]
+        parameters: list[object] = [category, CURATED_MIN_PRIORITY_SCORE]
         for column, value in (
             ("curriculum", curriculum),
             ("subject", subject),
@@ -668,7 +670,7 @@ class CatalogRepository:
             ).fetchone() is not None
         clauses = [
             "c.category = ?",
-            "c.priority_score >= 38",
+            "c.priority_score >= ?",
             "c.primary_task_name NOT LIKE '%' || char(10) || '%'",
             "c.primary_task_name NOT LIKE '%문맥 전환%'",
             "c.primary_task_name NOT LIKE '평가 방법:%'",
@@ -688,7 +690,7 @@ class CatalogRepository:
             )
         else:
             clauses.append("c.title_basis IN ('table', 'heading')")
-        parameters: list[object] = [category]
+        parameters: list[object] = [category, CURATED_MIN_PRIORITY_SCORE]
         if curriculum:
             clauses.append("c.curriculum = ?")
             parameters.append(curriculum)

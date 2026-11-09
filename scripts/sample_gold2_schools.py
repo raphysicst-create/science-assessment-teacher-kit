@@ -26,6 +26,7 @@ ROOT = Path(__file__).resolve().parents[1]
 STAGE1_SEED = 20261110
 STAGE2_SEED = 202611102
 ROSTERS = ("middle-dev12.csv", "middle-dev2-20.csv", "middle-gold10.csv", "middle-smoke.csv", "middle-dev.csv")
+EXTRA_ROSTERS: list[str] = []  # --exclude-roster로 더하는 앞 표본(S18: middle-gold2-5.csv)
 EXCLUDE_NAME = re.compile(r"체육중|예술중|바둑중|\(가칭\)|분교장")
 SIDO_ASCII = {
     "서울특별시": "seoul", "부산광역시": "busan", "대구광역시": "daegu", "인천광역시": "incheon",
@@ -80,7 +81,7 @@ FRAME = {
 
 def used_sgg_and_schools() -> tuple[set[tuple[str, str]], set[str]]:
     sgg, schools = set(), set()
-    for name in ROSTERS:
+    for name in (*ROSTERS, *EXTRA_ROSTERS):
         path = ROOT / "data/rosters" / name
         if not path.exists():
             continue
@@ -96,17 +97,18 @@ def sgg_used(used: set[tuple[str, str]], sido: str, sgg: str) -> bool:
     return any(s == sido and (g == sgg or sgg.startswith(g + " ") or g.startswith(sgg + " ")) for s, g in used)
 
 
-def stage1() -> list[dict]:
-    rng = random.Random(STAGE1_SEED)
+def stage1(seed: int = STAGE1_SEED, count: int = 5) -> list[dict]:
+    rng = random.Random(seed)
     used_sgg, _ = used_sgg_and_schools()
     def pool_of(sido, stratum):
         return [g for g in FRAME[sido][stratum] if not sgg_used(used_sgg, sido, g)]
     # 앞 표본이 시군구를 전부 쓴 시도(세종·제주 등)는 표본틀에서 뺀다.
     eligible_sidos = [s for s in sorted(FRAME) if pool_of(s, "city") or pool_of(s, "gun")]
-    sidos = rng.sample(eligible_sidos, 5)
+    sidos = rng.sample(eligible_sidos, count)
     strata = ["city", "city", "city", "gun", "gun"]
     rng.shuffle(strata)
-    private_only_index = rng.randrange(5)
+    strata = strata[:count]
+    private_only_index = rng.randrange(count)
     rows = []
     for index, sido in enumerate(sidos):
         stratum = strata[index]
@@ -121,10 +123,10 @@ def stage1() -> list[dict]:
     return rows
 
 
-def stage2(frames_path: Path) -> list[dict]:
+def stage2(frames_path: Path, seed: int = STAGE2_SEED) -> list[dict]:
     frames = json.loads(frames_path.read_text(encoding="utf-8"))
     _, used_schools = used_sgg_and_schools()
-    rng = random.Random(STAGE2_SEED)
+    rng = random.Random(seed)
     rows = []
     for frame in frames:
         excluded = []
@@ -151,8 +153,16 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("stage", choices=("stage1", "stage2"))
     parser.add_argument("--frames", type=Path, default=ROOT / "data/rosters/gold2-frames.json")
+    parser.add_argument("--seed", type=int, help="기본: stage1 20261110, stage2 202611102(gold2)")
+    parser.add_argument("--count", type=int, default=5, help="stage1 시도 수")
+    parser.add_argument("--exclude-roster", action="append", default=[],
+                        help="앞 표본으로 더 뺄 명단 파일 이름(data/rosters 아래)")
     args = parser.parse_args()
-    result = stage1() if args.stage == "stage1" else stage2(args.frames)
+    EXTRA_ROSTERS.extend(args.exclude_roster)
+    if args.stage == "stage1":
+        result = stage1(args.seed or STAGE1_SEED, args.count)
+    else:
+        result = stage2(args.frames, args.seed or STAGE2_SEED)
     print(json.dumps(result, ensure_ascii=False, indent=1))
 
 

@@ -1,7 +1,10 @@
 """Build the local-review middle-school science SQLite catalog atomically.
 
-Run .venv/Scripts/python.exe scripts/build_science_catalog_db.py --output PATH.
+Run .venv/Scripts/python.exe scripts/build_science_catalog_db.py --output PATH
+    [--activity-axes-dir DIR]. Only activity axes are overridden when supplied.
 Verify with validate_math_assessment_publish_db.py --profile science --database PATH.
+Verify .venv/Scripts/python.exe -m pytest -q
+       services/math-assessment-api/tests/test_science_axes_ai.py
 """
 
 from __future__ import annotations
@@ -156,6 +159,25 @@ def write_segments(connection: sqlite3.Connection, records: list[dict]) -> None:
         )
 
 
+def catalog_axis_rows(record: dict, activity_ids: dict) -> list[tuple]:
+    """Retain unit provenance; share the AI card quote with its secondary labels."""
+    version = record.get("activity_axes_rule_version")
+    if version is None:
+        return axis_rows(record, activity_ids)
+    activity = record["axes"]["activity"]
+    evidence = list(activity["evidence"])
+    quotes = [row["quote"] for row in evidence
+              if row["type"] == "ai_quote" and isinstance(row.get("quote"), str)
+              and row["quote"].strip()]
+    for name in activity.get("secondary", []):
+        if not any(row["activity"] == name for row in evidence):
+            evidence.extend({"type": "ai_quote", "quote": quote, "activity": name}
+                            for quote in quotes)
+    amended = {**record, "axes": {**record["axes"], "activity": {**activity, "evidence": evidence}}}
+    return [row[:7] + (version,) + row[8:] if row[1] == "activity" else row
+            for row in axis_rows(amended, activity_ids)]
+
+
 def write_science_catalog(
     connection: sqlite3.Connection, records: list[dict], axes_reference: dict
 ) -> dict:
@@ -178,7 +200,7 @@ def write_science_catalog(
             insert_row(connection, "assessment_items", row)
             connection.executemany(
                 "INSERT INTO assessment_item_axes VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                axis_rows(record, activity_ids),
+                catalog_axis_rows(record, activity_ids),
             )
             connection.executemany(
                 "INSERT OR IGNORE INTO assessment_item_methods VALUES (?, ?, ?, ?, ?)",
@@ -222,10 +244,13 @@ def finish_catalog(connection: sqlite3.Connection, records: list[dict], case_cou
     return {"item_count": count, "case_count": case_count}
 
 
-def build_catalog(output: Path, rounds=DEFAULT_ROUNDS, replace: bool = False) -> dict:
+def build_catalog(output: Path, rounds=DEFAULT_ROUNDS, replace: bool = False,
+                  activity_axes_dir: Path | None = None) -> dict:
     if output.exists() and not replace:
         raise ValueError(f"output already exists: {output}")
-    records = load_science_records(rounds)
+    activity_summary = {"overridden_items": 0, "missing_rounds": 0, "missing_items": 0}
+    records = (load_science_records(rounds) if activity_axes_dir is None else load_science_records(
+        rounds, activity_axes_dir=activity_axes_dir, activity_axes_summary=activity_summary))
     reference = read_json(ROOT / "data/reference/science_axes.json")
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=output.parent) as temporary:
@@ -234,6 +259,8 @@ def build_catalog(output: Path, rounds=DEFAULT_ROUNDS, replace: bool = False) ->
             result = write_science_catalog(connection, records, reference)
             connection.commit()
         os.replace(database, output)
+    if activity_axes_dir is not None:
+        result["activity_axes"] = activity_summary
     return result
 
 
@@ -246,9 +273,10 @@ def main() -> None:
     )
     parser.add_argument("--rounds", nargs="+", default=DEFAULT_ROUNDS)
     parser.add_argument("--replace", action="store_true")
+    parser.add_argument("--activity-axes-dir", type=Path)
     args = parser.parse_args()
     try:
-        result = build_catalog(args.output, args.rounds, args.replace)
+        result = build_catalog(args.output, args.rounds, args.replace, args.activity_axes_dir)
     except (ValueError, KeyError, sqlite3.Error) as error:
         raise SystemExit(str(error)) from error
     print(encoded({"output": str(args.output), **result}))
