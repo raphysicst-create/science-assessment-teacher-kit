@@ -707,6 +707,11 @@ def test_combined_stage_counts_ai_false_positives_and_unextracted_fields(synthet
     gs = [gold(), gold("g2", "관찰", 20)]
     rows = [score_row("p1"), score_row("ai", "관찰", 20, "ai_verified"),
             score_row("extra", "새로운 과제", 999, "ai_verified")]
+    for item in rows[1:]:
+        item["fields"].update({
+            field: {**envelope(None, "unconfirmed"), "reason": gold_score.AI_UNEXTRACTED_REASON}
+            for name, field in FIELD_MAP.items() if name != "title"
+        })
     report, _ = synthetic_score(rows, ai=True, gs=gs)
     stage = report["stages"]["rule_ai"]
     assert stage["recall"] == wilson(2, 2)
@@ -823,4 +828,204 @@ def test_v13_markdown_keeps_korean_and_does_not_mutate_counts(synthetic_score):
     before = deepcopy(report)
     rendered = gold_score.markdown(report)
     assert "규칙+AI" in rendered and "미추출" in rendered and "제목 정확도" in rendered
+    assert all(section in rendered for section in (
+        "(a) 확정 규칙 항목", "(b) AI 새 항목", "(c) AI 확인 후보", "fill_method = ai_read",
+        "ai_alignment = same_column", "필드의 오값·허위값·오귀속 전부", "누락 사유 분포",
+    ))
     assert report == before
+
+
+@pytest.mark.parametrize(
+    "status,reason,expected",
+    [
+        ("unconfirmed", gold_score.AI_UNEXTRACTED_REASON, "미추출"),
+        ("unconfirmed", "AI 항목 읽기: 다른 열", "누락"),
+        ("unconfirmed", "AI: 원문에 없다고 답함(미검증)", "누락"),
+        ("unconfirmed", "AI 항목 읽기: 답 없음", "누락"),
+        ("unconfirmed", "", "누락"),
+        ("source_absent", "", "둘다없음"),
+    ],
+)
+def test_ai_unconfirmed_and_absent_follow_field_contract(synthetic_score, status, reason, expected):
+    item = score_row("ai", status="ai_verified")
+    item["fields"]["weight"] = {"value": None, "status": status, "reason": reason}
+    report, _ = synthetic_score([item], ai=True)
+    stage = report["stages"]["rule_ai"]
+    assert stage["pairs"][0]["fields"]["ratio"]["result"] == expected
+    assert stage["ai_unextracted_fields"]["ratio"] == {
+        "input": int(expected == "미추출"), "matched": int(expected == "미추출"),
+    }
+    assert stage["fields_by_group"]["b"]["ratio"][expected] == 1
+
+
+@pytest.mark.parametrize(
+    "name,gold_value,ai_value",
+    [
+        ("task_text", text_value("관찰 기록하기"), ["관찰 기록하기"]),
+        ("period", text_value("5월"), "5월"),
+        ("method", {"plain_text": "실험/보고서"}, ["보고서", "실험"]),
+        ("standards", [{"codes": ["[9과01-01]"]}], ["[9과01-01]"]),
+        ("max_score", {"values": [{"norm": 100, "raw": "100점"}]}, "100"),
+        ("sub_scores", [{"element": "관찰", "score": 10}], [{"element": "관찰", "score": 10}]),
+        ("ratio", {"values": [{"norm": 20, "raw": "20%"}]}, "20%"),
+        ("rubric", {"values": [{"loc": {"doc_id": "doc", "line": 10}}]}, None),
+        ("free_semester", False, False),
+    ],
+)
+def test_ai_present_fields_use_rule_scoring(synthetic_score, name, gold_value, ai_value):
+    g, item = gold(), score_row("ai", status="ai_verified")
+    g["fields"][name] = envelope(gold_value)
+    item["fields"][FIELD_MAP[name]] = {
+        **envelope(ai_value), "fill_method": "ai_read",
+        # A stale reason on a present field must not suppress scoring.
+        "reason": gold_score.AI_UNEXTRACTED_REASON,
+        "evidence": [{"raw": "원문", "locator": {"start": 10, "end": 11},
+                      "ai_alignment": "own_table"}],
+    }
+    report, _ = synthetic_score([item], ai=True, gs=[g])
+    stage = report["stages"]["rule_ai"]
+    assert stage["fields"][name]["정답"] == 1
+    assert stage["ai_fields_by_fill_method"]["ai_read"][name]["정답"] == 1
+    assert stage["ai_fields_by_alignment"]["own_table"][name]["정답"] == 1
+    assert not stage["ai_unextracted_fields"][name]["input"]
+
+
+def test_ai_field_errors_and_misattributions_are_complete(synthetic_score):
+    gs = [gold(), gold("g2", "관찰", 20), gold("g3", "보고서", 30)]
+    gs[0]["fields"]["method"] = envelope({"plain_text": "실험"})
+    for g in gs[1:]:
+        g["fields"]["method"] = envelope({"plain_text": "관찰"})
+    item = score_row("ai", status="ai_verified")
+    item["fields"]["method"] = {
+        **envelope(["관찰"]), "fill_method": "ai_read",
+        "evidence": [{"raw": "관찰", "ai_alignment": "same_column",
+                      "locator": {"start": 20, "end": 21}}],
+    }
+    item["fields"]["score"] = {**envelope("999"), "fill_method": "rule_reuse"}
+    item["fields"]["timing"] = envelope("5월")
+    gs[0]["fields"]["period"] = envelope(text_value("6월"))
+    report, _ = synthetic_score([item], ai=True, gs=gs)
+    stage = report["stages"]["rule_ai"]
+    assert stage["misattributions_by_field"] == {"method": 1}
+    assert stage["fields_by_group"]["b"]["method"]["오귀속"] == 1
+    assert stage["ai_fields_by_fill_method"]["ai_read"]["method"]["오귀속"] == 1
+    assert stage["ai_fields_by_alignment"]["same_column"]["method"]["오귀속"] == 1
+    errors = {r["field"]: r for r in stage["ai_field_errors"]}
+    assert set(errors) == {"method", "max_score", "period"}
+    assert errors["method"]["other_gold_keys"] == ["g2", "g3"]
+    assert errors["method"]["estimated_reason"] == "다른 과제 값(오귀속)"
+    assert errors["method"]["evidence_quotes"] == ["관찰"]
+    assert errors["max_score"]["result"] == "허위값"
+    assert errors["period"]["result"] == "오값"
+    cases = [r for r in report["cases"] if r["type"] == "ai_field"]
+    assert {r["field"] for r in cases if "estimated_reason" in r} == set(errors)
+    assert all(r["reason_detail"] for r in errors.values())
+
+
+@pytest.mark.parametrize(
+    "alignment", ["same_column", "same_row", "own_table", "shared_span", "prose"],
+)
+def test_ai_field_partitions_include_each_alignment(synthetic_score, alignment):
+    gs = [gold(), gold("g2", "관찰", 20), gold("g3", "보고서", 30)]
+    rows = [score_row("a"), score_row("b", "관찰", 20, "ai_verified"),
+            score_row("c", "보고서", 30, "review")]
+    relations = {"agrees": [
+        {"rule_item_id": key, "ai_task_id": key, "bounded": False} for key in ("a", "c")
+    ], "agrees_by_title": [{"rule_item_ids": ["c"], "ai_task_id": "c", "bounded": False}]}
+    rows[1]["fields"]["title"].update(
+        fill_method="rule_reuse", evidence=[{"raw": "관찰", "ai_alignment": alignment}] * 2,
+    )
+    rows[1]["fields"]["method"] = {
+        **envelope(["관찰"]), "fill_method": "ai_read",
+        "evidence": [{"ai_alignment": alignment}, {"ai_alignment": "prose"}],
+    }
+    report, _ = synthetic_score(rows, ai=True, gs=gs, relations=relations)
+    stage = report["stages"]["rule_ai"]
+    assert stage["field_group_counts"] == {key: {"input": 1, "matched": 1} for key in "abc"}
+    assert stage["ai_fields_by_fill_method"]["rule_reuse"]["title"]["정답"] == 1
+    assert stage["ai_fields_by_alignment"][alignment]["title"]["정답"] == 1
+    combined_alignment = "/".join(sorted({alignment, "prose"}))
+    assert stage["ai_fields_by_alignment"][combined_alignment]["method"]["허위값"] == 1
+    for name, counts in stage["fields"].items():
+        for outcome in (*gold_score.OUTCOMES, "미추출"):
+            assert sum(g[name][outcome] for g in stage["fields_by_group"].values()) == counts.get(
+                outcome, 0,
+            )
+            for key in ("ai_fields_by_fill_method", "ai_fields_by_alignment"):
+                assert sum(g[name][outcome] for g in stage[key].values()) == stage[
+                    "fields_by_group"
+                ]["b"][name][outcome]
+
+
+@pytest.mark.parametrize("reason,category", [
+    ("AI 항목 읽기: 인용 불일치", "대조 실패"),
+    ("AI 항목 읽기: 다른 열", "대조 실패"),
+    ("AI: 원문에 없다고 답함(미검증)", "absent"),
+    ("AI 항목 읽기: 답 없음", "답 없음"),
+    (gold_score.AI_UNEXTRACTED_REASON, "1단계 미추출"),
+    ("", "기타"),
+])
+def test_ai_missing_reason_distribution(synthetic_score, reason, category):
+    item = score_row("ai", status="ai_verified")
+    item["fields"].update({
+        field: envelope(None, "source_absent")
+        for name, field in FIELD_MAP.items() if name != "title"
+    })
+    item["fields"]["weight"] = {**envelope(None, "unconfirmed"), "reason": reason}
+    report, _ = synthetic_score([item], ai=True)
+    counts = report["stages"]["rule_ai"]["ai_missing_reasons"][category][reason]
+    assert counts == {"누락": int(category != "1단계 미추출"),
+                      "미추출": int(category == "1단계 미추출")}
+
+
+def test_v13_placeholder_metrics_and_pair_fields_are_unchanged(synthetic_score, monkeypatch):
+    rows = [score_row("rule"), score_row("ai", "관찰", 20, "ai_verified"),
+            score_row("extra", "미상", 999, "ai_verified")]
+    for item in rows[1:]:
+        item["fields"].update({
+            field: {**envelope(None, "unconfirmed"), "reason": gold_score.AI_UNEXTRACTED_REASON}
+            for name, field in FIELD_MAP.items() if name != "title"
+        })
+    gs = [gold(), gold("g2", "관찰", 20)]
+    current, _ = synthetic_score(rows, ai=True, gs=gs)
+    original = field_result
+
+    def v13_result(name, g, item):
+        if gold_score.ai_item(item) and name != "title":
+            return {"result": "미추출", "gold_conflict": False, "standards_relation": None}
+        return original(name, g, item)
+
+    monkeypatch.setattr(gold_score, "field_result", v13_result)
+    previous, _ = synthetic_score(rows, ai=True, gs=gs)
+    assert gold_score.compare_score_metrics(previous, current) == {
+        "equal": True, "differences": [],
+        "compared_stages": ["confirmed", "all_candidates", "rule_ai"],
+    }
+    assert previous["stages"] == current["stages"]
+    altered = deepcopy(current)
+    altered["stages"]["rule_ai"]["fields"]["ratio"]["미추출"] += 1
+    assert "stages.rule_ai.fields" in gold_score.compare_score_metrics(previous, altered)[
+        "differences"
+    ]
+
+
+@pytest.mark.parametrize("name,expected,value,diagnosis", [
+    ("period", text_value("5월"), "5월 중", "같은 과제 다른 표기"),
+    ("max_score", None, "100점", "정답 쪽 표기 차이"),
+    ("period", text_value("6월"), "5월", "값 오류"),
+])
+def test_ai_field_diagnosis_uses_quotes_and_task_positions(
+    synthetic_score, name, expected, value, diagnosis,
+):
+    g, item = gold(), score_row("ai", status="ai_verified")
+    if expected is not None:
+        g["fields"][name] = envelope(expected)
+    item["fields"][FIELD_MAP[name]] = {
+        **envelope(value), "fill_method": "ai_read",
+        "evidence": [{"raw": value, "ai_alignment": "own_table",
+                      "locator": {"start": 10, "end": 11}}],
+    }
+    report, _ = synthetic_score([item], ai=True, gs=[g])
+    error = report["stages"]["rule_ai"]["ai_field_errors"][0]
+    assert error["estimated_reason"] == diagnosis
+    assert error["reason_detail"]

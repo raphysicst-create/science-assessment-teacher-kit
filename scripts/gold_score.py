@@ -31,6 +31,8 @@ FIELD_MAP = {
     "free_semester": "free_semester",
 }
 OUTCOMES = ("정답", "부분", "누락", "오값", "허위값", "둘다없음")
+FIELD_COLUMNS = (*OUTCOMES, "미추출", "오귀속")
+AI_UNEXTRACTED_REASON = "AI 읽기 1단계: 필드 미추출"
 FIELD_RULES = {
     "title": "대표 제목·별칭·승인된 제목 중 하나와 정규화 일치",
     "task_text": (
@@ -156,25 +158,37 @@ def pipeline_field(item: dict, name: str) -> dict:
     return item.get("fields", {}).get(FIELD_MAP[name], {"status": "unconfirmed", "value": None})
 
 
-def field_locators(field: dict) -> list[dict]:
-    """Read field-owned source positions, excluding headers and alternate observations."""
+def field_observations(field: dict) -> list[dict]:
+    """Read field-owned observations, including nested value evidence."""
     nodes = [field]
     value = field.get("value")
     if isinstance(value, dict):
         nodes.append(value)
     elif isinstance(value, list):
         nodes.extend(v for v in value if isinstance(v, dict))
-    return [
-        observation["locator"]
-        for node in nodes
-        for observation in [node, *node.get("evidence", [])]
-        if "locator" in observation
-    ] + field.get("table_locators", [])
+    return [observation for node in nodes for observation in [node, *node.get("evidence", [])]]
+
+
+def field_locators(field: dict) -> list[dict]:
+    """Read field-owned source positions, excluding headers and alternate observations."""
+    return [o["locator"] for o in field_observations(field) if "locator" in o] + field.get(
+        "table_locators", []
+    )
+
+
+def ai_unextracted(item: dict, name: str) -> bool:
+    field = pipeline_field(item, name)
+    return (
+        ai_item(item) and field.get("status") == "unconfirmed"
+        and field.get("reason") == AI_UNEXTRACTED_REASON
+    )
 
 
 def field_result(name: str, gold: dict, item: dict) -> dict:
     expected = gold["fields"].get(name, {"status": "source_absent", "value": None})
     actual = pipeline_field(item, name)
+    if ai_unextracted(item, name):
+        return {"result": "미추출", "gold_conflict": False, "standards_relation": None}
     conflict = expected.get("status") == "conflict"
     emitted = actual.get("status") == "present" and actual.get("value") not in (None, "", [])
     if name == "free_semester" and actual.get("status") == "present":
@@ -842,11 +856,7 @@ def score(
         attributed = []
         for pair in pairs:
             g, p = gold[pair["gold_index"]], selected[pair["pipeline_index"]]
-            results = {
-                n: {"result": "미추출", "gold_conflict": False, "standards_relation": None}
-                if ai_item(p) and n != "title" else field_result(n, g, p)
-                for n in names
-            }
+            results = {n: field_result(n, g, p) for n in names}
             pair["fields"] = results
             pair["pipeline_locations"] = (
                 p.get("owned_occurrences", []) if pair["basis"].get("owned_ranges_used")
@@ -862,7 +872,7 @@ def score(
                     conflict_counts[n][result["result"]] += 1
                 if n == "standards" and result["standards_relation"]:
                     relations[result["standards_relation"]] += 1
-            attributed.extend(misattributions(g, p, gold, ["title"] if ai_item(p) else names))
+            attributed.extend(misattributions(g, p, gold, names))
         unmatched = [unmatched_record(selected[j], gold, pairs) for j in extra]
         if stage == "rule_ai":
             for row in unmatched:
@@ -1114,7 +1124,7 @@ def score(
         if case_by_key[row["gold_key"]]["cause"] == "짝짓기 실패"
     ]
     report = {
-        "version": "gold-v1.3",
+        "version": "gold-v1.4",
         "gold_sha256": meta["sha256"],
         "rounds": rounds,
         "scored_fields": names,
@@ -1241,6 +1251,128 @@ def ai_window_coverage(gold: dict, windows: list[dict]) -> dict:
     }
 
 
+def ai_field_diagnosis(row: dict, gold: dict) -> tuple[str, str]:
+    """Conservative review hints from values and source positions, never new labels."""
+    if row["other_gold_keys"]:
+        return "다른 과제 값(오귀속)", "같은 학교·학년·학기의 다른 정답과 일치. " + ", ".join(
+            row["other_gold_keys"]
+        )
+    name = row["field"]
+    expected = gold["fields"].get(name, {"status": "source_absent"})
+    actual_strings = [norm(s) for s in raw_values(row["ai_value"]) if norm(s)]
+    quoted = any(s in norm(q) for s in actual_strings for q in row["evidence_quotes"])
+    own_source = bool(overlap(gold["occurrences"], row["field_locations"]))
+    if expected.get("status") == "source_absent" and quoted and own_source:
+        return "정답 쪽 표기 차이", (
+            "정답은 source_absent이나 AI 값이 인용에 있고 과제 위치가 겹침. 정답 근거 재검토 추정"
+        )
+    expected_strings = [norm(s) for v in alternatives(expected) for s in raw_values(v) if norm(s)]
+    if own_source and any(
+        left in right or right in left for left in actual_strings for right in expected_strings
+    ):
+        return "같은 과제 다른 표기", "과제 위치가 겹치고 값의 정규화 문자열이 부분 포함됨"
+    return "값 오류", (
+        "허용 정답과 불일치하며 다른 과제 일치·표기 차이를 뒷받침할 근거가 부족함. "
+        f"필드 상태 {row['pipeline_status']}"
+    )
+
+
+def add_ai_field_report(report: dict, gold: list[dict], selected: list[dict]) -> None:
+    """Partition matched fields, with misattribution as an overlapping error count."""
+    stage = report["stages"]["rule_ai"]
+    names = report["scored_fields"]
+    by_id = {p["score_id"]: p for p in selected}
+    gold_by_key = {g["item_key"]: g for g in gold}
+
+    def empty_fields():
+        return {n: Counter({o: 0 for o in FIELD_COLUMNS}) for n in names}
+
+    groups = {key: empty_fields() for key in ("a", "b", "c")}
+    methods = {key: empty_fields() for key in ("rule_reuse", "ai_read", "미기록")}
+    alignments = {key: empty_fields() for key in (
+        "same_column", "same_row", "own_table", "shared_span", "prose", "미기록",
+    )}
+    missing = {key: {} for key in ("대조 실패", "absent", "답 없음", "1단계 미추출", "기타")}
+    records = []
+    errors = []
+    attributed = {
+        (e["pipeline_key"], e["field"]): e["other_gold_keys"] for e in stage["misattributions"]
+    }
+    group_by_id = {
+        p["score_id"]: "b" if "b" in p["contributions"] else "a" if "a" in p["contributions"]
+        else "c" for p in selected
+    }
+    stage["field_group_counts"] = {
+        key: {
+            "input": sum(group == key for group in group_by_id.values()),
+            "matched": sum(group_by_id[p["pipeline_key"]] == key for p in stage["pairs"]),
+        }
+        for key in groups
+    }
+    for pair in stage["pairs"]:
+        item = by_id[pair["pipeline_key"]]
+        g = gold_by_key[pair["gold_key"]]
+        group = group_by_id[pair["pipeline_key"]]
+        for name, result in pair["fields"].items():
+            outcome = result["result"]
+            other_keys = attributed.get((pair["pipeline_key"], name), [])
+            groups[group][name][outcome] += 1
+            groups[group][name]["오귀속"] += bool(other_keys)
+            if group != "b":
+                continue
+            field = pipeline_field(item, name)
+            evidence = [o for o in field_observations(field) if any(
+                k in o for k in ("locator", "raw", "text", "ai_alignment")
+            )]
+            method = field.get("fill_method") or "미기록"
+            # Multiple evidence alignments form one bucket so partitions sum to b.
+            alignment = "/".join(sorted({
+                e["ai_alignment"] for e in evidence if e.get("ai_alignment")
+            })) or "미기록"
+            for buckets, key in ((methods, method), (alignments, alignment)):
+                if key not in buckets:
+                    buckets[key] = empty_fields()
+                buckets[key][name][outcome] += 1
+                buckets[key][name]["오귀속"] += bool(other_keys)
+            reason = field.get("reason", "")
+            if outcome in {"누락", "미추출"}:
+                category = (
+                    "1단계 미추출" if outcome == "미추출" else
+                    "absent" if reason == "AI: 원문에 없다고 답함(미검증)" else
+                    "답 없음" if reason == "AI 항목 읽기: 답 없음" else
+                    "대조 실패" if reason.startswith("AI 항목 읽기:") else "기타"
+                )
+                counts = missing[category].setdefault(reason, Counter({"누락": 0, "미추출": 0}))
+                counts[outcome] += 1
+            row = {
+                "gold_key": g["item_key"], "pipeline_key": item["score_id"],
+                "school": item["school"], "grade": item["grade"], "semester": item["semester"],
+                "title": g.get("representative_title", {}).get("raw", ""),
+                "pipeline_title": pipeline_field(item, "title").get("value"),
+                "field": name, "result": outcome,
+                "gold_status": g["fields"].get(name, {}).get("status", "source_absent"),
+                "gold_accepted": alternatives(g["fields"].get(name, {})),
+                "ai_value": field.get("value"), "pipeline_status": field.get("status"),
+                "fill_method": method, "ai_alignment": alignment, "reason": reason,
+                "evidence": evidence,
+                "evidence_quotes": list(dict.fromkeys(
+                    e.get("raw") or e.get("text") for e in evidence if e.get("raw") or e.get("text")
+                )),
+                "field_locations": item.get("field_locations", {}).get(name, []),
+                "other_gold_keys": other_keys, "misattributed": bool(other_keys),
+            }
+            if outcome in {"오값", "허위값"} or other_keys:
+                row["estimated_reason"], row["reason_detail"] = ai_field_diagnosis(row, g)
+                errors.append(row)
+            records.append(row)
+    stage.update(
+        fields_by_group=groups, ai_fields_by_fill_method=methods,
+        ai_fields_by_alignment=alignments, ai_field_errors=errors, ai_missing_reasons=missing,
+    )
+    report["cases"].extend({"type": "ai_field", "key": r["pipeline_key"] + "/" + r["field"], **r}
+                           for r in records)
+
+
 def add_ai_report(
     report: dict, gold: list[dict], selected: list[dict], sources: list[dict],
     mapper: SourceMap, root: Path, rounds: list[str],
@@ -1309,11 +1441,12 @@ def add_ai_report(
     )
     stage["ai_unextracted_fields"] = {
         n: {
-            "input": sum(ai_item(p) for p in selected),
+            "input": sum(ai_unextracted(p, n) for p in selected),
             "matched": stage["fields"][n].get("미추출", 0),
         }
         for n in report["scored_fields"] if n != "title"
     }
+    add_ai_field_report(report, gold, selected)
     unmatched_ai = [
         unmatched_ai_record(p, gold, stage["pairs"])
         for p in selected if ai_item(p) and p["score_id"] not in paired_ids
@@ -1470,6 +1603,27 @@ def compare_item_metrics(before: dict, after: dict) -> dict:
     return {"equal": not differences, "differences": differences}
 
 
+def compare_score_metrics(before: dict, after: dict) -> dict:
+    """Compare preserved item and field metrics over stages available in both runs."""
+    common = [key for key in before["stages"] if key in after["stages"]]
+    comparison = compare_item_metrics(
+        {**before, "stages": {key: before["stages"][key] for key in common}}, after,
+    )
+    differences = comparison["differences"]
+    for key in common:
+        left, right = before["stages"][key], after["stages"][key]
+        for name in (
+            "fields", "conflict_fields", "standards_relations", "misattributions",
+            "misattributions_by_field", "public_misattributions", "ai_unextracted_fields",
+            "title_accuracy", "contribution_counts", "input_count",
+        ):
+            if left.get(name) != right.get(name):
+                differences.append(f"stages.{key}.{name}")
+        if [p["fields"] for p in left["pairs"]] != [p["fields"] for p in right["pairs"]]:
+            differences.append(f"stages.{key}.pairs.fields")
+    return {"equal": not differences, "differences": differences, "compared_stages": common}
+
+
 def pair_basis_text(basis: dict) -> str:
     if basis.get("owned_ranges_used"):
         return f"owned_ranges 보조 겹침 {basis['overlap_pack_lines']}줄"
@@ -1483,7 +1637,7 @@ def pair_basis_text(basis: dict) -> str:
 def rule_markdown(report: dict) -> str:
     stages = report["stages"]
     lines = [
-        "# S9 ⑧ 채점기 v1.3 · 정답 v1",
+        "# S9 ⑧ 채점기 v1.4 · 정답 v1",
         "",
         "두 공시 회차·10개교·정답 83항목. 추출 규칙·패턴·임계값 변경 0. 오프라인 실행.",
         "",
@@ -1528,7 +1682,7 @@ def rule_markdown(report: dict) -> str:
         "|---|---|---|",
         *[f"| {n} | {FIELD_MAP[n]} | {cell(rule)} |" for n, rule in FIELD_RULES.items()],
         "",
-        "## v1.2과 v1.3 성적 비교",
+        "## v1.2와 v1.4 성적 비교",
         "",
         "수치 괄호는 Wilson 95% 구간이다. v1.2은 보존된 JSON의 실제 측정값이다. "
         "재현율 기준 ≥95%, 정밀도 기준 ≥99%.",
@@ -1539,7 +1693,7 @@ def rule_markdown(report: dict) -> str:
         + ("동일." if report["item_metric_comparison"]["equal"] else
            "차이 있음. " + cell(report["item_metric_comparison"]["differences"])),
         "",
-        "| 단계 | v1.2 재현율 | v1.3 재현율 | v1.2 정밀도 | v1.3 정밀도 | 번호 직접 사용 |",
+        "| 단계 | v1.2 재현율 | v1.4 재현율 | v1.2 정밀도 | v1.4 정밀도 | 번호 직접 사용 |",
         "|---|---|---|---|---|---:|",
     ]
     for key, label in (("confirmed", "확정"), ("all_candidates", "전체 후보")):
@@ -1619,7 +1773,7 @@ def rule_markdown(report: dict) -> str:
         "S5의 합친 텍스트에서 사용되는 기존 경로에서 관찰했다. 실제 S6 근거가 가리키는 "
         "본문으로 채점했으며 개별 충돌은 JSON에 보존했다.",
         "",
-        "## 짝 없는 확정 파이프라인 항목 전부 · v1.3",
+        "## 짝 없는 확정 파이프라인 항목 전부 · v1.4",
         "",
         f"{len(report['unmatched_confirmed_pipeline'])}개. 역할 제외·중복 별칭을 포함해 원본 "
         "파이프라인의 모든 bounded/public_eligible 행을 검사한다. 공식 정밀도 분모 포함 "
@@ -1640,7 +1794,7 @@ def rule_markdown(report: dict) -> str:
         lines.append("| - | - | - | - | - | - | 없음 | - | - |")
     lines += [
         "",
-        "## 남은 짝짓기 실패 정답 전부 · v1.3 전체 후보 기준",
+        "## 남은 짝짓기 실패 정답 전부 · v1.4 전체 후보 기준",
         "",
         f"{len(report['remaining_pairing_failures'])}개. 손실 지도에서 짝짓기 실패로 남은 "
         "정답을 모두 싣는다. 후보 목록은 같은 학교·학년·학기 원본 행 전체이며 "
@@ -1690,7 +1844,7 @@ def rule_markdown(report: dict) -> str:
             "",
             f"### {label} 필드 전후 비교",
             "",
-            "각 칸은 v1.2 → v1.3 건수다. v1.2에 없던 부분은 0으로 표시한다.",
+            "각 칸은 v1.2 → v1.4 건수다. v1.2에 없던 부분은 0으로 표시한다.",
             "",
             "| 필드 | 정답 | 부분 | 누락 | 오값 | 허위값 | 둘다없음 |",
             "|---|---:|---:|---:|---:|---:|---:|",
@@ -1822,10 +1976,68 @@ def rule_markdown(report: dict) -> str:
     return "\n".join(lines)
 
 
+def ai_field_markdown(stage: dict) -> list[str]:
+    lines = [
+        "", "## 규칙+AI 단계 필드 표", "",
+        "정답과 짝지어진 항목의 필드만 집계한다. 집단은 b → a → c 순서로 한 곳에 배정한다. "
+        "a와 c의 지원이 겹치면 a에 포함한다. 오귀속은 오값·허위값 중 다른 과제 정답과 일치한 "
+        "필드의 중복 지표다.",
+    ]
+
+    def table(title, fields):
+        lines.extend(["", f"### {title}", "", "| 필드 | " + " | ".join(FIELD_COLUMNS) + " |",
+                      "|---|" + "---:|" * len(FIELD_COLUMNS)])
+        for name, counts in fields.items():
+            lines.append("| " + " | ".join(cell(v) for v in (
+                name, *(counts.get(o, 0) for o in FIELD_COLUMNS),
+            )) + " |")
+
+    for key, label in (("a", "(a) 확정 규칙 항목"), ("b", "(b) AI 새 항목"),
+                       ("c", "(c) AI 확인 후보")):
+        counts = stage["field_group_counts"][key]
+        table(f"{label} · 입력 {counts['input']}개 · 짝 {counts['matched']}개",
+              stage["fields_by_group"][key])
+    lines += ["", "## AI 새 항목의 필드 결과 분할", "",
+              "fill_method는 필드의 기록을 사용한다. ai_alignment는 필드 소유 evidence의 "
+              "서로 다른 정렬을 정렬해 /로 묶는다. 복수 정렬도 한 칸으로 집계하여 b와 합계가 같다. "
+              "미기록은 메타데이터가 없는 필드다."]
+    for dimension, key in (("fill_method", "ai_fields_by_fill_method"),
+                           ("ai_alignment", "ai_fields_by_alignment")):
+        for value, fields in stage[key].items():
+            table(f"{dimension} = {value}", fields)
+    lines += ["", "## AI 새 항목 필드의 오값·허위값·오귀속 전부", "",
+              "원인 추정은 값·인용·위치 대조에 따른 검토용 분류다. "
+              "교육 판단 확정은 별도 검토가 필요하다.",
+              "",
+              "| 학교 | 학년·학기 | 과제 제목 | 필드 | 결과 | 정답 값 | AI 값 | 인용 | 정렬 | "
+              "fill_method | 원인 추정 |", "|---|---|---|---|---|---|---|---|---|---|---|"]
+    for row in stage["ai_field_errors"]:
+        values = (
+            row["school"], f"중{row['grade']} {row['semester']}학기", row["title"], row["field"],
+            row["result"] + (" · 오귀속" if row["misattributed"] else ""),
+            row["gold_accepted"], row["ai_value"], " / ".join(row["evidence_quotes"]),
+            row["ai_alignment"], row["fill_method"],
+            row["estimated_reason"] + " · " + row["reason_detail"],
+        )
+        lines.append("| " + " | ".join(cell(html.escape(str(v))) for v in values) + " |")
+    if not stage["ai_field_errors"]:
+        lines.append("| - | - | 없음 | - | - | - | - | - | - | - | - |")
+    lines += ["", "## AI 새 항목의 누락 사유 분포", "",
+              "짝지어진 b 항목의 누락과 1단계 미추출을 구분한다. 1단계 미추출은 누락 합계에 "
+              "더하지 않는다. absent는 미검증 부재 응답이다.", "",
+              "| 분류 | 사유 | 누락 | 미추출 |", "|---|---|---:|---:|"]
+    for category, reasons in stage["ai_missing_reasons"].items():
+        if not reasons:
+            lines.append(f"| {category} | - | 0 | 0 |")
+        for reason, counts in reasons.items():
+            lines.append(f"| {category} | {cell(reason)} | {counts['누락']} | {counts['미추출']} |")
+    return lines
+
+
 def ai_markdown(report: dict) -> str:
     stages = report["stages"]
     lines = [
-        "# 채점기 v1.3 · 규칙+AI",
+        "# 채점기 v1.4 · 규칙+AI",
         "",
         "오프라인 측정. a는 기존 확정 단계의 독립 수행 항목(bounded 또는 public_eligible), "
         "b는 ai_verified 새 항목, c는 bounded=false인 agrees·agrees_by_title의 규칙 항목이다. "
@@ -1915,12 +2127,14 @@ def ai_markdown(report: dict) -> str:
             lines.append("| - | - | - | - | 없음 | - | - | - |")
         lines += ["", "## 규칙+AI 제목과 미추출 필드", "",
                   f"짝지어진 항목의 제목 정확도 {metric(stage['title_accuracy'])}.", "",
-                  "AI 새 항목은 제목만 채점한다. 나머지 필드는 미추출로 분리한다. "
+                  "AI 새 항목은 규칙 항목과 같은 field_result로 채점한다. "
+                  "unconfirmed이며 사유가 'AI 읽기 1단계: 필드 미추출'인 필드만 미추출로 분리한다. "
                   "c 항목의 필드는 보존된 규칙 값을 채점한다.", "",
                   "| AI 새 항목의 미추출 필드 | 입력 전체 | 짝지어진 항목 |",
                   "|---|---:|---:|"]
         for name, counts in stage["ai_unextracted_fields"].items():
             lines.append(f"| {name} | {counts['input']} | {counts['matched']} |")
+        lines += ai_field_markdown(stage)
     for key, stage in stages.items():
         lines += ["", f"## {key} 필드 채점", "",
                   "| 필드 | 정답 | 부분 | 누락 | 오값 | 허위값 | 둘다없음 | 미추출 | 오귀속 |",
@@ -1942,6 +2156,12 @@ def ai_markdown(report: dict) -> str:
 
 def markdown(report: dict) -> str:
     rules = rule_markdown(report)
+    if "metric_comparisons" in report:
+        lines = ["## 보존 성적과 항목·필드 불변 대조", ""]
+        for version, comparison in report["metric_comparisons"].items():
+            status = "일치" if comparison["equal"] else cell(comparison["differences"])
+            lines.append(f"- {version} · {', '.join(comparison['compared_stages'])} · {status}")
+        rules = "\n".join(lines) + "\n\n" + rules
     if "rule_ai" in report["stages"]:
         return ai_markdown(report) + "\n\n" + rules
     return rules
@@ -1953,15 +2173,22 @@ def main() -> None:
     parser.add_argument("--meta", type=Path, default=ROOT / "data/gold/gold_v1.meta.json")
     parser.add_argument("--round-keys", nargs="+", default=list(ROUNDS))
     parser.add_argument("--items-dir", type=Path, default=ROOT / "data/derived/items")
-    parser.add_argument("--output-dir", type=Path, default=ROOT / "data/derived/gold_score/v4")
+    parser.add_argument("--output-dir", type=Path, default=ROOT / "data/derived/gold_score/v5")
     parser.add_argument(
         "--baseline", type=Path,
         default=ROOT / "data/derived/gold_score/v3/gold-v1.2.json",
         help="Preserved v1.2 JSON used for comparison",
     )
+    parser.add_argument(
+        "--v13-baseline", type=Path,
+        default=ROOT / "data/derived/gold_score/v4/gold-v1.3.json",
+        help="Preserved v1.3 JSON used for item and field comparison",
+    )
     args = parser.parse_args()
     baseline_path = args.baseline.resolve()
     baseline_report = read(baseline_path)
+    v13_path = args.v13_baseline.resolve()
+    v13_report = read(v13_path)
     report = score(ROOT, args.gold, args.meta, args.round_keys, items_dir=args.items_dir)
     report["items_dir"] = args.items_dir.as_posix()
     report["baseline"] = {
@@ -1972,6 +2199,15 @@ def main() -> None:
         "sha256": hashlib.sha256(baseline_path.read_bytes()).hexdigest(),
     }
     report["item_metric_comparison"] = compare_item_metrics(baseline_report, report)
+    report["metric_comparisons"] = {
+        "v1.2": compare_score_metrics(baseline_report, report),
+        "v1.3": compare_score_metrics(v13_report, report),
+    }
+    report["v13_baseline"] = {
+        "path": v13_path.relative_to(ROOT).as_posix() if v13_path.is_relative_to(ROOT)
+        else v13_path.as_posix(),
+        "sha256": hashlib.sha256(v13_path.read_bytes()).hexdigest(),
+    }
     report["comparison"] = {
         version: {
             "stages": {
@@ -1985,7 +2221,9 @@ def main() -> None:
             },
             "loss_map": source["loss_map"],
         }
-        for version, source in (("v1.2", baseline_report), ("v1.3", report))
+        for version, source in (
+            ("v1.2", baseline_report), ("v1.3", v13_report), ("v1.4", report),
+        )
     }
     args.output_dir.mkdir(parents=True, exist_ok=True)
     baseline = args.output_dir / "development-before.json"
@@ -1998,12 +2236,12 @@ def main() -> None:
                 {"path": path, "before": before, "after": after, "equal": before == after}
             )
         report["development_hashes"] = hashes
-    (args.output_dir / "gold-v1.3.json").write_text(
+    (args.output_dir / "gold-v1.4.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
-    (args.output_dir / "gold-v1.3.md").write_text(markdown(report), encoding="utf-8")
+    (args.output_dir / "gold-v1.4.md").write_text(markdown(report), encoding="utf-8")
     columns = list(dict.fromkeys(k for row in report["cases"] for k in row))
-    csv_path = args.output_dir / "gold-v1.3.cases.csv"
+    csv_path = args.output_dir / "gold-v1.4.cases.csv"
     with csv_path.open("w", encoding="utf-8-sig", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=columns)
         writer.writeheader()
