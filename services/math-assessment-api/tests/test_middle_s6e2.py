@@ -372,7 +372,7 @@ def test_merge_skips_ai_task_already_held_by_same_title_rule_item():
             "locator": {"start": 0, "end": 10},
             "fields": {"title": {"value": "탐구  보고서"}}}
     rules = {"items": [rule]}
-    task = _ai_task("a", "탐구 보고서", "overview", 100, "t1")
+    task = _ai_task("a", "탐구 보고서", "detail", 100, "t1")
     result = ai.merge_report(rules, {"kept": [task]})
     assert result["ai_relations"]["agrees_by_title"][0]["rule_item_ids"] == ["rule-1"]
     assert result["ai_relations"]["new"] == []
@@ -395,3 +395,18 @@ def test_merge_skips_ai_task_whose_evidence_touches_one_confirmed_item():
     other = {**rule, "item_id": "rule-2", "locator": {"start": 505, "end": 600}}
     result = ai.merge_report({"items": [rule, other]}, {"kept": [task]})
     assert result["ai_relations"]["agrees_by_evidence"] == []
+
+
+def test_overview_only_ai_task_is_held_when_cell_has_other_candidates():
+    rule = {"item_id": "rule-1", "document_id": "doc-rule", "child_id": None,
+            "school_code": "S1", "grade": 1, "semester": 1,
+            "candidate_role": "performance", "extraction_status": "review",
+            "locator": {"start": 900, "end": 950},
+            "fields": {"title": {"value": "구체 과제 문장"}}}
+    task = _ai_task("a", "영역 이름", "overview", 0, "t1")
+    relations = ai.merge_report({"items": [rule]}, {"kept": [task]})["ai_relations"]
+    assert relations["new"] == []
+    assert relations["overview_only_held"][0]["rule_item_ids"] == ["rule-1"]
+    # An empty cell keeps the overview read as a new candidate.
+    relations = ai.merge_report({"items": []}, {"kept": [task]})["ai_relations"]
+    assert len(relations["new"]) == 1

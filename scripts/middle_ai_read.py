@@ -944,7 +944,7 @@ def merge_report(rules: dict, verified: dict) -> dict:
         for item in matches:
             by_rule[item["item_id"]].append(task["ai_task_id"])
     relations = {"agrees": [], "agrees_by_title": [], "agrees_by_evidence": [],
-                 "ai_split_suggested": [],
+                 "overview_only_held": [], "ai_split_suggested": [],
                  "conflict": [], "new": []}
     for item in performance:
         ids = by_rule[item["item_id"]]
@@ -988,6 +988,24 @@ def merge_report(rules: dict, verified: dict) -> dict:
                     "ai_task_id": task["ai_task_id"], "rule_item_ids": sorted(held),
                     "bounded": True})
                 continue
+            # Overview-only reads cannot tell which detailed task they name. If
+            # the school already has another candidate for this grade and
+            # semester (a rule item, or an AI read of a detail table), adding it
+            # risks a duplicate under another title, so it is held, not added.
+            if task["seen_in"] == "overview":
+                same_cell = [item["item_id"] for item in performance if (
+                    task.get("school_code") is not None
+                    and item.get("school_code") == task.get("school_code")
+                    and all(item.get(key) in (None, task[key]) for key in ("grade", "semester")))]
+                detail_reads = [other["ai_task_id"] for other in tasks if (
+                    other is not task and other["seen_in"] in ("detail", "both")
+                    and other.get("school_code") == task.get("school_code")
+                    and (other["grade"], other["semester"]) == (task["grade"], task["semester"]))]
+                if same_cell or detail_reads:
+                    relations["overview_only_held"].append({
+                        "ai_task_id": task["ai_task_id"], "rule_item_ids": same_cell,
+                        "ai_detail_task_ids": detail_reads})
+                    continue
             # A rule item elsewhere (another table or document of the same
             # school) may already hold this task: same scope and same title.
             same_title = [item for item in performance if (
