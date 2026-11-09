@@ -267,13 +267,32 @@ def table_cell(tables, locator):
     containing = [t for t in tables if ai.overlaps(t, locator)]
     if not containing:
         return None, None
-    if len(containing) != 1 or not containing[0]["structure_verified"]:
+    if len(containing) != 1 or not consistent_grid(containing[0]):
         raise ValueError(ALIGNMENT_FAILURE)
     table = containing[0]
     cells = [c for c in table["cells"] if inside(c, locator)]
     if len(cells) != 1:
         raise ValueError(ALIGNMENT_FAILURE)
     return table, cells[0]
+
+
+def consistent_grid(table):
+    """Validate source boundaries independently of the S6 structure gate."""
+    rows, cells = table["rows"], table["cells"]
+    if not rows or not cells:
+        return False
+    occupied = set()
+    for cell in cells:
+        if (cell["rowspan"] < 1 or cell["colspan"] < 1 or cell["col"] < 0
+                or not 0 <= cell["row"] < cell["row"] + cell["rowspan"] <= len(rows)):
+            return False
+        for row in range(cell["row"], cell["row"] + cell["rowspan"]):
+            for col in range(cell["col"], cell["col"] + cell["colspan"]):
+                if (row, col) in occupied:
+                    return False
+                occupied.add((row, col))
+    width = max(c for _, c in occupied) + 1
+    return occupied == {(r, c) for r in range(len(rows)) for c in range(width)}
 
 
 def axes_overlap(left, right, axis):
@@ -284,22 +303,67 @@ def axes_overlap(left, right, axis):
 
 def literal_orientation(table, title):
     """An explicit title-label axis can prove ownership without an S6 task gate."""
-    title_roles = {"title", "task", "assessment_area", "task_no"}
+    title_roles = items.TITLE_ROLES
     row = table["rows"][title["row"]]
     labels_left = [c for c in row if c["col"] < title["col"]
                    and items.label_role(c["text"]) in title_roles]
-    column_proof = bool(labels_left and sum(
-        not items.label_role(c["text"]) and bool(c["text"])
-        for c in row if c["col"] > labels_left[-1]["col"]) > 1)
+    column_proof = bool(labels_left and len(title_row_values(table, labels_left[-1])) > 1)
     labels_above = [c for c in table["cells"] if c["row"] < title["row"]
                     and axes_overlap(c, title, "col")
                     and items.label_role(c["text"]) in title_roles]
     row_proof = bool(labels_above and any(
-        c["row"] == labels_above[-1]["row"] and c["col"] > labels_above[-1]["col"]
-        and items.label_role(c["text"]) in ASK_FIELDS for c in table["cells"]))
+        c["row"] == labels_above[-1]["row"] and c is not labels_above[-1]
+        and items.label_role(c["text"]) not in title_roles | {None}
+        for c in table["cells"]))
     if column_proof != row_proof:
         return "column" if column_proof else "row"
     return None
+
+
+def title_row_values(table, label):
+    row = table["rows"][label["row"]]
+    stop = min((c["col"] for c in row if c["col"] > label["col"]
+                and items.label_role(c["text"])), default=float("inf"))
+    return [c for c in row if label["col"] < c["col"] < stop
+            and c["text"] and not items.label_role(c["text"])]
+
+
+def detail_table(table, item, local, text, *, continuation=False):
+    table_text = comparison_text(text[table["start"]:table["end"]])
+    if any(comparison_text(ai.rule_title(other)) in table_text
+           for other in local if comparison_text(ai.rule_title(other))
+           and comparison_text(ai.rule_title(other)) != comparison_text(ai.rule_title(item))):
+        return False
+    labels = [c for c in table["cells"] if items.label_role(c["text"]) in items.TITLE_ROLES]
+    if continuation:
+        return not labels
+    own_title = comparison_text(ai.rule_title(item))
+    if not own_title or own_title not in table_text:
+        return False
+    for label in labels:
+        candidates = title_row_values(table, label)
+        if len(candidates) > 1:
+            return False
+        # A title column is a header axis only when its row has other fields.
+        if any(items.label_role(c["text"]) not in items.TITLE_ROLES | {None}
+               for c in table["rows"][label["row"]]):
+            candidates = [c for c in table["cells"] if c["row"] > label["row"]
+                          and axes_overlap(c, label, "col") and c["text"]
+                          and not items.label_role(c["text"])]
+            if len(candidates) > 1:
+                return False
+    return True
+
+
+def geometry_title(table, item, tables):
+    """Find the same literal task in this table, including repeated overviews."""
+    title_table, title = table_cell(tables, title_locator(item))
+    if title_table is table:
+        return title
+    key = comparison_text(ai.rule_title(item))
+    candidates = [c for c in table["cells"] if key and key in comparison_text(c["text"])
+                  and literal_orientation(table, c)]
+    return candidates[0] if len(candidates) == 1 else None
 
 
 def alignment(item, locator, tables, structures, known, text):
@@ -313,21 +377,10 @@ def alignment(item, locator, tables, structures, known, text):
                 for r in other.get("owned_ranges", [other["locator"]])):
             return "prose", None
         raise ValueError(ALIGNMENT_FAILURE)
-    _, title = table_cell(tables, title_locator(item))
-    # Only explicit title claims establish orientation. A form's full-table
-    # rectangle must never license a neighboring task's row/column.
-    matches = matching_structures(item, structures)
-    orientations = {s["layout"] for s in matches}
-    table_text = ai.normalize(text[table["start"]:table["end"]])
-    other_titles = [i for i in local if ai.normalize(ai.rule_title(i))
-                    and ai.normalize(ai.rule_title(i)) in table_text]
-    literal_layout = literal_orientation(table, title) if (
-        title and title["table"] == cell["table"]) else None
-    if literal_layout:
-        orientations = {literal_layout}
-    if title and title["table"] == cell["table"] and len(orientations) == 1:
-        layout = next(iter(orientations))
-        axis = "col" if layout == "column" else "row" if layout == "row" else None
+    title = geometry_title(table, item, tables)
+    layout = literal_orientation(table, title) if title else None
+    if layout:
+        axis = "col" if layout == "column" else "row"
         if axis and axes_overlap(title, cell, axis):
             if layout == "column":
                 title_rows = [c["row"] for c in table["cells"]
@@ -336,40 +389,91 @@ def alignment(item, locator, tables, structures, known, text):
                 # A repeated title row starts another task block even when
                 # the new title has not been discovered by either extractor.
                 preceding = [r for r in title_rows if r <= cell["row"]]
-                if cell["row"] < title["row"] or (
+                if (cell["row"] <= title["row"] and cell is not title) or (
                         preceding and max(preceding) > title["row"]):
                     raise ValueError(ALIGNMENT_FAILURE)
+                peers = [c for c in table["rows"][title["row"]]
+                         if c["col"] != title["col"] and c["text"]
+                         and not items.label_role(c["text"])]
+            else:
+                peers = [c for c in table["cells"] if c["row"] != title["row"]
+                         and axes_overlap(c, title, "col") and c["text"]
+                         and not items.label_role(c["text"])]
             span_key = "colspan" if axis == "col" else "rowspan"
-            crosses = any(
-                (other_cell := table_cell(tables, title_locator(other))[1]) is not None
-                and other_cell["table"] == cell["table"]
-                and axes_overlap(cell, other_cell, axis) for other in other_titles)
+            crosses = any(axes_overlap(cell, peer, axis) for peer in peers)
             if cell[span_key] > 1 and crosses:
                 return "shared_span", cell
             if not crosses:
                 return "same_column" if axis == "col" else "same_row", cell
-    own_title = ai.normalize(ai.rule_title(item)) in table_text
-    linked = len(matches) == 1 and any(link["table"] == table["table"]
-                                      for link in matches[0]["links"])
-    if not other_titles and (own_title or linked):
-        # Multi-task row/column tables require axis proof even if only one
-        # task has been discovered so far. own_table is a detail-form proof.
-        table_layouts = {s["layout"] for s in structures if s["table"] == table["table"]}
-        cell_owners = [s for s in structures if any(
-            c["start"] == cell["start"] and c["end"] == cell["end"] for c in s["cells"])]
-        unique_owner = len(matches) == 1 and len(cell_owners) == 1 and cell_owners[0] is matches[0]
-        if unique_owner and (linked or table_layouts == {"form"}):
-            return "own_table", cell
+        # A proved task axis cannot fall back to whole-table ownership.
+        raise ValueError(ALIGNMENT_FAILURE)
+    if detail_table(table, item, local, text):
+        return "own_table", cell
+    preceding = next((t for t in reversed(tables) if t["end"] <= table["start"]), None)
+    if (preceding and consistent_grid(preceding)
+            and detail_table(preceding, item, local, text)
+            and detail_table(table, item, local, text, continuation=True)):
+        return "own_table", cell
     raise ValueError(ALIGNMENT_FAILURE)
 
 
 def numeric_in(value, quote):
     if type(value) not in (int, float) or value < 0:
         return False
-    # Compare complete numeric tokens. 10 must not match 100, and 1 must
-    # not match 1.0 unless that is the exact spelling of the given number.
-    spelling = str(value)
-    return bool(re.search(r"(?<![\d.])" + re.escape(spelling) + r"(?![\d.])", quote))
+    return any(float(m[0]) == value for m in re.finditer(
+        r"(?<![\d.])\d+(?:\.\d+)?(?![\d.])", quote))
+
+
+def comparison_text(value):
+    return re.sub(r"\s+", "", re.sub(r"[‧･ㆍ・⋅•]", "·", ai.normalize(items.visible(value))))
+
+
+def value_from_cells(name, observations, source_cells, conversion):
+    """Read only the geometrically owned cells selected by the citations."""
+    if name == "standards":
+        return items.standard_values(copy.deepcopy(observations))["value"]
+    if name == "method":
+        result = items.method_values(copy.deepcopy(observations))
+        return [re.sub(r"[‧･ㆍ・⋅•]", "·", v) for v in result["value"]
+                if rules.method_literal(v)]
+    if name == "sub_scores":
+        structure = {"layout": "form", "cells": source_cells,
+                     "claims": defaultdict(list)}
+        for cell in source_cells:
+            # The inline grammar is safe for a complete single-line pair.
+            # A fragment after an HTML break cannot stand for the element name.
+            if re.fullmatch(r"[^<>\r\n]+?\s*\(\s*\d+(?:\.\d+)?\s*점?\s*\)", cell["raw"]):
+                structure["claims"]["elements"].append((cell, None))
+        entries = rules.enrich_claims(structure)
+        values = rules.sub_score_field(entries, conversion)["value"]
+        names = {comparison_text(re.sub(
+            r"\s*\(\s*\d+(?:\.\d+)?\s*점?\s*\)\s*$", "", obs["text"]))
+            for obs in observations}
+        # The legacy inline reader can return just the suffix after <br>.
+        # Such a fragment is not a complete element read from the chosen cell.
+        if any(comparison_text(v["element"]) not in names for v in values):
+            return None
+        return values
+    result = items.field_value(name, copy.deepcopy(observations))
+    if result.get("status") == "conflict":
+        return None
+    value = result["value"]
+    if name == "task_text" and value and not isinstance(value, list):
+        value = [value]
+    return value
+
+
+def field_header(table, cell, name):
+    roles = {name}
+    if name in {"score", "weight"}:
+        roles.add("score_weight")
+    left = [c for c in table["cells"] if c["col"] < cell["col"]
+            and axes_overlap(c, cell, "row") and items.label_role(c["text"]) in roles]
+    above = [c for c in table["cells"] if c["row"] < cell["row"]
+             and axes_overlap(c, cell, "col") and items.label_role(c["text"]) in roles]
+    if left:
+        return max(left, key=lambda c: c["col"])
+    return max(above, key=lambda c: c["row"]) if above else None
 
 
 def check_value(name, value, quotes):
@@ -417,7 +521,7 @@ def verify_field(item, name, answer, target, conversion, tables, structures, kno
         raise ValueError("AI 항목 읽기: 인용 없음")
     text = conversion["text"]
     _, starts = ai.line_index(text)
-    observations, cells = [], []
+    observations, cells, source_observations, source_cells = [], [], [], []
     for citation in citations:
         if not isinstance(citation, dict):
             raise ValueError("AI 항목 읽기: 인용 형식 오류")
@@ -463,20 +567,55 @@ def verify_field(item, name, answer, target, conversion, tables, structures, kno
                              "owner_item_id": item["item_id"], "ai_alignment": align,
                              "line_start": citation["line_start"],
                              "line_end": citation["line_end"]})
-    try:
-        check_value(name, answer.get("value"), [e["raw"] for e in observations])
-    except ValueError as error:
-        error.cells = cells
-        raise
-    value = answer.get("value")
-    if name == "rubric":
-        value = "\n".join(e["text"] for e in observations)
+        if cell and cell not in source_cells:
+            source_cells.append(cell)
+            table = next(t for t in tables if t["table"] == cell["table"])
+            header = field_header(table, cell, name)
+            obs = items.evidence(cell, conversion, header)
+            if header and items.label_role(header["text"]) == "score_weight":
+                obs["compound_numeric"] = True
+            obs.update(owner_item_id=item["item_id"], ai_alignment=align,
+                       citation=copy.deepcopy(citation))
+            source_observations.append(obs)
+        elif cell is None:
+            source_observations.append({**observations[-1], "text": items.visible(quote)})
+    extraction_cells = source_cells
     if name == "sub_scores":
-        value = [{**v, "evidence": [e for e in observations
-                  if ai.normalize(v["element"]) in e["text"]
-                  and numeric_in(v["score"], e["raw"])]} for v in value]
-    return {"value": value, "status": "present", "reason": "", "evidence": observations,
-            "fill_method": "ai_read"}, cells
+        # Label cells supply grammar only. Every data cell still needs its own
+        # accepted citation, including a separately printed allocation number.
+        source_tables = {c["table"] for c in source_cells}
+        headers = [c for t in tables if t["table"] in source_tables for c in t["cells"]
+                   if items.label_role(c["text"]) in {"elements", "points", "score", "rubric"}
+                   and c not in source_cells]
+        extraction_cells = [*source_cells, *headers]
+    value = value_from_cells(name, source_observations, extraction_cells, conversion)
+    code_value = value not in (None, "", [])
+    if not code_value:
+        try:
+            check_value(name, answer.get("value"), [e["raw"] for e in observations])
+        except ValueError as error:
+            error.cells = cells
+            raise
+        value = answer.get("value")
+    evidence = source_observations if code_value else observations
+    if name == "sub_scores":
+        allocations = []
+        for allocation in value:
+            if code_value:
+                supports = [e for e in evidence if any(
+                    ai.overlaps(e["locator"], r["locator"])
+                    for r in allocation.get("evidence", []))]
+            else:
+                supports = [e for e in evidence if ai.normalize(allocation["element"]) in e["text"]
+                            and numeric_in(allocation["score"], e["raw"])]
+            allocations.append({**allocation, "evidence": supports})
+        value = allocations
+    field = {"value": value, "status": "present", "reason": "", "evidence": evidence,
+             "fill_method": "ai_read",
+             "value_source": "rule_from_cell" if code_value else "ai_literal"}
+    if code_value and name != "rubric" and comparable(value) != comparable(answer.get("value")):
+        field["ai_value_mismatch"] = {"code_value": value, "ai_value": answer.get("value")}
+    return field, cells
 
 
 def reject_collisions(entries):
@@ -559,6 +698,34 @@ def apply_entries(base, entries):
     return result
 
 
+def verify_input_binding(source_path, stage, output, *, shadow=False):
+    raw = ai.read_text(source_path)
+    if stage["input_sha256"] == ai.sha(raw):
+        return
+    backup = source_path.with_name(f"{source_path.stem}.prev-s6e3.json")
+    previous = output / "verified.json"
+    if not shadow and backup.exists() and previous.exists():
+        baseline = ai.read_text(backup)
+        verified = ai.read_json(previous)
+        if (ai.sha(baseline) == stage["input_sha256"]
+                and verified["stage_sha256"] == ai.sha(ai.read_text(output / "rule.json"))):
+            before, current = json.loads(baseline), json.loads(raw)
+            def rule_bytes(value):
+                return [value[s:e] for i, s, e in item_slices(value) if not is_ai(i)]
+
+            def metadata(report):
+                return {k: v for k, v in report.items()
+                        if k not in {"items", "ai_fields_summary"}}
+            if (rule_bytes(baseline) == rule_bytes(raw)
+                    and metadata(before) == metadata(current)
+                    and [i["item_id"] for i in before["items"]]
+                    == [i["item_id"] for i in current["items"]]
+                    and (verified["input_sha256"] == ai.sha(raw)
+                         or [i for i in current["items"] if is_ai(i)] == verified["items"])):
+                return
+    raise ValueError("필드 입력 변경됨. 대상부터 다시 생성해야 함")
+
+
 def fields_verify(root, round_key, *, shadow=False):
     output = directory(root, round_key, shadow)
     documents, sections = load_sources(root, round_key)
@@ -572,8 +739,7 @@ def fields_verify(root, round_key, *, shadow=False):
     else:
         stage = ai.read_json(output / "rule.json")
         base = stage["items"]
-    if stage["input_sha256"] != ai.sha(ai.read_text(source_path)):
-        raise ValueError("필드 입력 변경됨. 대상부터 다시 생성해야 함")
+    verify_input_binding(source_path, stage, output, shadow=shadow)
     selected = {i["item_id"]: i for i in base}
     cache, entries, bindings = {}, [], {}
     for target in ai.load_targets(output):
@@ -624,7 +790,7 @@ def fields_verify(root, round_key, *, shadow=False):
     reject_collisions(entries)
     enriched = apply_entries(base, entries)
     report = {"round": round_key, "version": VERSION, "shadow": shadow,
-              "input_sha256": stage["input_sha256"],
+              "input_sha256": ai.sha(ai.read_text(source_path)),
               "stage_sha256": ai.sha(ai.read_text(
                   output / ("sample.json" if shadow else "rule.json"))),
               "targets_sha256": ai.sha(ai.read_text(output / "targets.jsonl")),
@@ -835,10 +1001,106 @@ def fields_shadow(root, round_key, sample=36, seed=SHADOW_SEED):
 
 def comparable(value):
     if isinstance(value, list):
-        if all(isinstance(v, dict) for v in value):
-            return sorted((v.get("element"), v.get("score")) for v in value)
-        return sorted(ai.normalize(str(v)) for v in value)
-    return ai.normalize(str(value)) if isinstance(value, str) else value
+        if all(isinstance(v, dict) and "element" in v and "score" in v for v in value):
+            return sorted(((comparable(v["element"]), comparable(v["score"])) for v in value),
+                          key=lambda v: json.dumps(v, sort_keys=True))
+        values = sorted((comparable(v) for v in value), key=lambda v: json.dumps(v, sort_keys=True))
+        return values[0] if len(values) == 1 else values
+    if isinstance(value, dict):
+        return {k: comparable(v) for k, v in value.items()}
+    if isinstance(value, bool):
+        return ("boolean", value)
+    return comparison_text(value) if isinstance(value, str) else value
+
+
+def rubric_overlap(rule, field):
+    return bool(rule["evidence"] and field["evidence"]) and all(
+        any(ai.overlaps(r["locator"], e["locator"]) for r in rule["evidence"])
+        for e in field["evidence"])
+
+
+def mutate_cell_claims(item, locator, tables, structures, known, text):
+    """Exercise ownership directly so value rejection cannot mask leakage."""
+    table, cell = table_cell(tables, locator)
+    if table is None:
+        return []
+    title = geometry_title(table, item, tables)
+    if title is None:
+        return []
+    layout = literal_orientation(table, title)
+    if layout is None:
+        return []  # A single-task detail form has no neighboring task axis.
+    axis = "col" if layout == "column" else "row"
+    cross_axis = "row" if axis == "col" else "col"
+    peers = [c for c in table["cells"] if c is not title and c["text"]
+             and not items.label_role(c["text"])
+             and (c["row"] == title["row"] if axis == "col"
+                  else axes_overlap(c, title, "col"))]
+    neighbors = [c for c in table["cells"] if c is not cell and c["text"]
+                 and axes_overlap(c, cell, cross_axis)
+                 and any(axes_overlap(c, p, axis) for p in peers)]
+    results = []
+    for neighbor in neighbors:
+        mutated = {"start": neighbor["start"], "end": neighbor["end"]}
+        try:
+            align, _ = alignment(item, mutated, tables, structures, known, text)
+            result = {"accepted": True, "alignment": align, "reason": ""}
+        except ValueError as error:
+            result = {"accepted": False, "alignment": None, "reason": str(error)}
+        results.append({"original": locator, "mutated": mutated,
+                        "quote": neighbor["raw"], **result})
+    return results
+
+
+def fields_mutation_check(root, round_key):
+    documents, sections = load_sources(root, round_key)
+    mutations, coverage = [], Counter()
+    cache = {}
+    for shadow in (False, True):
+        output = directory(root, round_key, shadow)
+        verified = ai.read_json(output / "verified.json")
+        source = "items" if shadow else "items_ai"
+        known = ai.read_json(root / f"data/derived/{source}/{round_key}.json")["items"]
+        selected = {i["item_id"]: i for i in verified["items"]}
+        for entry in verified["entries"]:
+            if not entry.get("field") or entry["field"]["status"] != "present":
+                continue
+            item = selected[entry["item_id"]]
+            doc = item["document_id"]
+            if doc not in cache:
+                cache[doc] = ai.conversion_for(root, documents[doc])
+            conversion = cache[doc]
+            section = scope_for(item, sections)
+            tables, structures = structures_for(conversion, section) if section else (
+                items.source_tables(conversion["text"]), [])
+            for observation in entry["field"]["evidence"]:
+                align = observation["ai_alignment"]
+                coverage[align] += 1
+                results = mutate_cell_claims(item, observation["locator"], tables, structures,
+                                             known, conversion["text"])
+                if not results:
+                    coverage["without_neighbor"] += 1
+                mutations.extend({"shadow": shadow, "item_id": item["item_id"],
+                                  "school": item.get("school"), "title": ai.rule_title(item),
+                                  "field": entry["name"], "target_id": entry["target_id"], **r}
+                                 for r in results)
+    shared = sum(m["accepted"] and m["alignment"] == "shared_span" for m in mutations)
+    leaked = sum(m["accepted"] and m["alignment"] != "shared_span" for m in mutations)
+    report = {"round": round_key, "calls": 0, "coverage": dict(coverage),
+              "mutations": len(mutations), "rejected": sum(not m["accepted"] for m in mutations),
+              "shared_span_accepted": shared, "original_shared_span": coverage["shared_span"],
+              "neighbor_accepted": leaked, "results": mutations}
+    output = directory(root, round_key)
+    ai.save_json(output / "mutation-check.json", report)
+    lines = ["# 표 소속 변이 시험", "", "값 대조에 앞서 소속 판정 자체를 검사한다.", "",
+             "| 변이 | 버림 | 이웃 칸 수용 | 변이 병합 수용 | 원 인용 병합 수용 |",
+             "|---:|---:|---:|---:|---:|",
+             f"| {len(mutations)} | {report['rejected']} | {leaked} | {shared}"
+             f" | {report['original_shared_span']} |", "",
+             "## 수용된 병합 칸과 이웃 칸", ""]
+    lines.extend(json.dumps(m, ensure_ascii=False) for m in mutations if m["accepted"])
+    ai.write_text(output / "mutation-check.md", "\n".join(lines) + "\n")
+    return {k: v for k, v in report.items() if k != "results"}
 
 
 def shadow_compare(root, round_key, verified):
@@ -858,8 +1120,7 @@ def shadow_compare(root, round_key, verified):
             rp, ap = rule["status"] == "present", field["status"] == "present"
             equal = comparable(rule["value"]) == comparable(field["value"])
             if name == "rubric" and rp and ap:
-                equal = all(any(inside(r["locator"], e["locator"])
-                                for r in rule["evidence"]) for e in field["evidence"])
+                equal = rubric_overlap(rule, field)
             category = ("버림" if rejected else "일치" if rp and ap and equal
                         else "불일치" if rp and ap else "규칙만" if rp
                         else "AI만" if ap else "일치")
@@ -886,15 +1147,18 @@ def shadow_compare(root, round_key, verified):
                                     "quote": [e["raw"] for e in field["evidence"]],
                                     "alignment": [e["ai_alignment"] for e in field["evidence"]],
                                     "reason": field["reason"]})
+            if rp and not ap and not rejected:
+                differences.append({**common, "category": "규칙만", "ai_value": None,
+                                    "quote": [], "alignment": [], "reason": field["reason"]})
     report = {"round": round_key, "counts": {n: dict(c) for n, c in counts.items()},
               "differences": differences, "rule_is_gold": False}
     ai.save_json(directory(root, round_key) / "shadow-comparison.json", report)
     lines = ["# 그림자 비교", "", "규칙과 AI의 차이를 기록한다. 규칙 값도 총괄 검토 대상이다.",
-             "", "| 학교 | 제목 | 필드 | 규칙 값 | AI 값 | 인용 | 정렬 | 사유 |",
-             "|---|---|---|---|---|---|---|---|"]
+             "", "| 분류 | 학교 | 제목 | 필드 | 규칙 값 | AI 값 | 인용 | 정렬 | 사유 |",
+             "|---|---|---|---|---|---|---|---|---|"]
     for difference in differences:
-        cells = [difference[k] for k in ("school", "title", "field", "rule_value", "ai_value",
-                                         "quote", "alignment", "reason")]
+        cells = [difference[k] for k in ("category", "school", "title", "field", "rule_value",
+                                         "ai_value", "quote", "alignment", "reason")]
         lines.append("| " + " | ".join(json.dumps(c, ensure_ascii=False).replace("|", "\\|")
                                         .replace("\n", "<br>") for c in cells) + " |")
     ai.write_text(directory(root, round_key) / "shadow-comparison.md", "\n".join(lines) + "\n")
@@ -903,7 +1167,7 @@ def shadow_compare(root, round_key, verified):
 
 def add_commands(commands):
     for name in ("fields-rule", "fields-targets", "fields-run", "fields-verify", "fields-merge",
-                 "fields-shadow"):
+                 "fields-shadow", "fields-mutation-check"):
         command = commands.add_parser(name)
         command.add_argument("--round-key", required=True)
         if name in {"fields-run", "fields-verify"}:
@@ -928,5 +1192,7 @@ def dispatch(root, args):
         return fields_verify(root, args.round_key, shadow=args.shadow)
     if args.command == "fields-shadow":
         return fields_shadow(root, args.round_key, args.sample, args.seed)
+    if args.command == "fields-mutation-check":
+        return fields_mutation_check(root, args.round_key)
     return {"fields-rule": fields_rule, "fields-targets": fields_targets,
             "fields-merge": fields_merge}[args.command](root, args.round_key)

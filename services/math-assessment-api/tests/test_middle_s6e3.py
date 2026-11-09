@@ -361,7 +361,9 @@ def test_real_entry_points_ai_fields_and_rubric_merge(directory):
     merged = ai.read_json(f.input_path(directory, ROUND))
     item = merged["items"][0]
     assert item["fields"]["score"]["value"] == 100
-    assert item["fields"]["standards"]["status"] == "unconfirmed"
+    # The cited cell now supplies the value even when the AI gives a wrong code.
+    assert item["fields"]["standards"]["value"] == ["[9과01-01]"]
+    assert item["fields"]["standards"]["ai_value_mismatch"]["ai_value"] == ["[9과99-99]"]
     assert item["fields"]["weight"]["reason"] == "AI: 원문에 없다고 답함(미검증)"
     assert item["field_locations"]["rubric"]
     assert item["fields"]["rubric"]["evidence"][0]["ai_alignment"] == "same_column"
@@ -419,7 +421,9 @@ def test_shadow_generation_masks_rule_fields_and_reports_every_discard(directory
     assert report["counts"]["score"]["버림"] == 1
     comparison = ai.read_json(f.directory(directory, ROUND) / "shadow-comparison.json")
     assert comparison["rule_is_gold"] is False
-    assert comparison["differences"][0]["quote"] == ["80점"]
+    discarded = next(d for d in comparison["differences"] if d["category"] == "버림")
+    assert discarded["quote"] == ["80점"]
+    assert any(d["category"] == "규칙만" for d in comparison["differences"])
 
 
 def test_linked_detail_rubric_and_rule_reuse():
@@ -480,3 +484,182 @@ def test_rule_reuse_partial_section_with_table_header_outside():
     assert detail["matches"] == 1
     assert enriched["fields"]["score"]["fill_method"] == "rule_reuse"
     assert enriched["fields"]["score"]["value"] == 100
+
+
+@pytest.mark.parametrize("row_layout", [False, True])
+def test_geometry_without_rule_structures_and_structure_gate(row_layout):
+    text = ("<table>\n<tr><th>평가 영역</th><th>평가 방법</th><th>만점</th></tr>\n"
+            "<tr><td>온도 측정하기</td><td>실험</td><td>100점</td></tr>\n"
+            "<tr><td>생태 지도 만들기</td><td>발표</td><td>80점</td></tr>\n</table>"
+            if row_layout else column_text())
+    conversion, target, section, known, tables, _ = setup_source(text)
+    for table in tables:
+        table["structure_verified"] = False
+    source = conversion, target, section, known, tables, []
+    field, _ = verify(source, "method", "실험", ["실험"])
+    assert field["evidence"][0]["ai_alignment"] == ("same_row" if row_layout else "same_column")
+    assert field["value_source"] == "rule_from_cell"
+    with pytest.raises(ValueError, match="표 위치"):
+        verify(source, "method", "발표", ["발표"])
+    if not row_layout:
+        first, _ = verify(source, "assessment_area", "온도 측정하기", "온도 측정하기")
+        assert first["evidence"][0]["locator"]["col"] == 1
+
+
+def test_inconsistent_grid_is_rejected_even_when_structure_gate_passes():
+    source = setup_source(column_text().replace("<td>80점</td>", ""))
+    assert source[4][0]["structure_verified"]
+    assert not f.consistent_grid(source[4][0])
+    with pytest.raises(ValueError, match="표 위치"):
+        verify(source, "method", "실험", ["실험"])
+
+
+def test_neighboring_detail_continuation_only_one_table_without_foreign_titles():
+    detail = ("<table>\n<tr><td>수행과제</td><td>온도 측정하기</td></tr>\n"
+              "<tr><td>평가 방법</td><td>실험</td></tr>\n</table>\n")
+    continuation = ("<table>\n<tr><td>채점기준</td><td>변인을 통제한다</td></tr>\n</table>\n")
+    source = setup_source(detail + continuation + continuation.replace("통제한다", "설명한다")
+                          + "생태 지도 만들기")
+    field, _ = verify(source, "rubric", "변인을 통제한다", None)
+    assert field["evidence"][0]["ai_alignment"] == "own_table"
+    with pytest.raises(ValueError, match="표 위치"):
+        verify(source, "rubric", "변인을 설명한다", None)
+    for changed in (continuation.replace("변인을 통제한다", "생태 지도 만들기 변인을 통제한다"),
+                    continuation.replace("채점기준", "평가 과제")):
+        bad = setup_source(detail + changed + "생태 지도 만들기")
+        with pytest.raises(ValueError, match="표 위치"):
+            verify(bad, "rubric", "변인을 통제한다", None)
+
+
+def test_cell_values_override_ai_and_expand_ranges():
+    source = setup_source(column_text().replace("[9과01-01]", "[9과01-01]~[9과01-03]"))
+    score, _ = verify(source, "score", "100점", 10)
+    assert score["value"] == 100
+    assert score["value_source"] == "rule_from_cell"
+    assert score["ai_value_mismatch"] == {"code_value": 100, "ai_value": 10}
+    standards, _ = verify(source, "standards", "[9과01-01]~[9과01-03]",
+                          ["[9과01-01]", "[9과01-03]"])
+    assert standards["value"] == ["[9과01-01]", "[9과01-02]", "[9과01-03]"]
+    assert standards["ai_value_mismatch"]["code_value"] == standards["value"]
+    # Selecting only the numeric token still reads the entire chosen cell.
+    partial, _ = verify(source, "score", "100", 10)
+    assert partial["value"] == 100
+    malformed_ai, _ = verify(source, "score", "100점", [True, 1, {"bad": "shape"}])
+    assert malformed_ai["value"] == 100
+    assert malformed_ai["ai_value_mismatch"]["ai_value"] == [True, 1, {"bad": "shape"}]
+
+
+def test_method_text_numeric_and_allocation_normalization():
+    source = setup_source(column_text().replace("<td>실험</td>", "<td>서‧논술형 평가</td>"))
+    method, _ = verify(source, "method", "서‧논술형 평가", ["서·논술형평가"])
+    assert method["value"] == ["서·논술형 평가"]
+    assert "ai_value_mismatch" not in method
+    source = setup_source(column_text().replace("100점", "관찰(10점)"))
+    allocation, _ = verify(source, "sub_scores", "관찰(10점)", [{"element": "관찰", "score": 5}])
+    assert allocation["value_source"] == "rule_from_cell"
+    assert allocation["value"][0]["score"] == 10
+    assert f.comparable(["서‧논술형 평가<br> "]) == f.comparable("서·논술형평가")
+    assert f.comparable(10) == f.comparable(10.0)
+    f.check_value("score", 10, ["10.0점"])
+    fallback, _ = verify(setup_source(column_text().replace("100점", "관찰 10점")),
+                          "sub_scores", "관찰 10점", [{"element": "관찰", "score": 10}])
+    assert fallback["value_source"] == "ai_literal"
+    multiline_text = ("<table>\n<tr><td>수행과제</td><td>온도 측정하기</td></tr>\n"
+                      "<tr><td>평가요소</td><td>배점</td></tr>\n"
+                      "<tr><td>관찰<br>기록(10점)</td><td>10</td></tr>\n</table>\n생태 지도 만들기")
+    multiline, _ = verify(setup_source(multiline_text),
+                           "sub_scores", "관찰<br>기록(10점)",
+                           [{"element": "관찰<br>기록", "score": 10}])
+    assert multiline["value_source"] == "ai_literal"
+    assert multiline["value"][0]["element"] == "관찰<br>기록"
+
+
+def test_rubric_comparison_uses_overlapping_locations():
+    def field(start, end, value):
+        return {"value": value, "status": "present", "reason": "",
+                "evidence": [{"locator": {"start": start, "end": end},
+                              "raw": value, "ai_alignment": "own_table"}]}
+    assert f.rubric_overlap(field(10, 20, "규칙"), field(19, 30, "다른 문자열"))
+    assert not f.rubric_overlap(field(10, 20, "같음"), field(20, 30, "같음"))
+
+
+def test_mutation_function_rejects_neighbor_columns_and_rows():
+    for text in (column_text(),
+                 "<table>\n<tr><th>평가 영역</th><th>평가 방법</th></tr>\n"
+                 "<tr><td>온도 측정하기</td><td>실험</td></tr>\n"
+                 "<tr><td>생태 지도 만들기</td><td>발표</td></tr>\n</table>"):
+        source = setup_source(text)
+        conversion, _, _, known, tables, structures = source
+        field, _ = verify(source, "method", "실험", ["실험"])
+        results = f.mutate_cell_claims(known[0], field["evidence"][0]["locator"], tables,
+                                       structures, known, conversion["text"])
+        assert results and all(not r["accepted"] for r in results)
+
+
+def test_repeated_verification_after_merge_preserves_saved_targets(directory):
+    write_fixture(directory)
+    f.fields_rule(directory, ROUND)
+    f.fields_targets(directory, ROUND)
+    output = f.directory(directory, ROUND)
+    targets = (output / "targets.jsonl").read_bytes()
+    for _ in range(2):
+        f.fields_verify(directory, ROUND)
+        f.fields_merge(directory, ROUND)
+    assert (output / "targets.jsonl").read_bytes() == targets
+    raw = ai.read_json(f.input_path(directory, ROUND))
+    raw["ai_relations"] = {"changed": True}
+    ai.save_json(f.input_path(directory, ROUND), raw)
+    with pytest.raises(ValueError, match="입력 변경"):
+        f.fields_verify(directory, ROUND)
+
+
+def test_overview_geometry_can_use_repeated_literal_title():
+    overview = column_text()
+    detail = ("<table>\n<tr><td>수행 과제</td><td>온도 측정하기</td></tr>\n"
+              "<tr><td>평가 방법</td><td>관찰</td></tr>\n</table>")
+    source = setup_source(overview + detail)
+    text = source[0]["text"]
+    loc = {"start": text.rindex("온도 측정하기"),
+           "end": text.rindex("온도 측정하기") + len("온도 측정하기")}
+    source[3][0]["fields"]["title"]["evidence"][0]["locator"] = loc
+    field, _ = verify(source, "method", "실험", ["실험"])
+    assert field["evidence"][0]["ai_alignment"] == "same_column"
+
+
+def test_ambiguous_axes_and_unknown_neighbor_candidates_are_rejected():
+    text = ("<table>\n<tr><td>평가 영역</td><td>평가 과제</td><td>평가 방법</td></tr>\n"
+            "<tr><td>평가 영역</td><td>온도 측정하기</td><td>생태 지도 만들기</td></tr>\n"
+            "<tr><td>평가 방법</td><td>실험</td><td>발표</td></tr>\n</table>")
+    source = setup_source(text)
+    assert f.literal_orientation(source[4][0], source[4][0]["rows"][1][1]) is None
+    with pytest.raises(ValueError, match="표 위치"):
+        verify(source, "method", "실험", ["실험"])
+    # A discovered task's absence from the known list never licenses its column.
+    source = setup_source(column_text(), titles=("온도 측정하기",))
+    with pytest.raises(ValueError, match="표 위치"):
+        verify(source, "method", "발표", ["발표"])
+
+
+def test_compound_numeric_cells_use_rule_units():
+    source = setup_source(column_text().replace("<td>만점</td>", "<td>만점(반영비율)</td>")
+                          .replace("100점", "100점 (20%)"))
+    score, _ = verify(source, "score", "100점 (20%)", 10)
+    weight, _ = verify(source, "weight", "100점 (20%)", 10)
+    assert score["value"] == 100 and weight["value"] == 20
+    assert score["value_source"] == weight["value_source"] == "rule_from_cell"
+
+
+def test_mutation_command_writes_both_offline_reports(directory):
+    known = write_fixture(directory, column_text())
+    source = setup_source(column_text())
+    field, cells = verify(source, "method", "실험", ["실험"])
+    ai.save_json(directory / f"data/derived/items/{ROUND}.json", {"items": known})
+    report = {"items": known, "entries": [{"item_id": "task-0", "name": "method",
+                                           "target_id": "window", "field": field, "cells": cells}]}
+    for shadow in (False, True):
+        ai.save_json(f.directory(directory, ROUND, shadow) / "verified.json", report)
+    args = SimpleNamespace(command="fields-mutation-check", round_key=ROUND)
+    result = f.dispatch(directory, args)
+    assert result["calls"] == result["neighbor_accepted"] == 0
+    assert result["mutations"] == result["rejected"] == 2
+    assert (f.directory(directory, ROUND) / "mutation-check.md").exists()
