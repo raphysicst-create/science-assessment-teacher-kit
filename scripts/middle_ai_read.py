@@ -33,7 +33,7 @@ else:
 
 ROOT = Path(__file__).resolve().parents[1]
 CODEX = "C:/Users/USER/AppData/Local/OpenAI/Codex/bin/14b838c1d074ff01/codex.exe"
-VERSION = "middle-ai-read-v1"
+VERSION = "middle-ai-read-v2"
 MAX_CHARS = 60_000
 OVERLAP = 3_000
 TIMEOUT = 900
@@ -374,7 +374,7 @@ def build_targets(root: Path, round_key: str, mode: str = "gaps") -> dict:
     s4 = read_json(root / f"data/derived/segments/{round_key}.json")
     s5 = read_json(root / f"data/derived/subjects/{round_key}.json")
     rules = read_json(root / f"data/derived/items/{round_key}.json") if mode == "gaps" else {}
-    template = read_text(root / "scripts/prompts/middle_ai_read_v1.md")
+    template = read_text(root / "scripts/prompts/middle_ai_read_v2.md")
     targets, excluded, selected = [], [], []
     for document in s4["documents"]:
         identity = document["document_id"]
@@ -817,7 +817,11 @@ def deduplicate(tasks: list[dict]) -> list[dict]:
             (old["document_id"], old.get("child_id"), old["grade"], old["semester"],
              normalize(old["title"])) == (task["document_id"], task.get("child_id"),
                                          task["grade"], task["semester"], normalize(task["title"]))
-            and any(overlaps(a, b) for a in old["locators"] for b in task["locators"]))), None)
+            and (any(overlaps(a, b) for a in old["locators"] for b in task["locators"])
+                 # One task read once in an overview and once in a detail table,
+                 # or in two different signal windows, is the same task.
+                 or old["seen_in"] != task["seen_in"]
+                 or set(old["target_ids"]).isdisjoint(task["target_ids"])))), None)
         if duplicate is None:
             result.append(copy.deepcopy(task))
             continue
@@ -919,6 +923,11 @@ def representative_locator(task: dict) -> dict:
     return min(candidates, key=lambda loc: loc["end"] - loc["start"]) if candidates else title
 
 
+def rule_title(item: dict) -> str:
+    value = item.get("fields", {}).get("title", {}).get("value", "")
+    return value if isinstance(value, str) else ""
+
+
 def merge_report(rules: dict, verified: dict) -> dict:
     result = copy.deepcopy(rules)
     tasks = verified["kept"]
@@ -934,7 +943,9 @@ def merge_report(rules: dict, verified: dict) -> dict:
         by_task[task["ai_task_id"]] = matches
         for item in matches:
             by_rule[item["item_id"]].append(task["ai_task_id"])
-    relations = {"agrees": [], "ai_split_suggested": [], "conflict": [], "new": []}
+    relations = {"agrees": [], "agrees_by_title": [], "agrees_by_evidence": [],
+                 "ai_split_suggested": [],
+                 "conflict": [], "new": []}
     for item in performance:
         ids = by_rule[item["item_id"]]
         if len(ids) > 1:
@@ -957,6 +968,38 @@ def merge_report(rules: dict, verified: dict) -> dict:
                                             "bounded": item["extraction_status"] == "bounded"})
                 continue
             if item["extraction_status"] == "bounded":
+                continue
+        if not matches:
+            # Any single evidence span that touches exactly one confirmed rule
+            # item means the rules already hold this task (e.g. AI titled it by
+            # area in an overview, the rule item sits on the detail table).
+            held = set()
+            for loc in task["locators"]:
+                hits = [item["item_id"] for item in performance if (
+                    item["extraction_status"] == "bounded"
+                    and (item["document_id"], item.get("child_id"))
+                    == (task["document_id"], task.get("child_id"))
+                    and all(item.get(key) in (None, task[key]) for key in ("grade", "semester"))
+                    and overlaps(item["locator"], loc))]
+                if len(hits) == 1:
+                    held.update(hits)
+            if held:
+                relations["agrees_by_evidence"].append({
+                    "ai_task_id": task["ai_task_id"], "rule_item_ids": sorted(held),
+                    "bounded": True})
+                continue
+            # A rule item elsewhere (another table or document of the same
+            # school) may already hold this task: same scope and same title.
+            same_title = [item for item in performance if (
+                task.get("school_code") is not None
+                and item.get("school_code") == task.get("school_code")
+                and all(item.get(key) in (None, task[key]) for key in ("grade", "semester"))
+                and normalize(rule_title(item)) == normalize(task["title"]))]
+            if same_title:
+                relations["agrees_by_title"].append({
+                    "ai_task_id": task["ai_task_id"],
+                    "rule_item_ids": [i["item_id"] for i in same_title],
+                    "bounded": any(i["extraction_status"] == "bounded" for i in same_title)})
                 continue
         result["items"].append(ai_item(task))
         relations["new"].append({"ai_task_id": task["ai_task_id"],

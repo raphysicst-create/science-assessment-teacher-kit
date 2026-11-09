@@ -195,7 +195,7 @@ def install_source(directory, text, *, filename="과학 평가계획.hwp", secti
     ai.save_json(directory / f"data/derived/segments/{ROUND}.json", {"documents": [document]})
     ai.save_json(directory / f"data/derived/subjects/{ROUND}.json", {"sections": sections or []})
     ai.save_json(directory / f"data/derived/items/{ROUND}.json", {"round": ROUND, "items": []})
-    ai.write_text(directory / "scripts/prompts/middle_ai_read_v1.md", "합성 원문 읽기")
+    ai.write_text(directory / "scripts/prompts/middle_ai_read_v2.md", "합성 원문 읽기")
     return document
 
 

@@ -201,7 +201,11 @@ def test_legacy_verified_union_is_reanchored_when_merged():
     assert item["locator"] == tasks[1]["locator"]
     assert len(item["owned_ranges"]) == 2
     rules = {"items": [rule_item(tasks[0])]}
-    assert len(ai.merge_report(rules, {"kept": [old]})["ai_relations"]["new"]) == 1
+    relations = ai.merge_report(rules, {"kept": [old]})["ai_relations"]
+    # Precision first: one evidence span on exactly one confirmed rule item
+    # holds the task, so the legacy union is not added as a new item.
+    assert relations["new"] == []
+    assert len(relations["agrees_by_evidence"]) == 1
 
 
 def test_gaps_metadata_and_all_snapshot_have_independent_hashes(directory):
@@ -228,8 +232,8 @@ def test_legacy_all_targets_and_prompt_hashes(directory):
     ai.build_targets(directory, ROUND, mode="all")
     output = ai.round_dir(directory, ROUND)
     original = ai.read_text(output / "all/targets.jsonl")
-    # S6e-1-compatible synthetic target fingerprint, including its prompt hash.
-    assert ai.sha(original) == "6bcdfb8e08263c8fad06f6e65c31a5e6131b5d25222e180275e6c82059c901f5"
+    # Synthetic target fingerprint, including its prompt hash (prompt template v2).
+    assert ai.sha(original) == "8311516e274209d86c4bccf12388c70e2c0f93b5a4d363b84bfd8c76359adf24"
     # Emulate an existing S6e-1 root target, then snapshot its full binding.
     target = json.loads(original)
     ai.write_text(output / "targets.jsonl", original)
@@ -337,3 +341,57 @@ def test_gold_measurement_override_keeps_labels_closed(tmp_path, monkeypatch):
     monkeypatch.setenv(ai.GOLD_MEASUREMENT_ENV, "yes")
     with pytest.raises(ValueError):
         ai.round_dir(tmp_path, "2026-round-1-gold")
+
+
+def _ai_task(identity, title, seen_in, start, target, document="doc-ai", grade=1):
+    locator = {"start": start, "end": start + 5}
+    return {"ai_task_id": identity, "document_id": document, "child_id": None,
+            "school_code": "S1", "grade": grade, "semester": 1, "title": title,
+            "title_locator": locator, "locator": locator, "locator_basis": "title",
+            "locators": [locator], "evidence": [{"locator": locator}],
+            "seen_in": seen_in, "target_ids": [target], "title_raw": title,
+            "grade_evidence": "metadata", "semester_evidence": "metadata"}
+
+
+def test_dedupe_joins_overview_and_detail_reads_of_one_task():
+    overview = _ai_task("a", "탐구 보고서", "overview", 0, "t1")
+    detail = _ai_task("b", "탐구 보고서", "detail", 500, "t2")
+    assert len(ai.deduplicate([overview, detail])) == 1
+    # Same title in the same table read is kept apart: it may be two activities.
+    twin = _ai_task("c", "탐구 보고서", "overview", 900, "t1")
+    assert len(ai.deduplicate([overview, twin])) == 2
+    # Another grade is another task.
+    other = _ai_task("d", "탐구 보고서", "detail", 500, "t2", grade=2)
+    assert len(ai.deduplicate([overview, other])) == 2
+
+
+def test_merge_skips_ai_task_already_held_by_same_title_rule_item():
+    rule = {"item_id": "rule-1", "document_id": "doc-rule", "child_id": None,
+            "school_code": "S1", "grade": 1, "semester": 1,
+            "candidate_role": "performance", "extraction_status": "bounded",
+            "locator": {"start": 0, "end": 10},
+            "fields": {"title": {"value": "탐구  보고서"}}}
+    rules = {"items": [rule]}
+    task = _ai_task("a", "탐구 보고서", "overview", 100, "t1")
+    result = ai.merge_report(rules, {"kept": [task]})
+    assert result["ai_relations"]["agrees_by_title"][0]["rule_item_ids"] == ["rule-1"]
+    assert result["ai_relations"]["new"] == []
+    assert len(result["items"]) == 1
+
+
+def test_merge_skips_ai_task_whose_evidence_touches_one_confirmed_item():
+    detail = {"start": 500, "end": 520}
+    rule = {"item_id": "rule-1", "document_id": "doc-ai", "child_id": None,
+            "school_code": "S1", "grade": 1, "semester": 1,
+            "candidate_role": "performance", "extraction_status": "bounded",
+            "locator": {"start": 490, "end": 900},
+            "fields": {"title": {"value": "구체 과제 문장"}}}
+    task = _ai_task("a", "영역 이름", "both", 0, "t1", document="doc-ai")
+    task["locators"] = [task["locator"], detail]
+    result = ai.merge_report({"items": [rule]}, {"kept": [task]})
+    assert result["ai_relations"]["agrees_by_evidence"][0]["rule_item_ids"] == ["rule-1"]
+    assert result["ai_relations"]["new"] == []
+    # An overview line touching two confirmed items does not hold the task.
+    other = {**rule, "item_id": "rule-2", "locator": {"start": 505, "end": 600}}
+    result = ai.merge_report({"items": [rule, other]}, {"kept": [task]})
+    assert result["ai_relations"]["agrees_by_evidence"] == []
