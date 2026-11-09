@@ -320,3 +320,20 @@ def test_g1_skips_grade3_only_and_other_subject_documents():
                                {"grades": [1, 2]}, [])
     assert not g1_out_of_scope("2026학년도 1학기 교과별 평가 연간 계획(전과목).hwpx", {}, [])
     assert not g1_out_of_scope("2026 1학년 과학과 평가 계획.pdf", {"grades": [1]}, [])
+
+
+def test_gold_measurement_override_keeps_labels_closed(tmp_path, monkeypatch):
+    monkeypatch.delenv(ai.GOLD_MEASUREMENT_ENV, raising=False)
+    with pytest.raises(ValueError):
+        ai.round_dir(tmp_path, "2026-round-1-gold")
+    with pytest.raises(ValueError):
+        ai.guard_path(tmp_path / "data/derived/items/2026-round-1-gold.json")
+    monkeypatch.setenv(ai.GOLD_MEASUREMENT_ENV, "chief-measurement")
+    assert ai.round_dir(tmp_path, "2026-round-1-gold").name == "2026-round-1-gold"
+    ai.guard_path(tmp_path / "data/derived/items/2026-round-1-gold.json")
+    for closed in ("data/gold/gold_v1.jsonl", "data/.gold-before-acl-fix/pack/x.md"):
+        with pytest.raises(ValueError):
+            ai.guard_path(tmp_path / closed)
+    monkeypatch.setenv(ai.GOLD_MEASUREMENT_ENV, "yes")
+    with pytest.raises(ValueError):
+        ai.round_dir(tmp_path, "2026-round-1-gold")

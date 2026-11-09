@@ -51,11 +51,24 @@ TOOL_ITEMS = {
 }
 
 
+# Measurement override for the chief only. Workers never set it. Even with it,
+# gold labels (data/gold/) stay closed: only gold-round sources and pipeline
+# outputs (``*-gold*``) open, so the reader sees test input, never answers.
+GOLD_MEASUREMENT_ENV = "MIDDLE_AI_READ_GOLD"
+
+
+def gold_measurement() -> bool:
+    import os
+
+    return os.environ.get(GOLD_MEASUREMENT_ENV) == "chief-measurement"
+
+
 def guard_path(path: Path) -> Path:
     path = path.resolve()
     parts = [p.lower() for p in path.parts]
-    if ("gold" in parts or ".gold-before-acl-fix" in parts
-            or any("-gold" in p for p in parts)):
+    if "gold" in parts or ".gold-before-acl-fix" in parts:
+        raise ValueError("맹검 경로 접근 금지")
+    if any("-gold" in p for p in parts) and not gold_measurement():
         raise ValueError("맹검 경로 접근 금지")
     return path
 
@@ -85,7 +98,8 @@ def sha(text: str) -> str:
 
 
 def round_dir(root: Path, round_key: str) -> Path:
-    if not re.fullmatch(r"[A-Za-z0-9_-]+", round_key) or "gold" in round_key.lower():
+    if not re.fullmatch(r"[A-Za-z0-9_-]+", round_key) or (
+            "gold" in round_key.lower() and not gold_measurement()):
         raise ValueError("안전한 비정답 회차 키 필요")
     return guard_path(root / "data/derived/ai_read" / round_key)
 
