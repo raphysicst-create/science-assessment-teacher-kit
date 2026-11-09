@@ -17,8 +17,7 @@ if __package__ in {None, ""}:
 
 from scripts.audit_math_assessment_detail_db import value_is_traceable, visible_text
 from scripts.build_math_assessment_detail_db import synchronize_case_summaries
-from scripts.math_assessment_detail_parser import _exact_fields
-
+from scripts.science_rules import science_exact_fields
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 FIELDS = ("overview", "method", "timing", "score", "weight")
@@ -79,7 +78,7 @@ def main() -> None:
         for index, row in enumerate(rows, 1):
             source_html = zlib.decompress(bytes(row["source_html_zlib"])).decode("utf-8")
             source_text = visible_text(source_html)
-            exact = _exact_fields(source_html)
+            exact = science_exact_fields(source_html)
             replacements: dict[str, str] = {}
             changed: dict[str, dict[str, str]] = {}
             for field in FIELDS:

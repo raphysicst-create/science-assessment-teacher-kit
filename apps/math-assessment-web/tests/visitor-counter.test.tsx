@@ -36,6 +36,6 @@ describe("방문자 표시", () => {
       expect.stringContaining("/api/v1/visitors?"),
       expect.objectContaining({ method: "POST", cache: "no-store" }),
     );
-    expect(window.localStorage.getItem("suhaeng-math-total-visitor-recorded-v2")).toBe("1");
+    expect(window.localStorage.getItem("science-assessment-total-visitor-recorded-v2")).toBe("1");
   });
 });

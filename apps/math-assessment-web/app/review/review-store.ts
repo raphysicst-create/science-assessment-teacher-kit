@@ -3,7 +3,7 @@ export const MAX_REVIEW_CASES = 25;
 
 export const REVIEW_DIMENSIONS = [
   { id: "clarity", label: "과제 명료성", prompt: "학생이 무엇을 해야 하고 무엇을 제출할지 분명한가요?" },
-  { id: "mathematical_thinking", label: "수학적 사고", prompt: "단순 정리보다 추론·표현·문제해결 과정이 드러나나요?" },
+  { id: "mathematical_thinking", label: "과학적 탐구", prompt: "관찰·실험 자료를 근거로 가설을 검토하고 설명하는 과정이 드러나나요?" },
   { id: "process_evidence", label: "과정 증거", prompt: "최종 결과 외에 수업 중 확인할 증거가 있나요?" },
   { id: "alignment", label: "평가 정합성", prompt: "과제·평가 요소·루브릭이 같은 역량을 확인하나요?" },
   { id: "fairness", label: "공정성", prompt: "도구·협업·가정 환경에 따른 불리함을 줄였나요?" },

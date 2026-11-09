@@ -26,17 +26,11 @@ from pathlib import Path
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from scripts.audit_math_assessment_titles_full import (
-    audit_flags,
-    confidence,
-)
 from scripts.build_math_assessment_detail_db import synchronize_case_summaries
 from scripts.build_math_assessment_publish_db import (
-    TASK_SIGNAL_RE,
     compact_label,
     html_tables,
     normalize_task_name,
-    task_name_is_rejected,
 )
 from scripts.math_assessment_detail_parser import (
     PERFORMANCE_MARKER_RE,
@@ -45,6 +39,13 @@ from scripts.math_assessment_detail_parser import (
     explicit_segment_title,
     heading_title_is_structural,
     visible_text,
+)
+from scripts.science_rules import (
+    ACTIVITY_RE,
+    audit_flags,
+    confidence,
+    source_is_other_subject,
+    title_rejection,
 )
 
 SYNTHETIC_BUNDLE_TITLE = "수행평가 원문 구간"
@@ -74,24 +75,11 @@ SUPPORT_FIELD_LABELS = {
     "평가시기",
     "시기",
 }
-NON_MATH_SOURCE_SIGNAL_RE = re.compile(
-    r"기본권|시민의\s*복지|사회적\s*연대|타인의\s*고통|"
-    r"사회문제\s*주제\s*탐구|민주주의\s*방식|다문화\s*사회"
-)
-MATH_SOURCE_SIGNAL_RE = re.compile(
-    r"수학|함수|방정식|부등식|수열|미분|적분|확률|통계|기하|"
-    r"도형|벡터|행렬|지수|로그|삼각"
-)
 
 
 def source_is_non_math_leak(subject: str, source_text: str) -> bool:
-    """Flag clearly non-mathematical source sections inside a math case bundle."""
-
-    return bool(
-        subject not in {"경제 수학", "수학과 문화"}
-        and NON_MATH_SOURCE_SIGNAL_RE.search(source_text)
-        and not MATH_SOURCE_SIGNAL_RE.search(source_text)
-    )
+    """Keep the existing entry point while applying shared science alignment."""
+    return source_is_other_subject(source_text)
 
 
 def source_aligned_catalog_spelling(title: str, candidates: list[str]) -> str:
@@ -228,9 +216,9 @@ def strict_source_titles(source_html: str) -> list[str]:
         )
         if (
             not credible_title(name)
-            or task_name_is_rejected(name)
+            or title_rejection(name)
             or title_status != "supported"
-            or (require_task_signal and not TASK_SIGNAL_RE.search(name))
+            or (require_task_signal and not ACTIVITY_RE.search(name))
             or any(compact_label(existing) == compact_label(name) for existing in titles)
         ):
             return

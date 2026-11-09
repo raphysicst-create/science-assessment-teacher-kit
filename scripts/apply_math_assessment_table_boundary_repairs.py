@@ -29,8 +29,8 @@ from audit_math_assessment_table_structure import (
     compact,
     element_text,
 )
-from math_assessment_detail_parser import _exact_fields
 from lxml import html as lxml_html
+from scripts.science_rules import science_exact_fields
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 rubric_tables_from_source_html = SOURCE_HTML_MODULE.rubric_tables_from_source_html
@@ -215,7 +215,7 @@ def main() -> None:
                 # detail build.  It keeps checkbox matrices and ambiguous
                 # totals out of card metadata while the lossless source table
                 # remains available to the teacher below.
-                fields = _exact_fields(source_html)
+                fields = science_exact_fields(source_html)
                 overview = str(fields["overview"])
                 method = str(fields["method"])
                 timing = str(fields["timing"])

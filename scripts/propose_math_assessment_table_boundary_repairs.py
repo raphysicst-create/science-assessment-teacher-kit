@@ -26,9 +26,9 @@ from audit_math_assessment_table_structure import (
     element_text,
     restore_escaped_table_rows,
 )
-from audit_math_assessment_titles_full import audit_flags, confidence
 from lxml import etree
 from lxml import html as lxml_html
+from scripts.science_rules import audit_flags, confidence
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_QUEUE = (

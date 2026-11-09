@@ -143,7 +143,7 @@ export default function CaseDetailViewer({
             <>
               <div className="sourcePaperTopline"><div><span>원문 추출 표</span><h2>{selectedItem.title === "수행평가 원문 구간" && detail.detected_titles.length === 1 ? detail.detected_titles[0] : selectedItem.title === "수행평가 원문 구간" && detail.detected_titles.length > 1 ? `수행평가명 ${detail.detected_titles.length}개 확인 · 원문 묶음` : selectedItem.title}</h2></div><small>{selectedItem.title_basis === "heading" ? "원문 제목에서 분리" : selectedItem.title_basis === "table" ? "원문 표의 평가명" : "평가명 확인 · 원문 경계 묶음"}</small></div>
               {selectedItem.source_available === false ? (
-                <div className="sourceMismatchNotice" role="status"><strong>이 구간은 공개 전 추가 확인이 필요합니다.</strong><p>{selectedItem.extraction_status === "source_mismatch_review" ? "수학 과목 원문 경계를 확인하지 못해 내용을 숨겼습니다." : "여러 평가 구간이 묶여 있어 항목 경계와 개인정보 안전 검토를 마칠 때까지 표 재현본을 공개하지 않습니다."} 학교알리미 원문에서 확인해 주세요.</p></div>
+                <div className="sourceMismatchNotice" role="status"><strong>이 구간은 공개 전 추가 확인이 필요합니다.</strong><p>{selectedItem.extraction_status === "source_mismatch_review" ? "과학 과목 원문 경계를 확인하지 못해 내용을 숨겼습니다." : "여러 평가 구간이 묶여 있어 항목 경계와 개인정보 안전 검토를 마칠 때까지 표 재현본을 공개하지 않습니다."} 학교알리미 원문에서 확인해 주세요.</p></div>
               ) : <SourceDocumentHtml html={selectedItem.source_html} />}
               {selectedItem.source_available !== false && selectedItem.rubric_html ? (
                 <section className="sourceRubric" aria-labelledby="source-rubric-title">
@@ -164,7 +164,7 @@ export default function CaseDetailViewer({
 
 function SourceFacts({ item, detectedTitles }: { item: AssessmentItemSummary; detectedTitles: string[] }) {
   if (item.source_available === false) {
-    return <section className="sourceFacts" aria-label="원문 확인 상태"><h2>원문 확인 상태</h2><p>{item.extraction_status === "source_mismatch_review" ? "수학 과목 경계를 확인하지 못해 추출값을 공개하지 않습니다." : "여러 평가 구간이 묶여 있어 항목 경계와 개인정보 안전 검토를 마칠 때까지 표 재현본을 공개하지 않습니다."}</p></section>;
+    return <section className="sourceFacts" aria-label="원문 확인 상태"><h2>원문 확인 상태</h2><p>{item.extraction_status === "source_mismatch_review" ? "과학 과목 경계를 확인하지 못해 추출값을 공개하지 않습니다." : "여러 평가 구간이 묶여 있어 항목 경계와 개인정보 안전 검토를 마칠 때까지 표 재현본을 공개하지 않습니다."}</p></section>;
   }
   const confirmedBundleTitles = item.title === "수행평가 원문 구간" ? detectedTitles : [];
   const rows = [

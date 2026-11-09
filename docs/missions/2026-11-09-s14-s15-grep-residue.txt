@@ -1,0 +1,307 @@
+LICENSE:3:Copyright (c) 2026 서아인
+README.md:74:이 사이트는 「수학 수행평가 아이디어 아카이브」(서아인, MIT 라이선스)를 바탕으로 만든 과학판입니다.
+apps/math-assessment-web/LICENSE:3:Copyright (c) 2026 서아인
+apps/math-assessment-web/app/lib/site.ts:10:export const ORIGINAL_WORK_NOTICE = "이 사이트는 「수학 수행평가 아이디어 아카이브」(서아인, MIT 라이선스)를 바탕으로 만든 과학판입니다.";
+docs/MULTITASK_BOUNDARY_RECOVERY_V2_2026-08-15.md:31:확정 항목은 공통수학1 9건, 대수 4건, 기하 4건, 경제 수학 2건, 확률과 통계 1건이다. 예: `기하 주제탐구 프로젝트`, `주제탐구 프로젝트`, `지수함수, 로그함수 수리탐구 논술`.
+docs/OTHER_SUBJECT_ASSESSMENT_VALIDATION_HANDOFF_2026-08-15.md:4:기준: 2026 수학 수행평가 아이디어 아카이브의 교사 제보·전수검사 보정 과정  
+docs/OTHER_SUBJECT_ASSESSMENT_VALIDATION_HANDOFF_2026-08-15.md:5:목적: 다른 교과의 학교알리미 교수학습·평가계획을 **원문을 바꾸지 않고**, 수행평가 단위로 안전하게 탐색·표시·검수하기 위한 재사용 묶음
+docs/OTHER_SUBJECT_ASSESSMENT_VALIDATION_HANDOFF_2026-08-15.md:43:| 검사 축 | 자동 탐지 내용 | 공개 처리 원칙 | 수학에서 사용한 구현·근거 |
+docs/OTHER_SUBJECT_ASSESSMENT_VALIDATION_HANDOFF_2026-08-15.md:53:## C. 수학에서 실제로 확정한 변경 범위
+docs/OTHER_SUBJECT_ASSESSMENT_VALIDATION_HANDOFF_2026-08-15.md:61:이 수치는 **수학 데이터의 결과**다. 다른 교과에 복사하면 해당 교과의 산출물로 다시 계산해야 하며, 수치를 재사용하면 안 된다.
+docs/OTHER_SUBJECT_ASSESSMENT_VALIDATION_HANDOFF_2026-08-15.md:90:| 목적 | 수학의 파일 | 타 교과에서 바꿀 부분 |
+docs/OTHER_SUBJECT_ASSESSMENT_VALIDATION_HANDOFF_2026-08-15.md:103:다음 파일은 ‘수학에서 무엇을 통과시켰는지’를 재현하는 증빙이다. 원문 자체나 학교별 전체 문서는 다른 교과 팀에 전달하지 않는다.
+scripts/audit_middle_segments.py:203:        "교수학습부·평가부가 반복되면 후보 수가 학년 수보다 클 수 있다.",
+scripts/audit_reference_coverage.py:17:    "수학": ("수학", "대수", "미적분", "기하", "확률", "통계"),
+scripts/build_math_assessment_evidence_index.py:43:    "수학적모델링": re.compile(r"(?:수학적\s*)?모델링"),
+scripts/build_math_assessment_evidence_index.py:57:    r"(?:교수\s*[·ㆍ‧/\-]?\s*학습|교수학습)[^\n]{0,100}평가\s*계획[^\n]*$"
+scripts/build_math_assessment_manifest.py:29:    ("수학과제탐구", "수학과제 탐구", r"수학\s*과제\s*탐구"),
+scripts/build_math_assessment_manifest.py:30:    ("인공지능 수학", "인공지능 수학", r"인공지능\s*수학"),
+scripts/build_math_assessment_manifest.py:31:    ("경제 수학", "경제 수학", r"경제\s*수학"),
+scripts/build_math_assessment_manifest.py:33:    ("공통수학2", "공통수학2", r"공통\s*수학\s*[ⅡII2]"),
+scripts/build_math_assessment_manifest.py:34:    ("공통수학1", "공통수학1", r"공통\s*수학\s*[ⅠI1]"),
+scripts/build_math_assessment_manifest.py:35:    ("기본수학2", "기본수학2", r"기본\s*수학\s*[ⅡII2]"),
+scripts/build_math_assessment_manifest.py:36:    ("기본수학1", "기본수학1", r"기본\s*수학\s*[ⅠI1]"),
+scripts/build_math_assessment_manifest.py:37:    ("수학Ⅱ", "수학Ⅱ", r"수학\s*[ⅡII2]"),
+scripts/build_math_assessment_manifest.py:38:    ("수학Ⅰ", "수학Ⅰ", r"수학\s*[ⅠI1]"),
+scripts/build_math_assessment_manifest.py:39:    ("수학과 문화", "수학과 문화", r"수학\s*과\s*문화"),
+scripts/build_math_assessment_manifest.py:40:    ("실용 수학", "실용 수학", r"실용\s*수학"),
+scripts/build_math_assessment_manifest.py:41:    ("직무 수학", "직무 수학", r"직무\s*수학"),
+scripts/build_math_assessment_manifest.py:44:    # ``교수학습`` is present in nearly every plan filename; exclude that
+scripts/build_math_assessment_manifest.py:46:    ("수학", "수학", r"수학(?!습)"),
+scripts/build_math_assessment_publish_db.py:42:    "수학적 모델링",
+scripts/build_math_assessment_publish_db.py:185:    r"작성|분석|설명서|수학\s*일지|학습\s*일지|배움\s*노트|오답|독서|"
+scripts/build_math_assessment_publish_db.py:201:    r"교육과정 성취기준|교과학습 평가|수학과의 평가|성취율|학업성적관리|"
+scripts/build_math_assessment_publish_db.py:202:    r"학생 개개인|수학의 용어와 기호|사고 기능을 파악|전인적인 성장|"
+scripts/build_math_assessment_publish_db.py:205:    r"|수학적으로 .*하는 능력|관찰,? 분석,? 조직하는 능력|"
+scripts/build_math_assessment_publish_db.py:258:    "교수학습및평가운영계획",
+scripts/build_math_assessment_publish_db.py:260:    "교수학습및평가계획서",
+scripts/build_math_assessment_publish_db.py:262:    "교수학습-평가방법",
+scripts/build_math_assessment_publish_db.py:263:    "교수학습및평가방법",
+scripts/build_math_assessment_publish_db.py:296:    ("modeling", re.compile(r"모델링|수학화|모형|시뮬레이션")),
+scripts/build_math_assessment_publish_db.py:300:        re.compile(r"포트폴리오|수학\s*일지|러닝\s*저널|오답\s*(?:노트|문항)|성장\s*기록"),
+scripts/build_math_assessment_publish_db.py:302:    ("presentation", re.compile(r"발표|설명하기|수학\s*말하기|프레젠테이션|포스터")),
+scripts/build_math_assessment_publish_db.py:368:    r"(?:학습|탐구|수학)?\s*내용\s*정리|활동지|수업\s*참여|자료\s*조사|"
+scripts/build_math_assessment_publish_db.py:394:    r"수학|함수|방정식|부등식|수열|미분|적분|확률|통계|기하|도형|벡터|"
+scripts/build_math_assessment_publish_db.py:465:        (r"수학적모델링", "수학적 모델링"),
+scripts/build_math_assessment_publish_db.py:472:        (r"수학독서", "수학 독서"),
+scripts/build_math_assessment_publish_db.py:480:        (r"수학탐구", "수학 탐구"),
+scripts/build_math_assessment_publish_db.py:481:        (r"기반수학", "기반 수학"),
+scripts/build_math_assessment_publish_db.py:483:        (r"수학과제탐구", "수학 과제 탐구"),
+scripts/build_math_assessment_publish_db.py:487:        (r"수학자율", "수학 자율"),
+scripts/build_math_assessment_publish_db.py:713:        or bool(re.fullmatch(r"수학\s*과제\s*탐구", name))
+scripts/build_math_assessment_publish_db.py:714:        or bool(re.search(r"수학\s*과제\s*탐구의\s*(?:이해|실행과\s*평가)", name))
+scripts/build_math_assessment_publish_db.py:1004:        r"연구\s*동기(?:\s*및\s*목적)?|수학\s*개념|문제\s*해결(?:\s*능력)?|"
+scripts/build_priority_review_packet.py:12:PRIORITIES = {("2015", "수학Ⅱ"), ("2022", "대수"), ("2022", "미적분Ⅰ")}
+scripts/build_remaining_generic_candidate_index.py:37:            if row.get("subject_canonical") in {"unknown", "수학"}:
+scripts/build_school_subject_assessment_catalog.py:29:        "수학", "수학Ⅰ", "수학Ⅱ", "미적분", "확률과 통계", "기하",
+scripts/build_school_subject_assessment_catalog.py:30:        "실용 수학", "경제 수학", "수학과제 탐구",
+scripts/build_school_subject_assessment_catalog.py:33:        "공통수학1", "공통수학2", "기본수학1", "기본수학2", "대수",
+scripts/build_school_subject_assessment_catalog.py:34:        "미적분Ⅰ", "미적분Ⅱ", "확률과 통계", "기하", "경제 수학",
+scripts/build_school_subject_assessment_catalog.py:35:        "인공지능 수학", "직무 수학", "수학과 문화", "실용 통계",
+scripts/build_school_subject_assessment_catalog.py:36:        "수학과제 탐구",
+scripts/build_school_subject_assessment_catalog.py:171:            if school and subject not in {"", "unknown", "수학"}:
+scripts/build_strict_math_shortlist.py:22:    "공통수학1": "공수1", "공통수학2": "공수2", "기본수학1": "기수1",
+scripts/build_strict_math_shortlist.py:23:    "기본수학2": "기수2", "미적분Ⅰ": "미적Ⅰ", "미적분Ⅱ": "미적Ⅱ",
+scripts/build_strict_math_shortlist.py:25:    "경제 수학": "경수", "실용 수학": "실수", "수학과제 탐구": "수과",
+scripts/build_strict_math_shortlist.py:26:    "수학Ⅰ": "수학Ⅰ", "수학Ⅱ": "수학Ⅱ", "미적분": "미적분",
+scripts/build_strict_math_shortlist.py:27:    "인공지능 수학": "인수", "직무 수학": "직수",
+scripts/build_strict_math_shortlist.py:28:    "수학과 문화": "수문", "실용 통계": "실통",
+scripts/check_science_rule_sites.py:132:        if "수학" in line:
+scripts/check_science_rule_sites.py:133:            add(number, "text", "수학")
+scripts/export_assessment_item_pdf.py:72:<header><p>수학 수행평가 설계 도우미 · 원문 추출본 PDF</p><h1>{html.escape(str(row['title']))}</h1></header>
+scripts/extract_math_assessment_batch.py:4:model pass. It intentionally skips ``unknown`` and generic ``수학`` filename
+scripts/extract_math_assessment_batch.py:410:            if row.get("subject_canonical") in {"unknown", "수학"}:
+scripts/extract_math_assessment_samples.py:53:            if subject in {"unknown", "수학"} or row.get("curriculum_candidate") != "2022_candidate":
+scripts/math_assessment_detail_parser.py:25:    "교수학습및평가운영계획",
+scripts/math_assessment_detail_parser.py:27:    "교수학습및평가계획",
+scripts/math_assessment_detail_parser.py:29:    "교수학습및평가계획서",
+scripts/math_assessment_detail_parser.py:31:    "교수학습-평가방법",
+scripts/math_assessment_detail_parser.py:32:    "교수학습및평가방법",
+scripts/math_assessment_detail_parser.py:112:    r"(?:수학\s*)?학습\s*과정\s*평가|서(?:술)?[·‧ㆍ]?\s*논술형\s*평가(?:\s*계획)?|세부\s*평가\s*척도|"
+scripts/math_assessment_detail_parser.py:177:    "수학": ("10수학",),
+scripts/math_assessment_detail_parser.py:178:    "공통수학1": ("10공수1",),
+scripts/math_assessment_detail_parser.py:179:    "공통수학2": ("10공수2",),
+scripts/math_assessment_detail_parser.py:180:    "기본수학1": ("10기수1",),
+scripts/math_assessment_detail_parser.py:181:    "기본수학2": ("10기수2",),
+scripts/math_assessment_detail_parser.py:185:    "수학Ⅰ": ("12수학Ⅰ",),
+scripts/math_assessment_detail_parser.py:186:    "수학Ⅱ": ("12수학Ⅱ",),
+scripts/math_assessment_detail_parser.py:190:    "경제 수학": ("12경수",),
+scripts/math_assessment_detail_parser.py:191:    "실용 수학": ("12실수",),
+scripts/math_assessment_detail_parser.py:192:    "수학과제 탐구": ("12수과",),
+scripts/math_assessment_detail_parser.py:193:    "인공지능 수학": ("12인수",),
+scripts/math_assessment_detail_parser.py:194:    "직무 수학": ("12직수",),
+scripts/math_assessment_detail_parser.py:195:    "수학과 문화": ("12수문",),
+scripts/math_assessment_detail_parser.py:261:    a ``수학Ⅱ`` achievement code as ``수학Ⅰ``.  Course identity is a safety
+scripts/math_assessment_detail_parser.py:313:    ``교수학습 및 평가계획`` made the parser start at the table of contents
+scripts/math_assessment_detail_parser.py:352:        # This keeps a generic "수학" case from selecting "경제 수학" merely
+scripts/math_assessment_detail_parser.py:397:        # ``# 공통수학1`` heading could absorb every following subject.
+scripts/math_assessment_detail_parser.py:408:                "교수학습" in compact
+scripts/math_assessment_detail_parser.py:1567:            "수학과",
+scripts/math_assessment_detail_parser.py:1578:            r"(?:공통수학[12]\s*전체|(?:정기\s*)?\d+\s*차\s*시험|중간|기말|"
+scripts/math_assessment_detail_parser.py:1657:        # angle-bracket text such as ``<직무수학>``.
+scripts/math_subject_aliases.py:14:    ("2022", "공통수학1", r"공통\s*수학\s*[1ⅠI]"),
+scripts/math_subject_aliases.py:15:    ("2022", "공통수학2", r"공통\s*수학\s*[2ⅡII]"),
+scripts/math_subject_aliases.py:16:    ("2022", "기본수학1", r"기본\s*수학\s*[1ⅠI]"),
+scripts/math_subject_aliases.py:17:    ("2022", "기본수학2", r"기본\s*수학\s*[2ⅡII]"),
+scripts/math_subject_aliases.py:21:    ("2022", "수학과 문화", r"수학\s*과\s*문화"),
+scripts/math_subject_aliases.py:22:    ("2022", "인공지능 수학", r"인공지능\s*수학"),
+scripts/math_subject_aliases.py:23:    ("2022", "직무 수학", r"직무\s*수학"),
+scripts/math_subject_aliases.py:24:    ("shared", "수학과제 탐구", r"수학\s*과제\s*탐구"),
+scripts/math_subject_aliases.py:27:    ("shared", "경제 수학", r"경제\s*수학"),
+scripts/math_subject_aliases.py:29:    ("2015", "수학Ⅰ", r"(?<!공통)(?<!기본)수학\s*[1ⅠI]"),
+scripts/math_subject_aliases.py:30:    ("2015", "수학Ⅱ", r"(?<!공통)(?<!기본)수학\s*[2ⅡII]"),
+scripts/math_subject_aliases.py:32:    ("2015", "실용 수학", r"실용\s*수학"),
+scripts/math_subject_aliases.py:33:    ("2015", "수학", r"(?m)^\s*(?:(?:[#*•·-]|\d+[.)]|[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+[.)]?)\s*)?(?:과목\s*명?\s*[:：]?\s*)?[<\[]?수학[>\]]?\s*$"),
+scripts/math_subject_aliases.py:63:            code_key = {"공통수학1": "공수1", "공통수학2": "공수2", "기본수학1": "기수1", "기본수학2": "기수2", "미적분Ⅰ": "미적Ⅰ", "미적분Ⅱ": "미적Ⅱ", "대수": "대수", "기하": "기하", "확률과 통계": "확통", "경제 수학": "경수", "실용 수학": "실수", "수학과제 탐구": "수과", "수학Ⅰ": "수학Ⅰ", "수학Ⅱ": "수학Ⅱ", "미적분": "미적분", "인공지능 수학": "인수", "직무 수학": "직수", "수학과 문화": "수문", "실용 통계": "실통"}.get(subject)
+scripts/math_subject_aliases.py:96:    # Bare ``수학`` is only accepted in a heading/subject-label context, not
+scripts/math_subject_aliases.py:97:    # from ordinary words such as ``교수학습`` or ``수학적``.
+scripts/math_subject_aliases.py:98:    bare = re.compile(r"(?m)^\s*(?:(?:[#*•·-]|\d+[.)]|[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+[.)]?)\s*)?(?:과목\s*명?\s*[:：]?\s*)?[<\[]?수학[>\]]?\s*$")
+scripts/math_subject_aliases.py:99:    if "2015:수학" not in seen and bare.search(normalized):
+scripts/math_subject_aliases.py:100:        hits.append({"curriculum_hint": "2015", "subject": "수학", "evidence": bare.search(normalized).group(0).strip()})
+scripts/math_subject_aliases.py:110:        r"\[(?:10|12)(공수[12]|기수[12]|미적[ⅠⅡ12]|대수|확통|기하|경수|인수|직수|수문|실통|수과|수학[ⅠⅡ12]|미적분|실수)-?\d{2}-\d{2}\]",
+scripts/math_subject_aliases.py:115:        code = {"미적1": "미적Ⅰ", "미적2": "미적Ⅱ", "수학1": "수학Ⅰ", "수학2": "수학Ⅱ"}.get(code, code)
+scripts/math_subject_aliases.py:118:        elif code in {"수학Ⅰ", "수학Ⅱ", "미적분", "실수"}:
+scripts/middle_items.py:207:    "teaching_plan": "교수학습 운영표",
+scripts/middle_segments.py:42:    "국어", "도덕", "사회", "역사", "수학", "과학", "기술·가정", "기술가정",
+scripts/middle_subjects.py:26:    "수": "수학",
+services/math-assessment-api/tests/test_detail_parser.py:40:        "수학 주제 탐구",
+services/math-assessment-api/tests/test_detail_parser.py:41:        ["수학 독서 탐구"],
+services/math-assessment-api/tests/test_detail_parser.py:42:    ) == "수학 주제 탐구"
+services/math-assessment-api/tests/test_detail_parser.py:46:    math_two = "<table><tr><td>[12수학Ⅱ01-04] 연속함수의 성질</td></tr></table>"
+services/math-assessment-api/tests/test_detail_parser.py:47:    math_one = "<table><tr><td>[12수학Ⅰ01-01] 지수함수와 로그함수</td></tr></table>"
+services/math-assessment-api/tests/test_detail_parser.py:49:    assert segment_subject_alignment(math_two, "수학Ⅰ") == "other"
+services/math-assessment-api/tests/test_detail_parser.py:50:    assert segment_subject_alignment(math_two, "수학Ⅱ") == "expected"
+services/math-assessment-api/tests/test_detail_parser.py:51:    assert segment_subject_alignment(math_one, "수학Ⅰ") == "expected"
+services/math-assessment-api/tests/test_detail_parser.py:52:    assert segment_subject_alignment(math_one, "수학Ⅱ") == "other"
+services/math-assessment-api/tests/test_detail_parser.py:64:    수학과 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:65:    1. 공통수학1
+services/math-assessment-api/tests/test_detail_parser.py:69:    # 공통수학1
+services/math-assessment-api/tests/test_detail_parser.py:71:    가. 공통수학 탐구
+services/math-assessment-api/tests/test_detail_parser.py:95:    # 공통수학1
+services/math-assessment-api/tests/test_detail_parser.py:101:    # 2026학년도 1학기 [공통영어1] 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:108:    section = parse_assessment_section(source, "공통수학1")
+services/math-assessment-api/tests/test_detail_parser.py:175:    # 수학과제 탐구
+services/math-assessment-api/tests/test_detail_parser.py:188:    section = parse_assessment_section(source, "수학과제 탐구")
+services/math-assessment-api/tests/test_detail_parser.py:249:    # 수학Ⅱ
+services/math-assessment-api/tests/test_detail_parser.py:254:      <tr><th>성취기준</th><td>[12수학Ⅱ02-01]</td></tr>
+services/math-assessment-api/tests/test_detail_parser.py:259:    section = parse_assessment_section(source, "수학Ⅱ")
+services/math-assessment-api/tests/test_detail_parser.py:267:    # 2026학년도 (인공지능 수학)과 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:277:    item = parse_assessment_section(source, "인공지능 수학").items[0]
+services/math-assessment-api/tests/test_detail_parser.py:284:    # 2026학년도 (수학과제 탐구)과 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:289:      <tr><td>수학과제 탐구보고서 (25)</td><td>주제</td>
+services/math-assessment-api/tests/test_detail_parser.py:296:    item = parse_assessment_section(source, "수학과제 탐구").items[0]
+services/math-assessment-api/tests/test_detail_parser.py:298:    assert item.title == "수학과제 탐구보고서"
+services/math-assessment-api/tests/test_detail_parser.py:321:    # 공통수학1
+services/math-assessment-api/tests/test_detail_parser.py:327:      <td>수학 탐구 및 발표</td><td>문제해결 포트폴리오</td></tr>
+services/math-assessment-api/tests/test_detail_parser.py:334:    section = parse_assessment_section(source, "공통수학1")
+services/math-assessment-api/tests/test_detail_parser.py:336:    assert [item.title for item in section.items] == ["수학 탐구 및 발표", "문제해결 포트폴리오"]
+services/math-assessment-api/tests/test_detail_parser.py:366:    # 2026학년도 (대수)과 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:405:    # 2025학년도 (수학Ⅱ)과 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:417:    item = parse_assessment_section(source, "수학Ⅱ").items[0]
+services/math-assessment-api/tests/test_detail_parser.py:427:    # 2026학년도 (대수)과 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:448:    # 2026학년도 (공통수학1)과 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:452:      <tr><th>수행 과제</th><td>공통수학1에서 배우는 다항식, 방정식과 부등식,
+services/math-assessment-api/tests/test_detail_parser.py:460:    item = parse_assessment_section(source, "공통수학1").items[0]
+services/math-assessment-api/tests/test_detail_parser.py:470:            "4. 수행평가 세부 계획<br>가. 수학 독서 글쓰기(50%)",
+services/math-assessment-api/tests/test_detail_parser.py:471:            "수학 독서 글쓰기",
+services/math-assessment-api/tests/test_detail_parser.py:506:    # 2026학년도 (대수) 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:525:    # 2026학년도 (대수)과 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:554:        "채점기준표 ‣ 다양한 실생활 자료에 녹아있는 수학적 사실을 설명할 수 있다.",
+services/math-assessment-api/tests/test_detail_parser.py:597:        "포트폴리오에서 수학적으로 오류가 발견되면 완성하여 제출한 것으로 보지 않는다.",
+services/math-assessment-api/tests/test_detail_parser.py:608:        "수학 학습 의지와 끈기를 갖고 성실히 활동을 수행하였는가?",
+services/math-assessment-api/tests/test_detail_parser.py:659:        "수학학습과정평가",
+services/math-assessment-api/tests/test_detail_parser.py:747:    # 2026학년도 (대수) 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:825:            "공통수학1에서 배우는 다항식, 방정식과 부등식, 경우의 수, 행렬과 관련하여 "
+services/math-assessment-api/tests/test_detail_parser.py:836:    # 2026학년도 (공통수학1) 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:846:    section = parse_assessment_section(source, "공통수학1")
+services/math-assessment-api/tests/test_detail_parser.py:854:    # 2026학년도 (대수) 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:874:    # 2026학년도 (공통수학1) 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:879:      <tr><th>수행 과제</th><td>수학 포트폴리오</td></tr>
+services/math-assessment-api/tests/test_detail_parser.py:885:    item = parse_assessment_section(source, "공통수학1").items[0]
+services/math-assessment-api/tests/test_detail_parser.py:893:    # 2026학년도 (대수) 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:897:      <tr><th>평가 영역명</th><td>수학적 모델링 영역 만점 15점 학기 1학기</td></tr>
+services/math-assessment-api/tests/test_detail_parser.py:906:    assert item.title == "수학적 모델링"
+services/math-assessment-api/tests/test_detail_parser.py:907:    assert item.title_raw == "수학적 모델링"
+services/math-assessment-api/tests/test_detail_parser.py:933:    # 2025학년도 (수학Ⅱ)
+services/math-assessment-api/tests/test_detail_parser.py:937:      <tr><th>성취기준</th><td>[12수학Ⅱ01-01] 함수의 극한의 뜻을 안다.</td></tr>
+services/math-assessment-api/tests/test_detail_parser.py:943:    item = parse_assessment_section(source, "수학Ⅱ").items[0]
+services/math-assessment-api/tests/test_detail_parser.py:951:    # 2026학년도 (미적분Ⅰ)과 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:972:    # 2026학년도 (기하)과 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:991:    # 2026학년도 (대수) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1012:    source = "# 대수 교수학습 및 평가 운영 계획\n[...문맥 전환...]"
+services/math-assessment-api/tests/test_detail_parser.py:1033:    # 2026학년도 (화학) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1040:    # 2026학년도 (대수) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1048:    # 2026학년도 (영어) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1061:    [zip:3학년/2025학년도 경제 수학 평가계획.hwp][ok]
+services/math-assessment-api/tests/test_detail_parser.py:1062:    # 2025학년도 (경제 수학) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1068:    [zip:1학년/2025학년도 수학 평가계획.hwp][ok]
+services/math-assessment-api/tests/test_detail_parser.py:1069:    # 2025학년도 (수학) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1076:    section = parse_assessment_section(source, "수학")
+services/math-assessment-api/tests/test_detail_parser.py:1084:    # 2026학년도 (대수) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1089:    | 1. 수학적 타당성 | 근거가 정확함 | 20점 |
+services/math-assessment-api/tests/test_detail_parser.py:1101:    # 2026학년도 (대수) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1126:    # 2026학년도 (대수) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1149:    # 2026학년도 (미적분) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1175:    # 2026학년도 (공통수학1) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1177:    가. 수학적 가치 발견을 위한 주제별 자율 탐구 활동
+services/math-assessment-api/tests/test_detail_parser.py:1180:          <td colspan="5">수학적 가치 발견을 위한 주제별 자율 탐구 활동</td></tr>
+services/math-assessment-api/tests/test_detail_parser.py:1191:    item = parse_assessment_section(source, "공통수학1").items[0]
+services/math-assessment-api/tests/test_detail_parser.py:1203:    # 2026학년도 (인공지능 수학) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1214:    item = parse_assessment_section(source, "인공지능 수학").items[0]
+services/math-assessment-api/tests/test_detail_parser.py:1223:    # 2026학년도 (대수) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1225:    가. 수학 개념 탐구 모델링
+services/math-assessment-api/tests/test_detail_parser.py:1227:      <tr><th>평가방법</th><td>þ 수학 개념 탐구 모델링</td></tr>
+services/math-assessment-api/tests/test_detail_parser.py:1236:    assert item.method == "수학 개념 탐구 모델링"
+services/math-assessment-api/tests/test_detail_parser.py:1241:    # 2026학년도 (경제 수학) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1243:    가. 실생활 경제수학 탐구하기
+services/math-assessment-api/tests/test_detail_parser.py:1247:      <tr><td>탐구</td><td>경제 현상을 수학적으로 설명함</td><td>20점</td></tr>
+services/math-assessment-api/tests/test_detail_parser.py:1252:    item = parse_assessment_section(source, "경제 수학").items[0]
+services/math-assessment-api/tests/test_detail_parser.py:1259:    # 2026학년도 (대수) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1285:    # 2026학년도 (대수) 교수학습 및 평가계획
+services/math-assessment-api/tests/test_detail_parser.py:1319:                # 2026학년도 (대수)과 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_detail_parser.py:1422:        title="수학주제탐구 영역",
+services/math-assessment-api/tests/test_detail_parser.py:1425:        overview="수학 주제를 탐구한다.",
+services/math-assessment-api/tests/test_middle_items.py:326:    source = "[9과03-01] [12수학01-01]"
+services/math-assessment-api/tests/test_middle_items.py:328:    assert parser._exact_fields(source)["standards"] == ["[12수학01-01]"]
+services/math-assessment-api/tests/test_middle_s6c2.py:188:        + "\n2학년 수학과 평가계획\n[9수01-01]\n"
+services/math-assessment-api/tests/test_middle_s6d1.py:39:        "<tr><td>2026학년도 2학기<br>1학년 [과학]과 교수학습 및 평가 운영계획</td></tr>",
+services/math-assessment-api/tests/test_middle_s6d1.py:90:        f"과학과 1{separator}2학년 교수학습 및 평가 계획\n"
+services/math-assessment-api/tests/test_middle_s6d1.py:91:        "### 가. 1학년 교수학습-평가 방법\n[9과01-01] 합성 관찰\n"
+services/math-assessment-api/tests/test_middle_s6d1.py:92:        "### 나. 2학년 교수학습-평가 방법\n[9과11-01] 합성 실험\n"
+services/math-assessment-api/tests/test_middle_s6d1.py:209:        "사회과 평가계획\n[9사01-01]\n# 과학과 교수학습\n\n# 및 평가 방법\n"
+services/math-assessment-api/tests/test_middle_s6d2c.py:128:    text = "# 주제선택(탐구반)\n# 과학과 교수학습 및 평가계획\n" + table([
+services/math-assessment-api/tests/test_middle_s6d2c.py:183:            "| 1학년 | 탐구반 | 1학기 |\n# 과학과 교수학습\n"
+services/math-assessment-api/tests/test_middle_s6d2d.py:39:@pytest.mark.parametrize("subject,count", [("과학", 1), ("수학", 0), ("국어", 0)])
+services/math-assessment-api/tests/test_middle_s6d2d.py:41:    text = "# 1학년 2학기 교수학습 계획\n" + table([
+services/math-assessment-api/tests/test_middle_s6d2d.py:57:        "<tr><td rowspan='2'>1</td><td>2</td><td>수학</td><td>다른 과제</td>"
+services/math-assessment-api/tests/test_middle_s6d2d.py:72:                                               ("# 수학과 평가 계획", 0), ("", 0)])
+services/math-assessment-api/tests/test_middle_s6e1.py:218:            "<table>\n<tr><td>수학</td><td>계산</td></tr>\n</table>\n")
+services/math-assessment-api/tests/test_middle_s6e1.py:245:    assert ai.science_markers("국어, 수학, 과학, 영어\n") == [0]
+services/math-assessment-api/tests/test_middle_segments.py:72:    text = "과학과 교수학습 및 평가 운영 계획\n" + "\n".join(
+services/math-assessment-api/tests/test_middle_segments.py:126:                f"# 1 {subject}과 교수학습 운영 계획\n합성 {subject}\n")
+services/math-assessment-api/tests/test_middle_segments.py:127:    text = cover(3, "수학") + cover(1, "과학") + cover(2, "과학") + cover(3, "국어")
+services/math-assessment-api/tests/test_middle_segments.py:132:        assert "| 수학 |" not in raw and "| 국어 |" not in raw
+services/math-assessment-api/tests/test_middle_segments.py:138:        f"{g}학년\n국어과 평가 계획\n합성 국어\n과학과 교수학습 및 평가 계획\n합성 과학"
+services/math-assessment-api/tests/test_middle_segments.py:147:    text = "과학과 교수학습 및 평가 계획\n1학년\n내용\n2학년\n내용\n3학년\n내용\n"
+services/math-assessment-api/tests/test_middle_segments.py:214:BASE = "과학과 교수학습 및 평가 계획\n1학년\n2학기\n평가 점수 10점"
+services/math-assessment-api/tests/test_middle_segments.py:294:    expected = hashlib.sha256(f"{sha}|2022|공통수학1".encode()).hexdigest()[:24]
+services/math-assessment-api/tests/test_middle_segments.py:296:        {"sha256": sha, "subject": "공통수학1", "resolved_curriculum": "2022"}
+services/math-assessment-api/tests/test_middle_segments.py:317:        "인공지능과 문제해결 교수학습 및 평가계획\n2학년\n다른 교과"
+services/math-assessment-api/tests/test_middle_subject.py:65:        "2026학년도 1학년 2학기 과학과 교수학습 및 평가 계획",
+services/math-assessment-api/tests/test_middle_subject.py:90:        "기술·가정과 교수학습 및 평가 계획",
+services/math-assessment-api/tests/test_middle_subject.py:91:        "교수학습 평가 계획",
+services/math-assessment-api/tests/test_middle_subject.py:128:        "과학과 교수학습 및 평가 계획\n[9과01-01] 관찰\n"
+services/math-assessment-api/tests/test_middle_subject.py:129:        "기술·가정과 교수학습 및 평가 계획\n"
+services/math-assessment-api/tests/test_middle_subject.py:288:    assert aliases.subject_hits("# 공통수학1")[0]["subject"] == "공통수학1"
+services/math-assessment-api/tests/test_middle_subject.py:291:    assert manifest.classify("공통수학1 평가계획.hwp")[1] == "공통수학1"
+services/math-assessment-api/tests/test_middle_subject.py:297:    assert parser.segment_subject_alignment("[10공수1-01-01]", "공통수학1") == "expected"
+services/math-assessment-api/tests/test_middle_subject.py:304:    assert shortlist.subject_pattern("공통수학1")
+services/math-assessment-api/tests/test_middle_subject.py:305:    assert shortlist.key({"subject": "수학"}) == ("", "", "수학")
+services/math-assessment-api/tests/test_publish_builder.py:188:    # 2026년도 미디어 영어과 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_publish_builder.py:190:    # 2026년도 (미적분Ⅰ)과 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_publish_builder.py:229:    names, _, _ = derive_task_names(evidence, [], "경제 수학")
+services/math-assessment-api/tests/test_publish_builder.py:242:    names, _, _ = derive_task_names(evidence, [], "경제 수학")
+services/math-assessment-api/tests/test_publish_builder.py:260:    names, _, _ = derive_task_names(evidence, [], "경제 수학")
+services/math-assessment-api/tests/test_publish_builder.py:275:    names, _, _ = derive_task_names(evidence, [], "경제 수학")
+services/math-assessment-api/tests/test_publish_builder.py:282:        "평가영역 | 수학적 탐구 및 분석 | 서술·논술 | "
+services/math-assessment-api/tests/test_publish_builder.py:288:    assert names == ["수학적 탐구 및 분석"]
+services/math-assessment-api/tests/test_publish_builder.py:289:    assert sources == {"수학적 탐구 및 분석": "context"}
+services/math-assessment-api/tests/test_publish_builder.py:303:      <tr><td>수행평가명</td><td>lspan="4">수학 문제 만들기</td></tr>
+services/math-assessment-api/tests/test_publish_builder.py:309:    names, _, _ = derive_task_names(evidence, [], "공통수학1")
+services/math-assessment-api/tests/test_publish_builder.py:313:    assert "수학 문제 만들기" in names
+services/math-assessment-api/tests/test_publish_builder.py:329:    names, _, _ = derive_task_names(evidence, [], "경제 수학")
+services/math-assessment-api/tests/test_publish_builder.py:341:    assert normalize_task_name("이차함수 수학적 모델링프로젝트") == (
+services/math-assessment-api/tests/test_publish_builder.py:342:        "이차함수 수학적 모델링 프로젝트"
+services/math-assessment-api/tests/test_publish_builder.py:344:    assert normalize_task_name("독서기반 수학 탐구활동") == "독서 기반 수학 탐구 활동"
+services/math-assessment-api/tests/test_publish_builder.py:355:      <tr><td>수행평가명</td><td>수학칼럼쓰기</td></tr>
+services/math-assessment-api/tests/test_publish_builder.py:360:    names, _, _ = derive_task_names(evidence, [], "공통수학1")
+services/math-assessment-api/tests/test_publish_builder.py:363:        "수학칼럼쓰기",
+services/math-assessment-api/tests/test_publish_builder.py:387:    assert task_name_is_rejected("도서 기반 평가 방법 수학 탐구")
+services/math-assessment-api/tests/test_publish_builder.py:389:    assert task_name_is_rejected("수학의 기본 개념 이해와 문제 해결 능력 신장")
+services/math-assessment-api/tests/test_publish_builder.py:395:    assert task_name_is_rejected("수학과제탐구")
+services/math-assessment-api/tests/test_publish_builder.py:396:    assert task_name_is_rejected("수학 과제 탐구")
+services/math-assessment-api/tests/test_publish_builder.py:398:        "I. 수학 과제 탐구의 이해 II. 수학 과제 탐구의 실행과 평가"
+services/math-assessment-api/tests/test_publish_builder.py:400:    assert task_name_is_rejected("교수학습활동")
+services/math-assessment-api/tests/test_publish_builder.py:407:    assert normalize_task_name("평가영역도서기반수학탐구") == "도서 기반 수학 탐구"
+services/math-assessment-api/tests/test_publish_builder.py:417:    assert normalize_task_name("★수행평가-실생활 수학 탐구보고서") == (
+services/math-assessment-api/tests/test_publish_builder.py:418:        "실생활 수학 탐구 보고서"
+services/math-assessment-api/tests/test_publish_builder.py:420:    assert normalize_task_name("수학 기사 작성 내용 (85)") == "수학 기사 작성 내용"
+services/math-assessment-api/tests/test_publish_builder.py:422:    assert task_name_is_rejected(normalize_task_name("수학 기사 작성 내용 (85)"))
+services/math-assessment-api/tests/test_publish_builder.py:441:    assert not task_name_is_rejected("수학으로 보는 경제 기사")
+services/math-assessment-api/tests/test_publish_builder.py:442:    assert not task_name_is_rejected("문학 작품 속 수학적 구조 탐구")
+services/math-assessment-api/tests/test_publish_builder.py:448:    수학적 증명을 바탕으로 현상 증명하기
+services/math-assessment-api/tests/test_publish_builder.py:450:    # 영어과 교수학습 및 평가 운영 계획
+services/math-assessment-api/tests/test_publish_builder.py:456:    assert names == ["수학적 증명을 바탕으로 현상 증명하기"]
+services/math-assessment-api/tests/test_publish_builder.py:463:    ## 1) 수학 독서 기반 사고 확장 글쓰기
+services/math-assessment-api/tests/test_publish_builder.py:465:      <tr><th>수행평가과제명</th><th>수학 독서 기반<br>사고 확장 글쓰기</th></tr>
+services/math-assessment-api/tests/test_publish_builder.py:474:    assert names[0] == "수학 독서 기반 사고 확장 글쓰기"
+services/math-assessment-api/tests/test_publish_builder.py:485:        "overview": "문제 해결 과제와 수학 독서 보고서를 함께 운영한다.",
+services/math-assessment-api/tests/test_publish_builder.py:490:    assert assessment_category("수학 독서 탐구", structure, "") == "reading"
+services/math-assessment-api/tests/test_publish_builder.py:501:    names, _, sources = derive_task_names(evidence, [], "공통수학1")
+services/math-assessment-api/tests/test_publish_builder.py:515:    names, _, sources = derive_task_names(evidence, [], "공통수학1")
+services/math-assessment-api/tests/test_science_audit_gate.py:32:    "수학 함수 탐구 보고서",
+services/math-assessment-api/tests/test_science_audit_gate.py:314:        ["[12수학01-01]"],
+services/math-assessment-api/tests/test_science_audit_gate.py:319:        ["[12수학Ⅰ01-01]"],
+services/math-assessment-api/tests/test_science_rules.py:25:        ("[12수학01-01]", ["12수학"], "other"),
+services/math-assessment-api/tests/test_science_rules.py:45:        ("[12수학Ⅰ01-01]", True),
+services/math-assessment-api/tests/test_science_rules.py:87:@pytest.mark.parametrize("name", ["국어", "영어", "수학", "체육", "기술", "가정"])

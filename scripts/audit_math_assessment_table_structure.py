@@ -9,18 +9,29 @@ repairs can be applied by failure class.
 from __future__ import annotations
 
 import argparse
-import csv
 import importlib.util
-import json
 import re
-import sqlite3
-import zlib
-from collections import Counter, defaultdict
+import sys
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 
 from lxml import etree
 from lxml import html as lxml_html
+
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from scripts.science_rules import (
+    BLOCKING_TABLE_FLAGS,
+    code_evidence,
+    default_database,
+    public_items,
+    risk_record,
+    standard_code_prefixes,
+    table_flags,
+    write_audit,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SOURCE_HTML_MODULE_PATH = (
@@ -36,14 +47,11 @@ SOURCE_HTML_SPEC.loader.exec_module(SOURCE_HTML_MODULE)
 restore_escaped_table_rows = SOURCE_HTML_MODULE.restore_escaped_table_rows
 
 
-ACHIEVEMENT_CODE_RE = re.compile(
-    r"\[\s*12\s*([A-Za-z가-힣ⅠⅡ]{1,16})\s*\d{2}\s*[-‐‑‒–—]?\s*\d{2}\s*\]"
-)
 HEADER_RE = re.compile(
     r"평가영역|수행과제|평가과제|과제명|성취기준|성취수준|평가방법|"
     r"평가시기|평가요소|채점기준|세부평가기준|수행수준|배점|총점"
 )
-STANDARDS_RE = re.compile(r"성취기준|성취수준|\[\s*12[A-Za-z가-힣ⅠⅡ]", re.I)
+STANDARDS_RE = re.compile(r"성취기준|성취수준|\[\s*9\s*[가-힣]", re.I)
 RUBRIC_RE = re.compile(r"평가요소|채점요소|채점기준|평가기준|수행수준|배점|점수")
 PAGE_MARKER_RE = re.compile(r"^(?:-?\s*\d+\s*-?|\d+\s*/\s*\d+|쪽)$")
 ASSESSMENT_AREA_LABEL_RE = re.compile(r"평가\s*영역\s*명")
@@ -150,8 +158,8 @@ def audit_table(table: etree._Element) -> TableAudit:
         widths.append((max(occupied) + 1) if occupied else 0)
 
     text = element_text(table)
-    prefixes = set(ACHIEVEMENT_CODE_RE.findall(text))
-    code_count = len(ACHIEVEMENT_CODE_RE.findall(text))
+    prefixes = set(standard_code_prefixes(text))
+    code_count = len(code_evidence(text))
     return TableAudit(
         row_count=len(rows),
         cell_count=cell_count,
@@ -190,9 +198,7 @@ def labeled_table_values(root: etree._Element, label_pattern: re.Pattern[str]) -
     return values
 
 
-def count_near_adjacent_compatible_tables(
-    root: etree._Element, audits: list[TableAudit]
-) -> int:
+def count_near_adjacent_compatible_tables(root: etree._Element, audits: list[TableAudit]) -> int:
     """Count table pairs split only by whitespace, a page number, or a short label."""
 
     tables = root.xpath(".//table")
@@ -253,7 +259,9 @@ def count_achievement_level_page_breaks(root: etree._Element) -> int:
             if "".join(row_grade(row) for row in right_rows[:2]) != "DE":
                 continue
             evidence = compact(f"{element_text(table)} {element_text(next_table)}")
-            if re.search(r"성취기준|성취수준|수준진술문|\[(?:10|12)", evidence):
+            if re.search(r"성취기준|성취수준|수준진술문", evidence) or standard_code_prefixes(
+                evidence
+            ):
                 count += 1
     return count
 
@@ -275,10 +283,7 @@ def count_section_local_blank_column_tables(root: etree._Element) -> int:
                     last_content_column = width
             row_columns.append((width, last_content_column))
         full_width = max((width for width, _ in row_columns), default=0)
-        leading_sparse = any(
-            full_width - last_content >= 2
-            for _, last_content in row_columns[:2]
-        )
+        leading_sparse = any(full_width - last_content >= 2 for _, last_content in row_columns[:2])
         visible = compact(element_text(table))
         if (
             full_width >= 4
@@ -306,8 +311,8 @@ def audit_html(value: str) -> dict[str, object]:
     audits = [audit_table(table) for table in tables]
     visible = element_text(root)
     outside = outside_table_text(root)
-    outside_codes = ACHIEVEMENT_CODE_RE.findall(outside)
-    all_prefixes = set(ACHIEVEMENT_CODE_RE.findall(visible))
+    outside_codes = code_evidence(outside)
+    all_prefixes = set(standard_code_prefixes(visible))
     area_label_count = len(ASSESSMENT_AREA_LABEL_RE.findall(visible))
     task_label_count = len(TASK_LABEL_RE.findall(visible))
     area_values = labeled_table_values(root, re.compile(r"평가영역명"))
@@ -320,7 +325,7 @@ def audit_html(value: str) -> dict[str, object]:
         flags.add("oversized_html")
     if len(tables) > 24:
         flags.add("excessive_table_count")
-    if len(all_prefixes) >= 3:
+    if len(all_prefixes) >= 2:
         flags.add("multiple_course_code_prefixes")
     if len(outside_codes) >= 2:
         flags.add("orphan_achievement_codes")
@@ -334,10 +339,7 @@ def audit_html(value: str) -> dict[str, object]:
         flags.add("multiple_performance_task_labels")
     if whole_plan_marker_count >= 2 and len(tables) >= 6:
         flags.add("whole_plan_policy_leak")
-    if (
-        len(area_values) >= 2
-        or (whole_plan_marker_count >= 2 and len(tables) >= 6)
-    ):
+    if len(area_values) >= 2 or (whole_plan_marker_count >= 2 and len(tables) >= 6):
         flags.add("likely_unbounded_public_item")
 
     standards_tables = sum(audit.standards_signal for audit in audits)
@@ -367,10 +369,7 @@ def audit_html(value: str) -> dict[str, object]:
             and audit.width_outlier_rows / audit.row_count >= 0.2
         ):
             flags.add("inconsistent_effective_columns")
-        if (
-            audit.cell_count >= 12
-            and audit.blank_cells / max(audit.cell_count, 1) >= 0.45
-        ):
+        if audit.cell_count >= 12 and audit.blank_cells / max(audit.cell_count, 1) >= 0.45:
             flags.add("high_blank_cell_ratio")
         if audit.row_count >= 6 and not audit.header_signal:
             flags.add("large_table_without_header_signal")
@@ -378,7 +377,8 @@ def audit_html(value: str) -> dict[str, object]:
             flags.add("very_wide_table")
 
     signatures = [
-        name for name, signature in SCREENSHOT_SIGNATURES.items()
+        name
+        for name, signature in SCREENSHOT_SIGNATURES.items()
         if compact(signature) in compact(visible)
     ]
     return {
@@ -412,7 +412,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--database",
         type=Path,
-        default=root / "data" / "publish" / "math_assessment_catalog_detail.sqlite",
+        default=default_database(),
     )
     parser.add_argument(
         "--output",
@@ -429,142 +429,36 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    connection = sqlite3.connect(f"file:{args.database.resolve()}?mode=ro", uri=True)
-    connection.row_factory = sqlite3.Row
-    rows = connection.execute(
-        """
-        SELECT item.item_id, item.case_id, item.item_order, item.title,
-               item.source_html_zlib, item.rubric_html_zlib,
-               cases.curriculum, cases.subject, cases.school_name,
-               cases.region, cases.district
-        FROM assessment_items item
-        JOIN cases ON cases.case_id = item.case_id
-        WHERE item.extraction_status = 'bounded'
-          AND item.title_basis IN ('table', 'heading')
-        ORDER BY item.case_id, item.item_order
-        """
-    ).fetchall()
-    connection.close()
-
-    queue: list[dict[str, object]] = []
-    flag_counts: Counter[str] = Counter()
-    item_flag_counts: Counter[str] = Counter()
-    signature_matches: defaultdict[str, list[dict[str, str]]] = defaultdict(list)
-    totals = Counter()
-
-    for index, row in enumerate(rows, 1):
-        item_flags: set[str] = set()
-        part_results: dict[str, dict[str, object]] = {}
-        for part_name, blob_name in (
-            ("source", "source_html_zlib"),
-            ("rubric", "rubric_html_zlib"),
-        ):
-            try:
-                value = restore_escaped_table_rows(
-                    zlib.decompress(bytes(row[blob_name])).decode("utf-8")
-                )
-                result = audit_html(value)
-            except (zlib.error, UnicodeDecodeError):
-                result = {
-                    "flags": ["html_decode_failed"],
-                    "table_count": 0,
-                    "row_count": 0,
-                    "char_count": 0,
-                }
-            part_results[part_name] = result
-            part_flags = set(result["flags"])
-            item_flags.update(f"{part_name}:{flag}" for flag in part_flags)
-            for flag in part_flags:
-                flag_counts[f"{part_name}:{flag}"] += 1
-            for signature in result.get("matched_screenshot_signatures", []):
-                if len(signature_matches[str(signature)]) < 20:
-                    signature_matches[str(signature)].append(
-                        {
-                            "item_id": str(row["item_id"]),
-                            "case_id": str(row["case_id"]),
-                            "school_name": str(row["school_name"]),
-                            "subject": str(row["subject"]),
-                            "title": str(row["title"]),
-                            "part": part_name,
-                        }
-                    )
-
-        if item_flags:
-            item_flag_counts["items_with_any_flag"] += 1
+    rows = public_items(args.database)
+    queue = []
+    blocking_counts = Counter()
+    warning_counts = Counter()
+    warning_items = 0
+    for row in rows:
+        flags = table_flags(row)
+        blockers = flags & BLOCKING_TABLE_FLAGS
+        warnings = flags - BLOCKING_TABLE_FLAGS
+        blocking_counts.update(blockers)
+        warning_counts.update(warnings)
+        warning_items += bool(warnings)
+        if blockers:
+            queue.append(risk_record(row, ["B5"]))
+        elif warnings:
             queue.append(
-                {
-                    "item_id": str(row["item_id"]),
-                    "case_id": str(row["case_id"]),
-                    "item_order": int(row["item_order"]),
-                    "curriculum": str(row["curriculum"]),
-                    "subject": str(row["subject"]),
-                    "school_name": str(row["school_name"]),
-                    "region": str(row["region"]),
-                    "district": str(row["district"]),
-                    "title": str(row["title"]),
-                    "flags": "|".join(sorted(item_flags)),
-                    "source_table_count": part_results["source"]["table_count"],
-                    "source_row_count": part_results["source"]["row_count"],
-                    "source_char_count": part_results["source"]["char_count"],
-                    "source_orphan_codes": part_results["source"].get(
-                        "outside_achievement_code_count", 0
-                    ),
-                    "source_assessment_area_labels": part_results["source"].get(
-                        "assessment_area_label_count", 0
-                    ),
-                    "source_distinct_assessment_areas": part_results["source"].get(
-                        "distinct_assessment_area_count", 0
-                    ),
-                    "source_performance_task_labels": part_results["source"].get(
-                        "performance_task_label_count", 0
-                    ),
-                    "source_whole_plan_markers": part_results["source"].get(
-                        "whole_plan_marker_count", 0
-                    ),
-                    "source_standards_tables": part_results["source"].get(
-                        "standards_table_count", 0
-                    ),
-                    "source_column_outliers": part_results["source"].get(
-                        "width_outlier_rows", 0
-                    ),
-                    "rubric_table_count": part_results["rubric"]["table_count"],
-                    "rubric_row_count": part_results["rubric"]["row_count"],
-                    "rubric_char_count": part_results["rubric"]["char_count"],
-                    "rubric_column_outliers": part_results["rubric"].get(
-                        "width_outlier_rows", 0
-                    ),
-                }
+                risk_record(row, [], severity="warning", reasons="|".join(sorted(warnings)))
             )
-        totals["source_tables"] += int(part_results["source"]["table_count"])
-        totals["rubric_tables"] += int(part_results["rubric"]["table_count"])
-        if index % 2000 == 0:
-            print(f"audited {index}/{len(rows)}", flush=True)
-
-    args.output.parent.mkdir(parents=True, exist_ok=True)
     report = {
-        "schema_version": 1,
-        "database": str(args.database.resolve()),
+        "schema_version": 2,
         "public_item_count": len(rows),
-        "items_with_any_flag": item_flag_counts["items_with_any_flag"],
-        "flag_counts": dict(sorted(flag_counts.items())),
-        "totals": dict(sorted(totals.items())),
-        "screenshot_signature_matches": dict(sorted(signature_matches.items())),
-        "queue": str(args.queue.resolve()),
-        "audit_policy": (
-            "Deterministic structural screening only. Flags do not authorize text deletion "
-            "or inferred cell reconstruction; source-boundary and ambiguous fragment repairs "
-            "still require source-grounded review."
-        ),
+        "blocking_flag_counts": dict(sorted(blocking_counts.items())),
+        "warning_flag_counts": dict(sorted(warning_counts.items())),
+        "blocking_flag_count": sum(blocking_counts.values()),
+        "warning_flag_count": sum(warning_counts.values()),
+        "warning_items": warning_items,
     }
-    args.output.write_text(
-        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
-    fieldnames = list(queue[0]) if queue else ["item_id", "flags"]
-    with args.queue.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(queue)
-    print(json.dumps(report, ensure_ascii=False), flush=True)
+    write_audit(report, queue, args.output, args.queue)
+    if not report["passed"]:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

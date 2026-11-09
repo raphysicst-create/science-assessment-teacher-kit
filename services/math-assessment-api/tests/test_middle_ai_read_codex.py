@@ -1,6 +1,7 @@
 """Offline Codex discovery and exit-code regressions using synthetic files.
 
-Run: .venv/Scripts/python.exe -m pytest -q -p no:cacheprovider services/math-assessment-api/tests/test_middle_ai_read_codex.py
+Run: .venv/Scripts/python.exe -m pytest -q -p no:cacheprovider
+     services/math-assessment-api/tests/test_middle_ai_read_codex.py
 """
 
 import importlib.util
@@ -9,7 +10,8 @@ from pathlib import Path
 
 import pytest
 from scripts import middle_ai_read as ai
-from test_middle_s6e1 import ROUND, directory, fake_files, install_source
+from test_middle_s6e1 import ROUND, fake_files, install_source
+from test_middle_s6e1 import directory as directory
 
 
 @pytest.fixture(autouse=True)

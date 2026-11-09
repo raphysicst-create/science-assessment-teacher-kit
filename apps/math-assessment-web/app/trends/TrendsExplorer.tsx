@@ -14,7 +14,7 @@ import {
 } from "../lib/catalog-api";
 
 const DEFAULT_CURRICULUM = "2022";
-const DEFAULT_SUBJECT = "대수";
+const DEFAULT_SUBJECT = "과학";
 
 function safeCurriculum(value: string | null) {
   return value === "2015" || value === "2022" ? value : DEFAULT_CURRICULUM;
@@ -104,7 +104,7 @@ export default function TrendsExplorer() {
           <p className="breadcrumb"><Link href="/">홈</Link><span>/</span>공개자료 경향</p>
           <h1 id="trends-title">과목별 수행평가 경향</h1>
         </div>
-        <p><strong>8,800</strong><span>수집 정규화 사례</span></p>
+        {!loading && !error && trend && <p><strong>{trend.documents.toLocaleString()}</strong><span>확인 문서</span></p>}
       </header>
 
       <section className="filterDock" aria-labelledby="course-filter-title">
@@ -126,7 +126,7 @@ export default function TrendsExplorer() {
             </select>
           </label>
           <label className="wideControl">
-            <span>수학 과목</span>
+            <span>과학 과목</span>
             <select value={subject} onChange={(event) => changeSubject(event.target.value)}>
               {courseOptions.map((item) => (
                 <option key={`${item.curriculum}-${item.subject}`} value={item.subject}>
@@ -211,17 +211,17 @@ export default function TrendsExplorer() {
           <section className="coverageSection" aria-labelledby="coverage-title">
             <div className="sectionLabel">
               <span className="stepPill">3</span>
-              <div><h2 id="coverage-title">학교별 확인 상태</h2><p>공개계획 확인 대상 2,407개 학교 × 교육과정 × 과목 확인표 기준</p></div>
+              <div><h2 id="coverage-title">학교별 확인 상태</h2><p>수집한 공개 평가계획의 교육과정·과목 확인표 기준</p></div>
             </div>
-            <div className="coverageGrid">
-              <div className="coveragePrimary"><span>평가계획에서 발견</span><strong>{(trend.coverage.found ?? 0).toLocaleString()}</strong><small>학교</small></div>
+            {Object.values(trend.coverage).some((value) => value !== null) ? <div className="coverageGrid">
+              <div className="coveragePrimary"><span>평가계획에서 발견</span><strong>{trend.coverage.found?.toLocaleString() ?? "미집계"}</strong><small>학교</small></div>
               <dl>
-                <div><dt>교육과정 판별 유보</dt><dd>{(trend.coverage.found_curriculum_ambiguous ?? 0).toLocaleString()}</dd></div>
-                <div><dt>평가계획에서 미검출</dt><dd>{(trend.coverage.not_found_in_collected_plans ?? 0).toLocaleString()}</dd></div>
-                <div><dt>개설 여부 미확인</dt><dd>{(trend.coverage.offering_unknown ?? 0).toLocaleString()}</dd></div>
-                <div><dt>추출 실패</dt><dd>{(trend.coverage.extraction_failed ?? 0).toLocaleString()}</dd></div>
+                <div><dt>교육과정 판별 유보</dt><dd>{trend.coverage.found_curriculum_ambiguous?.toLocaleString() ?? "미집계"}</dd></div>
+                <div><dt>평가계획에서 미검출</dt><dd>{trend.coverage.not_found_in_collected_plans?.toLocaleString() ?? "미집계"}</dd></div>
+                <div><dt>개설 여부 미확인</dt><dd>{trend.coverage.offering_unknown?.toLocaleString() ?? "미집계"}</dd></div>
+                <div><dt>추출 실패</dt><dd>{trend.coverage.extraction_failed?.toLocaleString() ?? "미집계"}</dd></div>
               </dl>
-            </div>
+            </div> : <p>학교별 확인 상태는 집계 준비 중입니다.</p>}
             <div className="interpretationNote"><strong>해석 주의</strong><p>{caution}</p></div>
           </section>
 

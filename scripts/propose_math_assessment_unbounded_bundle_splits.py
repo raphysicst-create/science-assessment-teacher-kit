@@ -22,9 +22,8 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from audit_unresolved_math_assessment_titles import layout_text, standard_alignment
 from audit_math_assessment_table_structure import SOURCE_HTML_MODULE, audit_html
-from build_math_assessment_publish_db import task_name_is_rejected
+from audit_unresolved_math_assessment_titles import layout_text
 from propose_math_assessment_explicit_item_recovery import (
     STRONG_BOUNDARIES,
     STRUCTURAL_DIRECT_VALUE_RE,
@@ -32,7 +31,7 @@ from propose_math_assessment_explicit_item_recovery import (
     title_key,
 )
 from propose_math_assessment_table_boundary_repairs import split_candidates
-
+from scripts.science_rules import subject_alignment, title_rejection
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -145,7 +144,7 @@ def main() -> None:
             title = str(candidate.get("title") or "").strip()
             key = title_key(title)
             fragment = str(candidate.get("source_html") or "")
-            alignment = standard_alignment(layout_text(fragment), str(row["subject"]))
+            alignment = subject_alignment(layout_text(fragment))
             rubric_html = SOURCE_HTML_MODULE.rubric_tables_from_source_html(fragment)
             rubric_flags = list(audit_html(rubric_html)["flags"]) if rubric_html else []
             signals = dict(candidate.get("signals") or {})
@@ -158,7 +157,7 @@ def main() -> None:
                     ),
                     "source_task_title": bool(
                         key
-                        and not task_name_is_rejected(title)
+                        and not title_rejection(title)
                         and not STRUCTURAL_DIRECT_VALUE_RE.fullmatch(key)
                     ),
                     "not_already_public_by_title": key

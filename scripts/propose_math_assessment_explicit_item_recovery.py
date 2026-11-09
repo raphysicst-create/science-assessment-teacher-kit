@@ -27,33 +27,25 @@ from scripts.audit_math_assessment_table_structure import (
     audit_html,
     restore_escaped_table_rows,
 )
-from scripts.audit_math_assessment_titles_full import audit_flags, confidence
 from scripts.audit_unresolved_math_assessment_titles import (
     SUPPORT_MARKER_RE,
     candidate_rows,
     layout_text,
     normalize_candidate,
-    standard_alignment,
 )
+from scripts.science_rules import (
+    OTHER_SUBJECT_TITLE_RE,
+    audit_flags,
+    confidence,
+    subject_alignment,
+)
+from scripts.science_rules import RECOVERY_BLOCKING_TABLE_FLAGS as BLOCKING_TABLE_FLAGS
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 STRONG_BOUNDARIES = {
     "subject_heading:assessment_anchor",
     "subject_heading_exact:assessment_anchor",
     "zip_member_subject:assessment_anchor",
-}
-BLOCKING_TABLE_FLAGS = {
-    "excessive_table_count",
-    "inconsistent_effective_columns",
-    "invalid_span_value",
-    "likely_unbounded_public_item",
-    "multiple_assessment_area_labels",
-    "multiple_course_code_prefixes",
-    "multiple_distinct_assessment_areas",
-    "multiple_performance_task_labels",
-    "oversized_html",
-    "rowspan_overflows_table",
-    "whole_plan_policy_leak",
 }
 STRUCTURAL_DIRECT_VALUE_RE = re.compile(
     r"^(?:\(?\s*유형\s*\)?|명|영역만점|평가요소|평가항목|평가영역|"
@@ -105,7 +97,7 @@ def parse_args() -> argparse.Namespace:
         metavar="CURRICULUM|SUBJECT",
         help=(
             "Limit recovery to one curriculum-and-subject pair. Repeat for "
-            "multiple pairs, for example --target '2015|수학Ⅱ'."
+            "multiple pairs, for example --target '2022|과학'."
         ),
     )
     return parser.parse_args()
@@ -125,22 +117,18 @@ def source_course_identity_evidence(
     title: str,
     subject: str,
 ) -> bool:
-    """Require either the course code or its full source-authored name.
+    """Require science codes, or an explicit science name in the source title.
 
-    A few plans state ``전 성취기준`` instead of printing each code. In that
-    narrow case, a task title that literally contains the selected course name
-    is still direct source evidence. Generic ``수학`` wording is intentionally
-    excluded because it cannot distinguish courses.
+    Generic subject wording alone remains insufficient without code evidence.
     """
-
-    if alignment == "expected":
+    if alignment == "target":
         return True
-    subject_key = title_key(subject)
     return bool(
-        alignment == "unknown"
-        and subject_key
-        and subject_key != title_key("수학")
-        and subject_key in title_key(title)
+        alignment == "none"
+        and bool(title_key(subject))
+        and not OTHER_SUBJECT_TITLE_RE.search(subject)
+        and title_key(subject) != title_key("과학")
+        and title_key(subject) in title_key(title)
     )
 
 
@@ -293,7 +281,9 @@ def main() -> None:
         text = layout_text(source_html)
         direct = unique_direct_candidates(text)
         key = title_key(str(row["title"]))
-        exact_matches = [candidate for candidate in direct if title_key(str(candidate["title"])) == key]
+        exact_matches = [
+            candidate for candidate in direct if title_key(str(candidate["title"])) == key
+        ]
         competing = competing_direct_candidates(str(row["title"]), direct)
         flags = audit_flags(str(row["title"]), str(row["title_basis"]))
         title_confidence = confidence(
@@ -301,7 +291,7 @@ def main() -> None:
             str(row["title_basis"]),
             explicit_source_label=True,
         )
-        alignment = standard_alignment(text, str(row["subject"]))
+        alignment = subject_alignment(text)
         support_marker_count = len(
             {match.group(0) for match in SUPPORT_MARKER_RE.finditer(text)}
         )

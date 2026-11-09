@@ -14,21 +14,20 @@ from audit_math_assessment_table_structure import (
     audit_html,
     restore_escaped_table_rows,
 )
-from audit_math_assessment_titles_full import audit_flags, confidence
 from audit_unresolved_math_assessment_titles import (
     SUPPORT_MARKER_RE,
     layout_text,
-    standard_alignment,
 )
 from package_math_assessment_vercel_data import assert_bounded_html_privacy
 from propose_math_assessment_explicit_item_recovery import (
-    BLOCKING_TABLE_FLAGS,
     STRONG_BOUNDARIES,
     competing_direct_candidates,
     source_course_identity_evidence,
     title_key,
     unique_direct_candidates,
 )
+from scripts.science_rules import RECOVERY_BLOCKING_TABLE_FLAGS as BLOCKING_TABLE_FLAGS
+from scripts.science_rules import audit_flags, confidence, subject_alignment
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -162,7 +161,7 @@ def main() -> None:
             value for value in direct if title_key(str(value["title"])) == key
         ]
         competing = competing_direct_candidates(str(row["title"]), direct)
-        alignment = standard_alignment(text, str(row["subject"]))
+        alignment = subject_alignment(text)
         support_markers = len(
             {match.group(0) for match in SUPPORT_MARKER_RE.finditer(text)}
         )

@@ -23,18 +23,19 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from lxml import html as lxml_html
-
 from scripts.audit_math_assessment_detail_db import value_is_traceable
-
+from scripts.science_rules import (
+    QUEUE_FIELDS,
+    blocking_errors,
+    default_database,
+    public_items,
+    risk_record,
+    title_rejection,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_STATUSES = ("bounded",)
 PUBLIC_TITLE_BASES = ("table", "heading")
-POLICY_TITLE_RE = re.compile(
-    r"^(?:영역별|학기\s*단위\s*성취수준\s*설정|단원/?영역별\s*성취수준|"
-    r"성취기준별\s*성취수준|평가\s*관련\s*제반\s*문제|평가요소\s*및\s*채점기준|"
-    r"교수[·ㆍ]?학습\s*및\s*평가\s*계획)$"
-)
 DISAMBIGUATION_RE = re.compile(r"\s*\(\s*\d+\s*회\s*\)\s*$")
 SCORE_RE = re.compile(r"\d{1,3}(?:\.\d+)?점")
 WEIGHT_RE = re.compile(r"\d{1,3}(?:\.\d+)?%")
@@ -50,7 +51,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--database",
         type=Path,
-        default=PROJECT_ROOT / "data" / "publish" / "math_assessment_catalog_detail.sqlite",
+        default=default_database(),
     )
     parser.add_argument(
         "--output",
@@ -60,7 +61,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--queue",
         type=Path,
-        default=PROJECT_ROOT / "data" / "derived" / "math_assessment_release_precision_review_queue.csv",
+        default=PROJECT_ROOT
+        / "data"
+        / "derived"
+        / "math_assessment_release_precision_review_queue.csv",
     )
     return parser.parse_args()
 
@@ -104,7 +108,6 @@ def main() -> None:
         FROM assessment_items AS item
         JOIN cases ON cases.case_id = item.case_id
         WHERE item.extraction_status = 'bounded'
-          AND item.title_basis IN ('table', 'heading')
         ORDER BY item.case_id, item.item_order
         """
     ).fetchall()
@@ -150,11 +153,13 @@ def main() -> None:
 
         title = str(row["title"]).strip()
         title_core = DISAMBIGUATION_RE.sub("", title)
-        title_in_source = bool(normalized_key(title_core)) and normalized_key(title_core) in normalized_key(source_visible)
+        title_in_source = bool(normalized_key(title_core)) and normalized_key(
+            title_core
+        ) in normalized_key(source_visible)
         if not title_in_source:
             counts["titles_not_traceable_to_source"] += 1
             sample(blocking_samples["titles_not_traceable_to_source"], base)
-        if POLICY_TITLE_RE.fullmatch(" ".join(title.split())):
+        if title_rejection(title, source_html):
             counts["public_policy_or_structure_titles"] += 1
             sample(blocking_samples["public_policy_or_structure_titles"], base)
 
@@ -165,11 +170,13 @@ def main() -> None:
                 traceability_misses.append(field)
         if traceability_misses:
             counts["items_with_derived_field_traceability_signal"] += 1
-            review_rows.append({
-                **base,
-                "review_reason": "derived_field_not_exact_source_substring",
-                "fields": "|".join(traceability_misses),
-            })
+            review_rows.append(
+                {
+                    **base,
+                    "review_reason": "derived_field_not_exact_source_substring",
+                    "fields": "|".join(traceability_misses),
+                }
+            )
 
         score = str(row["score"] or "").strip()
         weight = str(row["weight"] or "").strip()
@@ -190,7 +197,10 @@ def main() -> None:
             sample(blocking_samples["public_method_control_artifacts"], {**base, "value": method})
         if len(overview) > 600:
             counts["public_overview_over_600_chars"] += 1
-            sample(blocking_samples["public_overview_over_600_chars"], {**base, "value": overview[:700]})
+            sample(
+                blocking_samples["public_overview_over_600_chars"],
+                {**base, "value": overview[:700]},
+            )
 
         item_record = {**base, "item_order": int(row["item_order"])}
         title_key = normalized_key(title)
@@ -207,11 +217,13 @@ def main() -> None:
     counts["duplicate_exact_payload_items"] = sum(len(value) for value in duplicate_payload_groups)
     for group in duplicate_title_groups:
         for value in group:
-            review_rows.append({
-                **value,
-                "review_reason": "duplicate_title_within_case",
-                "fields": "",
-            })
+            review_rows.append(
+                {
+                    **value,
+                    "review_reason": "duplicate_title_within_case",
+                    "fields": "",
+                }
+            )
     for group in duplicate_payload_groups[:100]:
         sample(blocking_samples["duplicate_exact_payload_groups"], {"items": group})
 
@@ -237,17 +249,27 @@ def main() -> None:
             or [str(value) for value in detected] != expected
         ):
             counts["case_title_summary_mismatches"] += 1
-            sample(summary_mismatches, {
-                "case_id": str(row["case_id"]),
-                "school_name": str(row["school_name"]),
-                "subject": str(row["subject"]),
-                "expected": expected,
-                "detected": detected,
-                "detected_title_count": int(row["detected_title_count"]),
-            })
+            sample(
+                summary_mismatches,
+                {
+                    "case_id": str(row["case_id"]),
+                    "school_name": str(row["school_name"]),
+                    "subject": str(row["subject"]),
+                    "expected": expected,
+                    "detected": detected,
+                    "detected_title_count": int(row["detected_title_count"]),
+                },
+            )
     connection.close()
 
+    blocker_rows = [
+        risk_record(row, codes)
+        for row in public_items(args.database)
+        if (codes := blocking_errors(row))
+    ]
+    counts["blocking_public_items"] = len(blocker_rows)
     blocking_keys = (
+        "blocking_public_items",
         "decode_or_parse_failures",
         "source_length_mismatches",
         "rubric_length_mismatches",
@@ -266,7 +288,9 @@ def main() -> None:
     report = {
         "schema_version": 1,
         "database": str(args.database.resolve()),
-        "scope": "Every bounded table/heading assessment item served by the public API",
+        "scope": "Every bounded assessment item served by the public science API",
+        "blocking_public_items": len(blocker_rows),
+        "blocking_items": blocker_rows,
         "counts": dict(sorted(counts.items())),
         "gates": gates,
         "blocking_samples": dict(sorted(blocking_samples.items())),
@@ -279,21 +303,27 @@ def main() -> None:
         ),
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    fieldnames = [
-        "item_id", "case_id", "school_name", "curriculum", "subject", "region",
-        "district", "title", "item_order", "review_reason", "fields",
-    ]
+    args.output.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    args.queue.parent.mkdir(parents=True, exist_ok=True)
     with args.queue.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
+        writer = csv.DictWriter(handle, fieldnames=QUEUE_FIELDS)
         writer.writeheader()
-        writer.writerows(review_rows)
-    print(json.dumps({
-        "output": str(args.output.resolve()),
-        "counts": report["counts"],
-        "gates": gates,
-        "review_queue_rows": len(review_rows),
-    }, ensure_ascii=False, indent=2))
+        writer.writerows(blocker_rows)
+    print(
+        json.dumps(
+            {
+                "output": str(args.output.resolve()),
+                "counts": report["counts"],
+                "gates": gates,
+                "review_queue_rows": len(review_rows),
+                "blocking_public_items": len(blocker_rows),
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
     if not gates["all_release_blockers_clear"]:
         raise SystemExit(1)
 

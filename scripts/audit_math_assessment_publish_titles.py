@@ -5,19 +5,15 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import re
 import sqlite3
+import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
-METHOD_RE = re.compile(
-    r"서술.?논술|구술.?발표|토의.?토론|실험.?실습|포트폴리오|프로젝트|"
-    r"교사 관찰|자기평가|동료평가"
-)
-RUBRIC_RE = re.compile(r"(?:완성도|정확성|충실성|적절성|표현력|참여도|태도)$")
-OBJECTIVE_RE = re.compile(r"(?:하는 능력|할 수 있다|하도록 한다|지키지 않음|보이지 않음)[.!]?$")
-STANDARD_CODE_RE = re.compile(r"\[(?:10|12)[가-힣A-Za-z][^\]]+\]")
-FOREIGN_RE = re.compile(r"영어|영문|저널|English|Lesson", re.IGNORECASE)
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from scripts.science_rules import default_database, title_rejection
 
 
 def parse_args() -> argparse.Namespace:
@@ -26,34 +22,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--database",
         type=Path,
-        default=root / "data" / "publish" / "math_assessment_catalog.sqlite",
+        default=default_database(),
     )
     parser.add_argument(
         "--output",
         type=Path,
-        default=root / "data" / "publish" / "math_assessment_title_audit.json",
+        default=root / "data" / "derived" / "science_title_audit.json",
     )
     return parser.parse_args()
 
 
 def flags_for(title: str, subject: str) -> list[str]:
-    flags: list[str] = []
-    if not title.strip():
-        flags.append("empty")
-    has_checkbox = any(marker in title for marker in ("□", "◻", "☐", "☑", "■"))
-    if has_checkbox or len(METHOD_RE.findall(title)) >= 2:
-        flags.append("assessment_method_row")
-    if title == "구체적 과제명 미탐지" or title == f"{subject} 수행평가":
-        flags.append("generic_fallback")
-    if RUBRIC_RE.search(title):
-        flags.append("rubric_dimension")
-    if OBJECTIVE_RE.search(title):
-        flags.append("objective_sentence")
-    if STANDARD_CODE_RE.search(title):
-        flags.append("achievement_standard_as_title")
-    if FOREIGN_RE.search(title):
-        flags.append("possible_cross_subject_context")
-    return flags
+    reason = title_rejection(title)
+    return [reason] if reason else []
 
 
 def main() -> None:
@@ -79,7 +60,7 @@ def main() -> None:
                     }
                 )
     connection.close()
-    hard_failures = counts["empty"] + counts["assessment_method_row"]
+    hard_failures = sum(counts.values())
     result = {
         "passed": hard_failures == 0,
         "cases": total,

@@ -25,10 +25,10 @@ def test_non_math_source_leak_is_detected_without_math_evidence() -> None:
         "평가영역명 주제 토의 수행과제 타인의 고통에 공감하고 "
         "사회적 연대를 법으로 강제할 수 있는지 토의한다."
     )
-    math_source = social_source + " 수학적 모델과 함수를 사용한다."
+    science_source = social_source + " 과학 시간에 물질의 상태 변화를 실험으로 확인한다."
 
-    assert source_is_non_math_leak("공통수학1", social_source)
-    assert not source_is_non_math_leak("공통수학1", math_source)
+    assert source_is_non_math_leak("과학", social_source)
+    assert not source_is_non_math_leak("과학", science_source)
 
 
 def test_catalog_spelling_only_repairs_source_equivalent_spacing() -> None:
@@ -303,15 +303,17 @@ def test_summary_matrix_keeps_all_explicit_performance_area_names() -> None:
     <table>
       <tr><th>평가 유형</th><td>정기시험</td><td>수행 평가</td>
       <td>수행 평가</td><td>수행 평가</td></tr>
-      <tr><th>평가영역</th><td>기말고사</td><td>문제풀이집</td>
-      <td>문제해결</td><td>보고서 작성</td></tr>
+      <tr><th>평가영역</th><td>기말고사</td><td>열의 이동 실험</td>
+      <td>생태계 관찰 탐구</td><td>전기 회로 설계 보고서</td></tr>
       <tr><th>평가방법</th><td>선택형</td><td>포트폴리오</td>
       <td>서술형</td><td>보고서</td></tr>
       <tr><th>배점</th><td>100점</td><td>20점</td><td>20점</td><td>20점</td></tr>
     </table>
     """
 
-    assert strict_source_titles(source) == ["문제풀이집", "문제해결", "보고서 작성"]
+    assert strict_source_titles(source) == [
+        "열의 이동 실험", "생태계 관찰 탐구", "전기 회로 설계 보고서"
+    ]
 
 
 def test_assessment_matrix_keeps_only_performance_assessment_columns() -> None:
@@ -797,13 +799,13 @@ def test_strict_title_scan_reads_summary_row_labelled_count_and_area() -> None:
     <table>
       <tr><th>평가 유형</th><th colspan="2">정기시험</th><th colspan="2">수행평가</th></tr>
       <tr><td>횟수/영역</td><td>1차</td><td>2차</td>
-      <td>이차함수 실생활 문제해결하기</td><td>수학 탐구 학습 노트 작성하기</td></tr>
+      <td>화학 반응 모형 제작하기</td><td>생태계 관찰 노트 작성하기</td></tr>
     </table>
     """
 
     assert strict_source_titles(source) == [
-        "이차함수 실생활 문제해결하기",
-        "수학 탐구 학습 노트 작성하기",
+        "화학 반응 모형 제작하기",
+        "생태계 관찰 노트 작성하기",
     ]
 
 

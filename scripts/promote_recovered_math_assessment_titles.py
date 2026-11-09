@@ -27,12 +27,13 @@ if __package__ in {None, ""}:
 
 from scripts.audit_math_assessment_detail_db import value_is_traceable, visible_text
 from scripts.build_math_assessment_detail_db import synchronize_case_summaries
+from scripts.science_rules import subject_alignment, title_rejection
 
 SYNTHETIC_BUNDLE_TITLE = "수행평가 원문 구간"
 REQUIRED_HIGH_FIELDS = {
     "confidence": "high",
     "detection": "table_row",
-    "subject_alignment": "expected",
+    "subject_alignment": "target",
     "explicit_name_label": True,
     "title_looks_complete": True,
 }
@@ -62,6 +63,9 @@ def candidates_by_case(audit: dict[str, object]) -> tuple[dict[str, list[str]], 
         title = str(record.get("candidate") or "").strip()
         if not case_id or not title or title == SYNTHETIC_BUNDLE_TITLE:
             skipped["missing_case_or_title"] += 1
+            continue
+        if title_rejection(title):
+            skipped["title_gate_rejected"] += 1
             continue
         if title not in selected[case_id]:
             selected[case_id].append(title)
@@ -98,7 +102,13 @@ def promote(connection: sqlite3.Connection, requested: dict[str, list[str]]) -> 
             counts["not_unresolved_bundle"] += 1
             continue
         source_text = source_text_for_case(connection, case_id)
-        traceable = [title for title in titles if value_is_traceable(title, source_text)]
+        if subject_alignment(source_text) != "target":
+            counts["subject_alignment_rejected"] += 1
+            continue
+        traceable = [
+            title for title in titles
+            if value_is_traceable(title, source_text) and not title_rejection(title, source_text)
+        ]
         if not traceable:
             counts["untraceable_title_rejected"] += 1
             continue
@@ -197,7 +207,13 @@ def main() -> None:
             traceable_titles = 0
             for case_id, titles in requested.items():
                 source_text = source_text_for_case(connection, case_id)
-                traceable = [title for title in titles if value_is_traceable(title, source_text)]
+                if subject_alignment(source_text) != "target":
+                    continue
+                traceable = [
+                    title for title in titles
+                    if value_is_traceable(title, source_text)
+                    and not title_rejection(title, source_text)
+                ]
                 traceable_cases += int(bool(traceable))
                 traceable_titles += len(traceable)
         report = {

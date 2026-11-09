@@ -68,7 +68,8 @@ def test_validate_reports_each_violation(directory):
     bad = label(ITEMS[0]["item_key"], "없는활동", ["계산·측정", "계산·측정"], extra_key=1)
     bad["evidence"][0]["loc"] = {"doc_id": "ffffffffffff", "line": 1, "line_start": 1}
     write_jsonl(labels, [bad, label(ITEMS[0]["item_key"], None),
-                         {**label("ms-gold-x-city-g1-s1-99", "탐구"), "definition_version": "activity-def-v2"}])
+                         {**label("ms-gold-x-city-g1-s1-99", "탐구"),
+                          "definition_version": "activity-def-v2"}])
     joined = "\n".join(val.validate(labels, items, expect_version=VERSION)["errors"])
     for needle in ("primary 값 오류", "secondary 중복", "허용되지 않은 키", "2번 중복", "라벨 없음",
                    "묶음에 없는 항목", "definition_version이 하나가 아님", "abstain_reason",
@@ -89,5 +90,7 @@ def test_diff_counts_agreement_and_lists_disagreements(directory):
     assert report["rows"][0]["B_primary"] == "(기권)"
     out = directory / "dis"
     diff.write_outputs(report, out, "a", "b")
-    assert (directory / "dis.csv").exists() and "과학 글쓰기" in (directory / "dis.md").read_text(encoding="utf-8")
+    assert (directory / "dis.csv").exists() and "과학 글쓰기" in (
+        directory / "dis.md"
+    ).read_text(encoding="utf-8")
     (directory / "dis.json").unlink()

@@ -1,4 +1,4 @@
-"""읽기·설계 기능을 위한 수학 수행평가 API의 독립 진입점."""
+"""읽기·설계 기능을 위한 중학교 과학 수행평가 API의 독립 진입점."""
 
 import json
 import os
@@ -25,6 +25,9 @@ from app.schemas import (
 from app.science_filters import science_query
 from app.science_repository import ScienceRepository
 from app.settings import (
+    CONTACT_URL,
+    OPERATOR_GITHUB,
+    PRODUCT_NAME,
     catalog_database_path,
     detail_catalog_database_path,
     official_source_registry_path,
@@ -38,8 +41,9 @@ INTERPRETATION_CAUTION: Final = (
 )
 
 app = FastAPI(
-    title="2026 수학 수행평가 아이디어 아카이브 API",
-    description="전국 수행평가 경향 탐색과 교사 설계를 지원하는 근거 기반 API",
+    title=f"{PRODUCT_NAME} API",
+    description="중학교 과학 수행평가의 단원·활동 탐색과 교사 설계를 지원하는 근거 기반 API",
+    contact={"name": OPERATOR_GITHUB, "url": CONTACT_URL},
     version=SERVICE_VERSION,
     # Interactive API docs are useful in local review, but do not need to be a
     # public discovery surface in the production teacher service.
@@ -169,10 +173,10 @@ def product_metadata() -> dict[str, object]:
     cases, subjects = catalog.catalog_counts()
     publication = catalog.publication_counts()
     return {
-        "product": "2026 수학 수행평가 아이디어 아카이브",
-        "curricula": ["2015 개정", "2022 개정"],
-        "development_phase": "수학 수행평가 원문 탐색기",
-        "data_policy": "수학 수행평가 구간만 원문 표 구조로 제공하고 전체 문서는 제외",
+        "product": PRODUCT_NAME,
+        "curricula": ["2022 개정"],
+        "development_phase": "중학교 과학 수행평가 원문 탐색기",
+        "data_policy": "과학 수행평가 구간만 원문 표 구조로 제공하고 전체 문서는 제외",
         "catalog_ready": catalog.ready,
         "catalog_cases": cases,
         "catalog_subject_groups": subjects,

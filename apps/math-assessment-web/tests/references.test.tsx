@@ -75,7 +75,7 @@ describe("과학 수행평가 참고", () => {
     expect(screen.getByRole("tab", { name: "전체 · 7" })).toHaveAttribute("aria-selected", "true");
     expect(screen.getAllByText("자동 분류(참고)")).toHaveLength(2);
     expect(screen.getByLabelText("검색 결과 수")).toHaveTextContent("항목 7 · 사례 3");
-    expect(screen.queryByRole("combobox", { name: "수학 과목" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("combobox", { name: "과학 과목" })).not.toBeInTheDocument();
   });
 
   it("정책에 따라 tab:false인 활동을 탭에서 뺀다", async () => {
@@ -176,7 +176,7 @@ it("전체 라이브러리에서 과목 대신 학년을 cases API와 URL로 보
   fetchMock.mockImplementation(async (url: string) => ({ ok: true, json: async () => url.includes("facets?") ? payload.facets : { items: [], total: 0, limit: 20, offset: 0, caution: "" } }));
   render(<CasesExplorer />);
   await screen.findByText("조건에 맞는 사례가 없습니다.");
-  expect(screen.queryByRole("combobox", { name: "수학 과목" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("combobox", { name: "과학 과목" })).not.toBeInTheDocument();
   fireEvent.change(screen.getByRole("combobox", { name: "학년" }), { target: { value: "2" } });
   await waitFor(() => expect(fetchMock.mock.calls.some(([url]) => url.startsWith("/api/v1/cases?") && url.includes("grade=2"))).toBe(true));
   expect(navigation.replace.mock.lastCall![0]).toContain("grade=2");

@@ -10,7 +10,6 @@ import json
 from fractions import Fraction
 
 import pytest
-
 from scripts import gold_activity_score as score
 
 
@@ -32,7 +31,8 @@ def synthetic_data():
             "representative_title": {"raw": "가짜 제목"}})
         round_name = "synthetic-a" if number < 7 else "synthetic-b"
         pipeline_key = f"{round_name}/i{number}"
-        pairs.append({"type": "gold", "key": key, "rule_ai_found": "True" if number < 14 else "False",
+        pairs.append({"type": "gold", "key": key,
+                      "rule_ai_found": "True" if number < 14 else "False",
                       "rule_ai_pipeline_key": pipeline_key})
         if number >= 13:
             continue
@@ -48,9 +48,11 @@ def synthetic_data():
             areas = ["02"]
         predicted_secondary = ["작성", "분석"] if number == 0 else (["탐구"] if number == 1 else [])
         axes[pipeline_key] = {"item_id": f"i{number}",
-            "unit": {"areas": [{"area_no": area} for area in areas], "status": "confirmed" if areas else "undetermined"},
+            "unit": {"areas": [{"area_no": area} for area in areas],
+                     "status": "confirmed" if areas else "undetermined"},
             "activity": {"primary": predicted, "secondary": predicted_secondary,
-                         "abstain_reason": "동률" if predicted is None else None, "rule_applied": "R6"}}
+                         "abstain_reason": "동률" if predicted is None else None,
+                         "rule_applied": "R6"}}
     items.append({"type": "header", "item_key": "ignored"})
     pairs.append({"type": "dev", "key": "ignored", "rule_ai_found": "True"})
     return axes, labels, items, pairs
@@ -65,7 +67,10 @@ def assert_metric(actual, numerator, denominator):
     assert actual["numerator"] == numerator
     assert actual["denominator"] == denominator
     assert actual["fraction"] == f"{numerator}/{denominator}"
-    assert actual["rate"] == pytest.approx(numerator / denominator) if denominator else actual["rate"] is None
+    assert (
+        actual["rate"] == pytest.approx(numerator / denominator)
+        if denominator else actual["rate"] is None
+    )
 
 
 def test_pairing_counts_missing_found_prediction_as_unmatched(report):
@@ -146,13 +151,19 @@ def write_synthetic_inputs(tmp_path):
     paths = []
     for round_name in ("synthetic-a", "synthetic-b"):
         path = tmp_path / f"{round_name}.json"
-        data = {"round": round_name, "items": [item for key, item in axes.items() if key.startswith(round_name + "/")]}
+        data = {"round": round_name, "items": [
+            item for key, item in axes.items() if key.startswith(round_name + "/")
+        ]}
         path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
         paths.append(path)
     for name, data in (("labels", labels), ("items", items)):
-        (tmp_path / f"{name}.jsonl").write_text("\n".join(json.dumps(row, ensure_ascii=False) for row in data), encoding="utf-8")
+        (tmp_path / f"{name}.jsonl").write_text(
+            "\n".join(json.dumps(row, ensure_ascii=False) for row in data), encoding="utf-8"
+        )
     with (tmp_path / "pairs.csv").open("w", encoding="utf-8-sig", newline="") as target:
-        writer = csv.DictWriter(target, fieldnames=["type", "key", "rule_ai_found", "rule_ai_pipeline_key"])
+        writer = csv.DictWriter(
+            target, fieldnames=["type", "key", "rule_ai_found", "rule_ai_pipeline_key"]
+        )
         writer.writeheader()
         writer.writerows(pairs)
     return ["--axes", *map(str, paths), "--gold-activity", str(tmp_path / "labels.jsonl"),

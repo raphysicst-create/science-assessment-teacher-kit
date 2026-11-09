@@ -6,13 +6,17 @@ import argparse
 import json
 import re
 import sqlite3
+import sys
 from collections import Counter
 from pathlib import Path
 
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from build_math_assessment_publish_db import (
     assessment_category,
-    task_name_is_rejected,
 )
+from scripts.science_rules import title_rejection
 
 PLACEHOLDER = "구체적 과제명 미탐지"
 PARSER_ARTIFACT_RE = re.compile(
@@ -79,7 +83,7 @@ def main() -> None:
         seen_compact: dict[str, str] = {}
         for name in names:
             name = str(name)
-            if task_name_is_rejected(name):
+            if title_rejection(name):
                 rejected_candidates.append({"case_id": row["case_id"], "name": name})
             if PARSER_ARTIFACT_RE.search(name):
                 parser_artifacts.append({"case_id": row["case_id"], "name": name})

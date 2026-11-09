@@ -27,7 +27,7 @@ def _counter_value(key: str, *, increment: bool) -> int | None:
     path = "/".join(quote(part, safe="") for part in (action, key))
     request = Request(
         f"{COUNTER_BASE}/{path}",
-        headers={"Accept": "application/json", "User-Agent": "suhaeng-math/0.3"},
+        headers={"Accept": "application/json", "User-Agent": "science-assessment/0.3"},
     )
     try:
         with urlopen(request, timeout=4) as response:  # noqa: S310 - fixed HTTPS origin

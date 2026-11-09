@@ -13,7 +13,7 @@ if (packageJson.includes("@curriculum-topic-analyzer/web")) {
   failures.push("기본 패키지 명령이 기존 탐구주제 분석기 웹앱을 가리킵니다.");
 }
 if (!runtime.includes('"math-assessment-web"')) {
-  failures.push("개발 실행 경로가 새 수학 수행평가 웹앱을 가리키지 않습니다.");
+  failures.push("개발 실행 경로가 수행평가 웹앱(math-assessment-web)을 가리키지 않습니다.");
 }
 if (deployment.includes('"apps/web/"') || deployment.includes('"services/api/"')) {
   failures.push("배포 설정에 기존 탐구주제 분석기 경로가 남아 있습니다.");

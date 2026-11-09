@@ -19,8 +19,8 @@ import tempfile
 from collections import Counter
 from pathlib import Path
 
-from audit_math_assessment_titles_full import audit_flags, confidence
 from build_math_assessment_detail_db import synchronize_case_summaries
+from scripts.science_rules import audit_flags, confidence
 
 SYNTHETIC_TITLE = "수행평가 원문 구간"
 MAX_PUBLIC_ITEMS_PER_CASE = 12

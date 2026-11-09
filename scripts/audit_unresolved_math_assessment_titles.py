@@ -24,15 +24,18 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.build_math_assessment_publish_db import (
-    TASK_SIGNAL_RE,
     TASK_TITLE_END_RE,
     normalize_task_name,
-    task_name_is_rejected,
 )
 from scripts.math_assessment_detail_parser import (
-    EXPECTED_STANDARD_PREFIXES,
     compact_text,
-    subject_code_key,
+)
+from scripts.science_rules import (
+    ACTIVITY_RE,
+    OTHER_SUBJECT_TITLE_RE,
+    SCIENCE_WORD_RE,
+    subject_alignment,
+    title_rejection,
 )
 
 SUPPORT_MARKER_RE = re.compile(
@@ -52,18 +55,6 @@ STOP_LABEL_RE = re.compile(
     r"\s+(?:단원\s*명|관련\s*단원|성취\s*기준|평가\s*방법|평가\s*시기|"
     r"반영\s*비율|배점|만점|평가\s*요소|채점\s*기준|세부\s*기준|평가\s*개요|"
     r"영역\s*만점|학기|점수)\b"
-)
-MATH_CONTEXT_RE = re.compile(
-    r"수학|함수|수열|방정식|부등식|도형|좌표|미분|적분|극한|확률|통계|"
-    r"기하|대수|행렬|벡터|복소수|지수|로그|삼각|경우의\s*수|집합|명제"
-)
-OTHER_SUBJECT_RE = re.compile(
-    r"국어|화법|작문|영어|한국사|통합사회|통합과학|물리학|화학|"
-    r"생명과학|지구과학|세계사|동아시아사|윤리와\s*사상|생활과\s*윤리|"
-    r"음악|미술|체육|프로그래밍"
-)
-STANDARD_CODE_RE = re.compile(
-    r"\[\s*((?:10|12)(?:\s*-\s*)?[^\]\-]{1,20})\s*-\s*\d"
 )
 GENERIC_LABEL_VALUE_RE = re.compile(
     r"^(?:방법[·・](?:내용|과정|메타인지)|기본점수|영역만점|평가방법|평가시기)$"
@@ -222,21 +213,21 @@ def candidate_confidence(
     score = 0
     score += 3 if detection == "table_row" else 1
     score += min(support_marker_count, 3)
-    score += 3 if alignment == "expected" else 0
+    score += 3 if alignment == "target" else 0
     score += 1 if subject_mentioned else 0
     score += 1 if math_context else 0
-    score += 1 if TASK_SIGNAL_RE.search(candidate) else 0
+    score += 1 if ACTIVITY_RE.search(candidate) else 0
     score += 2 if explicit_name_label else 0
     score += 2 if title_looks_complete else 0
     score -= 5 if alignment in {"other", "mixed"} else 0
-    score -= 3 if other_subject_signal and not MATH_CONTEXT_RE.search(candidate) else 0
+    score -= 3 if other_subject_signal and not SCIENCE_WORD_RE.search(candidate) else 0
     auto_promotable = (
         detection == "table_row"
-        and alignment == "expected"
+        and alignment == "target"
         and not other_subject_signal
         and explicit_name_label
         and title_looks_complete
-        and bool(TASK_SIGNAL_RE.search(candidate))
+        and bool(ACTIVITY_RE.search(candidate))
         and not AUTO_PROMOTION_REJECT_RE.search(candidate)
         and not TITLE_FRAGMENT_RE.fullmatch(candidate)
     )
@@ -244,23 +235,6 @@ def candidate_confidence(
         "high" if auto_promotable and score >= 8 else "review" if score >= 3 else "reject",
         score,
     )
-
-
-def standard_alignment(value: str, subject: str) -> str:
-    """Require nearby achievement codes to agree with the selected subject."""
-
-    prefixes = tuple(subject_code_key(prefix) for prefix in EXPECTED_STANDARD_PREFIXES.get(subject, ()))
-    codes = [subject_code_key(match) for match in STANDARD_CODE_RE.findall(value)]
-    if not codes:
-        return "unknown"
-    expected = any(code.startswith(prefix) for code in codes for prefix in prefixes)
-    other = any(
-        not any(code.startswith(prefix) for prefix in prefixes)
-        for code in codes
-    )
-    if expected and other:
-        return "mixed"
-    return "expected" if expected else "other"
 
 
 def explicit_name_label(label: str) -> bool:
@@ -284,7 +258,7 @@ def title_looks_complete(candidate: str) -> bool:
     # "… 점검" ending.  Other short table cells can be curriculum ranges or
     # an instruction fragment, so shortness alone must not make them titles.
     return bool(
-        TASK_SIGNAL_RE.search(candidate)
+        ACTIVITY_RE.search(candidate)
         and re.search(r"(?:평가|점검|퀴즈)$", candidate)
         and not INCOMPLETE_TITLE_RE.search(candidate)
     )
@@ -327,7 +301,7 @@ def inspect_case(connection: sqlite3.Connection, row: sqlite3.Row) -> list[Title
     compact_source = compact_text(text)
     subject = str(row["subject"])
     subject_mentioned = compact_text(subject) in compact_source
-    math_context = bool(MATH_CONTEXT_RE.search(text))
+    math_context = bool(SCIENCE_WORD_RE.search(text))
     support_marker_count = len({match.group(0) for match in SUPPORT_MARKER_RE.finditer(text)})
     result: list[TitleCandidate] = []
     seen: set[str] = set()
@@ -340,13 +314,13 @@ def inspect_case(connection: sqlite3.Connection, row: sqlite3.Row) -> list[Title
             or key in seen
             or TABLE_HEADER_FRAGMENT_RE.fullmatch(candidate)
             or GENERIC_LABEL_VALUE_RE.fullmatch(candidate)
-            or task_name_is_rejected(candidate)
+            or title_rejection(candidate)
         ):
             continue
         seen.add(key)
         nearby_source = "\n".join(lines[max(0, line_number - 2) : line_number + 15])
-        alignment = standard_alignment(nearby_source, subject)
-        other_subject_signal = bool(OTHER_SUBJECT_RE.search(nearby_source))
+        alignment = subject_alignment(nearby_source)
+        other_subject_signal = bool(OTHER_SUBJECT_TITLE_RE.search(nearby_source))
         name_label = explicit_name_label(label)
         complete = title_looks_complete(candidate)
         confidence, confidence_score = candidate_confidence(

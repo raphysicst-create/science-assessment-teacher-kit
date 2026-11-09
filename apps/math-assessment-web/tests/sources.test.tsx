@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import OfficialSources from "../app/sources/OfficialSources";
 import PublicationSnapshot from "../app/sources/PublicationSnapshot";
+import { SITE_NAME } from "../app/lib/site";
 
 const payload = {
   schema_version: "1.0.0",
@@ -19,7 +20,7 @@ const payload = {
       layer: 1,
       curriculum: "2022",
       provider: "교육부",
-      title: "2022 개정 수학과 교육과정",
+      title: "2022 개정 과학과 교육과정",
       document_type: "국가 교육과정",
       publication_date: "2022-12-22",
       identifier: "교육부 고시 제2022-33호",
@@ -59,27 +60,27 @@ describe("PublicationSnapshot", () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
-        product: "2026 수학 수행평가 아이디어 아카이브",
-        curricula: ["2015 개정", "2022 개정"],
-        development_phase: "수학 수행평가 원문 탐색기",
+        product: SITE_NAME,
+        curricula: ["2022 개정"],
+        development_phase: "과학 수행평가 원문 탐색기",
         data_policy: "검토 구간만 공개",
         catalog_ready: true,
-        catalog_cases: 9096,
-        catalog_subject_groups: 28,
-        public_cases: 4979,
-        public_items: 10981,
-        excluded_items: 13173,
+        catalog_cases: 2,
+        catalog_subject_groups: 1,
+        public_cases: 2,
+        public_items: 4,
+        excluded_items: 3,
         excluded_reasons: {
-          bundle_review: 11206,
-          source_mismatch_review: 1568,
-          table_structure_review: 399,
+          bundle_review: 1,
+          source_mismatch_review: 1,
+          table_structure_review: 1,
         },
       }),
     }));
 
     render(<PublicationSnapshot />);
-    await waitFor(() => expect(screen.getByText("10,981")).not.toBeNull());
-    expect(screen.getByText("13,173")).not.toBeNull();
+    await waitFor(() => expect(screen.getByText("4")).not.toBeNull());
+    expect(screen.getByText("3")).not.toBeNull();
     expect(screen.getByText("원문 구간 경계 재검토")).not.toBeNull();
     expect(screen.getByText("검토 중 항목은 공개 검색에서 제외합니다.")).not.toBeNull();
   });

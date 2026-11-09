@@ -168,7 +168,7 @@ export default function CasesExplorer() {
         </div>
         <form className="caseSearch" onSubmit={submitSearch} role="search">
           <label htmlFor="case-query">수행평가명·평가 개요·학교 검색</label>
-          <div><input id="case-query" value={queryInput} onChange={(event) => setQueryInput(event.target.value)} placeholder="예: 미적분, 탐구보고서, 모델링, 독서" /><button type="submit">검색</button></div>
+          <div><input id="case-query" value={queryInput} onChange={(event) => setQueryInput(event.target.value)} placeholder="예: 열의 이동, 실험 보고서, 탐구, 모델링" /><button type="submit">검색</button></div>
         </form>
         <fieldset className="tagFilters">
           <legend>수행 방식</legend>

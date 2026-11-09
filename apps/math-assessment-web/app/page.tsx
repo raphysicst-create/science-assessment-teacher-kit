@@ -1,61 +1,74 @@
-import Link from "./SiteLink";
+"use client";
 
-const metrics = [
-  { value: "1,537", label: "공개 확정 학교" },
-  { value: "10,760", label: "공개 수행평가" },
-  { value: "4,863", label: "공개 확정 사례" },
-];
+import { useEffect, useState } from "react";
+import Link from "./SiteLink";
+import { fetchCatalog, type ScienceReferenceResponse } from "./lib/catalog-api";
 
 const workflow = [
   {
     number: "01",
-    title: "실제 경향을 살펴봅니다",
-    description: "교육과정과 과목을 골라 수집된 공개 평가계획의 수행 유형, 산출물, 평가 요소를 확인합니다.",
-    href: "/trends",
-    action: "경향 탐색",
+    title: "단원과 활동으로 찾습니다",
+    description: "중학교 과학 단원과 실험·탐구·보고서 등 활동을 고르고 학년별 수행평가 항목을 찾습니다.",
+    href: "/references",
+    action: "단원×활동 찾기",
   },
   {
     number: "02",
     title: "근거 사례를 비교합니다",
-    description: "출처가 확인되는 사례에서 재사용할 설계 요소와 수업 조건을 비교합니다.",
+    description: "원문에서 성취기준, 실험 조건, 학생 산출물과 채점기준을 확인해 우리 과학 수업의 설계 요소를 비교합니다.",
     href: "/cases",
     action: "사례 보기",
   },
 ];
 
 export default function Home() {
+  const [metrics, setMetrics] = useState<Array<{ value: number; label: string }>>([]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchCatalog<ScienceReferenceResponse>("references?limit=1", controller.signal)
+      .then((payload) => {
+        if (controller.signal.aborted || payload.profile !== "science") return;
+        setMetrics([
+          { value: payload.total_items, label: "전체 수행평가 항목" },
+          { value: payload.total_cases, label: "전체 사례" },
+        ].filter(({ value }) => Number.isSafeInteger(value) && value >= 0));
+      })
+      .catch(() => { /* Keep metrics hidden when the API is unavailable. */ });
+    return () => controller.abort();
+  }, []);
+
   return (
     <main id="main-content">
       <section className="hero" aria-labelledby="hero-title">
         <div className="heroCopy">
           <p className="eyebrow">2026학년도 교수·학습 및 평가계획 기반</p>
-          <h1 id="hero-title">다른 학교 수행평가에서<br />수업 아이디어를 찾습니다</h1>
+          <h1 id="hero-title">중학교 과학 단원과 활동에서<br />수업 아이디어를 찾습니다</h1>
           <p className="heroDescription">
-            수행평가명, 활동 내용, 반영 비율, 성취기준과 채점기준을 원문 근거로 찾아보고 비교합니다.
-            그대로 베끼는 목록이 아니라 우리 수업에 맞는 아이디어를 찾는 출발점입니다.
+            단원×활동으로 수행평가를 찾고 학년, 지역과 성취기준으로 범위를 좁힙니다.
+            실험·탐구 과정과 보고서, 채점기준을 원문 근거와 함께 비교해 우리 수업에 맞게 설계합니다.
           </p>
           <div className="heroActions">
-            <Link className="primaryAction" href="/cases">다른 학교 사례 찾아보기</Link>
-            <Link className="secondaryAction" href="/references">유형별 아이디어 보기</Link>
+            <Link className="primaryAction" href="/references">단원×활동으로 찾아보기</Link>
+            <Link className="secondaryAction" href="/cases">전체 과학 사례 보기</Link>
           </div>
-          <p className="pilotNote"><span aria-hidden="true">●</span> 2015·2022 개정 수학 과목의 수행평가 사례를 탐색합니다.</p>
+          <p className="pilotNote"><span aria-hidden="true">●</span> 2022 개정 중학교 과학 수행평가를 단원과 활동으로 탐색합니다.</p>
         </div>
 
-        <aside className="evidencePanel" aria-label="현재 데이터 기준선">
+        {metrics.length > 0 && <aside className="evidencePanel" aria-label="현재 데이터 집계">
           <div className="panelTopline">
-            <span>검증된 데이터 기준선</span>
-            <strong>2026.08</strong>
+            <span>과학판 자료 집계</span>
           </div>
           <dl className="metricList">
             {metrics.map((metric) => (
               <div key={metric.label}>
                 <dt>{metric.label}</dt>
-                <dd>{metric.value}</dd>
+                <dd>{metric.value.toLocaleString("ko-KR")}</dd>
               </div>
             ))}
           </dl>
-          <p>2026년 8월 원문·과목 경계·개인정보 검토를 통과한 공개 자료 기준입니다. 전국 학교 전수나 과목 개설 현황을 뜻하지 않습니다.</p>
-        </aside>
+          <p>현재 API에서 조회되는 전체 과학 수행평가 항목과 사례 기준입니다.</p>
+        </aside>}
       </section>
 
       <section className="workflowSection" aria-labelledby="workflow-title">

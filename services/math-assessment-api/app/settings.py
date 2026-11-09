@@ -13,6 +13,10 @@ import threading
 from functools import lru_cache
 from pathlib import Path
 
+PRODUCT_NAME = "중학교 과학 수행평가 아카이브"
+OPERATOR_GITHUB = "raphysicst-create"
+CONTACT_URL = "https://github.com/raphysicst-create/math-assessment-teacher-kit/issues"
+
 _CATALOG_MATERIALIZATION_LOCK = threading.Lock()
 _DETAIL_MATERIALIZATION_LOCK = threading.Lock()
 
@@ -155,7 +159,7 @@ def materialized_packaged_database(*, detail: bool = False) -> Path:
         identity = digest.hexdigest()[:16]
     package_kind = "detail" if detail else "catalog"
     runtime_database = (
-        Path(tempfile.gettempdir()) / f"suhaeng-math-{package_kind}-{identity}.sqlite"
+        Path(tempfile.gettempdir()) / f"science-assessment-{package_kind}-{identity}.sqlite"
     )
     if runtime_database.is_file():
         return runtime_database

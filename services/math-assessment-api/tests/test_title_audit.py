@@ -5,10 +5,10 @@ from scripts.audit_math_assessment_titles_full import audit_flags, confidence
 @pytest.mark.parametrize(
     "title",
     [
-        "이차방정식과 이차함수를 연결하여 그 관계를 예시를 들어 설명하기",
-        "확률과 통계 학습 내용구조화하기",
-        "수학 주제 탐구 발표",
-        "수학 용어 탐구 보고서 (2)",
+        "화학 변화와 물리 변화를 연결하여 그 관계를 예시를 들어 보고서 작성하기",
+        "화학 반응 학습 내용 보고서 작성하기",
+        "화학 주제 탐구 발표",
+        "화학 용어 탐구 보고서 (2)",
         "주제 선정 및 탐구 계획서 작성",
     ],
 )
@@ -31,20 +31,18 @@ def test_rubric_rows_are_not_supported_as_task_titles(title: str) -> None:
 
 
 def test_unit_name_without_a_task_signal_requires_review() -> None:
-    assert confidence(audit_flags("다항식", "table"), "table") == "review"
+    assert confidence(audit_flags("열에너지", "table"), "table") == "review"
 
 
 def test_exact_explicit_source_label_can_confirm_a_short_official_name() -> None:
-    flags = audit_flags("다항식", "table")
-    assert (
-        confidence(flags, "table", explicit_source_label=True) == "supported"
-    )
+    flags = audit_flags("열에너지", "table")
+    assert confidence(flags, "table", explicit_source_label=True) == "supported"
 
 
 def test_explicit_source_label_preserves_a_long_official_task_name() -> None:
     title = (
-        "지수함수와 로그함수, 삼각함수, 수열의 개념 중 자신의 진로나 "
-        "실생활과 관련된 주제를 선정하고 수학적으로 분석하여 보고서를 작성하기"
+        "화학 반응과 질량 보존, 기체의 성질, 온도의 개념 중 자신의 진로나 "
+        "실생활과 관련된 주제를 선정하고 과학적으로 분석하여 보고서를 작성하기"
     )
     flags = audit_flags(title, "table")
     assert flags == ["overlong_title"]
@@ -72,7 +70,7 @@ def test_explicit_source_label_does_not_override_hard_rejections(title: str) -> 
         "직무",
         "수행평가",
         "II",
-        "공통수학2 전체",
+        "평가 계획",
     ],
 )
 def test_field_values_and_period_labels_cannot_be_confirmed_as_titles(title: str) -> None:
@@ -81,7 +79,7 @@ def test_field_values_and_period_labels_cannot_be_confirmed_as_titles(title: str
 
 
 def test_another_subjects_assessment_title_is_rejected() -> None:
-    flags = audit_flags("기본권 쟁점 파악", "table")
+    flags = audit_flags("영어 동사의 활용", "table")
     assert confidence(flags, "table", explicit_source_label=True) == "reject"
 
 

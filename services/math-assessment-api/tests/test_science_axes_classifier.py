@@ -1,23 +1,25 @@
 """가짜 항목으로 2축 분류 규칙을 검증하고 개발 표본의 경계를 대조한다.
 
-검증: .venv/Scripts/python.exe -m pytest -q -p no:cacheprovider services/math-assessment-api/tests/test_science_axes_classifier.py
-사례 보고: .venv/Scripts/python.exe services/math-assessment-api/tests/test_science_axes_classifier.py
+검증: .venv/Scripts/python.exe -m pytest -q -p no:cacheprovider
+      services/math-assessment-api/tests/test_science_axes_classifier.py
+사례 보고: .venv/Scripts/python.exe
+           services/math-assessment-api/tests/test_science_axes_classifier.py
 사례 보고는 허용된 개발 회차만 읽고 경계·포함·제외 불일치를 표준 출력에 쓴다.
 """
 
 import json
 import os
-from pathlib import Path
 import subprocess
 import sys
+from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).resolve().parents[3]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+if str(Path(__file__).resolve().parents[3]) not in sys.path:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 from scripts import science_axes as axes
 
+ROOT = Path(__file__).resolve().parents[3]
 ALLOWED_ROUNDS = ("2026-round-3", "2026-round-1-dev2", "2026-round-3-dev2")
 BOUNDARIES = [
     (activity["name"], boundary)
@@ -172,7 +174,7 @@ def test_element_names_and_level_resets_start_scoring_groups(source):
 def test_decimal_level_ranks_survive_unit_splitting(source, leading):
     values = []
     for level, sentence in zip(["10.0", "8.5", "5.0"],
-                               ["관계를 서술함", "자료를 분석함", "질량을 측정함"]):
+                               ["관계를 서술함", "자료를 분석함", "질량을 측정함"], strict=True):
         values.extend([level, sentence] if leading else [sentence, level])
     units_e, units_s = axes.activity_units(item(**{source: values}))
     assert units_e == [("title_verb", "주제")]
@@ -397,8 +399,9 @@ def test_blind_guard_requires_exact_environment_value(monkeypatch, tmp_path):
 def run_cli(*arguments):
     environment = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONDONTWRITEBYTECODE="1")
     environment.pop("SCIENCE_AXES_GOLD", None)
-    return subprocess.run([sys.executable, str(ROOT / "scripts/science_axes.py"), *map(str, arguments)],
-                          cwd=ROOT, env=environment, capture_output=True, text=True, encoding="utf-8")
+    return subprocess.run(
+        [sys.executable, str(ROOT / "scripts/science_axes.py"), *map(str, arguments)],
+        cwd=ROOT, env=environment, capture_output=True, text=True, encoding="utf-8")
 
 
 def test_classify_and_confusion_cli_write_outputs(tmp_path):
@@ -463,12 +466,16 @@ def report_examples():
                 try:
                     actual = axes.classify_item(sample_item(case))["activity"]
                 except pytest.skip.Exception:
-                    print(json.dumps({"kind": kind, "skipped": case["round"]}, ensure_ascii=False))
+                    print(json.dumps(
+                        {"kind": kind, "skipped": case["round"]}, ensure_ascii=False
+                    ))
                     continue
                 expected = example["ruling"] if kind == "boundary" else name
                 equal = actual["primary"] == expected
                 if equal == (kind == "excludes"):
-                    row = mismatch(name, case, f"≠{name}" if kind == "excludes" else expected, actual)
+                    row = mismatch(
+                        name, case, f"≠{name}" if kind == "excludes" else expected, actual
+                    )
                     print(json.dumps({"kind": kind, **row}, ensure_ascii=False))
 
 

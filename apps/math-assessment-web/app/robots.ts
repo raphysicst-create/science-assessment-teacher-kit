@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "./lib/site";
 
 const AI_CRAWLERS = [
   "GPTBot",
@@ -21,6 +22,6 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: "*", allow: "/" },
       ...AI_CRAWLERS.map((userAgent) => ({ userAgent, disallow: "/" })),
     ],
-    sitemap: "https://suhaeng-math.vercel.app/sitemap.xml",
+    sitemap: new URL("/sitemap.xml", SITE_URL).href,
   };
 }

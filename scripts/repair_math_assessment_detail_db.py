@@ -25,8 +25,8 @@ from scripts.math_assessment_detail_parser import (
     balance_table_tags,
     explicit_segment_title,
     heading_title_is_structural,
-    segment_subject_alignment,
 )
+from scripts.science_rules import subject_alignment, title_rejection
 
 SYNTHETIC_BUNDLE_TITLE = "수행평가 원문 구간"
 TRACEABLE_FIELDS = ("overview", "method", "timing", "score", "weight")
@@ -63,17 +63,17 @@ def repair(
         field_values = {name: str(row[5 + index]) for index, name in enumerate(TRACEABLE_FIELDS)}
         standards = json.loads(str(row[10]))
 
-        alignment = segment_subject_alignment(source_html, str(row[14]))
+        alignment = subject_alignment(source_html)
         short_boundary_unknown = (
             str(row[13]).startswith("subject_mention_only:")
-            and alignment == "unknown"
+            and alignment == "none"
         )
-        if alignment == "other" or short_boundary_unknown:
+        if alignment in {"other", "mixed"} or short_boundary_unknown:
             title = SYNTHETIC_BUNDLE_TITLE
             title_raw = SYNTHETIC_BUNDLE_TITLE
             title_basis = "unbounded_bundle"
             extraction_status = (
-                "source_mismatch_review" if alignment == "other" else "bundle_review"
+                "source_mismatch_review" if alignment in {"other", "mixed"} else "bundle_review"
             )
             field_values = {name: "" for name in TRACEABLE_FIELDS}
             standards = []
@@ -87,6 +87,8 @@ def repair(
             if extraction_status == "bounded"
             else ""
         )
+        if table_title and title_rejection(table_title, source_html):
+            table_title = ""
         if table_title and table_title != title:
             title = table_title
             title_raw = table_title
@@ -94,7 +96,7 @@ def repair(
             extraction_status = "bounded"
             counts["titles_replaced_from_explicit_table_label"] += 1
         elif extraction_status == "bounded" and (
-            heading_title_is_structural(title)
+            title_rejection(title, source_html)
             or not PERFORMANCE_MARKER_RE.search(source_text)
         ):
             title = SYNTHETIC_BUNDLE_TITLE
@@ -212,6 +214,8 @@ def repair(
                 and 2 <= len(base_title) <= 100
                 and base_title not in {"구체적 과제명 미탐지", SYNTHETIC_BUNDLE_TITLE}
                 and visible_text(base_title) in source_text
+                and subject_alignment(source_text) == "target"
+                and not title_rejection(base_title, source_text)
             ):
                 detected = [base_title]
                 connection.execute(

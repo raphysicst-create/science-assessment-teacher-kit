@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
-const TOTAL_RECORDED_KEY = "suhaeng-math-total-visitor-recorded-v2";
-const DAILY_RECORDED_PREFIX = "suhaeng-math-daily-visitor-recorded-v2:";
+const TOTAL_RECORDED_KEY = "science-assessment-total-visitor-recorded-v2";
+const DAILY_RECORDED_PREFIX = "science-assessment-daily-visitor-recorded-v2:";
 
 type VisitorCounts = {
   date: string;

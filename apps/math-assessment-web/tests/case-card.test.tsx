@@ -9,22 +9,22 @@ afterEach(cleanup);
 const baseCase: CaseItem = {
   case_id: "case-1",
   curriculum: "2022",
-  subject: "미적분Ⅰ",
+  subject: "과학",
   curriculum_ambiguous: false,
   curriculum_basis: "explicit",
-  school_name: "예시고",
+  school_name: "예시중",
   region: "서울특별시",
   district: "종로구",
   academic_years: [2026],
-  grades: [2],
+  grades: [1],
   semesters: [1],
-  primary_task_name: "미분과 적분을 활용한 문제 만들기",
-  task_names: ["미분과 적분을 활용한 문제 만들기", "극한 그래프 시각화"],
-  action_tags: ["문제해결", "수학적모델링"],
+  primary_task_name: "열의 이동 실험 보고서",
+  task_names: ["열의 이동 실험 보고서", "온도 변화 그래프 그리기"],
+  action_tags: ["문제해결", "과학적 모델링"],
   evidence_markers: { rubric: 1, achievement_standard: 1, weight_or_points: 1, assessment_method: 0 },
   evidence_score: 30,
   evidence_excerpt: "가".repeat(500),
-  assessment_structure: { overview: "미분과 적분 개념을 활용해 문제를 만들고 해설한다.", methods: ["서술·논술", "프로젝트"], weight: "20점 · 20%", standards: ["12미적01-01"], criteria: ["개념 정확성", "문제 설계"], basis: "table" },
+  assessment_structure: { overview: "열의 이동을 관찰하고 온도 변화 자료를 해석한다.", methods: ["서술·논술", "프로젝트"], weight: "20점 · 20%", standards: ["9과03-01"], criteria: ["개념 정확성", "문제 설계"], basis: "table" },
   category: "problem",
   priority_score: 55,
   priority_signals: ["성취기준 연결", "채점기준 확인"],
@@ -50,7 +50,7 @@ describe("사례 카드", () => {
   it("한 학교·과목에서 확인한 수행평가명을 대표 하나로 숨기지 않는다", () => {
     render(<table><tbody><CaseTableRow item={baseCase} /></tbody></table>);
     expect(screen.getByText("확인된 수행평가 2개")).not.toBeNull();
-    expect(screen.getByText("미분과 적분을 활용한 문제 만들기")).not.toBeNull();
-    expect(screen.getByText("극한 그래프 시각화")).not.toBeNull();
+    expect(screen.getByText("열의 이동 실험 보고서")).not.toBeNull();
+    expect(screen.getByText("온도 변화 그래프 그리기")).not.toBeNull();
   });
 });

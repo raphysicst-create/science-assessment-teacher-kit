@@ -15,9 +15,14 @@ import json
 import os
 import shutil
 import sqlite3
+import sys
 import tempfile
 from pathlib import Path
 
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from scripts.science_rules import blocking_errors, public_items
 
 EXPECTED = {
     "cases": 9096,
@@ -27,6 +32,18 @@ EXPECTED = {
     "recovery_public_cases": 116,
     "recovery_public_items": 221,
 }
+REQUIRED_REPORT_FIELDS = {
+    "publication": (
+        "passed", "blocking_public_items", "manual_queue_count",
+        "item_counts.blocking_public_item", "item_counts.confirmed_public_item",
+        "case_counts.blocking_public_case", "case_counts.confirmed_public_case",
+    ),
+    "title": ("passed", "blocking_public_items"),
+    "subject": ("passed", "blocking_public_items"),
+    "detail": ("gates",),
+    "table": ("blocking_public_items", "warning_items"),
+    "completeness": ("checks",),
+}
 
 
 def load_json(path: Path) -> dict[str, object]:
@@ -34,6 +51,18 @@ def load_json(path: Path) -> dict[str, object]:
     if not isinstance(value, dict):
         raise SystemExit(f"JSON object required: {path}")
     return value
+
+
+def load_report(name: str, path: Path) -> dict[str, object]:
+    """Fail closed when an auditor's required output contract changes."""
+    report = load_json(path)
+    for field in REQUIRED_REPORT_FIELDS[name]:
+        value = report
+        for key in field.split("."):
+            if not isinstance(value, dict) or key not in value:
+                raise SystemExit(f"report missing field: {name}.{field} ({path})")
+            value = value[key]
+    return report
 
 
 def sha256(path: Path) -> str:
@@ -121,6 +150,22 @@ def main() -> None:
     parser.add_argument("--release-manifest", type=Path)
     args = parser.parse_args()
 
+    blocked = {
+        item["item_id"]: codes
+        for item in public_items(args.detail_db)
+        if (codes := blocking_errors(item))
+    }
+    if blocked:
+        raise SystemExit(f"promotion blocked by science errors: {blocked}")
+
+    title = load_report("title", args.title_audit)
+    subject = load_report("subject", args.subject_audit)
+    detail = load_report("detail", args.detail_audit)
+    publication = load_report("publication", args.publication_gate)
+    recovery_table = load_report("table", args.recovery_table_audit)
+    combined_table = load_report("table", args.combined_table_audit)
+    completeness = load_report("completeness", args.completeness_summary)
+
     base_counts = database_counts(args.base_db)
     detail_counts = database_counts(args.detail_db)
     if base_counts != {"integrity": "ok", "cases": EXPECTED["cases"]}:
@@ -135,40 +180,38 @@ def main() -> None:
     ):
         raise SystemExit(f"unexpected detail database counts: {detail_counts}")
 
-    title = load_json(args.title_audit)
-    subject = load_json(args.subject_audit)
-    detail = load_json(args.detail_audit)
-    publication = load_json(args.publication_gate)
-    recovery_table = load_json(args.recovery_table_audit)
-    combined_table = load_json(args.combined_table_audit)
-    completeness = load_json(args.completeness_summary)
-    if title.get("passed") is not True or any(
-        int(value) for value in (title.get("hard_failures") or {}).values()
-    ):
+    if publication["passed"] is not True or publication["blocking_public_items"] != 0:
+        raise SystemExit("publication audit did not pass or has blocking public items")
+    if publication["item_counts"]["blocking_public_item"] != 0:
+        raise SystemExit("publication item counts have blocking public items")
+    if publication["case_counts"]["blocking_public_case"] != 0:
+        raise SystemExit("publication case counts have blocking public cases")
+    if title["passed"] is not True or title["blocking_public_items"] != 0:
         raise SystemExit("title audit did not pass")
-    release_gate = subject.get("release_gate") or {}
-    if int(release_gate.get("unsafe_public_items") or 0) != 0:
-        raise SystemExit("subject audit has unsafe public items")
-    detail_gates = detail.get("gates") or {}
+    if subject["passed"] is not True or subject["blocking_public_items"] != 0:
+        raise SystemExit("subject audit did not pass or has blocking public items")
+    detail_gates = detail["gates"]
     if not detail_gates or not all(bool(value) for value in detail_gates.values()):
         raise SystemExit(f"detail audit gates did not pass: {detail_gates}")
-    if (publication.get("case_counts") or {}).get("confirmed_public_case") != EXPECTED[
+    if publication["case_counts"]["confirmed_public_case"] != EXPECTED[
         "public_cases"
     ]:
         raise SystemExit("publication case count mismatch")
-    if (publication.get("item_counts") or {}).get("confirmed_public_item") != EXPECTED[
+    if publication["item_counts"]["confirmed_public_item"] != EXPECTED[
         "public_items"
     ]:
         raise SystemExit("publication item count mismatch")
-    if int(recovery_table.get("items_with_any_flag") or 0) != 0:
+    if recovery_table["blocking_public_items"] != 0 or recovery_table["warning_items"] != 0:
         raise SystemExit("recovery release still has structural table flags")
-    checks = completeness.get("checks") or {}
+    checks = completeness["checks"]
     if not checks or not all(bool(value) for value in checks.values()):
         raise SystemExit(f"completeness checks did not pass: {checks}")
 
     publish_dir = args.publish_dir.resolve()
     timestamp = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
-    archive_dir = (args.archive_dir or publish_dir / "archive" / f"recovery-v1-{timestamp}").resolve()
+    archive_dir = (
+        args.archive_dir or publish_dir / "archive" / f"recovery-v1-{timestamp}"
+    ).resolve()
     release_manifest = (
         args.release_manifest
         or publish_dir / "math_assessment_recovery_v1_release_manifest.json"
@@ -226,10 +269,9 @@ def main() -> None:
             "unsafe_public_items": 0,
             "detail_gates_passed": True,
             "recovery_structural_flags": 0,
-            "combined_structural_signal_items": int(
-                combined_table.get("items_with_any_flag") or 0
-            ),
-            "publication_manual_queue": int(publication.get("manual_queue_count") or 0),
+            "combined_structural_blocking_items": combined_table["blocking_public_items"],
+            "combined_structural_warning_items": combined_table["warning_items"],
+            "publication_manual_queue": publication["manual_queue_count"],
         },
         "policy": (
             "Recovery items are public only when source-bounded titles, subject alignment, "

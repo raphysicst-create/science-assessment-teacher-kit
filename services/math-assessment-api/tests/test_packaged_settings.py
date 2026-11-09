@@ -47,7 +47,7 @@ def test_catalog_archive_is_materialized_to_temporary_storage(
     materialized = settings.catalog_database_path()
 
     assert materialized.parent == runtime_directory
-    assert materialized.name.startswith("suhaeng-math-catalog-")
+    assert materialized.name.startswith("science-assessment-catalog-")
     assert materialized.suffix == ".sqlite"
     with sqlite3.connect(materialized) as connection:
         assert connection.execute("SELECT value FROM marker").fetchone()[0] == "ready"
@@ -172,7 +172,7 @@ def test_detail_gzip_parts_materialize_without_legacy_archive_pattern(
 
     materialized = settings.materialized_packaged_database(detail=True)
 
-    assert materialized.name == "suhaeng-math-detail-aaaaaaaaaaaaaaaa.sqlite"
+    assert materialized.name == "science-assessment-detail-aaaaaaaaaaaaaaaa.sqlite"
     with sqlite3.connect(materialized) as connection:
         assert connection.execute("SELECT value FROM marker").fetchone()[0] == "detail-ready"
 

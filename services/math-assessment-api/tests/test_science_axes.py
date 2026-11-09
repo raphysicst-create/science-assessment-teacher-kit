@@ -22,7 +22,8 @@ def test_units_cover_23_areas_and_87_standards():
 def test_activities_have_definition_examples_and_rules():
     assert check.check_activities(AXES) == []
     assert [a["name"] for a in AXES["activities"]] == [
-        "탐구", "실험평가", "작성", "제작", "분석", "추론·설명", "발표·토론", "계산·측정", "과정평가", "문제해결"]
+        "탐구", "실험평가", "작성", "제작", "분석", "추론·설명", "발표·토론", "계산·측정",
+        "과정평가", "문제해결"]
 
 
 def test_definition_document_matches_json():
@@ -54,11 +55,14 @@ def test_checker_reports_broken_inputs():
 
 
 def test_citation_checker_rejects_gold_and_fabricated_quotes():
-    fake_items = {"item_x": {"item_id": "item_x", "school": "가상중", "fields": {"title": {"value": "밀도 구하기"}}}}
+    fake_items = {"item_x": {"item_id": "item_x", "school": "가상중",
+                             "fields": {"title": {"value": "밀도 구하기"}}}}
     axes = {"activities": [{"id": "t", "includes": [
-        {"item_id": "item_x", "school": "가상중", "round": "2026-round-1-gold", "title": "밀도 구하기",
+        {"item_id": "item_x", "school": "가상중", "round": "2026-round-1-gold",
+         "title": "밀도 구하기",
          "quote": "지어낸 인용"},
-        {"item_id": "item_y", "school": "가상중", "round": "2026-round-3", "title": "없음", "quote": "x"},
+        {"item_id": "item_y", "school": "가상중", "round": "2026-round-3",
+         "title": "없음", "quote": "x"},
     ], "excludes": [], "boundary": []}]}
     problems = check.check_citations(axes, fake_items)
     assert any("정답 세트 회차" in p for p in problems)

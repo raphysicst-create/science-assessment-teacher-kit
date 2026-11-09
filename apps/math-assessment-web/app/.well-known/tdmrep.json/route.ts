@@ -1,8 +1,11 @@
+import { CONTACT_URL, OPERATOR_NAME, SITE_URL } from "../../lib/site";
+
 const TDM_RESERVATION = {
   version: "1.0",
   policy: "reserved",
-  owner: "서아인",
-  contact: "ainssam@ai.cne.go.kr",
+  owner: OPERATOR_NAME,
+  contact: CONTACT_URL,
+  site: SITE_URL,
   scope: [
     "service code and design",
     "assessment selection and classification",

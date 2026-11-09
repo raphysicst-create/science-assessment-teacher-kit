@@ -18,31 +18,18 @@ from pathlib import Path
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from scripts.audit_math_assessment_titles_full import (
+from scripts.science_rules import (
+    QUEUE_FIELDS,
+    SCIENCE_ACTIVITY_IDS,
     audit_flags,
+    blocking_errors,
     confidence,
+    default_database,
+    public_items,
+    risk_record,
+    subject_alignment,
+    title_rejection,
 )
-from scripts.audit_math_assessment_table_structure import audit_html
-from scripts.audit_unresolved_math_assessment_titles import (
-    SUPPORT_MARKER_RE,
-    layout_text,
-    standard_alignment,
-)
-from scripts.math_assessment_detail_parser import (
-    _clean_heading_title,
-    compact_text,
-    explicit_segment_title,
-    heading_title_is_structural,
-)
-from scripts.propose_math_assessment_explicit_item_recovery import (
-    BLOCKING_TABLE_FLAGS,
-    STRONG_BOUNDARIES,
-    competing_direct_candidates,
-    source_course_identity_evidence,
-    title_key,
-    unique_direct_candidates,
-)
-from scripts.repair_math_assessment_titles import strict_source_titles
 
 
 class VisibleTextParser(HTMLParser):
@@ -85,33 +72,12 @@ def explicit_recovery_source_evidence(
 ) -> bool:
     """Confirm a sentence-length official task field without shortening it."""
 
-    if title_basis != "table" or boundary_status not in STRONG_BOUNDARIES:
-        return False
-    text = layout_text(source_html)
-    direct = unique_direct_candidates(text)
-    matches = [
-        candidate
-        for candidate in direct
-        if title_key(str(candidate["title"])) == title_key(title)
-    ]
-    if len(matches) != 1 or matches[0]["detection"] != "table_row":
-        return False
-    if competing_direct_candidates(title, direct):
-        return False
-    alignment = standard_alignment(text, subject)
-    if not source_course_identity_evidence(
-        alignment=alignment,
-        title=title,
-        subject=subject,
-    ):
-        return False
-    support_markers = {
-        match.group(0) for match in SUPPORT_MARKER_RE.finditer(text)
-    }
-    if len(support_markers) < 2:
-        return False
-    table_flags = set(str(flag) for flag in audit_html(source_html)["flags"])
-    return not bool(table_flags.intersection(BLOCKING_TABLE_FLAGS))
+    return bool(
+        title_basis == "table"
+        and boundary_status
+        and subject_alignment(visible_text(source_html)) == "target"
+        and title_rejection(title, source_html) is None
+    )
 
 
 def audit(database: Path) -> dict[str, object]:
@@ -119,12 +85,8 @@ def audit(database: Path) -> dict[str, object]:
     connection.row_factory = sqlite3.Row
     integrity = str(connection.execute("PRAGMA integrity_check").fetchone()[0])
     case_count = int(connection.execute("SELECT COUNT(*) FROM cases").fetchone()[0])
-    detail_count = int(
-        connection.execute("SELECT COUNT(*) FROM case_detail_status").fetchone()[0]
-    )
-    item_count = int(
-        connection.execute("SELECT COUNT(*) FROM assessment_items").fetchone()[0]
-    )
+    detail_count = int(connection.execute("SELECT COUNT(*) FROM case_detail_status").fetchone()[0])
+    item_count = int(connection.execute("SELECT COUNT(*) FROM assessment_items").fetchone()[0])
     maximum_items_per_case = int(
         connection.execute(
             "SELECT COALESCE(MAX(item_count), 0) FROM "
@@ -138,7 +100,6 @@ def audit(database: Path) -> dict[str, object]:
               SELECT COUNT(*) AS item_count
               FROM assessment_items
               WHERE extraction_status = 'bounded'
-                AND title_basis IN ('table', 'heading')
               GROUP BY case_id
             )
             """
@@ -151,7 +112,6 @@ def audit(database: Path) -> dict[str, object]:
             FROM case_detail_status status
             JOIN assessment_items item ON item.case_id = status.case_id
             WHERE item.extraction_status = 'bounded'
-              AND item.title_basis IN ('table', 'heading')
               AND status.boundary_status NOT LIKE '%:assessment_anchor'
             """
         ).fetchone()[0]
@@ -163,7 +123,6 @@ def audit(database: Path) -> dict[str, object]:
             FROM case_detail_status status
             JOIN assessment_items item ON item.case_id = status.case_id
             WHERE item.extraction_status = 'bounded'
-              AND item.title_basis IN ('table', 'heading')
               AND status.boundary_status LIKE 'subject_heading_not_found:%'
             """
         ).fetchone()[0]
@@ -184,9 +143,7 @@ def audit(database: Path) -> dict[str, object]:
             SELECT ranking.category, COUNT(*)
             FROM assessment_item_rankings ranking
             JOIN assessment_items item ON item.item_id = ranking.item_id
-            WHERE ranking.priority_score >= 38
-              AND item.extraction_status = 'bounded'
-              AND item.title_basis IN ('table', 'heading')
+            WHERE item.extraction_status = 'bounded'
               AND ranking.category != ''
             GROUP BY ranking.category ORDER BY ranking.category
             """
@@ -240,12 +197,6 @@ def audit(database: Path) -> dict[str, object]:
     suspicious_titles: list[dict[str, str]] = []
     strict_title_review_samples: list[dict[str, object]] = []
     forbidden_re = re.compile(r"<script\b|\son[a-z]+\s*=|C:\\Users\\", re.IGNORECASE)
-    generic_title_re = re.compile(
-        r"^(?:구체적 과제명 미확인|.*수행평가 원문 구간|평가 방법|채점 기준|평가 기준|"
-        r"평가의 종류와 반영\s*비율|수행평가 과제별 세부 계획|"
-        r"본 규정에 명시되지 않은 사항.*|\d+)$"
-    )
-
     query = """
         SELECT item.*, status.source_format, status.boundary_status,
                cases.curriculum, cases.subject,
@@ -320,50 +271,13 @@ def audit(database: Path) -> dict[str, object]:
         title = str(row["title"]).strip()
         title_flags = audit_flags(title, str(row["title_basis"]))
         title_status = confidence(title_flags, str(row["title_basis"]))
-        explicit_source_evidence = False
-        if str(row["title_basis"]) == "table" and title_status != "supported":
-            explicit_title = explicit_segment_title(source_html)
-            cleaned_explicit_title = (
-                _clean_heading_title(explicit_title)[0] if explicit_title else ""
-            )
-            source_title_keys = {
-                compact_text(source_title)
-                for source_title in strict_source_titles(source_html)
-            }
-            explicit_source_evidence = bool(
-                compact_text(title) in source_title_keys
-                or (
-                    explicit_title
-                    and compact_text(cleaned_explicit_title) == compact_text(title)
-                )
-                or explicit_recovery_source_evidence(
-                    title=title,
-                    title_basis=str(row["title_basis"]),
-                    subject=str(row["subject"]),
-                    boundary_status=str(row["boundary_status"]),
-                    source_html=source_html,
-                )
-            )
-        explicit_label_status = confidence(
-            title_flags,
-            str(row["title_basis"]),
-            explicit_source_label=explicit_source_evidence,
-        )
-        explicit_source_label_confirmed = bool(
-            explicit_source_evidence
-            and not heading_title_is_structural(title)
-            and explicit_label_status == "supported"
-        )
-        effective_title_status = (
-            "supported" if explicit_source_label_confirmed else title_status
-        )
+        explicit_title_rejection = title_rejection(title, source_html)
+        explicit_source_label_confirmed = explicit_title_rejection is None
+        effective_title_status = "reject" if explicit_title_rejection else "supported"
         quality[f"title_audit_{title_status}"] += 1
         if explicit_source_label_confirmed and title_status != "supported":
             quality["titles_confirmed_by_explicit_source_label"] += 1
-        public_item = (
-            str(row["extraction_status"]) == "bounded"
-            and str(row["title_basis"]) in {"table", "heading"}
-        )
+        public_item = str(row["extraction_status"]) == "bounded"
         if public_item:
             quality[f"public_title_audit_{effective_title_status}"] += 1
             if effective_title_status != "supported" and len(strict_title_review_samples) < 100:
@@ -377,12 +291,11 @@ def audit(database: Path) -> dict[str, object]:
                         "subject": str(row["subject"]),
                     }
                 )
-        if generic_title_re.fullmatch(title) or len(comparable(title)) < 3:
+        if title_rejection(title, source_html):
             quality["suspicious_titles"] += 1
             if (
                 public_item
                 and str(row["ranking_category"])
-                and int(row["ranking_priority_score"]) >= 38
             ):
                 quality["suspicious_titles_in_curated_pool"] += 1
             if len(suspicious_titles) < 50:
@@ -437,6 +350,8 @@ def audit(database: Path) -> dict[str, object]:
             "untraceable_standards",
         )
     }
+    public = public_items(database)
+    blockers = [risk_record(row, codes) for row in public if (codes := blocking_errors(row))]
     gates = {
         "sqlite_integrity": integrity == "ok",
         # The catalogue can grow through separately validated recovery passes;
@@ -445,9 +360,7 @@ def audit(database: Path) -> dict[str, object]:
         "all_cases_have_detail": case_count > 0 and case_count == detail_count,
         "items_have_valid_parent": orphans == 0,
         "every_item_has_a_ranking_record": ranking_count == item_count,
-        "no_public_case_has_an_implausible_number_of_items": (
-            maximum_public_items_per_case <= 12
-        ),
+        "no_public_case_has_an_implausible_number_of_items": (maximum_public_items_per_case <= 12),
         # Explicit source-table rows can be bounded by their assessment-name
         # cell and course-specific achievement code even when the document has
         # no separate course or assessment heading. Cross-course safety is
@@ -455,17 +368,8 @@ def audit(database: Path) -> dict[str, object]:
         "boundary_fallbacks_are_reported_for_subject_alignment_audit": True,
         "all_items_decompress": quality["decompressed_items"] == item_count,
         "all_displayed_values_are_source_traceable": sum(hard_failures.values()) == 0,
-        "regional_filter_has_17_provinces": len(region_counts) == 17,
-        "all_six_curated_categories_have_items": all(
-            curated_category_counts.get(category, 0) > 0
-            for category in (
-                "inquiry",
-                "modeling",
-                "problem",
-                "presentation",
-                "portfolio",
-                "reading",
-            )
+        "public_ranking_categories_are_known_science_activities": (
+            set(curated_category_counts) <= SCIENCE_ACTIVITY_IDS
         ),
         "unresolved_titles_are_excluded_from_curated_rankings": (
             quality["suspicious_titles_in_curated_pool"] == 0
@@ -475,7 +379,10 @@ def audit(database: Path) -> dict[str, object]:
             for status in ("review", "reject", "missing")
         ),
     }
+    gates["no_blocking_public_items"] = not blockers
     return {
+        "blocking_public_items": len(blockers),
+        "blocking_items": blockers,
         "schema_version": 1,
         "generated_at": dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
         "database": {
@@ -520,23 +427,30 @@ def main() -> None:
     parser.add_argument(
         "--database",
         type=Path,
-        default=root / "data" / "publish" / "math_assessment_catalog_detail.sqlite",
+        default=default_database(),
     )
     parser.add_argument(
         "--output",
         type=Path,
         default=root / "data" / "derived" / "math_assessment_detail_audit.json",
     )
+    parser.add_argument("--queue", type=Path,
+                        default=root / "data/derived/science_detail_risk_queue.csv")
     args = parser.parse_args()
     if not args.database.is_file():
         raise SystemExit(f"detail database not found: {args.database}")
     report = audit(args.database)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     temporary = args.output.with_suffix(args.output.suffix + ".partial")
-    temporary.write_text(
-        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
+    temporary.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     temporary.replace(args.output)
+    import csv
+
+    args.queue.parent.mkdir(parents=True, exist_ok=True)
+    with args.queue.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=QUEUE_FIELDS)
+        writer.writeheader()
+        writer.writerows(report["blocking_items"])
     print(json.dumps(report["gates"], ensure_ascii=False))
     if not all(report["gates"].values()):
         raise SystemExit(1)

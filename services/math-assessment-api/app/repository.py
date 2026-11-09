@@ -11,29 +11,7 @@ from typing import Any
 
 from app.source_html import restore_escaped_table_rows, rubric_tables_from_source_html
 
-SUBJECT_ORDER = {
-    "과학": 21,
-    "수학": 1,
-    "공통수학1": 2,
-    "공통수학2": 3,
-    "기본수학1": 4,
-    "기본수학2": 5,
-    "수학Ⅰ": 6,
-    "수학Ⅱ": 7,
-    "대수": 8,
-    "미적분": 9,
-    "미적분Ⅰ": 10,
-    "미적분Ⅱ": 11,
-    "확률과 통계": 12,
-    "기하": 13,
-    "실용 수학": 14,
-    "경제 수학": 15,
-    "인공지능 수학": 16,
-    "직무 수학": 17,
-    "수학과 문화": 18,
-    "실용 통계": 19,
-    "수학과제 탐구": 20,
-}
+SUBJECT_ORDER = {"과학": 1}
 CURRICULUM_ORDER = {"2015": 1, "2022": 2, "shared": 3}
 SEARCH_TOKEN_RE = re.compile(r"[0-9A-Za-z가-힣ⅠⅡ]+")
 ROUGH_OVERVIEW_RE = re.compile(
