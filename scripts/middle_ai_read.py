@@ -564,11 +564,17 @@ def valid_run(output: Path, target: dict) -> tuple[bool, dict]:
 
 
 def run_targets(root: Path, round_key: str, isolated_cwd: Path, *, workers: int = 4,
-                fake_responses: Path | None = None, dry_run: bool = False) -> dict:
+                fake_responses: Path | None = None, dry_run: bool = False,
+                output_dir: Path | None = None) -> dict:
     cwd = isolated_directory(isolated_cwd)
     if workers < 1:
         raise ValueError("--workers는 1 이상이어야 함")
     output = round_dir(root, round_key)
+    if output_dir is not None:
+        output_dir = guard_path(output_dir)
+        if not output_dir.is_relative_to(output):
+            raise ValueError("실행 산출물은 해당 회차 아래여야 함")
+        output = output_dir
     targets = load_targets(output)
     if not fake_responses and not dry_run:
         default_model_guard()
@@ -1490,6 +1496,11 @@ def evaluate_targets(root: Path, round_key: str) -> dict:
 def main(argv: list[str] | None = None):
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
+    if __package__:
+        from . import middle_ai_fields
+    else:
+        import middle_ai_fields
+    middle_ai_fields.add_commands(commands)
     for name in ("targets", "coverage", "run", "verify", "merge", "evaluate"):
         command = commands.add_parser(name)
         command.add_argument("--round-key", required=True)
@@ -1504,7 +1515,9 @@ def main(argv: list[str] | None = None):
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     try:
-        if args.command == "targets":
+        if args.command.startswith("fields-"):
+            print(json.dumps(middle_ai_fields.dispatch(ROOT, args), ensure_ascii=False, indent=2))
+        elif args.command == "targets":
             result = build_targets(ROOT, args.round_key, args.mode)
             print(json.dumps({k: v for k, v in result.items() if k not in {"selected", "excluded"}},
                              ensure_ascii=False))
