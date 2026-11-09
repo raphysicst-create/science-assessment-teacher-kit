@@ -194,6 +194,7 @@ def install_source(directory, text, *, filename="과학 평가계획.hwp", secti
                 "segments": [{"grade": 1, "semester": 1}]}
     ai.save_json(directory / f"data/derived/segments/{ROUND}.json", {"documents": [document]})
     ai.save_json(directory / f"data/derived/subjects/{ROUND}.json", {"sections": sections or []})
+    ai.save_json(directory / f"data/derived/items/{ROUND}.json", {"round": ROUND, "items": []})
     ai.write_text(directory / "scripts/prompts/middle_ai_read_v1.md", "합성 원문 읽기")
     return document
 
@@ -216,15 +217,15 @@ def test_targets_integrated_table_only_and_other_subject_exclusion(directory):
             "<table>\n<tr><td>과학</td><td>관찰 보고서</td></tr>\n</table>\n\n"
             "<table>\n<tr><td>수학</td><td>계산</td></tr>\n</table>\n")
     install_source(directory, text, filename="전 과목 평가계획.hwp")
-    summary = ai.build_targets(directory, ROUND)
-    output = ai.round_dir(directory, ROUND)
+    summary = ai.build_targets(directory, ROUND, mode="all")
+    output = ai.round_dir(directory, ROUND) / "all"
     targets = ai.load_targets(output)
     assert summary["documents"] == summary["chunks"] == 1
     assert targets[0]["mode"] == "b_marker"
     prompt = (output / f"prompts/{targets[0]['target_id']}.md").read_text(encoding="utf-8")
     assert "관찰 보고서" in prompt and "쓰기" not in prompt and "계산" not in prompt
     install_source(directory, text, filename="국어 평가계획.hwp")
-    summary = ai.build_targets(directory, ROUND)
+    summary = ai.build_targets(directory, ROUND, mode="all")
     assert summary["documents"] == 0
     assert "다른 단일 교과" in summary["excluded"][0]["reason"]
 

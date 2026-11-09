@@ -13,6 +13,7 @@ import hashlib
 import html
 import json
 import re
+import shutil
 import subprocess
 import sys
 import tomllib
@@ -217,14 +218,148 @@ def metadata_candidates(document: dict, sections: list[dict], key: str) -> list[
             if type(evidence.get(key)) is int:
                 values.add(evidence[key])
     if key == "grade":
-        values.update(document.get("grades", []))
+        values.update(g for g in document.get("grades", []) if type(g) is int)
     return sorted(values)
 
 
-def build_targets(root: Path, round_key: str) -> dict:
+def g1_out_of_scope(filename: str, document: dict, sections: list[dict]) -> bool:
+    """G1 skips documents the rules left out on purpose, not by failure.
+
+    Grade-3-only documents are outside the 2022 middle-school scope, and a
+    filename that names only non-science subjects (outside a parenthesised
+    revision note) is another subject's plan.
+    """
+    grades = metadata_candidates(document, sections, "grade")
+    if grades and not set(grades) & {1, 2}:
+        return True
+    outside = re.sub(r"[(（][^)）]*[)）]", " ", filename)
+    names = filename_subjects(outside)
+    return bool(names) and "과학" not in names
+
+
+def merge_signal_windows(windows: list[dict]) -> list[dict]:
+    merged = []
+    for window in sorted(windows, key=lambda w: (w["line_start"], w["line_end"])):
+        if merged and window["line_start"] <= merged[-1]["line_end"] + 21:
+            previous = merged[-1]
+            previous["line_end"] = max(previous["line_end"], window["line_end"])
+            previous["signals"] = sorted(set(previous["signals"] + window["signals"]))
+            previous["signal_evidence"].extend(window["signal_evidence"])
+        else:
+            merged.append(copy.deepcopy(window))
+    return merged
+
+
+def gap_windows(text: str, filename: str, document: dict, sections: list[dict],
+                items: list[dict], school_items: list[dict]) -> list[dict]:
+    lines, starts = line_index(text)
+    if not lines:
+        return []
+    science = [s for s in sections if s.get("science_candidate")]
+    legacy_mode, legacy_windows, _ = target_windows(text, filename, sections)
+    windows = []
+
+    def add(signal, lo, hi, **evidence):
+        windows.append({"line_start": lo, "line_end": hi, "signals": [signal],
+                        "signal_evidence": [{"signal": signal, "line_start": lo,
+                                             "line_end": hi, **evidence}]})
+
+    if legacy_mode == "b_marker" and not g1_out_of_scope(filename, document, sections):
+        for lo, hi in legacy_windows:
+            add("G1", lo, hi)
+    # G2 requires a science-capable document, including marker-only documents.
+    if science or legacy_mode == "b_marker":
+        grades = metadata_candidates(document, sections, "grade")
+        semesters = metadata_candidates(document, sections, "semester") or [1, 2]
+        bounded = [i for i in school_items if i.get("candidate_role") == "performance"
+                   and i.get("extraction_status") == "bounded"]
+        for grade in (1, 2):
+            if grades and grade not in grades:
+                continue
+            grade_sections = [s for s in science if s.get("grade") in (None, grade)]
+            for semester in semesters:
+                if any(i.get("grade") == grade and i.get("semester") == semester for i in bounded):
+                    continue
+                matching = [s for s in grade_sections if s.get("semester") in (None, semester)]
+                if grade_sections and not matching:
+                    continue
+                for section in matching:
+                    lo, hi = line_span(starts, section["locator"]["start"],
+                                       section["locator"]["end"])
+                    add("G2", lo, hi, grade=grade, semester=semester,
+                        section_id=section.get("section_id"))
+                if not matching:
+                    add("G2", 1, len(lines), grade=grade, semester=semester,
+                        reason="해당 학년·학기 과학 구간 미식별")
+    bounded_ids = {i["item_id"] for i in items
+                   if i.get("candidate_role") == "performance"
+                   and i.get("extraction_status") == "bounded"}
+    for item in items:
+        signals = []
+        if (item.get("candidate_role") == "performance"
+                and item.get("extraction_status") != "bounded"):
+            signals.append("G3")
+        summary = (item.get("table_role") == "summary"
+                   or item.get("candidate_role") in {"summary", "summary_duplicate"})
+        title = item.get("fields", {}).get("title", {}).get("value")
+        relation = item.get("identity_relation") or {}
+        linked = relation.get("detail_item_id") in bounded_ids
+        if summary and title and item["item_id"] not in bounded_ids and not linked:
+            signals.append("G4")
+        if not signals:
+            continue
+        containing = [s for s in science if s.get("section_id") == item.get("section_id")]
+        if not containing:
+            containing = [s for s in science if overlaps(s["locator"], item["locator"])]
+        for signal in signals:
+            for section in containing:
+                loc = section["locator"]
+                lo, hi = line_span(starts, loc["start"], loc["end"])
+                if signal == "G3" and loc["end"] - loc["start"] > MAX_CHARS:
+                    left, right = line_span(
+                        starts, item["locator"]["start"], item["locator"]["end"])
+                    lo, hi = max(lo, left - 120), min(hi, right + 120)
+                add(signal, lo, hi, item_id=item["item_id"], section_id=section.get("section_id"))
+    return merge_signal_windows(windows)
+
+
+def preserve_all_targets(output: Path):
+    """Snapshot legacy prompts and response bindings before selecting gaps."""
+    path = output / "targets.jsonl"
+    if not path.exists():
+        return
+    targets = load_targets(output)
+    summary_path = output / "summary.json"
+    if ((targets and targets[0].get("selection_mode") == "gaps")
+            or (summary_path.exists() and read_json(summary_path).get("selection_mode") == "gaps")):
+        return
+    archive = output / "all"
+    if (archive / "targets.jsonl").exists():
+        if read_text(archive / "targets.jsonl") != read_text(path):
+            raise ValueError("기존 all 보관본과 targets가 다름. 별도 보관 필요")
+        return
+    archive.mkdir(parents=True, exist_ok=True)
+    for entry in output.iterdir():
+        if entry.name == "all":
+            continue
+        guard_path(entry)
+        if entry.is_dir():
+            shutil.copytree(entry, archive / entry.name)
+        else:
+            shutil.copy2(entry, archive / entry.name)
+
+
+def build_targets(root: Path, round_key: str, mode: str = "gaps") -> dict:
+    if mode not in {"gaps", "all"}:
+        raise ValueError("대상 mode는 gaps 또는 all이어야 함")
     output = round_dir(root, round_key)
+    if mode == "all":
+        output = output / "all"
+    else:
+        preserve_all_targets(output)
     s4 = read_json(root / f"data/derived/segments/{round_key}.json")
     s5 = read_json(root / f"data/derived/subjects/{round_key}.json")
+    rules = read_json(root / f"data/derived/items/{round_key}.json") if mode == "gaps" else {}
     template = read_text(root / "scripts/prompts/middle_ai_read_v1.md")
     targets, excluded, selected = [], [], []
     for document in s4["documents"]:
@@ -239,11 +374,19 @@ def build_targets(root: Path, round_key: str) -> dict:
             continue
         conversion = conversion_for(root, document)
         text = conversion["text"]
-        mode, windows, reason = target_windows(text, filename, sections)
+        window_mode, windows, reason = target_windows(text, filename, sections)
+        signal_windows = []
+        items = [i for i in rules.get("items", []) if i["document_id"] == identity]
+        if mode == "gaps":
+            school_items = [i for i in rules["items"] if i.get("school") == source["school_name"]]
+            signal_windows = gap_windows(text, filename, document, sections, items, school_items)
+            windows = [(w["line_start"], w["line_end"]) for w in signal_windows]
+            reason = "G1–G4 신호 없음" if not windows else ""
         if not windows:
             excluded.append({**description, "reason": reason})
             continue
-        selected.append({**description, "mode": mode, "windows": windows})
+        selected.append({**description, "mode": window_mode, "windows": windows,
+                         **({"signal_windows": signal_windows} if mode == "gaps" else {})})
         lines, starts = line_index(text)
         metadata = {**description, "round": round_key, "school_code": source.get("school_code"),
                     "child_id": document.get("child_id"),
@@ -254,12 +397,26 @@ def build_targets(root: Path, round_key: str) -> dict:
             for left, right in split_window(lines, lo, hi):
                 target_id = digest_id("ai_", VERSION, round_key, identity, left, right,
                                       document["text_sha256"])
+                chunk_metadata = metadata
+                if mode == "gaps":
+                    window = next(w for w in signal_windows if w["line_start"] == lo
+                                  and w["line_end"] == hi)
+                    bounded = [i["item_id"] for i in items
+                               if i.get("candidate_role") == "performance"
+                               and i.get("extraction_status") == "bounded" and overlaps(
+                                   i["locator"], {"start": starts[left - 1], "end": starts[right]})]
+                    chunk_metadata = {**metadata, "selection_mode": "gaps",
+                                      "signals": window["signals"],
+                                      "signal_evidence": window["signal_evidence"],
+                                      "bounded_item_ids": bounded}
+                    target_id = digest_id("ai_", "middle-ai-gaps-v1", round_key, identity,
+                                          left, right, document["text_sha256"])
                 numbered = "".join(f"{i}\t{lines[i - 1]}" for i in range(left, right + 1))
                 prompt = (template + "\n\n## 참고 메타데이터\n\n"
-                          + json.dumps(metadata, ensure_ascii=False) + "\n\n"
+                          + json.dumps(chunk_metadata, ensure_ascii=False) + "\n\n"
                           + f"## 원문 (문서 전체 기준 {left}–{right}줄)\n\n"
                           + numbered)
-                target = {**metadata, "target_id": target_id, "mode": mode,
+                target = {**chunk_metadata, "target_id": target_id, "mode": window_mode,
                           "line_start": left, "line_end": right,
                           "start": starts[left - 1], "end": starts[right],
                           "text_sha256": document["text_sha256"],
@@ -273,6 +430,10 @@ def build_targets(root: Path, round_key: str) -> dict:
                "total_chars": sum(t["char_count"] for t in targets),
                "prompt_chars": sum(t["prompt_chars"] for t in targets),
                "expected_calls": len(targets), "selected": selected, "excluded": excluded}
+    if mode == "gaps":
+        summary["selection_mode"] = mode
+        summary["signal_windows"] = dict(Counter(
+            signal for d in selected for w in d["signal_windows"] for signal in w["signals"]))
     save_json(output / "summary.json", summary)
     return summary
 
@@ -559,6 +720,30 @@ def check_scope(task: dict, key: str, target: dict, text: str,
     return {"raw": text[locator["start"]:locator["end"]], "locator": locator}
 
 
+def title_evidence_locator(task: dict, evidence: list[dict], conversion: dict) -> tuple[dict, str]:
+    text = conversion["text"]
+    _, starts = line_index(text)
+    tables = table_spans(text)
+    candidates = []
+    for entry in evidence:
+        start, end = starts[entry["line_start"] - 1], starts[entry["line_end"]]
+        try:
+            title = literal_span(text[start:end], task["title"], start, conversion)
+        except ValueError:
+            continue
+        table = next((t for t in tables if t["start"] <= title["start"] < t["end"]), None)
+        detail = task.get("seen_in") == "detail" or bool(table and re.search(
+            r"평가\s*요소|채점\s*기준|수행\s*과제|평가\s*기준",
+            normalize(text[table["start"]:table["end"]])))
+        loc = entry["locator"]
+        if not (loc["start"] <= title["start"] and title["end"] <= loc["end"]):
+            loc = {**text_locator(start, end, conversion), "text_field": "text"}
+        candidates.append((not detail, entry["line_start"] != task["title_line"],
+                           loc["end"] - loc["start"], loc["start"], loc))
+    chosen = min(candidates, key=lambda c: c[:4])
+    return chosen[-1], "detail_evidence" if not chosen[0] else "title_evidence"
+
+
 def verify_task(task: dict, target: dict, conversion: dict) -> dict:
     text = conversion["text"]
     _, starts = line_index(text)
@@ -595,6 +780,7 @@ def verify_task(task: dict, target: dict, conversion: dict) -> dict:
     raw_title = text[title_locator["start"]:title_locator["end"]]
     metadata_keys = ("document_id", "child_id", "school", "school_code", "filename",
                      "converted_path", "original_path", "text_sha256", "round")
+    locator, locator_basis = title_evidence_locator(task, evidence, conversion)
     return {**{k: target.get(k) for k in metadata_keys},
             "ai_task_id": digest_id("aitask_", target["document_id"], task["grade"],
                                     task["semester"], normalize(title), title_locator),
@@ -602,9 +788,7 @@ def verify_task(task: dict, target: dict, conversion: dict) -> dict:
             "title_locator": title_locator, "grade": task["grade"], "semester": task["semester"],
             "grade_evidence": grade_evidence, "semester_evidence": semester_evidence,
             "evidence": evidence, "locators": [e["locator"] for e in evidence],
-            "locator": {**text_locator(min(e["locator"]["start"] for e in evidence),
-                                       max(e["locator"]["end"] for e in evidence), conversion),
-                        "text_field": "text"},
+            "locator": locator, "locator_basis": locator_basis,
             "seen_in": task["seen_in"], "target_ids": [target["target_id"]]}
 
 
@@ -628,13 +812,10 @@ def deduplicate(tasks: list[dict]) -> list[dict]:
             if evidence not in duplicate["evidence"]:
                 duplicate["evidence"].append(evidence)
         duplicate["locators"] = [e["locator"] for e in duplicate["evidence"]]
-        duplicate["locator"]["start"] = min(loc["start"] for loc in duplicate["locators"])
-        duplicate["locator"]["end"] = max(loc["end"] for loc in duplicate["locators"])
-        if "pages" in duplicate["locator"]:
-            pages = sorted({page for loc in duplicate["locators"] for page in loc.get("pages", [])})
-            duplicate["locator"].update({"pages": pages,
-                                         "page_start": pages[0] if pages else None,
-                                         "page_end": pages[-1] if pages else None})
+        if (task.get("locator_basis") == "detail_evidence"
+                and duplicate.get("locator_basis") != "detail_evidence"):
+            duplicate["locator"] = copy.deepcopy(task["locator"])
+            duplicate["locator_basis"] = task["locator_basis"]
         if duplicate["seen_in"] != task["seen_in"]:
             duplicate["seen_in"] = "both"
     return result
@@ -704,13 +885,24 @@ def ai_item(task: dict) -> dict:
             "boundary_evidence": {"ai_evidence": task["evidence"],
                                   "grade_evidence": task["grade_evidence"],
                                   "semester_evidence": task["semester_evidence"]},
-            "locator": task["locator"], "fields": fields, "title_role": "title",
+            "locator": representative_locator(task), "fields": fields, "title_role": "title",
             "title_authenticity": "source_text_candidate", "title_specificity_score": 0,
             "title_generated": False, "links": [], "completeness_status": "completion_unconfirmed",
             "owned_ranges": task["locators"], "shared_fields": [],
             "extraction_status": "ai_verified", "extraction_method": "ai_read",
             "review_reasons": ["AI 읽기 1단계: 필드 미추출"], "subject_status": "target",
             "public_eligible": False, "target_ids": task["target_ids"]}
+
+
+def representative_locator(task: dict) -> dict:
+    if task.get("locator_basis"):
+        return task["locator"]
+    # Older verified records stored the union. Keep their evidence intact and
+    # recover a title-bearing anchor when merging those records again.
+    title = task["title_locator"]
+    candidates = [loc for loc in task["locators"] if loc["start"] <= title["start"]
+                  and title["end"] <= loc["end"]]
+    return min(candidates, key=lambda loc: loc["end"] - loc["start"]) if candidates else title
 
 
 def merge_report(rules: dict, verified: dict) -> dict:
@@ -721,9 +913,10 @@ def merge_report(rules: dict, verified: dict) -> dict:
     by_rule = {i["item_id"]: [] for i in performance}
     for task in tasks:
         matches = [item for item in performance if (
-            (item["document_id"], item.get("child_id"), item.get("grade"), item.get("semester"))
-            == (task["document_id"], task.get("child_id"), task["grade"], task["semester"]))
-            and any(overlaps(item["locator"], loc) for loc in task["locators"])]
+            (item["document_id"], item.get("child_id"))
+            == (task["document_id"], task.get("child_id")))
+            and all(item.get(key) in (None, task[key]) for key in ("grade", "semester"))
+            and overlaps(item["locator"], representative_locator(task))]
         by_task[task["ai_task_id"]] = matches
         for item in matches:
             by_rule[item["item_id"]].append(task["ai_task_id"])
@@ -755,6 +948,15 @@ def merge_report(rules: dict, verified: dict) -> dict:
         relations["new"].append({"ai_task_id": task["ai_task_id"],
                                   "item_id": task["ai_task_id"],
                                   "reason": "덩어리 분할" if matches else "규칙 겹침 없음"})
+    for entries in relations.values():
+        for relation in entries:
+            rule_ids = relation.get("rule_item_ids", [relation.get("rule_item_id")])
+            wildcards = [{"rule_item_id": i["item_id"],
+                          "fields": [key for key in ("grade", "semester") if i.get(key) is None]}
+                         for i in performance if i["item_id"] in rule_ids
+                         and any(i.get(key) is None for key in ("grade", "semester"))]
+            if wildcards:
+                relation["scope_wildcards"] = wildcards
     result["ai_relations"] = relations
     result["ai_read_summary"] = {"rule_items": len(rules["items"]),
                                   "added_items": len(relations["new"]),
@@ -901,6 +1103,206 @@ def difference_type(title: str) -> str:
     return "제목·경계·귀속 대조 필요"
 
 
+def reference_positions(row: dict, documents: list[dict], root: Path, cache: dict,
+                        *, whole_lines: bool = False) -> list[dict]:
+    positions = []
+    title = re.sub(r"〔.*?〕", "", row["title"])
+    for document in documents:
+        path = document["converted_path"]
+        if path not in cache:
+            cache[path] = conversion_for(root, document)["text"]
+        text = cache[path]
+        _, starts = line_index(text)
+        for lo, hi in row["source_lines"]:
+            if not 1 <= lo <= hi < len(starts):
+                continue
+            start, end = starts[lo - 1], starts[hi]
+            try:
+                loc = literal_span(text[start:end], title, start, {"text": text})
+                basis = "literal_title"
+            except ValueError:
+                loc = {"start": start, "end": end}
+                basis = "reference_line_range"
+            positions.append({"document_id": document["document_id"],
+                              "filename": document.get("member_name")
+                              or document["source"]["candidate_name"],
+                              "converted_path": path,
+                              "start": start if whole_lines else loc["start"],
+                              "end": end if whole_lines else loc["end"],
+                              "source_lines": [lo, hi], "basis": basis})
+    # A title in the cited lines identifies its document more narrowly than the
+    # line numbers alone when a reference cell lists several source documents.
+    literal = [p for p in positions if p["basis"] == "literal_title"]
+    if whole_lines:
+        paths = {p["converted_path"] for p in literal}
+        return [p for p in positions if not paths or p["converted_path"] in paths]
+    return literal or positions
+
+
+def pair_reference_positions(reference: dict, candidates: list[dict], sources: list[dict],
+                             root: Path, cache: dict) -> dict:
+    """Reconcile title differences only with unique source-scoped task locations."""
+    comparison = compare_reference(reference["rows"], candidates, cache)
+    used = {m["item_id"] for m in comparison["matches"]}
+    pending = comparison["missed"]
+    line_counts = Counter(tuple(span) for row in reference["rows"] for span in row["source_lines"])
+    alternatives = {}
+    for index, missed in enumerate(pending):
+        positions = reference_positions(missed["reference"], sources, root, cache, whole_lines=True)
+        unique = [p for p in positions if line_counts[tuple(p["source_lines"])] == 1]
+        title_positions = [p for p in reference_positions(missed["reference"], sources, root, cache)
+                           if p["basis"] == "literal_title"]
+        row_title = normalize(re.sub(r"〔.*?〕", "", missed["reference"]["title"])).replace(" ", "")
+        title_matches = [i for i in candidates if i["item_id"] not in used and (
+            any(i["document_id"] == p["document_id"] and overlaps(e["locator"], p)
+                for e in i["fields"]["title"].get("evidence", []) for p in title_positions)
+            or (normalize(str(i["fields"]["title"]["value"])).replace(" ", "") == row_title
+                and any(i["document_id"] == p["document_id"] and overlaps(i["locator"], p)
+                        for p in positions)))]
+        matches = [i for i in candidates if i["item_id"] not in used
+                   and any(i["document_id"] == p["document_id"] and overlaps(i["locator"], p)
+                           for p in unique)]
+        # Broad summary columns can cover other task rows. Prefer task titles
+        # physically inside the reference's private evidence, then detail tables.
+        anchored = [i for i in matches if any(
+            i["document_id"] == p["document_id"] and overlaps(e["locator"], p)
+            for e in i["fields"]["title"].get("evidence", []) for p in unique)]
+        matches = anchored or matches
+        detail = [i for i in matches if i.get("table_role") == "detail"]
+        alternatives[index] = {i["item_id"] for i in (title_matches or detail or matches)}
+    paired = {}
+    while True:
+        counts = Counter(identity for ids in alternatives.values() for identity in ids)
+        singles = {index: next(iter(ids)) for index, ids in alternatives.items()
+                   if len(ids) == 1 and counts[next(iter(ids))] == 1}
+        if not singles:
+            break
+        paired.update(singles)
+        assigned = set(singles.values())
+        alternatives = {index: ids - assigned for index, ids in alternatives.items()
+                        if index not in singles}
+    for index, missed in enumerate(pending):
+        if index in paired:
+            comparison["matches"].append({"reference": missed["reference"],
+                                          "item_id": paired[index],
+                                          "basis": "unique_document_source_position"})
+        else:
+            missed["source_position_suggestions"] = sorted(alternatives.get(index, set()))
+    comparison["missed"] = [m for index, m in enumerate(pending) if index not in paired]
+    comparison["position_paired"] = len(paired)
+    return comparison
+
+
+def measure_coverage(root: Path, round_key: str) -> dict:
+    if round_key not in DEV_ROUNDS:
+        raise ValueError("coverage는 지정된 보충 두 회차만 지원함")
+    output = round_dir(root, round_key)
+    gaps = load_targets(output)
+    if any(t.get("selection_mode") != "gaps" for t in gaps):
+        raise ValueError("먼저 targets --mode gaps 필요")
+    all_targets = load_targets(output / "all")
+    documents = read_json(root / f"data/derived/segments/{round_key}.json")["documents"]
+    rules = read_json(root / f"data/derived/items/{round_key}.json")
+    bounded = [i for i in rules["items"] if i.get("candidate_role") == "performance"
+               and i.get("extraction_status") == "bounded"]
+    references = load_references(root)
+    cache, misses, count_differences, pairings = {}, [], [], []
+    cell_count, position_paired = 0, 0
+    for reference in references:
+        cell = reference["cell"]
+        if cell["round"] != round_key:
+            continue
+        cell_count += 1
+        if reference["unreadable"]:
+            continue
+        source_records = cell.get("science_ranges") or cell.get("source_documents", [])
+        paths = {d["converted_path"] for d in source_records}
+        sources = [d for d in documents if d["source"]["school_name"] == cell["school"]
+                   and (not paths or d["converted_path"] in paths)]
+        candidates = [i for i in bounded if (i.get("school"), i.get("grade"), i.get("semester"))
+                      == (cell["school"], cell["grade"], cell["semester"])
+                      and (not paths or i["converted_path"] in paths)]
+        for item in candidates:
+            if item["converted_path"] not in cache:
+                cache[item["converted_path"]] = conversion_for(root, item)["text"]
+        comparison = pair_reference_positions(reference, candidates, sources, root, cache)
+        position_paired += comparison["position_paired"]
+        pairings.extend({"sample": reference["sample"], "cell_id": cell["cell_id"],
+                         "reference_title": m["reference"]["title"], "item_id": m["item_id"],
+                         "basis": m["basis"]} for m in comparison["matches"])
+        if reference["reference_count"] != len(reference["rows"]):
+            count_differences.append({"sample": reference["sample"], "cell_id": cell["cell_id"],
+                                      "list_count": len(reference["rows"]),
+                                      "chief_count": reference["reference_count"]})
+        for missed in comparison["missed"]:
+            row = missed["reference"]
+            positions = reference_positions(row, sources, root, cache)
+            hits = [t for t in gaps if any(t["document_id"] == p["document_id"]
+                                           and overlaps(t, p) for p in positions)]
+            signals = sorted({signal for t in hits for signal in t["signals"]})
+            if hits:
+                reason = ""
+            elif not positions:
+                reason = "참고 줄에 대응하는 문서·문자 위치를 복원하지 못함"
+            elif any(t["document_id"] == p["document_id"] for t in gaps for p in positions):
+                reason = "신호 창은 다른 구간에 있음. 해당 위치에는 G1–G4 신호가 없음"
+            else:
+                reason = ("문서에 선택 신호 없음. 빈 칸이 아니거나 학년 후보 밖이며 "
+                          "미확정·미연결 후보 없음")
+            misses.append({"sample": reference["sample"], "cell_id": cell["cell_id"],
+                           "school": cell["school"], "grade": cell["grade"],
+                           "semester": cell["semester"], "title": row["title"],
+                           "positions": positions, "signals": signals, "covered": bool(hits),
+                           "target_ids": [t["target_id"] for t in hits], "reason_estimate": reason,
+                           "source_position_suggestions": missed["source_position_suggestions"]})
+    report = {"round": round_key, "reference_total_cells": len(references), "cells": cell_count,
+              "matching": ("정규화 제목 일대일 대조 후 같은 문서의 고유 근거 위치로 "
+                           "서로 하나뿐인 bounded 짝을 연결. 모호한 짝은 놓침에 포함"),
+              "position_paired": position_paired,
+              "title_only_rule_missed": len(misses) + position_paired,
+              "rule_missed": len(misses), "signal_covered": sum(m["covered"] for m in misses),
+              "by_signal": {s: sum(s in m["signals"] for m in misses)
+                            for s in ("G1", "G2", "G3", "G4")},
+              "comparison": {name: {"chunks": len(ts), "chars": sum(t["char_count"] for t in ts),
+                                     "expected_calls": len(ts)}
+                             for name, ts in (("gaps", gaps), ("all", all_targets))},
+              "misses": misses, "pairings": pairings, "count_differences": count_differences,
+              "targets_sha256": sha(read_text(output / "targets.jsonl"))}
+    save_json(output / "coverage.json", report)
+    lines = ["# S6e-2 신호 포괄 측정", "",
+             f"규칙 놓침 {report['rule_missed']}개 중 "
+             f"신호에 걸린 것 {report['signal_covered']}개.", "",
+             report["matching"], "", "문자 위치는 원문 Unicode 코드포인트의 끝 제외 범위다. "
+             "literal_title은 참고 줄 속 제목 위치, reference_line_range는 제목 철자가 달라 "
+             "참고 줄 전체로 계산한 위치다. 여러 문서의 줄만 일치하면 위치 모호성이 남는다.", "",
+             "| 신호 | 걸린 놓침 |", "|---|---:|"]
+    lines.extend(f"| {s} | {n} |" for s, n in report["by_signal"].items())
+    lines += ["", "| 모드 | 조각 | 글자 | 예상 호출 |", "|---|---:|---:|---:|"]
+    lines.extend(f"| {name} | {v['chunks']} | {v['chars']} | {v['expected_calls']} |"
+                 for name, v in report["comparison"].items())
+    lines += ["", "## 신호에 걸리지 않은 놓침 전부", "",
+              "| 표본·칸 | 학교·학년·학기 | 문서·문자 범위 | 참고 제목 | 신호가 없었던 이유 추정 |",
+              "|---|---|---|---|---|"]
+    for missed in misses:
+        if missed["covered"]:
+            continue
+        positions = "<br>".join(f"{p['filename']} [{p['start']}, {p['end']}) ({p['basis']})"
+                               for p in missed["positions"]) or "위치 미복원"
+        values = [f"{missed['sample']} {missed['cell_id']}",
+                  f"{missed['school']} {missed['grade']}학년 {missed['semester']}학기",
+                  positions, missed["title"], missed["reason_estimate"]]
+        lines.append("| " + " | ".join(v.replace("|", "\\|") for v in values) + " |")
+    if count_differences:
+        lines += ["", "## 참고 목록 행 수와 총괄 수 차이", "",
+                  "놓침 측정은 위치가 있는 독립 목록 행을 사용했다. "
+                  "총괄 수만으로 과제를 생성하지 않는다.",
+                  "", "| 표본·칸 | 독립 목록 | 총괄 수 |", "|---|---:|---:|"]
+        lines.extend(f"| {d['sample']} {d['cell_id']} | {d['list_count']} | {d['chief_count']} |"
+                     for d in count_differences)
+    write_text(output / "coverage.md", "\n".join(lines) + "\n")
+    return report
+
+
 def evaluate_targets(root: Path, round_key: str) -> dict:
     if round_key not in DEV_ROUNDS:
         raise ValueError("evaluate는 지정된 보충 두 회차만 지원함")
@@ -1013,9 +1415,11 @@ def evaluate_targets(root: Path, round_key: str) -> dict:
 def main(argv: list[str] | None = None):
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
-    for name in ("targets", "run", "verify", "merge", "evaluate"):
+    for name in ("targets", "coverage", "run", "verify", "merge", "evaluate"):
         command = commands.add_parser(name)
         command.add_argument("--round-key", required=True)
+        if name == "targets":
+            command.add_argument("--mode", choices=("gaps", "all"), default="gaps")
         if name == "run":
             command.add_argument("--isolated-cwd", type=Path, required=True)
             command.add_argument("--workers", type=int, default=4)
@@ -1026,7 +1430,7 @@ def main(argv: list[str] | None = None):
         sys.stdout.reconfigure(encoding="utf-8")
     try:
         if args.command == "targets":
-            result = build_targets(ROOT, args.round_key)
+            result = build_targets(ROOT, args.round_key, args.mode)
             print(json.dumps({k: v for k, v in result.items() if k not in {"selected", "excluded"}},
                              ensure_ascii=False))
         elif args.command == "run":
@@ -1042,6 +1446,10 @@ def main(argv: list[str] | None = None):
         elif args.command == "merge":
             result = merge_targets(ROOT, args.round_key)
             print(json.dumps(result["ai_read_summary"], ensure_ascii=False))
+        elif args.command == "coverage":
+            result = measure_coverage(ROOT, args.round_key)
+            print(json.dumps({k: v for k, v in result.items() if k not in {"misses", "pairings"}},
+                             ensure_ascii=False))
         else:
             print(json.dumps(evaluate_targets(ROOT, args.round_key)["totals"], ensure_ascii=False))
     except (ValueError, OSError, KeyError) as error:
