@@ -40,7 +40,7 @@ def offline_guard(event, args):
 
 
 def read(path):
-    return json.loads((ROOT / path).read_text(encoding="utf-8"))
+    return json.loads((ROOT / path).read_text(encoding="utf-8-sig"))
 
 
 def independent(report):
@@ -159,9 +159,10 @@ def column_audit(report):
     return counts
 
 
-def source_ranges(report, grade, semester, school):
-    subjects = read(f"data/derived/subjects/{report['round']}.json")
-    s4 = read(f"data/derived/segments/{report['round']}.json")
+def source_ranges(report, grade, semester, school, reader=None):
+    reader = read if reader is None else reader
+    subjects = reader(f"data/derived/subjects/{report['round']}.json")
+    s4 = reader(f"data/derived/segments/{report['round']}.json")
     parents = {s["segment_id"]: s for d in s4["documents"] for s in d["segments"]}
     docs = {d["converted_path"]: d for d in report["documents"] if d["development_selected"]}
     ranges = []
@@ -174,7 +175,7 @@ def source_ranges(report, grade, semester, school):
         term = parents[s["segment_id"]]["semester"]
         if term not in {None, semester}:
             continue
-        text = read(d["converted_path"])["text"]
+        text = reader(d["converted_path"])["text"]
         start, end = s["locator"]["start"], s["locator"]["end"]
         ranges.append({
             "section_id": s["section_id"], "original_path": d["original_path"],

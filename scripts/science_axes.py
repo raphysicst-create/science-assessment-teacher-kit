@@ -1,35 +1,50 @@
 """S6 항목의 단원·활동을 science-axes-v2 규칙으로 분류한다.
 
 실행: .venv/Scripts/python.exe scripts/science_axes.py classify --items INPUT --out OUTPUT
-검증: .venv/Scripts/python.exe -m pytest -q -p no:cacheprovider services/math-assessment-api/tests/test_science_axes_classifier.py
+검증: .venv/Scripts/python.exe -m pytest -q -p no:cacheprovider
+      services/math-assessment-api/tests/test_science_axes_classifier.py
 S층은 평평한 배열에서 수준 순서의 재시작으로 묶음을 찾는 '최고 수준 문장 근사'다.
-나열은 단순 분리하고 한 어절 항목에 앞 항목의 머리말만 붙인다. 복잡한 병렬문은 복원하지 않는다.
-R3은 표지 낱말이 마지막 어절 또는 평가 바로 앞 어절일 때만 방법어로 인정한다.
+S층 어미 판별은 끝 괄호 묶음을 제외하되 문장 전체를 감싼 괄호는 유지한다.
+활동 나열은 단순 분리하고 한 어절 항목에 앞 항목의 머리말만 붙인다. 복잡한 병렬문은 복원하지 않는다.
+R3은 마지막 어절(평가 바로 앞 포함)의 방법어 접미를 긴 낱말부터 대조한다.
+접미 앞부분의 단원·개념명 여부는 검사하지 않는 근사다.
+평문 방법은 쉼표·슬래시·줄바꿈으로 분리한다. 값과 선택지가 비면 근거의 HTML·월 표기를 정리해 쓴다.
+R4는 사전의 하다 동사형을 하 어간으로 줄이고 하/함/할 활용형을 대조한다. 명사는 부분 일치한다.
 """
 
 import argparse
-from collections import Counter
-from itertools import groupby
 import json
 import os
-from pathlib import Path
 import re
 import sys
 import unicodedata
+from collections import Counter
+from itertools import groupby
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 AXES = json.loads((ROOT / "data/reference/science_axes.json").read_text(encoding="utf-8"))
 ACTIVITY_NAMES = [a["name"] for a in AXES["activities"]]
 DOTS = str.maketrans({c: "·" for c in "·ㆍ･⋅・‧"})
 MAKING_END = re.compile(r"(?:만들기|제작하기|제작|디자인하기|디자인)\s*$")
-DOCUMENTS = ("노트", "포트폴리오", "보고서", "계획서", "글", "일기", "일지", "시나리오", "발표 자료")
+DOCUMENTS = (
+    "노트", "포트폴리오", "보고서", "계획서", "글", "일기", "일지", "시나리오", "발표 자료",
+)
 BULLETS = re.compile(r"[\n•▪§∘▶Ÿ※]|(?<!\S)-\s*|(?<!\S)(?:\d+\.|[ivxlcdmⅰ-ⅻ]+\.)\s*|[①-⑳]")
-LEVEL = re.compile(r"^(?:[A-E]|\d+(?:\.\d+)?(?:점)?|상|중|하|우수|보통|미흡|매우우수|노력요함|(?:채점)?기준\d+개(?:이상|이하)?충족.*)$")
+LEVEL = re.compile(
+    r"^(?:[A-E]|\d+(?:\.\d+)?(?:점)?|상|중|하|우수|보통|미흡|매우우수|노력요함|"
+    r"(?:채점)?기준\d+개(?:이상|이하)?충족.*)$"
+)
 SCORING_END = re.compile(r"(?:함|음|됨|임|다|니다|했다|한다|있다|없다|경우|이상|미만|만족|충족)$")
 SCORING_PHRASE = re.compile(
     r"채점요소를|\d+개서술|\d+가지(?:이상|만족|충족)|모두(?:만족|충족)|"
     r"우수함|보통임|미흡함|부족함|못함|않음"
 )
+LEXICON_VERB_END = re.compile(r"(?:하기|하다|함|할|하는|하여|하고)$")
+VERB_STEM_FORMS = ("하", "함", "할")
+METHOD_SEPARATOR = re.compile(r"[,/\r\n]+")
+HTML_TAG = re.compile(r"<[^>]*>")
+MONTH_NOTE = re.compile(r"\(\s*\d{1,2}\s*(?:(?:월\s*)?[~～\-–]\s*\d{1,2}\s*)?월\s*\)")
 METHOD_WORDS = {
     "실험": "experiment", "프로젝트": "project", "포트폴리오": "portfolio",
     "보고서": "report", "글쓰기": "report", "논술": "essay", "서·논술형": "essay",
@@ -37,10 +52,15 @@ METHOD_WORDS = {
     "탐구": "project", "탐구활동": "project",
 }
 NO_CHECKS = "없음(평문/방법어/투표만)"
+ACTION_ENDING = re.compile(
+    r"(?:하고|하여|하며|하기|하는|하자|할|함|됨|되어|되는|된|한다|있다|없다|읽고|읽기|쓰고|쓰기|보고)$"
+)
 
 
 def normalize(text):
-    return re.sub(r"\s+", "", unicodedata.normalize("NFKC", text.translate(DOTS)).translate(DOTS)) if isinstance(text, str) else ""
+    if not isinstance(text, str):
+        return ""
+    return re.sub(r"\s+", "", unicodedata.normalize("NFKC", text.translate(DOTS)).translate(DOTS))
 
 
 def strings(value):
@@ -62,7 +82,8 @@ def text_field(item, name):
 
 def guard_path(path):
     path = Path(path)
-    if "gold" in (str(path) + str(path.resolve())).lower() and os.environ.get("SCIENCE_AXES_GOLD") != "chief-measurement":
+    if ("gold" in (str(path) + str(path.resolve())).lower()
+            and os.environ.get("SCIENCE_AXES_GOLD") != "chief-measurement"):
         raise ValueError("맹검 경로")
     return path
 
@@ -95,7 +116,9 @@ def level_rank(text):
         return ord(text) - ord("A")
     if re.fullmatch(r"\d+(?:\.\d+)?(?:점)?", text):
         return -float(text.removesuffix("점"))
-    return {"매우우수": 0, "우수": 1, "상": 1, "보통": 2, "중": 2, "미흡": 3, "하": 3, "노력요함": 4}.get(text, 5)
+    return {
+        "매우우수": 0, "우수": 1, "상": 1, "보통": 2, "중": 2, "미흡": 3, "하": 3, "노력요함": 4,
+    }.get(text, 5)
 
 
 def rubric_units(value):
@@ -127,7 +150,17 @@ def rubric_units(value):
 
 def is_scoring_sentence(text):
     shaped = unicodedata.normalize("NFKC", text).strip()
-    ending = re.sub(r"[.。()]", "", normalize(shaped))
+    ending = shaped.rstrip(" .。")
+    while ending.endswith(")"):
+        depth = 0
+        for index in range(len(ending) - 1, -1, -1):
+            depth += (ending[index] == ")") - (ending[index] == "(")
+            if depth == 0:
+                break
+        if depth or not ending[:index].strip():
+            break
+        ending = ending[:index].rstrip(" .。")
+    ending = re.sub(r"[.。()]", "", normalize(ending))
     return bool(SCORING_END.search(ending) or SCORING_PHRASE.search(normalize(shaped))
                 or re.match(r"^[A-E]\s", shaped))
 
@@ -169,7 +202,7 @@ def activity_units(item):
 
 
 def checkbox_class(text):
-    normalized = normalize(text)
+    normalized = normalize(text).removesuffix("평가")
     hits = []
     for name, definition in AXES["checkbox_classes"].items():
         for pattern in definition["patterns"]:
@@ -178,6 +211,48 @@ def checkbox_class(text):
                 hits.append((normalized.rfind(match) + len(match), len(match), name))
     # 마지막 어절에 가장 가깝게 끝나는 표지가 머리명사다. 같은 끝이면 긴 표지를 쓴다.
     return max(hits)[2] if hits else None
+
+
+def method_texts(method):
+    """평문 값이 없으면 근거 원문을 정리하고 방법 나열을 분리한다."""
+    values = strings(method.get("value"))
+    if not values:
+        evidence = method.get("evidence")
+        evidence = evidence if isinstance(evidence, list) else []
+        for entry in evidence:
+            if not isinstance(entry, dict):
+                continue
+            raw = strings(entry.get("raw")) or strings(entry.get("text"))
+            for text in raw:
+                text = unicodedata.normalize("NFKC", text)
+                values.append(MONTH_NOTE.sub(" ", HTML_TAG.sub(" ", text)))
+    return [part.strip() for text in values
+            for part in METHOD_SEPARATOR.split(text) if part.strip()]
+
+
+def named_method_entries(item):
+    """제목·영역의 마지막 어절에서 가장 긴 방법어 접미를 고른다.
+
+    R3 근사: 마지막 어절 앞의 어절에 행위 어미(…하고·…하여·…하기 등)가 있으면
+    내용어가 단원·개념명뿐이 아니므로 방법어로 인정하지 않는다.
+    """
+    entries = []
+    for text in (text_field(item, "title"), text_field(item, "assessment_area")):
+        words = unicodedata.normalize("NFKC", text).translate(DOTS).split()
+        tail = normalize(words[-1]) if words else ""
+        if tail == "평가" and len(words) > 1:
+            tail = normalize(words[-2])
+            heads = words[:-2]
+        else:
+            tail = tail.removesuffix("평가")
+            heads = words[:-1]
+        if any(ACTION_ENDING.search(normalize(word)) for word in heads):
+            continue
+        for word in sorted(METHOD_WORDS, key=len, reverse=True):
+            if tail.endswith(normalize(word)):
+                entries.append(("assessment_area", text, METHOD_WORDS[word]))
+                break
+    return entries
 
 
 def method_candidates(item):
@@ -196,20 +271,11 @@ def method_candidates(item):
         elif other.strip():
             label += "(" + other + ")"
         entries.append(("checkbox", label, checkbox_class(label)))
-    plain = strings(method.get("value")) if not options else []
+    plain = method_texts(method) if not options else []
     if not checked:
         entries.extend(("method_text", text, checkbox_class(text)) for text in plain)
     if not checked and not plain:
-        for text in (text_field(item, "title"), text_field(item, "assessment_area")):
-            words = unicodedata.normalize("NFKC", text).translate(DOTS).split()
-            tail = normalize(words[-1]) if words else ""
-            if tail == "평가" and len(words) > 1:
-                tail = normalize(words[-2])
-            else:
-                tail = tail.removesuffix("평가")
-            for word, cls in METHOD_WORDS.items():
-                if tail == normalize(word):
-                    entries.append(("assessment_area", text, cls))
+        entries.extend(named_method_entries(item))
     candidates, classes, evidence = [], [], []
     for kind, quote, cls in entries:
         activity = AXES["checkbox_classes"].get(cls, {}).get("activity")
@@ -221,6 +287,14 @@ def method_candidates(item):
     return candidates, classes, evidence
 
 
+def lexicon_matches(term, normalized):
+    term = normalize(term)
+    stem = LEXICON_VERB_END.sub("하", term)
+    if stem == term:
+        return term in normalized
+    return any(stem[:-1] + ending in normalized for ending in VERB_STEM_FORMS)
+
+
 def vote(units):
     votes = dict.fromkeys(ACTIVITY_NAMES, 0)
     evidence = []
@@ -228,8 +302,9 @@ def vote(units):
         normalized = normalize(quote)
         for activity in AXES["activities"]:
             name = activity["name"]
-            excluded = any(normalize(s) in normalized for s in activity.get("exclusions_in_lexicon", []))
-            count = int(any(normalize(s) in normalized for s in activity["lexicon"]))
+            excluded = any(lexicon_matches(s, normalized)
+                           for s in activity.get("exclusions_in_lexicon", []))
+            count = int(any(lexicon_matches(s, normalized) for s in activity["lexicon"]))
             if kind == "title_verb" and name == "제작":
                 excluded |= any(normalize(s) in normalized for s in DOCUMENTS)
                 if MAKING_END.search(quote):
@@ -257,7 +332,8 @@ def choose_primary(candidates, classes, votes, title_votes):
             return top[0], None, "R5-③"
         if "report" in classes and top:
             titled = [name for name in top if title_votes[name]]
-            chosen = top[0] if len(top) == 1 else (titled[0] if len(titled) == 1 else ("탐구" if "탐구" in top else "작성"))
+            chosen = top[0] if len(top) == 1 else (
+                titled[0] if len(titled) == 1 else ("탐구" if "탐구" in top else "작성"))
             return chosen, None, "R5-④"
         return default, None, "R5"
     rule = "R6" if candidates else "R7"
@@ -279,19 +355,23 @@ def classify_unit(item):
             if normalize(code) in [normalize(s) for s in area["standards"]]:
                 existing = next((a for a in areas if a["area_no"] == area["area_no"]), None)
                 if existing is None:
-                    existing = {"area_no": area["area_no"], "area": area["area"], "basis": "standard_code", "evidence": []}
+                    existing = {"area_no": area["area_no"], "area": area["area"],
+                                "basis": "standard_code", "evidence": []}
                     areas.append(existing)
                 if code not in existing["evidence"]:
                     existing["evidence"].append(code)
-    title = text_field(item, "title") if item.get("title_role") in ("평가영역", "assessment_area") else ""
+    title = (text_field(item, "title")
+             if item.get("title_role") in ("평가영역", "assessment_area") else "")
     raw = text_field(item, "assessment_area") or title
     normalized = re.sub(r"\(\d+월\)", "", normalize(raw))
     named = next((a for a in AXES["units"]["areas"] if normalize(a["area"]) == normalized), None)
     conflict = bool(areas and named and {a["area_no"] for a in areas} != {named["area_no"]})
     if not areas and named:
-        areas = [{"area_no": named["area_no"], "area": named["area"], "basis": "area_name", "evidence": [raw]}]
+        areas = [{"area_no": named["area_no"], "area": named["area"],
+                  "basis": "area_name", "evidence": [raw]}]
     status = "conflict" if conflict else ("confirmed" if areas else "undetermined")
-    return {"areas": areas, "status": status, "reason": "코드·영역명 충돌" if conflict else (None if areas else "코드·영역명 없음")}
+    return {"areas": areas, "status": status,
+            "reason": "코드·영역명 충돌" if conflict else (None if areas else "코드·영역명 없음")}
 
 
 def classify_item(item):
@@ -301,11 +381,15 @@ def classify_item(item):
     votes_e, evidence_e = vote(units_e)
     votes_s, evidence_s = vote(units_s)
     title_votes, _ = vote(title_units)
-    primary, reason, rule = choose_primary(candidates, classes, votes_e if any(votes_e.values()) else votes_s, title_votes)
+    primary, reason, rule = choose_primary(
+        candidates, classes, votes_e if any(votes_e.values()) else votes_s, title_votes)
     totals = {name: votes_e[name] + votes_s[name] for name in ACTIVITY_NAMES}
-    secondary = [name for name in ACTIVITY_NAMES if name != primary and (totals[name] or name in candidates)]
-    secondary.sort(key=lambda name: (-totals[name], name not in candidates, ACTIVITY_NAMES.index(name)))
-    result = {name: item.get(name) for name in ("item_id", "school", "school_code", "grade", "semester", "extraction_status")}
+    secondary = [name for name in ACTIVITY_NAMES
+                 if name != primary and (totals[name] or name in candidates)]
+    secondary.sort(key=lambda name: (
+        -totals[name], name not in candidates, ACTIVITY_NAMES.index(name)))
+    result = {name: item.get(name) for name in (
+        "item_id", "school", "school_code", "grade", "semester", "extraction_status")}
     result.update(title=text_field(item, "title"), unit=classify_unit(item), activity={
         "primary": primary, "secondary": secondary, "abstain_reason": reason,
         "candidates": candidates, "candidate_classes": classes,
@@ -343,7 +427,8 @@ def confusion(documents):
     transitions = []
     for item in items:
         activity = item["activity"]
-        checked = list(dict.fromkeys(e["activity"] for e in activity["evidence"] if e["type"] == "checkbox" and e["activity"]))
+        checked = list(dict.fromkeys(e["activity"] for e in activity["evidence"]
+                                     if e["type"] == "checkbox" and e["activity"]))
         row = checked[0] if len(checked) == 1 else ("복수" if checked else NO_CHECKS)
         matrix[row][activity["primary"] or "기권"] += 1
         if len(checked) == 1 and checked[0] != activity["primary"]:
@@ -356,7 +441,8 @@ def confusion(documents):
         "including_secondary": sum(name in [i["activity"]["primary"]] + i["activity"]["secondary"]
                                    for i in items),
     } for name in ACTIVITY_NAMES}
-    return {"summary": summary(items), "confusion": matrix, "activity_counts": counts, "transitions": transitions}
+    return {"summary": summary(items), "confusion": matrix,
+            "activity_counts": counts, "transitions": transitions}
 
 
 def markdown_table(headers, rows):
@@ -375,14 +461,16 @@ def confusion_markdown(report):
          [[k] + [v[c] for c in columns] for k, v in report["confusion"].items()]),
         ("기권 사유", ["사유", "수"], list(report["summary"]["abstain_reasons"].items())),
         ("활동 분포", ["활동", "주", "보조 포함"],
-         [[k, v["primary"], v["including_secondary"]] for k, v in report["activity_counts"].items()]),
+         [[k, v["primary"], v["including_secondary"]]
+          for k, v in report["activity_counts"].items()]),
         ("단원 상태", ["상태", "수"], list(report["summary"]["unit_status"].items())),
         ("영역별 항목", ["영역", "수"], list(report["summary"]["area_counts"].items())),
         ("전환 항목", ["학교", "제목", "C", "주", "E표", "S표"],
          [[t["school"], t["title"], t["candidate"], t["primary"], t["votes_e"], t["votes_s"]]
           for t in report["transitions"]]),
     ]
-    return "\n\n".join("## " + title + "\n\n" + markdown_table(headers, rows) for title, headers, rows in sections) + "\n"
+    return "\n\n".join("## " + title + "\n\n" + markdown_table(headers, rows)
+                       for title, headers, rows in sections) + "\n"
 
 
 def main(argv=None):
@@ -395,14 +483,15 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         paths = args.items if isinstance(args.items, list) else [args.items]
-        outputs = [guard_path(args.out)] if args.command == "classify" else [guard_path(args.out + suffix) for suffix in (".json", ".md")]
+        outputs = ([guard_path(args.out)] if args.command == "classify" else
+                   [guard_path(args.out + suffix) for suffix in (".json", ".md")])
         inputs = [guard_path(p) for p in paths]
         documents = [json.loads(p.read_text(encoding="utf-8-sig")) for p in inputs]
         result = classify(documents[0]) if args.command == "classify" else confusion(documents)
         contents = [json.dumps(result, ensure_ascii=False, indent=2) + "\n"]
         if args.command == "confusion":
             contents.append(confusion_markdown(result))
-        for path, content in zip(outputs, contents):
+        for path, content in zip(outputs, contents, strict=False):
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content, encoding="utf-8")
     except (ValueError, OSError, KeyError, TypeError) as error:

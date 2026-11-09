@@ -34,9 +34,10 @@ def save(path, value):
     write(path, json.dumps(value, ensure_ascii=False, indent=2) + "\n")
 
 
-def representative_items(report):
+def representative_items(report, reader=None):
+    reader = prior.read if reader is None else reader
     documents = copy.deepcopy(report["documents"])
-    source = prior.read(f"data/derived/segments/{report['round']}.json")
+    source = reader(f"data/derived/segments/{report['round']}.json")
     editions = {d["converted_path"]: d["edition"] for d in source["documents"]}
     for document in documents:
         document["edition"] = editions[document["converted_path"]]

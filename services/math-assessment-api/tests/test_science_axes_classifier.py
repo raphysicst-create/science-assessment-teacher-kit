@@ -127,6 +127,25 @@ def test_scoring_sentence_endings(ending):
     assert axes.is_scoring_sentence(f"관계를 서술{ending}.)")
 
 
+@pytest.mark.parametrize("sentence", [
+    "그래프를 나타낸 경우(x축의 설정, y축의 설정, 자료 표시,그래프 완성)",
+    "관계를 설명함 (20점)", "관계를 설명함 (정확성(내용)) (20점).",
+    "관계를 설명함 （２０점）", "(관계를 옳게 서술함.)",
+])
+@pytest.mark.parametrize("source", ["elements", "task_text"])
+def test_trailing_parentheses_preserve_scoring_layer(sentence, source):
+    assert axes.is_scoring_sentence(sentence)
+    units_e, units_s = axes.activity_units(item(**{source: [sentence]}))
+    assert any(kind == "rubric_s" and axes.normalize(quote) == axes.normalize(sentence)
+               for kind, quote in units_s)
+    assert all(axes.normalize(quote) != axes.normalize(sentence) for _, quote in units_e)
+
+
+@pytest.mark.parametrize("sentence", ["(관계를 설명하기)", "(20점)", "관계 설명 능력(함)"])
+def test_whole_parentheses_keep_content_and_notes_do_not_supply_ending(sentence):
+    assert not axes.is_scoring_sentence(sentence)
+
+
 @pytest.mark.parametrize("source", ["title", "assessment_area"])
 @pytest.mark.parametrize("sentence", ["관계를 옳게 서술함", "관계를 옳게 서술함."])
 def test_title_and_area_are_always_e_and_win_duplicates(source, sentence):
@@ -203,6 +222,22 @@ def test_checkbox_normalization_and_head_noun(text, expected):
     assert axes.checkbox_class(text) == expected
 
 
+@pytest.mark.parametrize("text,expected", [
+    ("탐구 실험 및 보고서 평가", "report"), ("보고서 및 실험 평가", "experiment"),
+    ("실험 보고서평가", "report"),
+])
+def test_checkbox_head_noun_ignores_trailing_assessment(text, expected):
+    assert axes.checkbox_class(text) == expected
+
+
+def test_checkbox_trims_assessment_before_matching_patterns(monkeypatch):
+    monkeypatch.setitem(axes.AXES, "checkbox_classes", {
+        "report": {"activity": "작성", "patterns": ["보고서"]},
+        "scorer_marker": {"activity": None, "patterns": ["평가"]},
+    })
+    assert axes.checkbox_class("실험 및 보고서 평가") == "report"
+
+
 def test_other_parentheses_and_scorer_markers():
     sample = item()
     sample["fields"]["method"]["options"] = [
@@ -245,6 +280,85 @@ def test_other_empty_content_has_no_candidate_despite_embedded_label():
 ])
 def test_r3_method_word_approximation(title, expected):
     assert axes.method_candidates(item(title=title))[0] == expected
+
+
+@pytest.mark.parametrize("source", ["title", "assessment_area"])
+@pytest.mark.parametrize("text,expected", [
+    ("마인드맵포트폴리오", "portfolio"), ("자연관찰탐구보고서", "report"),
+    ("과학글쓰기", "report"), ("자연탐구활동", "project"),
+    ("마인드맵포트폴리오 평가", "portfolio"), ("자연탐구활동평가", "project"),
+])
+def test_r3_method_word_suffix(source, text, expected):
+    sample = item()
+    sample["fields"][source]["value"] = text
+    _, classes, evidence = axes.method_candidates(sample)
+    assert classes == [expected]
+    assert len(evidence) == 1
+    assert evidence[0]["type"] == "assessment_area"
+
+
+def test_r3_longest_method_suffix_has_priority(monkeypatch):
+    monkeypatch.setattr(axes, "METHOD_WORDS", {
+        "활동": "report", "탐구": "portfolio", "탐구활동": "project",
+    })
+    assert axes.method_candidates(item(title="자연탐구활동"))[1] == ["project"]
+
+
+@pytest.mark.parametrize("value", [
+    "실험, 보고서, 모둠, 개별", "실험/보고서/모둠/개별", "실험\n보고서\r\n모둠\n개별",
+    ["실험, 보고서", "모둠/개별"],
+])
+def test_plain_method_enumeration_splits_each_marker(value):
+    sample = item(title="자유 탐구")
+    sample["fields"]["method"]["value"] = value
+    candidates, classes, evidence = axes.method_candidates(sample)
+    assert candidates == ["실험평가", "작성"]
+    assert classes == ["experiment", "report", "scorer_marker"]
+    assert [entry["quote"] for entry in evidence] == ["실험", "보고서", "모둠", "개별"]
+    assert all(entry["type"] == "method_text" for entry in evidence)
+
+
+def test_plain_method_preserves_middle_dot_markers():
+    sample = item()
+    sample["fields"]["method"]["value"] = "서·논술, 실험·실습"
+    candidates, classes, evidence = axes.method_candidates(sample)
+    assert candidates == ["추론·설명", "실험평가"]
+    assert classes == ["essay", "experiment"]
+    assert [entry["quote"] for entry in evidence] == ["서·논술", "실험·실습"]
+
+
+@pytest.mark.parametrize("key", ["raw", "text"])
+@pytest.mark.parametrize("raw,quotes,candidates", [
+    ("서·논술형<br>(10월)", ["서·논술형"], ["추론·설명"]),
+    ("<b>실험</b>, 보고서<br />(9~10월)", ["실험", "보고서"], ["실험평가", "작성"]),
+    ("실험/보고서\n개별 (9월~10월)", ["실험", "보고서", "개별"], ["실험평가", "작성"]),
+    ("탐구 실험 및 보고서 평가", ["탐구 실험 및 보고서 평가"], ["작성"]),
+])
+def test_empty_method_uses_cleaned_evidence(key, raw, quotes, candidates):
+    sample = item(title="자유 탐구")
+    sample["fields"]["method"]["evidence"] = [{key: raw}]
+    result = axes.classify_item(sample)["activity"]
+    assert result["candidates"] == candidates
+    method_evidence = [entry for entry in result["evidence"] if entry["type"] == "method_text"]
+    assert [entry["quote"] for entry in method_evidence] == quotes
+    assert not any(entry["type"] == "assessment_area" for entry in result["evidence"])
+
+
+@pytest.mark.parametrize("method", [
+    {"value": ["서술형"], "options": []},
+    {"value": [], "options": [{"option_text": "서술형", "state": "checked"}]},
+    {"value": [], "options": [{"option_text": "서술형", "state": "unchecked"}]},
+])
+def test_evidence_fallback_requires_empty_value_and_options(method):
+    sample = item()
+    sample["fields"]["method"] = {**method, "evidence": [{"raw": "실험"}]}
+    assert "실험평가" not in axes.method_candidates(sample)[0]
+
+
+def test_evidence_fallback_skips_invalid_entries_and_empty_raw():
+    sample = item()
+    sample["fields"]["method"]["evidence"] = [None, {}, {"raw": " ", "text": "보고서"}]
+    assert axes.method_candidates(sample)[0] == ["작성"]
 
 
 def test_plain_method_precedes_title_and_area():
@@ -341,6 +455,38 @@ def test_exclusions_and_per_unit_vote_cap():
     assert result["votes_e"]["분석"] == 1
 
 
+@pytest.mark.parametrize("name,term,quote", [
+    ("실험평가", "관찰하기", "관찰하여"), ("분석", "구분하기", "구분할"),
+    ("추론·설명", "설명하기", "설명함"),
+])
+def test_vote_matches_verb_stems_and_caps_each_activity(monkeypatch, name, term, quote):
+    definition = next(row for row in axes.AXES["activities"] if row["name"] == name)
+    monkeypatch.setitem(definition, "lexicon", [term, term])
+    votes, evidence = axes.vote([("rubric_e", f"{quote} {quote}")])
+    assert votes[name] == 1
+    assert sum(entry["activity"] == name for entry in evidence) == 1
+
+
+@pytest.mark.parametrize("ending", ["하기", "하다", "함", "할", "하는", "하여", "하고"])
+@pytest.mark.parametrize("quote", ["관찰하", "관찰하여", "관찰함", "관찰할"])
+def test_dictionary_verb_endings_share_stem(ending, quote):
+    assert axes.lexicon_matches("관찰" + ending, axes.normalize(quote))
+
+
+@pytest.mark.parametrize("ending", ["하기", "하다", "함", "할", "하는", "하여", "하고"])
+def test_exclusion_phrases_use_same_verb_stem_rule(monkeypatch, ending):
+    definition = next(row for row in axes.AXES["activities"] if row["name"] == "실험평가")
+    monkeypatch.setitem(definition, "exclusions_in_lexicon", ["안전 수칙을 설명" + ending])
+    assert axes.vote([("rubric_e", "관찰하여")])[0]["실험평가"] == 1
+    assert axes.vote([("rubric_e", "관찰하여 안전수칙을 설명함")])[0]["실험평가"] == 0
+
+
+def test_noun_lexicon_keeps_substring_matching():
+    votes, _ = axes.vote([("rubric_e", "가설의 포트폴리오를 정리")])
+    assert votes["탐구"] == votes["과정평가"] == 1
+    assert not axes.lexicon_matches("가설", "가하설")
+
+
 def test_unit_codes_order_and_outside_reference_rejection():
     result = axes.classify_item(item(codes=["[9과06-02]", "[9과03-01]", "[9과06-01]",
                                            "[9과99-01]", "[9과06-99]"]))["unit"]
@@ -380,7 +526,7 @@ def test_defensive_fields_and_eligible_item_filter():
     result = axes.classify({"round": "synthetic", "items": [item(), excluded, unbounded]})
     assert len(result["items"]) == 1
     assert result["round"] == "synthetic"
-    assert result["rule_version"] == "science-axes-v2"
+    assert result["rule_version"] == axes.AXES["version"]
     assert result["definition_version"] == "activity-def-v2"
 
 
@@ -482,3 +628,15 @@ def report_examples():
 if __name__ == "__main__":
     sys.stdout.reconfigure(encoding="utf-8")
     report_examples()
+
+
+@pytest.mark.parametrize("title, expected", [
+    ("마인드맵포트폴리오", ["과정평가"]),
+    ("보고서를 작성하고 결과발표", []),
+    ("자연관찰 탐구보고서", ["작성"]),
+    ("열 전달 과정을 탐구하여 발표", []),
+])
+def test_r3_suffix_requires_no_action_words_before_tail(title, expected):
+    item = {"fields": {"title": {"value": title}, "method": {"value": [], "options": []}}}
+    candidates, _, _ = axes.method_candidates(item)
+    assert candidates == expected

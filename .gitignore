@@ -42,3 +42,9 @@ services/math-assessment-api/data/
 
 # 정답 세트(맹검 자료)는 git에 넣지 않는다 (계획서 S9, 2026-11-09)
 data/gold/
+
+# 개발 표본 활동 라벨(개발용, 정답 아님) — git 제외 (2026-11-10)
+data/dev_labels/
+
+# Codex 샌드박스 테스트 임시 폴더(ACL로 삭제 불가, 2026-11-10)
+.science-axes-tmp/
