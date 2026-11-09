@@ -363,3 +363,68 @@
 - 채움률은 낮다. 32/189칸이고, AI 읽기로 채운 것만 보면 23칸이다(정답 15·부분 2·오값 4·허위값 2). 표본이 작아 칸 단위 정확도를 일반화하기 어렵다.
 - 가장 큰 손실은 AI의 "원문에 없다" 답(93칸)이다. 그다음은 소속 증명 실패(25칸)와 같은 칸 공유(14칸)다.
 - 맹검 원칙에 따라 이 결과로 규칙·지시문을 고치지 않는다. 손실 유형만 개발 학교에서 재현해 다룬다.
+
+## 여섯 번째 측정: 2축 분류 (2026-11-09, S10 첫 공식 측정)
+
+- **무엇을 쟀나:** 정답 세트 83항목에 처음으로 **활동 라벨**(정의 `activity-def-v2`, `data/gold/activity/gold_activity_v1.jsonl`, sha256 `81180ca0…ba2239`)을 붙이고, 2축 분류기 `scripts/science_axes.py`(`science-axes-v2`)를 정답 두 회차의 규칙+AI 항목(`data/derived/items_ai/2026-round-{1,3}-gold.json`, 다섯 번째 측정 때 파일 그대로)에 돌려 단원 축과 활동 축을 채점기 `scripts/gold_activity_score.py`로 쟀다.
+- **결과 파일:** `data/derived/gold_score/axes-v1/gold-axes-v1.{json,md,csv}`. 아래 측정 숫자는 이 JSON의 `metrics`·`per_activity`·`confusion`·`items`에서 왔다. 개발 표본 혼동표는 `data/derived/axes/dev-confusion.{json,md}`. 라벨 작성·실행 경위의 숫자는 각 문장에 적은 파일에서 왔다(채점 JSON에는 없다).
+- **정답 활동 라벨은 어떻게 만들었나** (출처: `data/gold/activity/disagreements_v1.json`, `adjudication_v1.json`, `docs/gold/activity-questions-v1.md`, `gold_activity_v1.meta.json`, 임무 기록 `docs/missions/2026-11-09-s8-s10-axes.md`): 라벨러 둘(Claude 서브에이전트, astra)이 정의 v1로 따로 단 두 벌을 비교해 주활동 일치 70/83(`disagreements_v1.json` `primary_agree`), 불일치 17건 중 10건은 판정 규칙 A1~A7로(`adjudication_v1.json` `resolved`), 7건은 사용자 판정 5문항으로(질문 문서 A절, 답 "1-1, 2-1, 3-1, 4-1, 5-1") 정했다. 정의를 v2로 올린 뒤 낱말 표지가 걸린 일치 항목 14개와 일치 추론·설명 13개(겹침 2, 합 25)를 부서장이 v2 규칙으로 다시 셌다(변경 13, 임무 기록 라운드 2). 출처 분포는 메타 `sources`(합의 42·규칙 10·사용자 7·재판정 24). 일치 항목 46개는 v2로 다시 세지 않았다(메타 `notes`).
+- **실행과 맹검** (출처: 임무 기록 라운드 2, 구현 지시문 `.tmp/codex-s10-instructions.md`·`codex-s10-fix-instructions.md`, 계획서 `docs/plans/2026-11-07-middle-science-plan.md` S8·Q6-12): 분류기 구현자(Codex 워커)에게는 정답 폴더와 정답 회차 산출물 읽기를 금지했고, 규칙 다듬기와 사례 재검산은 개발 표본 3회차(`dev-confusion.json` `summary.item_count` 255, 개발 12개교 + 보충 20개교 — 명부 `data/rosters/`)로만 했다. 다만 정의 v2의 사용자 판정과 규칙 A1~A7은 정답 라벨링의 경계 사례에서 나왔다(계획서 S8이 허용한 보완). 그래서 이 측정은 완전한 맹검이 아니며, 다음 확대(새 학교)에서 다시 재야 정직한 값이 된다.
+
+**짝짓기** (`metrics.paired`, `metrics.unmatched`)
+- 짝 70/83. 짝 없음 13의 분해(출처: `data/derived/gold_score/v6/gold-v1.4.cases.csv`의 `rule_ai_found`·`rule_ai_pipeline_key`와 `items_ai/2026-round-{1,3}-gold.json` 항목의 `extraction_status`): 다섯 번째 측정에서 규칙+AI가 못 찾은 9 + 찾았지만 상태가 `review`라 분류 대상(`bounded`·`ai_verified`)이 아닌 4.
+
+**단원 축** (`metrics.units`, 분모 = 짝 항목 중 정답에 성취기준 코드가 있는 58)
+
+| 지표 | 값 |
+|---|---:|
+| 영역 집합 완전 일치 `metrics.units.exact` | 48/58 (82.8%) |
+| 부분 일치(교집합 ≥1) `metrics.units.partial` | 49/58 (84.5%) |
+| 분류기 미결정(정답은 있음) `metrics.units.undetermined` | 9/58 (15.5%) |
+| 정답에 단원 코드 없음 `metrics.units.gold_unit_absent` | 12/70 |
+| 정답 없는데 분류기가 영역을 냄 `metrics.units.prediction_without_gold` | 0/12 |
+
+- 완전 일치가 아닌 10 중 9는 분류기가 영역을 비운 것(`unit_result` 미결정)이고, 1은 부분 일치(정답 영역 01·02·03 중 01만 냄)다. 정답에 코드가 없는 12항목은 분류기도 영역을 내지 않았다(`units.prediction_without_gold` 0/12).
+
+**활동 축 — 주활동** (`metrics.activity`, 분모 = 짝 항목 중 정답 주활동이 기권이 아닌 64)
+
+| 지표 | 값 |
+|---|---:|
+| 전체 기준 정확도(분류기 기권은 틀림) `metrics.activity.accuracy_all` | 36/64 (56.3%) |
+| 분류한 항목 정확도 `metrics.activity.accuracy_classified` | 36/54 (66.7%) |
+| 커버리지 `metrics.activity.coverage` | 54/64 (84.4%) |
+| 분류기 기권율(짝 70 기준) `metrics.activity.abstention` | 13/70 (18.6%) |
+| 정답 기권 6에서 분류기도 기권 `metrics.activity.gold_abstention_agreement` | 3/6 |
+| macro-F1(정답 양성 ≥10인 활동만: 추론·설명 10, 탐구 13) `metrics.activity.macro_f1` | 0.515 |
+| 정답 83 기준 주활동 정확도(짝 없음은 틀림) `metrics.overall_primary_accuracy` | 39/83 (47.0%) |
+
+활동별 (`per_activity`, 정답 양성 수 / 정밀도 / 재현율 / F1)
+
+| 활동 | 양성 | 정밀도 | 재현율 | F1 |
+|---|---:|---|---|---|
+| 실험평가 | 9 | 8/8 | 8/9 | 0.94 |
+| 제작 | 5 | 5/7 | 5/5 | 0.83 |
+| 과정평가 | 6 | 4/5 | 4/6 | 0.73 |
+| 추론·설명 | 10 | 7/11 | 7/10 | 0.67 |
+| 발표·토론 | 6 | 3/4 | 3/6 | 0.60 |
+| 계산·측정 | 3 | 1/1 | 1/3 | 0.50 |
+| 분석 | 5 | 2/6 | 2/5 | 0.36 |
+| 작성 | 5 | 2/6 | 2/5 | 0.36 |
+| 탐구 | 13 | 4/9 | 4/13 | 0.36 |
+| 문제해결 | 2 | 0/0(미정의, `precision.rate` null) | 0/2 | 0.00 |
+
+- 혼동표(`confusion`)에서 가장 큰 손실은 정답 탐구 13 중 기권 4·작성 2·제작 1·추론·설명 1·과정평가 1이다. 분류기 기권 13 중 정답이 기권인 것은 3이다. 짝 항목의 분류기 기권 사유(`items.abstain_reason`)는 근거 없음 8·근거 동률 4·체크 여러 개·요소 근거 없음 1이다.
+
+**활동 축 — 보조활동** (`metrics.secondary.jaccard_mean`·`exact`·`gold_subset`, 짝 70)
+- 집합 Jaccard 평균 0.494, 완전 일치 25/70, 정답 보조 ⊆ 분류기 보조 32/70.
+
+**개발 표본 혼동표** (`dev-confusion.json` `summary`, 255항목, 정답 아님)
+- 주활동 분포: 추론·설명 102·분석 33·탐구 21·과정평가 20·실험평가 18·제작 14·작성 12·계산·측정 12·발표·토론 4·문제해결 2·기권 17(근거 없음 7·근거 동률 9·체크 여러 개 1). 단원 confirmed 248·undetermined 7. 체크 기본 후보가 하나인데 주활동이 바뀐 전환 40건(`transitions`).
+
+**해석** (이 측정에서 관측된 것만)
+- 단원 축은 정답에 코드가 있는 58항목에서 82.8%가 완전 일치했고, 정답에 없는 영역을 낸 항목은 0이다. 완전 일치가 아닌 10은 분류기가 영역을 비운 9(`items.unit_result` 미결정)와 부분 일치 1(정답 01·02·03 중 01만)이다. 정답에 코드가 없는 12항목은 양쪽 다 비어 있다.
+- 활동 축은 전체 기준 56.3%, 분류한 항목만 66.7%다. F1이 높은 활동은 실험평가(0.94)·제작(0.83)·과정평가(0.73), 낮은 활동은 탐구(0.36)·분석(0.36)·작성(0.36)·문제해결(0.00, 양성 2)이다. 탐구 정답 13 중 기권으로 간 4의 사유는 근거 없음 2·체크 여러 개·요소 근거 없음 1·근거 동률 1이다.
+- 분류기는 S6 추출 필드를 읽도록 만들어졌다(`scripts/science_axes.py` 머리말). 채점 JSON에는 입력 필드의 결측 여부가 없어, 이 수치만으로는 추출 손실과 분류 규칙 손실을 가를 수 없다. 둘을 가르는 것은 다음 측정의 일이다.
+- macro-F1은 0.515(대상 활동 2개: 추론·설명·탐구)다. 계획서(`docs/plans/2026-11-07-middle-science-plan.md` Q2-2 표)의 합격선은 0.90이다.
+
+**다음 측정까지 할 일** (해석이 아니라 계획): 첫 측정이므로 개선은 개발 표본에서 실패 유형(요소 문장 없음, 동률 기권, 산출물 낱말 부재)을 재현해 다루고, 정답 세트 결과로 규칙을 고치지 않는다.
