@@ -2,6 +2,8 @@
 
 No existing extraction output is mutated. All offsets address the unmodified
 S4 Unicode text and use an exclusive end. Importing this module never runs Codex.
+Codex 실행 파일은 `CODEX_EXE` 환경 변수 또는 `bin/*/codex.exe` 글롭으로 찾는다.
+모든 호출이 실패하면 종료 코드 3.
 """
 
 from __future__ import annotations
@@ -9,9 +11,11 @@ from __future__ import annotations
 import argparse
 import bisect
 import copy
+import glob
 import hashlib
 import html
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -19,6 +23,7 @@ import sys
 import tomllib
 import unicodedata
 from collections import Counter
+from collections.abc import Mapping
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -32,7 +37,8 @@ else:
     from middle_subjects import subject_headers, table_spans
 
 ROOT = Path(__file__).resolve().parents[1]
-CODEX = "C:/Users/USER/AppData/Local/OpenAI/Codex/bin/14b838c1d074ff01/codex.exe"
+CODEX_GLOB = "C:/Users/USER/AppData/Local/OpenAI/Codex/bin/*/codex.exe"
+CODEX_EXE_ENV = "CODEX_EXE"
 VERSION = "middle-ai-read-v2"
 MAX_CHARS = 60_000
 OVERLAP = 3_000
@@ -539,8 +545,20 @@ def default_model_guard():
         raise ValueError("기본 모델이 gpt-6-astra임. 총괄이 기본 모델을 변경해야 함")
 
 
-def codex_command(cwd: Path, answer: Path) -> list[str]:
-    return [CODEX, "exec", "--strict-config", "--skip-git-repo-check", "-s", "read-only",
+def find_codex(pattern: str | None = None, env: Mapping[str, str] | None = None) -> str:
+    env = os.environ if env is None else env
+    override = env.get(CODEX_EXE_ENV)
+    if override and os.path.isfile(override):
+        return override
+    pattern = pattern or CODEX_GLOB
+    candidates = glob.glob(pattern)
+    if not candidates:
+        raise FileNotFoundError(f"Codex 실행 파일을 찾지 못함: {pattern}")
+    return max(candidates, key=os.path.getmtime)
+
+
+def codex_command(cwd: Path, answer: Path, codex: str | None = None) -> list[str]:
+    return [codex or find_codex(), "exec", "--strict-config", "--skip-git-repo-check", "-s", "read-only",
             "-C", str(cwd), "--json", "-o", str(answer), "-"]
 
 
@@ -631,13 +649,18 @@ def run_targets(root: Path, round_key: str, isolated_cwd: Path, *, workers: int 
 
     with ThreadPoolExecutor(max_workers=workers) as pool:
         results = list(pool.map(one, targets))
+    valid = sum(r.get("valid", False) for r in results)
     report = {"round": round_key, "dry_run": dry_run, "results": results,
-              "valid": sum(r.get("valid", False) for r in results),
+              "valid": valid, "all_failed": not dry_run and len(results) > 0 and valid == 0,
               "skipped": sum(r.get("skipped", False) for r in results),
               "unknown_events": sum(r.get("audit", {}).get("unknown_count", 0) for r in results)}
     if not dry_run:
         save_json(output / "run.json", report)
     return report
+
+
+def run_exit_code(report: dict) -> int:
+    return 3 if report.get("all_failed") else 0
 
 
 def normalized_map(raw: str) -> tuple[str, list[tuple[int, int]]]:
@@ -1516,7 +1539,8 @@ def main(argv: list[str] | None = None):
         sys.stdout.reconfigure(encoding="utf-8")
     try:
         if args.command.startswith("fields-"):
-            print(json.dumps(middle_ai_fields.dispatch(ROOT, args), ensure_ascii=False, indent=2))
+            result = middle_ai_fields.dispatch(ROOT, args)
+            print(json.dumps(result, ensure_ascii=False, indent=2))
         elif args.command == "targets":
             result = build_targets(ROOT, args.round_key, args.mode)
             print(json.dumps({k: v for k, v in result.items() if k not in {"selected", "excluded"}},
@@ -1540,6 +1564,10 @@ def main(argv: list[str] | None = None):
                              ensure_ascii=False))
         else:
             print(json.dumps(evaluate_targets(ROOT, args.round_key)["totals"], ensure_ascii=False))
+        if args.command in {"run", "fields-run"}:
+            code = run_exit_code(result)
+            if code:
+                parser.exit(code, "유효 응답 0: 모든 호출이 실패함\n")
     except (ValueError, OSError, KeyError) as error:
         parser.exit(2, f"{error}\n")
 
