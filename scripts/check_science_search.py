@@ -11,7 +11,9 @@ import hashlib
 import itertools
 import json
 import os
+import sqlite3
 import sys
+from contextlib import closing
 from pathlib import Path
 from unittest.mock import patch
 
@@ -156,6 +158,14 @@ def run_check(database: Path, paths: list[Path]) -> dict:
     return report
 
 
+def metadata_axes_dir(database: Path) -> str:
+    """DB를 만든 활동 축 폴더(metadata.activity_axes_dir). 없으면 규칙 축 폴더."""
+    with closing(sqlite3.connect(f"{database.resolve().as_uri()}?mode=ro", uri=True)) as db:
+        row = db.execute(
+            "SELECT value_json FROM metadata WHERE key = 'activity_axes_dir'").fetchone()
+    return json.loads(row[0]) if row else "data/derived/axes"
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--database", required=True, type=Path)
@@ -163,7 +173,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--axes-json", nargs="+", type=Path)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
-    paths = args.axes_json or [ROOT / f"data/derived/axes/{r}.json" for r in args.rounds]
+    axes_dir = metadata_axes_dir(args.database)
+    paths = args.axes_json or [ROOT / axes_dir / f"{r}.json" for r in args.rounds]
     report = run_check(args.database, paths)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")

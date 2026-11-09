@@ -1,0 +1,11 @@
+{
+ "normal_in_db": 200,
+ "normal_removed": 0,
+ "suspect_in_db": 55,
+ "suspect_removed": 6,
+ "removed": [],
+ "t3_listed": 3,
+ "t3_caught": 3,
+ "t3_candidate": 1,
+ "t3_candidate_caught": 1
+}

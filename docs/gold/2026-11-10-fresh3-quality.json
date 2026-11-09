@@ -1,0 +1,24 @@
+{
+ "source": ".tmp/s18/astra-quality-result.md (astra gpt-6-astra high, 08:38~08:44)",
+ "cards": 19,
+ "is_task": 19,
+ "title": 19,
+ "unit": 19,
+ "activity": 18,
+ "method": 16,
+ "method_errors": "3 = 번암중 2학기 AI 추가 카드의 '교사 관찰 및 기록' 혼입",
+ "source_tasks": 31,
+ "missing": 12,
+ "missing_causes": {
+  "extracted_but_audit_blocked": 10,
+  "not_extracted(review: 별도 표 연결 미확정)": 2
+ },
+ "precision": "19/19",
+ "recall_public": "19/31",
+ "recall_extracted(공개 차단 전)": "29/31",
+ "thresholds": {
+  "item_precision": 0.99,
+  "item_recall": 0.95,
+  "activity_macro_f1": 0.9
+ }
+}

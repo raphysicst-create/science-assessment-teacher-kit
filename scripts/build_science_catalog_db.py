@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import sqlite3
 import sys
 import tempfile
@@ -85,12 +86,45 @@ CREATE INDEX idx_assessment_item_rankings_category_priority
 """
 
 
+def close_table_fragments(text: str) -> str:
+    """Flatten orphan table tags while keeping complete (also nested) tables verbatim."""
+    tables: list[tuple[int, int]] = []
+    openings: list[int] = []
+    for match in re.finditer(r"</?table\b[^>]*>", text, flags=re.I):
+        if not match.group().startswith("</"):
+            openings.append(match.start())
+        elif openings:
+            start = openings.pop()
+            while tables and tables[-1][0] > start:
+                tables.pop()
+            tables.append((start, match.end()))
+
+    def flatten(fragment: str) -> str:
+        if not re.search(r"</?(?:table|tr|td|th)\b[^>]*>", fragment, flags=re.I):
+            return fragment
+        # Adjacent cell end/start tags denote a single visible cell boundary.
+        return re.sub(
+            r"</t[dh]\s*>\s*<t[dh]\b[^>]*>|</?(?:table|tr|td|th)\b[^>]*>|<br\s*/?>",
+            lambda match: " | " if re.match(r"</?t[dh]\b", match.group(), re.I) else "\n",
+            fragment,
+            flags=re.I,
+        )
+
+    parts: list[str] = []
+    cursor = 0
+    for start, end in tables:
+        parts.extend((flatten(text[cursor:start]), text[start:end]))
+        cursor = end
+    parts.append(flatten(text[cursor:]))
+    return "".join(parts)
+
+
 def item_row(record: dict, order: int) -> dict:
     item = record["item"]
     start, end = item["locator"]["start"], item["locator"]["end"]
     if not 0 <= start <= end <= len(record["text"]):
         raise ValueError(f"invalid source range: {item['item_id']}")
-    html = markdown_fragment_to_html(record["text"][start:end])
+    html = markdown_fragment_to_html(close_table_fragments(record["text"][start:end]))
     row = {
         "item_id": digest(item["item_id"], 28),
         "case_id": case_id(record),
@@ -179,7 +213,8 @@ def catalog_axis_rows(record: dict, activity_ids: dict) -> list[tuple]:
 
 
 def write_science_catalog(
-    connection: sqlite3.Connection, records: list[dict], axes_reference: dict
+    connection: sqlite3.Connection, records: list[dict], axes_reference: dict,
+    activity_axes_dir: str = "data/derived/axes",
 ) -> dict:
     """Write records containing item, axes, document, section, text and provenance."""
     connection.executescript(PUBLISH_SCHEMA + DETAIL_SCHEMA + SCIENCE_SCHEMA_SQL)
@@ -214,11 +249,14 @@ def write_science_catalog(
             )
     write_segments(connection, records)
     write_stats(connection, cases, records)
-    return finish_catalog(connection, records, len(cases))
+    return finish_catalog(connection, records, len(cases), activity_axes_dir)
 
 
-def finish_catalog(connection: sqlite3.Connection, records: list[dict], case_count: int) -> dict:
+def finish_catalog(connection: sqlite3.Connection, records: list[dict], case_count: int,
+                   activity_axes_dir: str = "data/derived/axes") -> dict:
     metadata = {
+        # 검색 검사(check_science_search)가 같은 활동 축 파일로 기대값을 계산하도록 남긴다.
+        "activity_axes_dir": activity_axes_dir,
         "dataset_scope": "middle_science_local_review",
         "dataset_profile": "science",
         "axes_rule_version": unique(record["axes_rule_version"] for record in records),
@@ -256,7 +294,9 @@ def build_catalog(output: Path, rounds=DEFAULT_ROUNDS, replace: bool = False,
     with tempfile.TemporaryDirectory(dir=output.parent) as temporary:
         database = Path(temporary) / "catalog.sqlite"
         with closing(sqlite3.connect(database)) as connection:
-            result = write_science_catalog(connection, records, reference)
+            axes_dir = ("data/derived/axes" if activity_axes_dir is None else
+                        Path(activity_axes_dir).resolve().relative_to(ROOT).as_posix())
+            result = write_science_catalog(connection, records, reference, axes_dir)
             connection.commit()
         os.replace(database, output)
     if activity_axes_dir is not None:
