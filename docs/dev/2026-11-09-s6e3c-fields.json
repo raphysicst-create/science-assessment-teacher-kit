@@ -1,0 +1,2874 @@
+{
+  "calls": 0,
+  "rounds": {
+    "2026-round-1-dev2": {
+      "before": {
+        "task_text": {
+          "일치": 5,
+          "AI만": 2,
+          "규칙만": 1,
+          "불일치": 3,
+          "버림": 7
+        },
+        "method": {
+          "일치": 6,
+          "AI만": 3,
+          "규칙만": 0,
+          "불일치": 0,
+          "버림": 9
+        },
+        "timing": {
+          "일치": 8,
+          "AI만": 0,
+          "규칙만": 5,
+          "불일치": 0,
+          "버림": 5
+        },
+        "standards": {
+          "일치": 8,
+          "AI만": 4,
+          "규칙만": 0,
+          "불일치": 0,
+          "버림": 6
+        },
+        "score": {
+          "일치": 11,
+          "AI만": 0,
+          "규칙만": 0,
+          "불일치": 0,
+          "버림": 7
+        },
+        "weight": {
+          "일치": 10,
+          "AI만": 0,
+          "규칙만": 3,
+          "불일치": 0,
+          "버림": 5
+        },
+        "sub_scores": {
+          "일치": 12,
+          "AI만": 1,
+          "규칙만": 2,
+          "불일치": 0,
+          "버림": 3
+        },
+        "rubric": {
+          "일치": 7,
+          "AI만": 3,
+          "규칙만": 0,
+          "불일치": 2,
+          "버림": 6
+        },
+        "assessment_area": {
+          "일치": 10,
+          "AI만": 0,
+          "규칙만": 0,
+          "불일치": 0,
+          "버림": 8
+        }
+      },
+      "after": {
+        "task_text": {
+          "일치": 5,
+          "AI만": 3,
+          "규칙만": 1,
+          "불일치": 4,
+          "버림": 5
+        },
+        "method": {
+          "일치": 6,
+          "AI만": 3,
+          "규칙만": 0,
+          "불일치": 1,
+          "버림": 8
+        },
+        "timing": {
+          "일치": 9,
+          "AI만": 0,
+          "규칙만": 5,
+          "불일치": 0,
+          "버림": 4
+        },
+        "standards": {
+          "일치": 10,
+          "AI만": 4,
+          "규칙만": 0,
+          "불일치": 0,
+          "버림": 4
+        },
+        "score": {
+          "일치": 11,
+          "AI만": 0,
+          "규칙만": 0,
+          "불일치": 0,
+          "버림": 7
+        },
+        "weight": {
+          "일치": 10,
+          "AI만": 0,
+          "규칙만": 3,
+          "불일치": 0,
+          "버림": 5
+        },
+        "sub_scores": {
+          "일치": 12,
+          "AI만": 1,
+          "규칙만": 2,
+          "불일치": 0,
+          "버림": 3
+        },
+        "rubric": {
+          "일치": 8,
+          "AI만": 3,
+          "규칙만": 0,
+          "불일치": 2,
+          "버림": 5
+        },
+        "assessment_area": {
+          "일치": 10,
+          "AI만": 1,
+          "규칙만": 0,
+          "불일치": 0,
+          "버림": 7
+        }
+      },
+      "equal_discard_before": 29,
+      "equal_discard_after": 27,
+      "discard_reasons_before": {
+        "AI 항목 읽기: 표 위치로 소속 확인 불가": 52,
+        "AI 항목 읽기: 반복 인용 소속 모호": 2,
+        "AI 항목 읽기: 값과 인용 대조 실패": 2
+      },
+      "discard_reasons_after": {
+        "AI 항목 읽기: 반복 인용 소속 모호": 2,
+        "AI 항목 읽기: 값과 인용 대조 실패": 2,
+        "AI 항목 읽기: 표 위치로 소속 확인 불가": 44
+      },
+      "mutation": {
+        "round": "2026-round-1-dev2",
+        "calls": 0,
+        "coverage": {
+          "same_column": 42,
+          "own_table": 60,
+          "without_neighbor": 60,
+          "shared_span": 8,
+          "own_block": 4
+        },
+        "mutations": 196,
+        "rejected": 196,
+        "shared_span_accepted": 0,
+        "original_shared_span": 8,
+        "neighbor_accepted": 0
+      },
+      "mutation_kinds": {
+        "neighbor_column": 184,
+        "neighbor_block": 12
+      }
+    },
+    "2026-round-3-dev2": {
+      "before": {
+        "task_text": {
+          "일치": 8,
+          "AI만": 0,
+          "규칙만": 0,
+          "불일치": 4,
+          "버림": 6
+        },
+        "method": {
+          "일치": 10,
+          "AI만": 0,
+          "규칙만": 0,
+          "불일치": 2,
+          "버림": 6
+        },
+        "timing": {
+          "일치": 11,
+          "AI만": 1,
+          "규칙만": 1,
+          "불일치": 0,
+          "버림": 5
+        },
+        "standards": {
+          "일치": 11,
+          "AI만": 0,
+          "규칙만": 0,
+          "불일치": 0,
+          "버림": 7
+        },
+        "score": {
+          "일치": 9,
+          "AI만": 2,
+          "규칙만": 1,
+          "불일치": 0,
+          "버림": 6
+        },
+        "weight": {
+          "일치": 9,
+          "AI만": 1,
+          "규칙만": 2,
+          "불일치": 0,
+          "버림": 6
+        },
+        "sub_scores": {
+          "일치": 7,
+          "AI만": 1,
+          "규칙만": 4,
+          "불일치": 2,
+          "버림": 4
+        },
+        "rubric": {
+          "일치": 9,
+          "AI만": 2,
+          "규칙만": 0,
+          "불일치": 2,
+          "버림": 5
+        },
+        "assessment_area": {
+          "일치": 8,
+          "AI만": 2,
+          "규칙만": 4,
+          "불일치": 0,
+          "버림": 4
+        }
+      },
+      "after": {
+        "task_text": {
+          "일치": 8,
+          "AI만": 0,
+          "규칙만": 0,
+          "불일치": 6,
+          "버림": 4
+        },
+        "method": {
+          "일치": 11,
+          "AI만": 0,
+          "규칙만": 0,
+          "불일치": 2,
+          "버림": 5
+        },
+        "timing": {
+          "일치": 12,
+          "AI만": 1,
+          "규칙만": 1,
+          "불일치": 0,
+          "버림": 4
+        },
+        "standards": {
+          "일치": 13,
+          "AI만": 0,
+          "규칙만": 0,
+          "불일치": 0,
+          "버림": 5
+        },
+        "score": {
+          "일치": 10,
+          "AI만": 2,
+          "규칙만": 1,
+          "불일치": 0,
+          "버림": 5
+        },
+        "weight": {
+          "일치": 10,
+          "AI만": 1,
+          "규칙만": 2,
+          "불일치": 0,
+          "버림": 5
+        },
+        "sub_scores": {
+          "일치": 7,
+          "AI만": 1,
+          "규칙만": 4,
+          "불일치": 3,
+          "버림": 3
+        },
+        "rubric": {
+          "일치": 9,
+          "AI만": 2,
+          "규칙만": 0,
+          "불일치": 3,
+          "버림": 4
+        },
+        "assessment_area": {
+          "일치": 9,
+          "AI만": 2,
+          "규칙만": 4,
+          "불일치": 0,
+          "버림": 3
+        }
+      },
+      "equal_discard_before": 26,
+      "equal_discard_after": 20,
+      "discard_reasons_before": {
+        "AI 항목 읽기: 표 위치로 소속 확인 불가": 48,
+        "AI 항목 읽기: 값과 인용 대조 실패": 1
+      },
+      "discard_reasons_after": {
+        "AI 항목 읽기: 표 위치로 소속 확인 불가": 34,
+        "AI 항목 읽기: 값과 인용 대조 실패": 1,
+        "AI 항목 읽기: 반복 인용 소속 모호": 3
+      },
+      "mutation": {
+        "round": "2026-round-3-dev2",
+        "calls": 0,
+        "coverage": {
+          "same_column": 50,
+          "own_block": 11,
+          "own_table": 62,
+          "without_neighbor": 63,
+          "prose": 1
+        },
+        "mutations": 700,
+        "rejected": 700,
+        "shared_span_accepted": 0,
+        "original_shared_span": 0,
+        "neighbor_accepted": 0
+      },
+      "mutation_kinds": {
+        "neighbor_column": 216,
+        "neighbor_block": 484
+      }
+    }
+  },
+  "invariants": {
+    "2026-round-1-dev2": {
+      "items_bytes": true,
+      "items_sha256": "c3024d9dc94669be3d70e778aedbda57ff8341c55cffd95014cd5aab476fe92c",
+      "rule_item_bytes": true,
+      "item_ids": true,
+      "ai_relations": true,
+      "metadata": true,
+      "main_valid_runs": 1,
+      "shadow_valid_runs": 15,
+      "main_run_bindings_unchanged": true,
+      "main_targets_sha256_unchanged": true,
+      "main_stage_sha256_unchanged": true,
+      "shadow_run_bindings_unchanged": true,
+      "shadow_targets_sha256_unchanged": true,
+      "shadow_stage_sha256_unchanged": true
+    },
+    "2026-round-3-dev2": {
+      "items_bytes": true,
+      "items_sha256": "2688f00bd78da3b25c90fa5eaea9831cb81d97ab4d96d51e1edc88d2d5abfff7",
+      "rule_item_bytes": true,
+      "item_ids": true,
+      "ai_relations": true,
+      "metadata": true,
+      "main_valid_runs": 0,
+      "shadow_valid_runs": 16,
+      "main_run_bindings_unchanged": true,
+      "main_targets_sha256_unchanged": true,
+      "main_stage_sha256_unchanged": true,
+      "shadow_run_bindings_unchanged": true,
+      "shadow_targets_sha256_unchanged": true,
+      "shadow_stage_sha256_unchanged": true
+    }
+  },
+  "remaining_equal_discards": [
+    {
+      "round": "2026-round-1-dev2",
+      "school": "상북중학교",
+      "title": "포트 폴리오",
+      "item_id": "item_94d52178731cf9fd0a421e893a244d50a96c6a7fe929c32f4ad44d5ed18be2d3",
+      "field": "timing",
+      "target_id": "aifields_e062d082f047dc0fc791094ab5c9650cb6ebf9459b67a08b9105c5411ea92789",
+      "value": "4월 ~ 7월 / 1회",
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "확정된 다른 제목과 칸 전체가 일치하나 현재 과제의 유일한 축·블록이 없음. 혼합물 분리 실험 설계"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "상북중학교",
+      "title": "포트 폴리오",
+      "item_id": "item_94d52178731cf9fd0a421e893a244d50a96c6a7fe929c32f4ad44d5ed18be2d3",
+      "field": "score",
+      "target_id": "aifields_e062d082f047dc0fc791094ab5c9650cb6ebf9459b67a08b9105c5411ea92789",
+      "value": 100,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "확정된 다른 제목과 칸 전체가 일치하나 현재 과제의 유일한 축·블록이 없음. 혼합물 분리 실험 설계"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "상북중학교",
+      "title": "포트 폴리오",
+      "item_id": "item_94d52178731cf9fd0a421e893a244d50a96c6a7fe929c32f4ad44d5ed18be2d3",
+      "field": "weight",
+      "target_id": "aifields_e062d082f047dc0fc791094ab5c9650cb6ebf9459b67a08b9105c5411ea92789",
+      "value": 20,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "확정된 다른 제목과 칸 전체가 일치하나 현재 과제의 유일한 축·블록이 없음. 혼합물 분리 실험 설계"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "충주여자중학교",
+      "title": "용수철의 탄성력 측정 (보고서 평가)",
+      "item_id": "item_0eb8b6d28edac488dba2b65bfce7762fc9e1db2297dc0ce85d466fd2bcaba9bc",
+      "field": "task_text",
+      "target_id": "aifields_9f2ee174e0aa885fbc5ad7696e887e4bf46987f60f0fa9702370eaca016c099a",
+      "value": [
+        "▪용수철이 늘어난 길이를 통해 용수철의 탄성력 측정"
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "충주여자중학교",
+      "title": "용수철의 탄성력 측정 (보고서 평가)",
+      "item_id": "item_0eb8b6d28edac488dba2b65bfce7762fc9e1db2297dc0ce85d466fd2bcaba9bc",
+      "field": "method",
+      "target_id": "aifields_9f2ee174e0aa885fbc5ad7696e887e4bf46987f60f0fa9702370eaca016c099a",
+      "value": [
+        "보고서",
+        "교사 평가"
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "충주여자중학교",
+      "title": "용수철의 탄성력 측정 (보고서 평가)",
+      "item_id": "item_0eb8b6d28edac488dba2b65bfce7762fc9e1db2297dc0ce85d466fd2bcaba9bc",
+      "field": "standards",
+      "target_id": "aifields_9f2ee174e0aa885fbc5ad7696e887e4bf46987f60f0fa9702370eaca016c099a",
+      "value": [
+        "[9과05-02]"
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "충주여자중학교",
+      "title": "용수철의 탄성력 측정 (보고서 평가)",
+      "item_id": "item_0eb8b6d28edac488dba2b65bfce7762fc9e1db2297dc0ce85d466fd2bcaba9bc",
+      "field": "score",
+      "target_id": "aifields_9f2ee174e0aa885fbc5ad7696e887e4bf46987f60f0fa9702370eaca016c099a",
+      "value": 20,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "오현중학교",
+      "title": "온도가 다른 두 물체의 온도 변화 표현하기",
+      "item_id": "item_8503ce70bd1d6c3ec9ec21fc612ab9878140b7f3cdc9a6caff07073931eba59d",
+      "field": "task_text",
+      "target_id": "aifields_3aa5ed80c1606743842bdf3df7261e78a2432726736f349bfc14bb240969bd2d",
+      "value": [
+        "온도가 다른 두 물체가 열평형에 도달하는 과정을 관찰하고 입자 운동으로 표현할 수 있다."
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "오현중학교",
+      "title": "온도가 다른 두 물체의 온도 변화 표현하기",
+      "item_id": "item_8503ce70bd1d6c3ec9ec21fc612ab9878140b7f3cdc9a6caff07073931eba59d",
+      "field": "timing",
+      "target_id": "aifields_3aa5ed80c1606743842bdf3df7261e78a2432726736f349bfc14bb240969bd2d",
+      "value": "6월",
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "오현중학교",
+      "title": "온도가 다른 두 물체의 온도 변화 표현하기",
+      "item_id": "item_8503ce70bd1d6c3ec9ec21fc612ab9878140b7f3cdc9a6caff07073931eba59d",
+      "field": "standards",
+      "target_id": "aifields_3aa5ed80c1606743842bdf3df7261e78a2432726736f349bfc14bb240969bd2d",
+      "value": [
+        "[9과03-01]"
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "오현중학교",
+      "title": "온도가 다른 두 물체의 온도 변화 표현하기",
+      "item_id": "item_8503ce70bd1d6c3ec9ec21fc612ab9878140b7f3cdc9a6caff07073931eba59d",
+      "field": "assessment_area",
+      "target_id": "aifields_3aa5ed80c1606743842bdf3df7261e78a2432726736f349bfc14bb240969bd2d",
+      "value": "열",
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "서강중학교",
+      "title": "실험을 통해 물과 에탄올 분리하기",
+      "item_id": "item_4048cfd02ba40a19a817bdc54cbc69c8be079d5503c5254058336451128ae681",
+      "field": "timing",
+      "target_id": "aifields_7767312a2c382dd820191a8454e1f3153e014583a013e4ee94c926d1c2548429",
+      "value": "4월",
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "서강중학교",
+      "title": "실험을 통해 물과 에탄올 분리하기",
+      "item_id": "item_4048cfd02ba40a19a817bdc54cbc69c8be079d5503c5254058336451128ae681",
+      "field": "standards",
+      "target_id": "aifields_7767312a2c382dd820191a8454e1f3153e014583a013e4ee94c926d1c2548429",
+      "value": [
+        "[9과08-03]"
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "서강중학교",
+      "title": "실험을 통해 물과 에탄올 분리하기",
+      "item_id": "item_4048cfd02ba40a19a817bdc54cbc69c8be079d5503c5254058336451128ae681",
+      "field": "score",
+      "target_id": "aifields_7767312a2c382dd820191a8454e1f3153e014583a013e4ee94c926d1c2548429",
+      "value": 100,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "서강중학교",
+      "title": "실험을 통해 물과 에탄올 분리하기",
+      "item_id": "item_4048cfd02ba40a19a817bdc54cbc69c8be079d5503c5254058336451128ae681",
+      "field": "weight",
+      "target_id": "aifields_7767312a2c382dd820191a8454e1f3153e014583a013e4ee94c926d1c2548429",
+      "value": 25,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "서강중학교",
+      "title": "실험을 통해 물과 에탄올 분리하기",
+      "item_id": "item_4048cfd02ba40a19a817bdc54cbc69c8be079d5503c5254058336451128ae681",
+      "field": "sub_scores",
+      "target_id": "aifields_7767312a2c382dd820191a8454e1f3153e014583a013e4ee94c926d1c2548429",
+      "value": [
+        {
+          "element": "질량이 다른 물의<br>시간에 따른 온도 변화<br>그래프 그리기",
+          "score": 30
+        },
+        {
+          "element": "질량이 다른 에탄올의<br>시간에 따른 온도 변화<br>그래프 그리기",
+          "score": 30
+        },
+        {
+          "element": "가열 시간에 따른 물과<br>에탄올 혼합물의 온도<br>변화 그래프 해석하기",
+          "score": 40
+        }
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "순천연향중학교",
+      "title": "과학 포트폴리오",
+      "item_id": "item_852d757b4a632aab6550318ca5e6d0c00d470ddb36fcab8265149cd32b8d35ad",
+      "field": "method",
+      "target_id": "aifields_f1294c34d90d57e950226e36554762e20c90a50e288a324ab099da080383a76c",
+      "value": [
+        "포트폴리오"
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 행 1가 현재 제목 블록 [2, 18) 밖에 있음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "순천연향중학교",
+      "title": "과학 포트폴리오",
+      "item_id": "item_852d757b4a632aab6550318ca5e6d0c00d470ddb36fcab8265149cd32b8d35ad",
+      "field": "score",
+      "target_id": "aifields_f1294c34d90d57e950226e36554762e20c90a50e288a324ab099da080383a76c",
+      "value": 100,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 행 0가 현재 제목 블록 [2, 18) 밖에 있음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "순천연향중학교",
+      "title": "과학 포트폴리오",
+      "item_id": "item_852d757b4a632aab6550318ca5e6d0c00d470ddb36fcab8265149cd32b8d35ad",
+      "field": "weight",
+      "target_id": "aifields_f1294c34d90d57e950226e36554762e20c90a50e288a324ab099da080383a76c",
+      "value": 5,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 행 0가 현재 제목 블록 [2, 18) 밖에 있음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "아름중학교",
+      "title": "마찰력과 부력 탐구하기",
+      "item_id": "item_9bed092d5262a69945a5e5387833ec215f5241587bbaced9485ecf472427cc44",
+      "field": "timing",
+      "target_id": "aifields_11855cf4a89e4a13d1b25c2320d860dc53762e9570e7c9243e6cfd8bd95ce37c",
+      "value": "4월 3주",
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "확정된 다른 제목과 칸 전체가 일치하나 현재 과제의 유일한 축·블록이 없음. 기체의 부피 변화 탐구하기"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "아름중학교",
+      "title": "마찰력과 부력 탐구하기",
+      "item_id": "item_9bed092d5262a69945a5e5387833ec215f5241587bbaced9485ecf472427cc44",
+      "field": "score",
+      "target_id": "aifields_11855cf4a89e4a13d1b25c2320d860dc53762e9570e7c9243e6cfd8bd95ce37c",
+      "value": 20,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "확정된 다른 제목과 칸 전체가 일치하나 현재 과제의 유일한 축·블록이 없음. 기체의 부피 변화 탐구하기"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "아름중학교",
+      "title": "마찰력과 부력 탐구하기",
+      "item_id": "item_9bed092d5262a69945a5e5387833ec215f5241587bbaced9485ecf472427cc44",
+      "field": "weight",
+      "target_id": "aifields_11855cf4a89e4a13d1b25c2320d860dc53762e9570e7c9243e6cfd8bd95ce37c",
+      "value": 20,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "확정된 다른 제목과 칸 전체가 일치하나 현재 과제의 유일한 축·블록이 없음. 기체의 부피 변화 탐구하기"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "충주여자중학교",
+      "title": "이온의 이동 관찰 (보고서 평가)",
+      "item_id": "item_dd041cca193d2e301417472bd4de62d5f2292006cc759033a93d94a3d4e13907",
+      "field": "task_text",
+      "target_id": "aifields_ac20917d9d6577d09fd772f6eea38d355991f0fe706a31087d19c74a137ca9a6",
+      "value": [
+        "▪이온의 성질 이해하고 이를 바탕으로 전류를 흘려줄 때 각 이온이 어디로 이동할지 할 수 있다."
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "충주여자중학교",
+      "title": "이온의 이동 관찰 (보고서 평가)",
+      "item_id": "item_dd041cca193d2e301417472bd4de62d5f2292006cc759033a93d94a3d4e13907",
+      "field": "method",
+      "target_id": "aifields_ac20917d9d6577d09fd772f6eea38d355991f0fe706a31087d19c74a137ca9a6",
+      "value": [
+        "보고서",
+        "교사 평가"
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "충주여자중학교",
+      "title": "이온의 이동 관찰 (보고서 평가)",
+      "item_id": "item_dd041cca193d2e301417472bd4de62d5f2292006cc759033a93d94a3d4e13907",
+      "field": "standards",
+      "target_id": "aifields_ac20917d9d6577d09fd772f6eea38d355991f0fe706a31087d19c74a137ca9a6",
+      "value": [
+        "[9과11-04]"
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "충주여자중학교",
+      "title": "이온의 이동 관찰 (보고서 평가)",
+      "item_id": "item_dd041cca193d2e301417472bd4de62d5f2292006cc759033a93d94a3d4e13907",
+      "field": "score",
+      "target_id": "aifields_ac20917d9d6577d09fd772f6eea38d355991f0fe706a31087d19c74a137ca9a6",
+      "value": 20,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "갈산중학교",
+      "title": "정전기 유도 현상을 이해하고 검전기에서의 정전기 유도 현상을 원자모형을 이용하여 표현할 수 있다.",
+      "item_id": "item_ac6f57acedc9b732af96dc9b60c181f8c4c8dda34591220b2547ab6600388705",
+      "field": "score",
+      "target_id": "aifields_79be4e32681f9d7f2ae82181701f93649e7fc8e6bed57d8fa8f49e015ea78095",
+      "value": 20,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "표 밖 인용이 과제의 배타적인 owned_ranges 안에 들지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "순천연향중학교",
+      "title": "생활과 과학",
+      "item_id": "item_eadcd895d8572e2e13086d3dedd17927f63de56dfe7a8fb9b166780451b8d63c",
+      "field": "standards",
+      "target_id": "aifields_99654075945060cbee2c3622c5857d1348f843dc6b2a87cb8bc0ba548a003b53",
+      "value": [
+        "[9과14-03]"
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "제목류 라벨 행이 여럿이며 현재 과제의 유일한 제목 블록을 결정할 수 없음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "순천연향중학교",
+      "title": "생활과 과학",
+      "item_id": "item_eadcd895d8572e2e13086d3dedd17927f63de56dfe7a8fb9b166780451b8d63c",
+      "field": "score",
+      "target_id": "aifields_99654075945060cbee2c3622c5857d1348f843dc6b2a87cb8bc0ba548a003b53",
+      "value": 100,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "제목류 라벨 행이 여럿이며 현재 과제의 유일한 제목 블록을 결정할 수 없음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "순천연향중학교",
+      "title": "생활과 과학",
+      "item_id": "item_eadcd895d8572e2e13086d3dedd17927f63de56dfe7a8fb9b166780451b8d63c",
+      "field": "weight",
+      "target_id": "aifields_99654075945060cbee2c3622c5857d1348f843dc6b2a87cb8bc0ba548a003b53",
+      "value": 10,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "제목류 라벨 행이 여럿이며 현재 과제의 유일한 제목 블록을 결정할 수 없음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "순천연향중학교",
+      "title": "생활과 과학",
+      "item_id": "item_eadcd895d8572e2e13086d3dedd17927f63de56dfe7a8fb9b166780451b8d63c",
+      "field": "assessment_area",
+      "target_id": "aifields_99654075945060cbee2c3622c5857d1348f843dc6b2a87cb8bc0ba548a003b53",
+      "value": "생활과 과학<br>(Ⅶ-1-6. 전기 에너지 전환)",
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "제목류 라벨 행이 여럿이며 현재 과제의 유일한 제목 블록을 결정할 수 없음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "마찰 전기와 정전기 유도 현상 관찰하기",
+      "item_id": "item_a4022dd1a20c303b983f89a4dffbf49d2dfe0c840049743d4061c35e783c6e14",
+      "field": "timing",
+      "target_id": "aifields_690bc1fade29e9fce851d1d51386a8848121476c1a7d3ec3694183f088a2bd28",
+      "value": "10월",
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "마찰 전기와 정전기 유도 현상 관찰하기",
+      "item_id": "item_a4022dd1a20c303b983f89a4dffbf49d2dfe0c840049743d4061c35e783c6e14",
+      "field": "standards",
+      "target_id": "aifields_690bc1fade29e9fce851d1d51386a8848121476c1a7d3ec3694183f088a2bd28",
+      "value": [
+        "[9과14-01]"
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "마찰 전기와 정전기 유도 현상 관찰하기",
+      "item_id": "item_a4022dd1a20c303b983f89a4dffbf49d2dfe0c840049743d4061c35e783c6e14",
+      "field": "score",
+      "target_id": "aifields_690bc1fade29e9fce851d1d51386a8848121476c1a7d3ec3694183f088a2bd28",
+      "value": 100,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "마찰 전기와 정전기 유도 현상 관찰하기",
+      "item_id": "item_a4022dd1a20c303b983f89a4dffbf49d2dfe0c840049743d4061c35e783c6e14",
+      "field": "weight",
+      "target_id": "aifields_690bc1fade29e9fce851d1d51386a8848121476c1a7d3ec3694183f088a2bd28",
+      "value": 25,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "마찰 전기와 정전기 유도 현상 관찰하기",
+      "item_id": "item_a4022dd1a20c303b983f89a4dffbf49d2dfe0c840049743d4061c35e783c6e14",
+      "field": "sub_scores",
+      "target_id": "aifields_690bc1fade29e9fce851d1d51386a8848121476c1a7d3ec3694183f088a2bd28",
+      "value": [
+        {
+          "element": "마찰로 인해 발생하는<br>마찰 전기 관찰하기<br>(털가죽과 빨대)",
+          "score": 30
+        },
+        {
+          "element": "마찰로 인해 발생하는<br>마찰 전기 관찰하기<br>(빨대과 빨대)",
+          "score": 30
+        },
+        {
+          "element": "금속 물체가 전기를<br>띠는 현상 관찰하기",
+          "score": 40
+        }
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "영양소 조사 및 함유 식품 알아보기",
+      "item_id": "item_fc760043b9a2a1bc5e802cfbc8549f6af174646e2301b275e308b5fe0531509d",
+      "field": "timing",
+      "target_id": "aifields_690bc1fade29e9fce851d1d51386a8848121476c1a7d3ec3694183f088a2bd28",
+      "value": "10월",
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "영양소 조사 및 함유 식품 알아보기",
+      "item_id": "item_fc760043b9a2a1bc5e802cfbc8549f6af174646e2301b275e308b5fe0531509d",
+      "field": "standards",
+      "target_id": "aifields_690bc1fade29e9fce851d1d51386a8848121476c1a7d3ec3694183f088a2bd28",
+      "value": [
+        "[9과13-01]"
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "영양소 조사 및 함유 식품 알아보기",
+      "item_id": "item_fc760043b9a2a1bc5e802cfbc8549f6af174646e2301b275e308b5fe0531509d",
+      "field": "score",
+      "target_id": "aifields_690bc1fade29e9fce851d1d51386a8848121476c1a7d3ec3694183f088a2bd28",
+      "value": 100,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "영양소 조사 및 함유 식품 알아보기",
+      "item_id": "item_fc760043b9a2a1bc5e802cfbc8549f6af174646e2301b275e308b5fe0531509d",
+      "field": "weight",
+      "target_id": "aifields_690bc1fade29e9fce851d1d51386a8848121476c1a7d3ec3694183f088a2bd28",
+      "value": 25,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "영양소 조사 및 함유 식품 알아보기",
+      "item_id": "item_fc760043b9a2a1bc5e802cfbc8549f6af174646e2301b275e308b5fe0531509d",
+      "field": "sub_scores",
+      "target_id": "aifields_690bc1fade29e9fce851d1d51386a8848121476c1a7d3ec3694183f088a2bd28",
+      "value": [
+        {
+          "element": "영양소 조사",
+          "score": 30
+        },
+        {
+          "element": "영양소 함유 식품",
+          "score": 30
+        },
+        {
+          "element": "검출 방법 적합성",
+          "score": 40
+        }
+      ],
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "대전대화중학교",
+      "title": "부력 측정 실험",
+      "item_id": "item_0b2aaa93c8983b5203648741a7630c17693ad8704cfb43004a8a18534c60b733",
+      "field": "sub_scores",
+      "target_id": "aifields_884e5dc83c1a25f974dc30f4db2e9e448a79f3341eb98609bb63d410e8baa838",
+      "value": [
+        {
+          "element": "부력의 크기 측정하기",
+          "score": 10
+        },
+        {
+          "element": "물에 잠긴 부피와 부력의 관계 서술하기",
+          "score": 10
+        }
+      ],
+      "reason": "AI 항목 읽기: 값과 인용 대조 실패",
+      "detail": "배점 숫자가 인용되지 않아 규칙의 요소·점수 쌍 생성과 AI 글자·숫자 대조가 실패함"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "울산제일중학교",
+      "title": "옴의 법칙",
+      "item_id": "item_f983edb78d86c7b37f2b40f83909efdfee5796e8b77959e213ae480e0268d7fa",
+      "field": "score",
+      "target_id": "aifields_bc4228f3034feffc0bc74a1d65b657144877d4bd216ea84f2b318435c4cb49bb",
+      "value": 100,
+      "reason": "AI 항목 읽기: 반복 인용 소속 모호",
+      "detail": "제목 라벨의 후보 또는 표 연결 범위가 유일하지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "울산제일중학교",
+      "title": "옴의 법칙",
+      "item_id": "item_f983edb78d86c7b37f2b40f83909efdfee5796e8b77959e213ae480e0268d7fa",
+      "field": "weight",
+      "target_id": "aifields_bc4228f3034feffc0bc74a1d65b657144877d4bd216ea84f2b318435c4cb49bb",
+      "value": 20,
+      "reason": "AI 항목 읽기: 반복 인용 소속 모호",
+      "detail": "제목 라벨의 후보 또는 표 연결 범위가 유일하지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "아름중학교",
+      "title": "전류의 자기 작용",
+      "item_id": "item_8732990cb5ff9b57343fbfcb3d349c9cb5fed70e1b66f08b24b60599861dbc94",
+      "field": "timing",
+      "target_id": "aifields_672bafbe6f1a1068cde6d294611eb2e9bd1dc6ef6361da75d0552597809174c4",
+      "value": "11월 1주",
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "확정된 다른 제목과 칸 전체가 일치하나 현재 과제의 유일한 축·블록이 없음. 소화계와 소화효소"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "아름중학교",
+      "title": "전류의 자기 작용",
+      "item_id": "item_8732990cb5ff9b57343fbfcb3d349c9cb5fed70e1b66f08b24b60599861dbc94",
+      "field": "score",
+      "target_id": "aifields_672bafbe6f1a1068cde6d294611eb2e9bd1dc6ef6361da75d0552597809174c4",
+      "value": 20,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "확정된 다른 제목과 칸 전체가 일치하나 현재 과제의 유일한 축·블록이 없음. 소화계와 소화효소"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "아름중학교",
+      "title": "전류의 자기 작용",
+      "item_id": "item_8732990cb5ff9b57343fbfcb3d349c9cb5fed70e1b66f08b24b60599861dbc94",
+      "field": "weight",
+      "target_id": "aifields_672bafbe6f1a1068cde6d294611eb2e9bd1dc6ef6361da75d0552597809174c4",
+      "value": 20,
+      "reason": "AI 항목 읽기: 표 위치로 소속 확인 불가",
+      "detail": "확정된 다른 제목과 칸 전체가 일치하나 현재 과제의 유일한 축·블록이 없음. 소화계와 소화효소"
+    }
+  ],
+  "mismatches": [
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": false,
+      "school": "흥해중학교",
+      "title": "첨단 과학기술 활용 사례조사하기",
+      "item_id": "aitask_f1044074bf5a9df0ef97961e50e105b46751b2cf8ec2013f265476de4e7492d7",
+      "target_id": "aifields_72f87e4c7230dac8b6e48ecb1b5c12df9481bf4fc18ac1ef127c711cb859f404",
+      "field": "timing",
+      "code_value": "4월 (1회)",
+      "ai_value": "4월"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": false,
+      "school": "흥해중학교",
+      "title": "우리 학교 생태 지도 만들기",
+      "item_id": "aitask_0b4086b3fd18d43355c6644678cf28aaecc1500b45c226718b41eb1b5abb6b52",
+      "target_id": "aifields_72f87e4c7230dac8b6e48ecb1b5c12df9481bf4fc18ac1ef127c711cb859f404",
+      "field": "timing",
+      "code_value": "6월 (1회)",
+      "ai_value": "6월"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": false,
+      "school": "흥해중학교",
+      "title": "다양한 액체의 비열 측정하기",
+      "item_id": "aitask_e452f986f5b6d39a8dcf35856fe572f36e339b49ccda8f8c6984923a14a1a2aa",
+      "target_id": "aifields_72f87e4c7230dac8b6e48ecb1b5c12df9481bf4fc18ac1ef127c711cb859f404",
+      "field": "timing",
+      "code_value": "7월 (1회)",
+      "ai_value": "7월"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "장흥유치중학교",
+      "title": "탐구활동",
+      "item_id": "item_fdfd30e860b703f7009c24c512e0e5c26bdd0f0e026ed4095861b2281632f623",
+      "target_id": "aifields_20eb90e300539c34b16d5f01b5d831b03a966cc5d8a3d91f676b08e5aabe3bbb",
+      "field": "standards",
+      "code_value": [
+        "[9과08-01]",
+        "[9과08-02]",
+        "[9과08-03]",
+        "[9과09-01]",
+        "[9과09-02]",
+        "[9과09-03]",
+        "[9과09-04]",
+        "[9과09-05]",
+        "[9과10-01]",
+        "[9과10-02]",
+        "[9과10-03]",
+        "[9과10-04]",
+        "[9과11-01]",
+        "[9과11-02]",
+        "[9과11-03]",
+        "[9과11-04]"
+      ],
+      "ai_value": [
+        "[9과08-01]",
+        "[9과08-03]",
+        "[9과09-01]",
+        "[9과09-05]",
+        "[9과10-01]",
+        "[9과10-04]",
+        "[9과11-01]",
+        "[9과11-04]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "장흥유치중학교",
+      "title": "빛과 파동논술형",
+      "item_id": "item_97325c0d7ca49be00b170c9f50410bb4395984012aa17e290a7cf889d83df4ed",
+      "target_id": "aifields_20eb90e300539c34b16d5f01b5d831b03a966cc5d8a3d91f676b08e5aabe3bbb",
+      "field": "standards",
+      "code_value": [
+        "[9과08-01]",
+        "[9과08-02]",
+        "[9과08-03]",
+        "[9과09-01]",
+        "[9과09-02]",
+        "[9과09-03]",
+        "[9과09-04]",
+        "[9과09-05]",
+        "[9과10-01]",
+        "[9과10-02]",
+        "[9과10-03]",
+        "[9과10-04]",
+        "[9과11-01]",
+        "[9과11-02]",
+        "[9과11-03]",
+        "[9과11-04]"
+      ],
+      "ai_value": [
+        "[9과08-01]",
+        "[9과08-03]",
+        "[9과09-01]",
+        "[9과09-05]",
+        "[9과10-01]",
+        "[9과10-04]",
+        "[9과11-01]",
+        "[9과11-04]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "장흥유치중학교",
+      "title": "포트폴리오",
+      "item_id": "item_d6ba5eaacb52807e9cb9b91f73852833e3eb255c6341224d563ad8222b24611e",
+      "target_id": "aifields_20eb90e300539c34b16d5f01b5d831b03a966cc5d8a3d91f676b08e5aabe3bbb",
+      "field": "standards",
+      "code_value": [
+        "[9과08-01]",
+        "[9과08-02]",
+        "[9과08-03]",
+        "[9과09-01]",
+        "[9과09-02]",
+        "[9과09-03]",
+        "[9과09-04]",
+        "[9과09-05]",
+        "[9과10-01]",
+        "[9과10-02]",
+        "[9과10-03]",
+        "[9과10-04]",
+        "[9과11-01]",
+        "[9과11-02]",
+        "[9과11-03]",
+        "[9과11-04]"
+      ],
+      "ai_value": [
+        "[9과08-01]",
+        "[9과08-03]",
+        "[9과09-01]",
+        "[9과09-05]",
+        "[9과10-01]",
+        "[9과10-04]",
+        "[9과11-01]",
+        "[9과11-04]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "장흥유치중학교",
+      "title": "프로젝트",
+      "item_id": "item_3b28fbd8800b8720486688725cea1b21d025adc5632c801a72ff4c237d1cf35b",
+      "target_id": "aifields_20eb90e300539c34b16d5f01b5d831b03a966cc5d8a3d91f676b08e5aabe3bbb",
+      "field": "standards",
+      "code_value": [
+        "[9과08-01]",
+        "[9과08-02]",
+        "[9과08-03]",
+        "[9과09-01]",
+        "[9과09-02]",
+        "[9과09-03]",
+        "[9과09-04]",
+        "[9과09-05]",
+        "[9과10-01]",
+        "[9과10-02]",
+        "[9과10-03]",
+        "[9과10-04]",
+        "[9과11-01]",
+        "[9과11-02]",
+        "[9과11-03]",
+        "[9과11-04]"
+      ],
+      "ai_value": [
+        "[9과08-01]",
+        "[9과08-03]",
+        "[9과09-01]",
+        "[9과09-05]",
+        "[9과10-01]",
+        "[9과10-04]",
+        "[9과11-01]",
+        "[9과11-04]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "순천연향중학교",
+      "title": "과학 포트폴리오",
+      "item_id": "item_852d757b4a632aab6550318ca5e6d0c00d470ddb36fcab8265149cd32b8d35ad",
+      "target_id": "aifields_f1294c34d90d57e950226e36554762e20c90a50e288a324ab099da080383a76c",
+      "field": "standards",
+      "code_value": [
+        "[9과09-01]",
+        "[9과09-02]",
+        "[9과09-03]",
+        "[9과09-04]",
+        "[9과09-05]",
+        "[9과10-01]",
+        "[9과10-02]",
+        "[9과10-03]",
+        "[9과10-04]"
+      ],
+      "ai_value": [
+        "[9과09-01]",
+        "[9과10-04]"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "흥해중학교",
+      "title": "압력, 부피, 온도의 관계성 해석하기",
+      "item_id": "item_e167446f5a3cac149f3d157e96568c672099925fb260ae9cb126f8ed0f81f36b",
+      "target_id": "aifields_835d94a9ed81d4bfdf8f88068bab76b41505542310a818065411bb6ffd8f9d39",
+      "field": "method",
+      "code_value": [
+        "서·논술",
+        "프로젝트",
+        "실험·실습",
+        "교사관찰및기록",
+        "자기평가"
+      ],
+      "ai_value": [
+        "서술·논술",
+        "프로젝트",
+        "실험･실습",
+        "교사 관찰 및 기록",
+        "자기평가"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "효돈중학교",
+      "title": "소화 과정 탐구하기",
+      "item_id": "item_96cf23ff4d3f19647913c7c449fd7a31e575ee8d32813a0931e74842e8e9e746",
+      "target_id": "aifields_1596b2b1639a7de54c9151daba06159eb648ba6822cbb440bfa09ecf58737161",
+      "field": "task_text",
+      "code_value": [
+        "입에서 일어나는 소화 과정 설명하기 (30점)",
+        "위에서 일어나는 소화 과정 설명하기 (30점)",
+        "소장에서 일어나는 소화 과정 탐구하기 (40점)"
+      ],
+      "ai_value": [
+        "입에서<br>일어나는 소화<br>과정 설명하기",
+        "위에서<br>일어나는 소화<br>과정 설명하기",
+        "소장에서<br>일어나는 소화<br>과정 탐구하기"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "아름중학교",
+      "title": "전류의 자기 작용",
+      "item_id": "item_8732990cb5ff9b57343fbfcb3d349c9cb5fed70e1b66f08b24b60599861dbc94",
+      "target_id": "aifields_672bafbe6f1a1068cde6d294611eb2e9bd1dc6ef6361da75d0552597809174c4",
+      "field": "method",
+      "code_value": [
+        "서·논술"
+      ],
+      "ai_value": [
+        "서술·논술"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "아름중학교",
+      "title": "전류의 자기 작용",
+      "item_id": "item_8732990cb5ff9b57343fbfcb3d349c9cb5fed70e1b66f08b24b60599861dbc94",
+      "target_id": "aifields_672bafbe6f1a1068cde6d294611eb2e9bd1dc6ef6361da75d0552597809174c4",
+      "field": "assessment_area",
+      "code_value": "전류의 자기 작용 (20점)",
+      "ai_value": "전류의 자기 작용"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "광양마동중학교",
+      "title": "우주 탐사 계획",
+      "item_id": "item_90210e42d33226ea43723f5f988428e19ab2acf26a90efb32a06635117e41eb4",
+      "target_id": "aifields_f796435a432b90112942c1c7080d52032cafbc4e1dd386312b7edba928b292cc",
+      "field": "method",
+      "code_value": [
+        "서·논술",
+        "프로젝트",
+        "관찰평가"
+      ],
+      "ai_value": [
+        "서술·논술",
+        "프로젝트",
+        "관찰 평가"
+      ]
+    }
+  ],
+  "list_audit": [
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": false,
+      "school": "흥해중학교",
+      "title": "첨단 과학기술 활용 사례조사하기",
+      "item_id": "aitask_f1044074bf5a9df0ef97961e50e105b46751b2cf8ec2013f265476de4e7492d7",
+      "target_id": "aifields_72f87e4c7230dac8b6e48ecb1b5c12df9481bf4fc18ac1ef127c711cb859f404",
+      "field": "method",
+      "expected_count": 2,
+      "actual_count": 2,
+      "matches": true,
+      "values": [
+        "구술, 발표 평가",
+        "포트폴리오 평가"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": false,
+      "school": "흥해중학교",
+      "title": "첨단 과학기술 활용 사례조사하기",
+      "item_id": "aitask_f1044074bf5a9df0ef97961e50e105b46751b2cf8ec2013f265476de4e7492d7",
+      "target_id": "aifields_72f87e4c7230dac8b6e48ecb1b5c12df9481bf4fc18ac1ef127c711cb859f404",
+      "field": "standards",
+      "expected_count": 3,
+      "actual_count": 3,
+      "matches": true,
+      "values": [
+        "[9과01-01]",
+        "[9과01-02]",
+        "[9과01-03]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": false,
+      "school": "흥해중학교",
+      "title": "우리 학교 생태 지도 만들기",
+      "item_id": "aitask_0b4086b3fd18d43355c6644678cf28aaecc1500b45c226718b41eb1b5abb6b52",
+      "target_id": "aifields_72f87e4c7230dac8b6e48ecb1b5c12df9481bf4fc18ac1ef127c711cb859f404",
+      "field": "method",
+      "expected_count": 2,
+      "actual_count": 2,
+      "matches": true,
+      "values": [
+        "구술, 발표 평가",
+        "포트폴리오 평가"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": false,
+      "school": "흥해중학교",
+      "title": "우리 학교 생태 지도 만들기",
+      "item_id": "aitask_0b4086b3fd18d43355c6644678cf28aaecc1500b45c226718b41eb1b5abb6b52",
+      "target_id": "aifields_72f87e4c7230dac8b6e48ecb1b5c12df9481bf4fc18ac1ef127c711cb859f404",
+      "field": "standards",
+      "expected_count": 5,
+      "actual_count": 5,
+      "matches": true,
+      "values": [
+        "[9과02-01]",
+        "[9과02-02]",
+        "[9과02-03]",
+        "[9과02-04]",
+        "[9과02-05]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": false,
+      "school": "흥해중학교",
+      "title": "다양한 액체의 비열 측정하기",
+      "item_id": "aitask_e452f986f5b6d39a8dcf35856fe572f36e339b49ccda8f8c6984923a14a1a2aa",
+      "target_id": "aifields_72f87e4c7230dac8b6e48ecb1b5c12df9481bf4fc18ac1ef127c711cb859f404",
+      "field": "method",
+      "expected_count": 2,
+      "actual_count": 2,
+      "matches": true,
+      "values": [
+        "실험, 실습 평가",
+        "프로젝트 평가"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": false,
+      "school": "흥해중학교",
+      "title": "다양한 액체의 비열 측정하기",
+      "item_id": "aitask_e452f986f5b6d39a8dcf35856fe572f36e339b49ccda8f8c6984923a14a1a2aa",
+      "target_id": "aifields_72f87e4c7230dac8b6e48ecb1b5c12df9481bf4fc18ac1ef127c711cb859f404",
+      "field": "standards",
+      "expected_count": 3,
+      "actual_count": 3,
+      "matches": true,
+      "values": [
+        "[9과03-01]",
+        "[9과03-02]",
+        "[9과03-03]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "평동중학교",
+      "title": "생물의 다양성 홍보물 제작하기",
+      "item_id": "item_15e03379d840fd1099368468c52308b88f25ced6a6fa1e67b6caeaba1a450ceb",
+      "target_id": "aifields_79e7d1d9ca0737b5e0175ed09dfb0af1e7bdd8d18f2f9eeb2dca746eb0bcb3fd",
+      "field": "task_text",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "생물의 다양성 홍보물 제작하기"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "평동중학교",
+      "title": "생물의 다양성 홍보물 제작하기",
+      "item_id": "item_15e03379d840fd1099368468c52308b88f25ced6a6fa1e67b6caeaba1a450ceb",
+      "target_id": "aifields_79e7d1d9ca0737b5e0175ed09dfb0af1e7bdd8d18f2f9eeb2dca746eb0bcb3fd",
+      "field": "method",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "보고서, 발표"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "평동중학교",
+      "title": "생물의 다양성 홍보물 제작하기",
+      "item_id": "item_15e03379d840fd1099368468c52308b88f25ced6a6fa1e67b6caeaba1a450ceb",
+      "target_id": "aifields_79e7d1d9ca0737b5e0175ed09dfb0af1e7bdd8d18f2f9eeb2dca746eb0bcb3fd",
+      "field": "standards",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "[9과02-05]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "장흥유치중학교",
+      "title": "탐구활동",
+      "item_id": "item_fdfd30e860b703f7009c24c512e0e5c26bdd0f0e026ed4095861b2281632f623",
+      "target_id": "aifields_20eb90e300539c34b16d5f01b5d831b03a966cc5d8a3d91f676b08e5aabe3bbb",
+      "field": "standards",
+      "expected_count": 16,
+      "actual_count": 16,
+      "matches": true,
+      "values": [
+        "[9과08-01]",
+        "[9과08-02]",
+        "[9과08-03]",
+        "[9과09-01]",
+        "[9과09-02]",
+        "[9과09-03]",
+        "[9과09-04]",
+        "[9과09-05]",
+        "[9과10-01]",
+        "[9과10-02]",
+        "[9과10-03]",
+        "[9과10-04]",
+        "[9과11-01]",
+        "[9과11-02]",
+        "[9과11-03]",
+        "[9과11-04]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "장흥유치중학교",
+      "title": "빛과 파동논술형",
+      "item_id": "item_97325c0d7ca49be00b170c9f50410bb4395984012aa17e290a7cf889d83df4ed",
+      "target_id": "aifields_20eb90e300539c34b16d5f01b5d831b03a966cc5d8a3d91f676b08e5aabe3bbb",
+      "field": "standards",
+      "expected_count": 16,
+      "actual_count": 16,
+      "matches": true,
+      "values": [
+        "[9과08-01]",
+        "[9과08-02]",
+        "[9과08-03]",
+        "[9과09-01]",
+        "[9과09-02]",
+        "[9과09-03]",
+        "[9과09-04]",
+        "[9과09-05]",
+        "[9과10-01]",
+        "[9과10-02]",
+        "[9과10-03]",
+        "[9과10-04]",
+        "[9과11-01]",
+        "[9과11-02]",
+        "[9과11-03]",
+        "[9과11-04]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "장흥유치중학교",
+      "title": "포트폴리오",
+      "item_id": "item_d6ba5eaacb52807e9cb9b91f73852833e3eb255c6341224d563ad8222b24611e",
+      "target_id": "aifields_20eb90e300539c34b16d5f01b5d831b03a966cc5d8a3d91f676b08e5aabe3bbb",
+      "field": "method",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "포트폴리오"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "장흥유치중학교",
+      "title": "포트폴리오",
+      "item_id": "item_d6ba5eaacb52807e9cb9b91f73852833e3eb255c6341224d563ad8222b24611e",
+      "target_id": "aifields_20eb90e300539c34b16d5f01b5d831b03a966cc5d8a3d91f676b08e5aabe3bbb",
+      "field": "standards",
+      "expected_count": 16,
+      "actual_count": 16,
+      "matches": true,
+      "values": [
+        "[9과08-01]",
+        "[9과08-02]",
+        "[9과08-03]",
+        "[9과09-01]",
+        "[9과09-02]",
+        "[9과09-03]",
+        "[9과09-04]",
+        "[9과09-05]",
+        "[9과10-01]",
+        "[9과10-02]",
+        "[9과10-03]",
+        "[9과10-04]",
+        "[9과11-01]",
+        "[9과11-02]",
+        "[9과11-03]",
+        "[9과11-04]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "장흥유치중학교",
+      "title": "프로젝트",
+      "item_id": "item_3b28fbd8800b8720486688725cea1b21d025adc5632c801a72ff4c237d1cf35b",
+      "target_id": "aifields_20eb90e300539c34b16d5f01b5d831b03a966cc5d8a3d91f676b08e5aabe3bbb",
+      "field": "method",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "프로젝트"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "장흥유치중학교",
+      "title": "프로젝트",
+      "item_id": "item_3b28fbd8800b8720486688725cea1b21d025adc5632c801a72ff4c237d1cf35b",
+      "target_id": "aifields_20eb90e300539c34b16d5f01b5d831b03a966cc5d8a3d91f676b08e5aabe3bbb",
+      "field": "standards",
+      "expected_count": 16,
+      "actual_count": 16,
+      "matches": true,
+      "values": [
+        "[9과08-01]",
+        "[9과08-02]",
+        "[9과08-03]",
+        "[9과09-01]",
+        "[9과09-02]",
+        "[9과09-03]",
+        "[9과09-04]",
+        "[9과09-05]",
+        "[9과10-01]",
+        "[9과10-02]",
+        "[9과10-03]",
+        "[9과10-04]",
+        "[9과11-01]",
+        "[9과11-02]",
+        "[9과11-03]",
+        "[9과11-04]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "상북중학교",
+      "title": "포트 폴리오",
+      "item_id": "item_94d52178731cf9fd0a421e893a244d50a96c6a7fe929c32f4ad44d5ed18be2d3",
+      "target_id": "aifields_e062d082f047dc0fc791094ab5c9650cb6ebf9459b67a08b9105c5411ea92789",
+      "field": "standards",
+      "expected_count": 9,
+      "actual_count": 9,
+      "matches": true,
+      "values": [
+        "[9과09-01]",
+        "[9과09-02]",
+        "[9과09-03]",
+        "[9과09-04]",
+        "[9과09-05]",
+        "[9과10-01]",
+        "[9과10-02]",
+        "[9과10-03]",
+        "[9과10-04]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "효돈중학교",
+      "title": "볼록렌즈에 의한 상 작도 하기",
+      "item_id": "item_6dd65740937fe52c94b88bef9f70b5cc2478514b3bd6a50625d78b15247c28ec",
+      "target_id": "aifields_e763c8df5820db2c719e6f6cc986bb5ad9554afc68b6a4fa2956247bc8add8fb",
+      "field": "task_text",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "물체와 렌즈 사 이의 거리에 따라 입사광선과 굴절 광선, 상의 크기 와 형태를 바르게 표현하는지 확인 하기 위한 서·논 술형 평가"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "효돈중학교",
+      "title": "볼록렌즈에 의한 상 작도 하기",
+      "item_id": "item_6dd65740937fe52c94b88bef9f70b5cc2478514b3bd6a50625d78b15247c28ec",
+      "target_id": "aifields_e763c8df5820db2c719e6f6cc986bb5ad9554afc68b6a4fa2956247bc8add8fb",
+      "field": "method",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "서술형 평가"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "효돈중학교",
+      "title": "볼록렌즈에 의한 상 작도 하기",
+      "item_id": "item_6dd65740937fe52c94b88bef9f70b5cc2478514b3bd6a50625d78b15247c28ec",
+      "target_id": "aifields_e763c8df5820db2c719e6f6cc986bb5ad9554afc68b6a4fa2956247bc8add8fb",
+      "field": "standards",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "[9과10-02]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "대전대화중학교",
+      "title": "열전달 방법과 실생활 속의 예 서술하기",
+      "item_id": "item_e8882635aa39bdb99f369f3d0b530c8d3ef3d0e1a2f71d6f946c791e2fc4a862",
+      "target_id": "aifields_dfd4a5b81043694ba09e727891c6094b46f8cc1e87620644473433d87a1a7a00",
+      "field": "task_text",
+      "expected_count": 2,
+      "actual_count": 2,
+      "matches": true,
+      "values": [
+        "열전달 방법과 그 특징 서술",
+        "실생활 속 전도, 대류, 복사의 예 서술"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "대전대화중학교",
+      "title": "열전달 방법과 실생활 속의 예 서술하기",
+      "item_id": "item_e8882635aa39bdb99f369f3d0b530c8d3ef3d0e1a2f71d6f946c791e2fc4a862",
+      "target_id": "aifields_dfd4a5b81043694ba09e727891c6094b46f8cc1e87620644473433d87a1a7a00",
+      "field": "standards",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "[9과03-02]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "효돈중학교",
+      "title": "열평형 과정에서 입자의 운동 변화 탐구",
+      "item_id": "item_0adaaba9677827524ab656aa37dbd30b571edb096e364471d1d4d285f52bd972",
+      "target_id": "aifields_2116d7677bcba0665f11c4113fe40afa168ea18f252fc06393e18f8ef8648bc8",
+      "field": "task_text",
+      "expected_count": 3,
+      "actual_count": 3,
+      "matches": true,
+      "values": [
+        "-뜨거운 물에서 입자의 운동 예측하고 모형 으로 나타내기",
+        "-차가운 물에서 입자의 운동 예측하고 모형 으로 나타내기",
+        "-온도가 다른 물을 혼합했을 때 입자의 운 동 예측하고 모형으로 나타내기"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "효돈중학교",
+      "title": "열평형 과정에서 입자의 운동 변화 탐구",
+      "item_id": "item_0adaaba9677827524ab656aa37dbd30b571edb096e364471d1d4d285f52bd972",
+      "target_id": "aifields_2116d7677bcba0665f11c4113fe40afa168ea18f252fc06393e18f8ef8648bc8",
+      "field": "method",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "실험·실습"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "효돈중학교",
+      "title": "열평형 과정에서 입자의 운동 변화 탐구",
+      "item_id": "item_0adaaba9677827524ab656aa37dbd30b571edb096e364471d1d4d285f52bd972",
+      "target_id": "aifields_2116d7677bcba0665f11c4113fe40afa168ea18f252fc06393e18f8ef8648bc8",
+      "field": "standards",
+      "expected_count": 2,
+      "actual_count": 2,
+      "matches": true,
+      "values": [
+        "[9과03-01]",
+        "[9과03-02]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "광양마동중학교",
+      "title": "열",
+      "item_id": "item_9db6c8a6f6b99a345bc7a726d970c485fbcdd3041a16f9e6176040c39174eaf1",
+      "target_id": "aifields_93d31f141a77809fa7c8147efe09d945314992db82d868ae32e869245759bb5e",
+      "field": "task_text",
+      "expected_count": 5,
+      "actual_count": 5,
+      "matches": true,
+      "values": [
+        "고무줄의 온도 변화관찰하기",
+        "열전달 과정을 비유적으로 표현하기",
+        "비열과 열팽창 활용 사례 카드뉴스 제작하기",
+        "과학적 문제해결력",
+        "과학적 참여와 평생학습능력"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "광양마동중학교",
+      "title": "열",
+      "item_id": "item_9db6c8a6f6b99a345bc7a726d970c485fbcdd3041a16f9e6176040c39174eaf1",
+      "target_id": "aifields_93d31f141a77809fa7c8147efe09d945314992db82d868ae32e869245759bb5e",
+      "field": "method",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "포트폴리오 평가"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "광양마동중학교",
+      "title": "열",
+      "item_id": "item_9db6c8a6f6b99a345bc7a726d970c485fbcdd3041a16f9e6176040c39174eaf1",
+      "target_id": "aifields_93d31f141a77809fa7c8147efe09d945314992db82d868ae32e869245759bb5e",
+      "field": "standards",
+      "expected_count": 3,
+      "actual_count": 3,
+      "matches": true,
+      "values": [
+        "[9과03-01]",
+        "[9과03-02]",
+        "[9과03-03]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "순천연향중학교",
+      "title": "과학 포트폴리오",
+      "item_id": "item_852d757b4a632aab6550318ca5e6d0c00d470ddb36fcab8265149cd32b8d35ad",
+      "target_id": "aifields_f1294c34d90d57e950226e36554762e20c90a50e288a324ab099da080383a76c",
+      "field": "task_text",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "과학 포트폴리오"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "순천연향중학교",
+      "title": "과학 포트폴리오",
+      "item_id": "item_852d757b4a632aab6550318ca5e6d0c00d470ddb36fcab8265149cd32b8d35ad",
+      "target_id": "aifields_f1294c34d90d57e950226e36554762e20c90a50e288a324ab099da080383a76c",
+      "field": "standards",
+      "expected_count": 9,
+      "actual_count": 9,
+      "matches": true,
+      "values": [
+        "[9과09-01]",
+        "[9과09-02]",
+        "[9과09-03]",
+        "[9과09-04]",
+        "[9과09-05]",
+        "[9과10-01]",
+        "[9과10-02]",
+        "[9과10-03]",
+        "[9과10-04]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "아름중학교",
+      "title": "마찰력과 부력 탐구하기",
+      "item_id": "item_9bed092d5262a69945a5e5387833ec215f5241587bbaced9485ecf472427cc44",
+      "target_id": "aifields_11855cf4a89e4a13d1b25c2320d860dc53762e9570e7c9243e6cfd8bd95ce37c",
+      "field": "standards",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "[9과05-02]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "울진중학교",
+      "title": "주변에서 탐구할 문제를 발견하고 탐구 계획서 작성하기",
+      "item_id": "item_5bbd901583facc0d8a078fa2ac92ac26de3ce6bbf310ec5a78a72557bf25f769",
+      "target_id": "aifields_81547642dcf7e09d57210bdb52dcd5424159fec3d272732633b9919fb2050793",
+      "field": "task_text",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "주변에서 탐구할 문제를 발견하고 탐구 계획서 작성하기"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "울진중학교",
+      "title": "주변에서 탐구할 문제를 발견하고 탐구 계획서 작성하기",
+      "item_id": "item_5bbd901583facc0d8a078fa2ac92ac26de3ce6bbf310ec5a78a72557bf25f769",
+      "target_id": "aifields_81547642dcf7e09d57210bdb52dcd5424159fec3d272732633b9919fb2050793",
+      "field": "standards",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "[9과01-01]"
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "갈산중학교",
+      "title": "정전기 유도 현상을 이해하고 검전기에서의 정전기 유도 현상을 원자모형을 이용하여 표현할 수 있다.",
+      "item_id": "item_ac6f57acedc9b732af96dc9b60c181f8c4c8dda34591220b2547ab6600388705",
+      "target_id": "aifields_79be4e32681f9d7f2ae82181701f93649e7fc8e6bed57d8fa8f49e015ea78095",
+      "field": "task_text",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "정전기 유도 현상을 이해하고 검전기에서의 정전기 유도 현상을 원자모형을 이용하여 표현할 수 있다."
+      ]
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "shadow": true,
+      "school": "갈산중학교",
+      "title": "정전기 유도 현상을 이해하고 검전기에서의 정전기 유도 현상을 원자모형을 이용하여 표현할 수 있다.",
+      "item_id": "item_ac6f57acedc9b732af96dc9b60c181f8c4c8dda34591220b2547ab6600388705",
+      "target_id": "aifields_79be4e32681f9d7f2ae82181701f93649e7fc8e6bed57d8fa8f49e015ea78095",
+      "field": "standards",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "[9과14-01]"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "평동중학교",
+      "title": "별의 특성과 우주 구조 원리 서술하기(서술형)",
+      "item_id": "item_7af3f7cdab49470df16a1df24549b186765c7764bdbbf09b06d1703d01871118",
+      "target_id": "aifields_5769303cc06c0b8ed253a7c3f820dea2feb31d6c40fc4d352814e58f7b20677a",
+      "field": "method",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "서술형"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "평동중학교",
+      "title": "별의 특성과 우주 구조 원리 서술하기(서술형)",
+      "item_id": "item_7af3f7cdab49470df16a1df24549b186765c7764bdbbf09b06d1703d01871118",
+      "target_id": "aifields_5769303cc06c0b8ed253a7c3f820dea2feb31d6c40fc4d352814e58f7b20677a",
+      "field": "standards",
+      "expected_count": 2,
+      "actual_count": 2,
+      "matches": true,
+      "values": [
+        "[9과15-01]",
+        "[9과15-02]"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "오현중학교",
+      "title": "전기 회로 만들기",
+      "item_id": "item_244b455d992c9734ef7f33c460e721f4b7d5ae1ffb90a00502fe64f067c87814",
+      "target_id": "aifields_39b4413b2606473736f11decaecc5a1868167f37763c9127f42e7987c665e8fd",
+      "field": "method",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "서·논술형"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "오현중학교",
+      "title": "전기 회로 만들기",
+      "item_id": "item_244b455d992c9734ef7f33c460e721f4b7d5ae1ffb90a00502fe64f067c87814",
+      "target_id": "aifields_39b4413b2606473736f11decaecc5a1868167f37763c9127f42e7987c665e8fd",
+      "field": "standards",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "[9과14-03]"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "흥해중학교",
+      "title": "압력, 부피, 온도의 관계성 해석하기",
+      "item_id": "item_e167446f5a3cac149f3d157e96568c672099925fb260ae9cb126f8ed0f81f36b",
+      "target_id": "aifields_835d94a9ed81d4bfdf8f88068bab76b41505542310a818065411bb6ffd8f9d39",
+      "field": "task_text",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "압력, 부피, 온도의 관계성 해석하기"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "흥해중학교",
+      "title": "압력, 부피, 온도의 관계성 해석하기",
+      "item_id": "item_e167446f5a3cac149f3d157e96568c672099925fb260ae9cb126f8ed0f81f36b",
+      "target_id": "aifields_835d94a9ed81d4bfdf8f88068bab76b41505542310a818065411bb6ffd8f9d39",
+      "field": "standards",
+      "expected_count": 3,
+      "actual_count": 3,
+      "matches": true,
+      "values": [
+        "[9과06-01]",
+        "[9과06-02]",
+        "[9과06-03]"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "효돈중학교",
+      "title": "소화 과정 탐구하기",
+      "item_id": "item_96cf23ff4d3f19647913c7c449fd7a31e575ee8d32813a0931e74842e8e9e746",
+      "target_id": "aifields_1596b2b1639a7de54c9151daba06159eb648ba6822cbb440bfa09ecf58737161",
+      "field": "task_text",
+      "expected_count": 3,
+      "actual_count": 3,
+      "matches": true,
+      "values": [
+        "입에서 일어나는 소화 과정 설명하기 (30점)",
+        "위에서 일어나는 소화 과정 설명하기 (30점)",
+        "소장에서 일어나는 소화 과정 탐구하기 (40점)"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "효돈중학교",
+      "title": "소화 과정 탐구하기",
+      "item_id": "item_96cf23ff4d3f19647913c7c449fd7a31e575ee8d32813a0931e74842e8e9e746",
+      "target_id": "aifields_1596b2b1639a7de54c9151daba06159eb648ba6822cbb440bfa09ecf58737161",
+      "field": "method",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "서술형 평가"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "효돈중학교",
+      "title": "소화 과정 탐구하기",
+      "item_id": "item_96cf23ff4d3f19647913c7c449fd7a31e575ee8d32813a0931e74842e8e9e746",
+      "target_id": "aifields_1596b2b1639a7de54c9151daba06159eb648ba6822cbb440bfa09ecf58737161",
+      "field": "standards",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "[9과13-01]"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "갈산중학교",
+      "title": "탐구 보고서",
+      "item_id": "item_f472e05a62c9f3aa7ec1ef6c0ef7a59d10ff8797da401bb2253af778e930224f",
+      "target_id": "aifields_764611611bfe2ef8d6162715b8fae0e12c6702440357e8fbd5999c4592251c1e",
+      "field": "method",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "서술형"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "갈산중학교",
+      "title": "탐구 보고서",
+      "item_id": "item_f472e05a62c9f3aa7ec1ef6c0ef7a59d10ff8797da401bb2253af778e930224f",
+      "target_id": "aifields_764611611bfe2ef8d6162715b8fae0e12c6702440357e8fbd5999c4592251c1e",
+      "field": "standards",
+      "expected_count": 2,
+      "actual_count": 2,
+      "matches": true,
+      "values": [
+        "[9과05-01]",
+        "[9과05-02]"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "갈산중학교",
+      "title": "탐구 보고서",
+      "item_id": "item_d9f6e1021a67bdb8c6146212d6cd606c9d1508b26808288cbea08f3160cc0cbe",
+      "target_id": "aifields_d2db654a77f9daaaedc69f72ff645e720ea58e469cc6d83dbe6d877329e01952",
+      "field": "method",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "서술형"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "갈산중학교",
+      "title": "탐구 보고서",
+      "item_id": "item_d9f6e1021a67bdb8c6146212d6cd606c9d1508b26808288cbea08f3160cc0cbe",
+      "target_id": "aifields_d2db654a77f9daaaedc69f72ff645e720ea58e469cc6d83dbe6d877329e01952",
+      "field": "standards",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "[9과14-01]"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "오현중학교",
+      "title": "녹는점 측정하기",
+      "item_id": "item_420a981b5a927e7e46467f838f1852a4fed46b19eaed1e18b5c08898a48a2aa3",
+      "target_id": "aifields_514fb2af0e53a2e1ef2f395b82d6a1f415b2b9893d263657774f064e25a1b3b5",
+      "field": "method",
+      "expected_count": 2,
+      "actual_count": 2,
+      "matches": true,
+      "values": [
+        "실험·실습",
+        "서·논술형"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "오현중학교",
+      "title": "녹는점 측정하기",
+      "item_id": "item_420a981b5a927e7e46467f838f1852a4fed46b19eaed1e18b5c08898a48a2aa3",
+      "target_id": "aifields_514fb2af0e53a2e1ef2f395b82d6a1f415b2b9893d263657774f064e25a1b3b5",
+      "field": "standards",
+      "expected_count": 3,
+      "actual_count": 3,
+      "matches": true,
+      "values": [
+        "[9과04-02]",
+        "[9과04-03]",
+        "[9과04-04]"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "오현중학교",
+      "title": "생활 속 힘과 알짜힘 알아보기",
+      "item_id": "item_ffd6c4958d69604634d60333517cd3353c2d36fc2fc5761be0d3b130f300eb81",
+      "target_id": "aifields_514fb2af0e53a2e1ef2f395b82d6a1f415b2b9893d263657774f064e25a1b3b5",
+      "field": "method",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "서·논술형"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "오현중학교",
+      "title": "생활 속 힘과 알짜힘 알아보기",
+      "item_id": "item_ffd6c4958d69604634d60333517cd3353c2d36fc2fc5761be0d3b130f300eb81",
+      "target_id": "aifields_514fb2af0e53a2e1ef2f395b82d6a1f415b2b9893d263657774f064e25a1b3b5",
+      "field": "standards",
+      "expected_count": 2,
+      "actual_count": 2,
+      "matches": true,
+      "values": [
+        "[9과05-01]",
+        "[9과05-02]"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "대전대화중학교",
+      "title": "부력 측정 실험",
+      "item_id": "item_0b2aaa93c8983b5203648741a7630c17693ad8704cfb43004a8a18534c60b733",
+      "target_id": "aifields_884e5dc83c1a25f974dc30f4db2e9e448a79f3341eb98609bb63d410e8baa838",
+      "field": "task_text",
+      "expected_count": 2,
+      "actual_count": 2,
+      "matches": true,
+      "values": [
+        "부력의 크기 측정하기",
+        "물에 잠긴 부피와 부력의 관계 서술하기"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "대전대화중학교",
+      "title": "부력 측정 실험",
+      "item_id": "item_0b2aaa93c8983b5203648741a7630c17693ad8704cfb43004a8a18534c60b733",
+      "target_id": "aifields_884e5dc83c1a25f974dc30f4db2e9e448a79f3341eb98609bb63d410e8baa838",
+      "field": "standards",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "[9과05-02]"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "갈산중학교",
+      "title": "탐구 보고서",
+      "item_id": "item_a0f567b6e39c80a92883203eddf5e9e2140dec8e28c6f7469fa155cc0c0faf7d",
+      "target_id": "aifields_2b1b670a4e31a15d897e06b3b75a277e6df4bbcdf8f5eda01a7799b058ede2fe",
+      "field": "method",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "서술형"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "울산제일중학교",
+      "title": "옴의 법칙",
+      "item_id": "item_f983edb78d86c7b37f2b40f83909efdfee5796e8b77959e213ae480e0268d7fa",
+      "target_id": "aifields_bc4228f3034feffc0bc74a1d65b657144877d4bd216ea84f2b318435c4cb49bb",
+      "field": "task_text",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "저항, 전류, 전압 사이의 관계 탐구하기"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "울산제일중학교",
+      "title": "옴의 법칙",
+      "item_id": "item_f983edb78d86c7b37f2b40f83909efdfee5796e8b77959e213ae480e0268d7fa",
+      "target_id": "aifields_bc4228f3034feffc0bc74a1d65b657144877d4bd216ea84f2b318435c4cb49bb",
+      "field": "standards",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "[9과14-02]"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "아름중학교",
+      "title": "전류의 자기 작용",
+      "item_id": "item_8732990cb5ff9b57343fbfcb3d349c9cb5fed70e1b66f08b24b60599861dbc94",
+      "target_id": "aifields_672bafbe6f1a1068cde6d294611eb2e9bd1dc6ef6361da75d0552597809174c4",
+      "field": "task_text",
+      "expected_count": 2,
+      "actual_count": 2,
+      "matches": true,
+      "values": [
+        "1. 자기장 안에서 전류가 흐르는 코일이 받는 힘의 특성 추리하여 서술하기",
+        "2. 자기장 안에서 전류가 흐르는 코일이 받는 힘의 원리를 활용한 실생활의 물품 서술하기"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "아름중학교",
+      "title": "전류의 자기 작용",
+      "item_id": "item_8732990cb5ff9b57343fbfcb3d349c9cb5fed70e1b66f08b24b60599861dbc94",
+      "target_id": "aifields_672bafbe6f1a1068cde6d294611eb2e9bd1dc6ef6361da75d0552597809174c4",
+      "field": "standards",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "[9과14-04]"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "울진중학교",
+      "title": "저항의 직렬연결과 병렬연결 비교하기",
+      "item_id": "item_ee173b83e161803bd7953c36c180b65c58c224f425b840ae4c5af7b25eaa3fcb",
+      "target_id": "aifields_771fa71486a54c1aec198ad51a1214dd0cd4c530323088c099f3db225702e38c",
+      "field": "task_text",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "저항의 직렬연결과 병렬연결 비교하기"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "울진중학교",
+      "title": "저항의 직렬연결과 병렬연결 비교하기",
+      "item_id": "item_ee173b83e161803bd7953c36c180b65c58c224f425b840ae4c5af7b25eaa3fcb",
+      "target_id": "aifields_771fa71486a54c1aec198ad51a1214dd0cd4c530323088c099f3db225702e38c",
+      "field": "standards",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "[9과14-03]"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "광양마동중학교",
+      "title": "우주 탐사 계획",
+      "item_id": "item_90210e42d33226ea43723f5f988428e19ab2acf26a90efb32a06635117e41eb4",
+      "target_id": "aifields_f796435a432b90112942c1c7080d52032cafbc4e1dd386312b7edba928b292cc",
+      "field": "task_text",
+      "expected_count": 1,
+      "actual_count": 1,
+      "matches": true,
+      "values": [
+        "우주탐사 성과를 조사하여 우주탐사 계 획 세우기 및 우주탐사가 인류에게 미치 는 영향을 토론하기"
+      ]
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "shadow": true,
+      "school": "광양마동중학교",
+      "title": "우주 탐사 계획",
+      "item_id": "item_90210e42d33226ea43723f5f988428e19ab2acf26a90efb32a06635117e41eb4",
+      "target_id": "aifields_f796435a432b90112942c1c7080d52032cafbc4e1dd386312b7edba928b292cc",
+      "field": "standards",
+      "expected_count": 3,
+      "actual_count": 3,
+      "matches": true,
+      "values": [
+        "[9과15-01]",
+        "[9과15-02]",
+        "[9과15-04]"
+      ]
+    }
+  ],
+  "boundary_cases": [
+    {
+      "round": "2026-round-1-dev2",
+      "school": "서강중학교",
+      "title": "실험을 통해 물과 에탄올 분리하기",
+      "item_id": "item_4048cfd02ba40a19a817bdc54cbc69c8be079d5503c5254058336451128ae681",
+      "field": "timing",
+      "table": 62,
+      "classification": "빈 rowspan 꼬리와 다음 행 마지막 colspan의 중첩. 머리 행·데이터 칸 누락은 없음",
+      "empty_overlaps": [
+        {
+          "row": 2,
+          "col": 14,
+          "previous_start": 112001,
+          "start": 112127,
+          "basis": "empty_span_has_no_field_value"
+        }
+      ],
+      "grid_fixed": true,
+      "field_accepted": false,
+      "remaining_reason": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "서강중학교",
+      "title": "실험을 통해 물과 에탄올 분리하기",
+      "item_id": "item_4048cfd02ba40a19a817bdc54cbc69c8be079d5503c5254058336451128ae681",
+      "field": "standards",
+      "table": 62,
+      "classification": "빈 rowspan 꼬리와 다음 행 마지막 colspan의 중첩. 머리 행·데이터 칸 누락은 없음",
+      "empty_overlaps": [
+        {
+          "row": 2,
+          "col": 14,
+          "previous_start": 112001,
+          "start": 112127,
+          "basis": "empty_span_has_no_field_value"
+        }
+      ],
+      "grid_fixed": true,
+      "field_accepted": false,
+      "remaining_reason": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "서강중학교",
+      "title": "실험을 통해 물과 에탄올 분리하기",
+      "item_id": "item_4048cfd02ba40a19a817bdc54cbc69c8be079d5503c5254058336451128ae681",
+      "field": "score",
+      "table": 62,
+      "classification": "빈 rowspan 꼬리와 다음 행 마지막 colspan의 중첩. 머리 행·데이터 칸 누락은 없음",
+      "empty_overlaps": [
+        {
+          "row": 2,
+          "col": 14,
+          "previous_start": 112001,
+          "start": 112127,
+          "basis": "empty_span_has_no_field_value"
+        }
+      ],
+      "grid_fixed": true,
+      "field_accepted": false,
+      "remaining_reason": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "서강중학교",
+      "title": "실험을 통해 물과 에탄올 분리하기",
+      "item_id": "item_4048cfd02ba40a19a817bdc54cbc69c8be079d5503c5254058336451128ae681",
+      "field": "weight",
+      "table": 62,
+      "classification": "빈 rowspan 꼬리와 다음 행 마지막 colspan의 중첩. 머리 행·데이터 칸 누락은 없음",
+      "empty_overlaps": [
+        {
+          "row": 2,
+          "col": 14,
+          "previous_start": 112001,
+          "start": 112127,
+          "basis": "empty_span_has_no_field_value"
+        }
+      ],
+      "grid_fixed": true,
+      "field_accepted": false,
+      "remaining_reason": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "서강중학교",
+      "title": "실험을 통해 물과 에탄올 분리하기",
+      "item_id": "item_4048cfd02ba40a19a817bdc54cbc69c8be079d5503c5254058336451128ae681",
+      "field": "sub_scores",
+      "table": 62,
+      "classification": "빈 rowspan 꼬리와 다음 행 마지막 colspan의 중첩. 머리 행·데이터 칸 누락은 없음",
+      "empty_overlaps": [
+        {
+          "row": 2,
+          "col": 14,
+          "previous_start": 112001,
+          "start": 112127,
+          "basis": "empty_span_has_no_field_value"
+        }
+      ],
+      "grid_fixed": true,
+      "field_accepted": false,
+      "remaining_reason": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "마찰 전기와 정전기 유도 현상 관찰하기",
+      "item_id": "item_a4022dd1a20c303b983f89a4dffbf49d2dfe0c840049743d4061c35e783c6e14",
+      "field": "timing",
+      "table": 84,
+      "classification": "빈 rowspan 꼬리와 다음 행 마지막 colspan의 중첩. 머리 행·데이터 칸 누락은 없음",
+      "empty_overlaps": [
+        {
+          "row": 2,
+          "col": 13,
+          "previous_start": 165903,
+          "start": 165999,
+          "basis": "empty_span_has_no_field_value"
+        }
+      ],
+      "grid_fixed": true,
+      "field_accepted": false,
+      "remaining_reason": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "마찰 전기와 정전기 유도 현상 관찰하기",
+      "item_id": "item_a4022dd1a20c303b983f89a4dffbf49d2dfe0c840049743d4061c35e783c6e14",
+      "field": "standards",
+      "table": 84,
+      "classification": "빈 rowspan 꼬리와 다음 행 마지막 colspan의 중첩. 머리 행·데이터 칸 누락은 없음",
+      "empty_overlaps": [
+        {
+          "row": 2,
+          "col": 13,
+          "previous_start": 165903,
+          "start": 165999,
+          "basis": "empty_span_has_no_field_value"
+        }
+      ],
+      "grid_fixed": true,
+      "field_accepted": false,
+      "remaining_reason": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "마찰 전기와 정전기 유도 현상 관찰하기",
+      "item_id": "item_a4022dd1a20c303b983f89a4dffbf49d2dfe0c840049743d4061c35e783c6e14",
+      "field": "score",
+      "table": 84,
+      "classification": "빈 rowspan 꼬리와 다음 행 마지막 colspan의 중첩. 머리 행·데이터 칸 누락은 없음",
+      "empty_overlaps": [
+        {
+          "row": 2,
+          "col": 13,
+          "previous_start": 165903,
+          "start": 165999,
+          "basis": "empty_span_has_no_field_value"
+        }
+      ],
+      "grid_fixed": true,
+      "field_accepted": false,
+      "remaining_reason": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "마찰 전기와 정전기 유도 현상 관찰하기",
+      "item_id": "item_a4022dd1a20c303b983f89a4dffbf49d2dfe0c840049743d4061c35e783c6e14",
+      "field": "weight",
+      "table": 84,
+      "classification": "빈 rowspan 꼬리와 다음 행 마지막 colspan의 중첩. 머리 행·데이터 칸 누락은 없음",
+      "empty_overlaps": [
+        {
+          "row": 2,
+          "col": 13,
+          "previous_start": 165903,
+          "start": 165999,
+          "basis": "empty_span_has_no_field_value"
+        }
+      ],
+      "grid_fixed": true,
+      "field_accepted": false,
+      "remaining_reason": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "마찰 전기와 정전기 유도 현상 관찰하기",
+      "item_id": "item_a4022dd1a20c303b983f89a4dffbf49d2dfe0c840049743d4061c35e783c6e14",
+      "field": "sub_scores",
+      "table": 84,
+      "classification": "빈 rowspan 꼬리와 다음 행 마지막 colspan의 중첩. 머리 행·데이터 칸 누락은 없음",
+      "empty_overlaps": [
+        {
+          "row": 2,
+          "col": 13,
+          "previous_start": 165903,
+          "start": 165999,
+          "basis": "empty_span_has_no_field_value"
+        }
+      ],
+      "grid_fixed": true,
+      "field_accepted": false,
+      "remaining_reason": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "영양소 조사 및 함유 식품 알아보기",
+      "item_id": "item_fc760043b9a2a1bc5e802cfbc8549f6af174646e2301b275e308b5fe0531509d",
+      "field": "timing",
+      "table": 83,
+      "classification": "빈 rowspan 꼬리와 다음 행 마지막 colspan의 중첩. 머리 행·데이터 칸 누락은 없음",
+      "empty_overlaps": [
+        {
+          "row": 2,
+          "col": 13,
+          "previous_start": 162827,
+          "start": 162922,
+          "basis": "empty_span_has_no_field_value"
+        }
+      ],
+      "grid_fixed": true,
+      "field_accepted": false,
+      "remaining_reason": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "영양소 조사 및 함유 식품 알아보기",
+      "item_id": "item_fc760043b9a2a1bc5e802cfbc8549f6af174646e2301b275e308b5fe0531509d",
+      "field": "standards",
+      "table": 83,
+      "classification": "빈 rowspan 꼬리와 다음 행 마지막 colspan의 중첩. 머리 행·데이터 칸 누락은 없음",
+      "empty_overlaps": [
+        {
+          "row": 2,
+          "col": 13,
+          "previous_start": 162827,
+          "start": 162922,
+          "basis": "empty_span_has_no_field_value"
+        }
+      ],
+      "grid_fixed": true,
+      "field_accepted": false,
+      "remaining_reason": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "영양소 조사 및 함유 식품 알아보기",
+      "item_id": "item_fc760043b9a2a1bc5e802cfbc8549f6af174646e2301b275e308b5fe0531509d",
+      "field": "score",
+      "table": 83,
+      "classification": "빈 rowspan 꼬리와 다음 행 마지막 colspan의 중첩. 머리 행·데이터 칸 누락은 없음",
+      "empty_overlaps": [
+        {
+          "row": 2,
+          "col": 13,
+          "previous_start": 162827,
+          "start": 162922,
+          "basis": "empty_span_has_no_field_value"
+        }
+      ],
+      "grid_fixed": true,
+      "field_accepted": false,
+      "remaining_reason": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "영양소 조사 및 함유 식품 알아보기",
+      "item_id": "item_fc760043b9a2a1bc5e802cfbc8549f6af174646e2301b275e308b5fe0531509d",
+      "field": "weight",
+      "table": 83,
+      "classification": "빈 rowspan 꼬리와 다음 행 마지막 colspan의 중첩. 머리 행·데이터 칸 누락은 없음",
+      "empty_overlaps": [
+        {
+          "row": 2,
+          "col": 13,
+          "previous_start": 162827,
+          "start": 162922,
+          "basis": "empty_span_has_no_field_value"
+        }
+      ],
+      "grid_fixed": true,
+      "field_accepted": false,
+      "remaining_reason": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    },
+    {
+      "round": "2026-round-3-dev2",
+      "school": "서강중학교",
+      "title": "영양소 조사 및 함유 식품 알아보기",
+      "item_id": "item_fc760043b9a2a1bc5e802cfbc8549f6af174646e2301b275e308b5fe0531509d",
+      "field": "sub_scores",
+      "table": 83,
+      "classification": "빈 rowspan 꼬리와 다음 행 마지막 colspan의 중첩. 머리 행·데이터 칸 누락은 없음",
+      "empty_overlaps": [
+        {
+          "row": 2,
+          "col": 13,
+          "previous_start": 162827,
+          "start": 162922,
+          "basis": "empty_span_has_no_field_value"
+        }
+      ],
+      "grid_fixed": true,
+      "field_accepted": false,
+      "remaining_reason": "인용 표에 현재 제목의 전체 문구가 없고 같은 제목의 축·직전 세부표 연결도 증명되지 않음"
+    }
+  ],
+  "ai_new_items": [
+    {
+      "round": "2026-round-1-dev2",
+      "school": "흥해중학교",
+      "title": "첨단 과학기술 활용 사례조사하기",
+      "fields": {
+        "assessment_area": {
+          "value": "첨단 과학기술 활용 사례조사하기",
+          "status": "present",
+          "reason": "",
+          "fill_method": "ai_read",
+          "value_source": "rule_from_cell"
+        },
+        "task_text": {
+          "value": [],
+          "status": "unconfirmed",
+          "reason": "AI: 원문에 없다고 답함(미검증)"
+        },
+        "method": {
+          "value": [
+            "구술, 발표 평가",
+            "포트폴리오 평가"
+          ],
+          "status": "present",
+          "reason": "",
+          "fill_method": "ai_read",
+          "value_source": "rule_from_cell"
+        },
+        "timing": {
+          "value": "4월 (1회)",
+          "status": "present",
+          "reason": "",
+          "fill_method": "ai_read",
+          "value_source": "rule_from_cell"
+        },
+        "score": {
+          "value": "",
+          "status": "unconfirmed",
+          "reason": "AI: 원문에 없다고 답함(미검증)"
+        },
+        "weight": {
+          "value": "",
+          "status": "unconfirmed",
+          "reason": "AI: 원문에 없다고 답함(미검증)"
+        },
+        "standards": {
+          "value": [
+            "[9과01-01]",
+            "[9과01-02]",
+            "[9과01-03]"
+          ],
+          "status": "present",
+          "reason": "",
+          "fill_method": "ai_read",
+          "value_source": "rule_from_cell"
+        },
+        "rubric": {
+          "value": "",
+          "status": "unconfirmed",
+          "reason": "AI: 원문에 없다고 답함(미검증)"
+        },
+        "sub_scores": {
+          "value": [],
+          "status": "unconfirmed",
+          "reason": "AI: 원문에 없다고 답함(미검증)"
+        },
+        "free_semester": {
+          "value": false,
+          "reason": "해당 학년·학기 구간에 자유학기 근거 없음",
+          "status": "present",
+          "fill_method": "rule_reuse"
+        }
+      }
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "흥해중학교",
+      "title": "우리 학교 생태 지도 만들기",
+      "fields": {
+        "assessment_area": {
+          "value": "우리 학교 생태 지도 만들기",
+          "status": "present",
+          "reason": "",
+          "fill_method": "ai_read",
+          "value_source": "rule_from_cell"
+        },
+        "task_text": {
+          "value": [],
+          "status": "unconfirmed",
+          "reason": "AI: 원문에 없다고 답함(미검증)"
+        },
+        "method": {
+          "value": [
+            "구술, 발표 평가",
+            "포트폴리오 평가"
+          ],
+          "status": "present",
+          "reason": "",
+          "fill_method": "ai_read",
+          "value_source": "rule_from_cell"
+        },
+        "timing": {
+          "value": "6월 (1회)",
+          "status": "present",
+          "reason": "",
+          "fill_method": "ai_read",
+          "value_source": "rule_from_cell"
+        },
+        "score": {
+          "value": "",
+          "status": "unconfirmed",
+          "reason": "AI: 원문에 없다고 답함(미검증)"
+        },
+        "weight": {
+          "value": "",
+          "status": "unconfirmed",
+          "reason": "AI: 원문에 없다고 답함(미검증)"
+        },
+        "standards": {
+          "value": [
+            "[9과02-01]",
+            "[9과02-02]",
+            "[9과02-03]",
+            "[9과02-04]",
+            "[9과02-05]"
+          ],
+          "status": "present",
+          "reason": "",
+          "fill_method": "ai_read",
+          "value_source": "rule_from_cell"
+        },
+        "rubric": {
+          "value": "",
+          "status": "unconfirmed",
+          "reason": "AI: 원문에 없다고 답함(미검증)"
+        },
+        "sub_scores": {
+          "value": [],
+          "status": "unconfirmed",
+          "reason": "AI: 원문에 없다고 답함(미검증)"
+        },
+        "free_semester": {
+          "value": false,
+          "reason": "해당 학년·학기 구간에 자유학기 근거 없음",
+          "status": "present",
+          "fill_method": "rule_reuse"
+        }
+      }
+    },
+    {
+      "round": "2026-round-1-dev2",
+      "school": "흥해중학교",
+      "title": "다양한 액체의 비열 측정하기",
+      "fields": {
+        "assessment_area": {
+          "value": "다양한 액체의 비열 측정하기",
+          "status": "present",
+          "reason": "",
+          "fill_method": "ai_read",
+          "value_source": "rule_from_cell"
+        },
+        "task_text": {
+          "value": [],
+          "status": "unconfirmed",
+          "reason": "AI: 원문에 없다고 답함(미검증)"
+        },
+        "method": {
+          "value": [
+            "실험, 실습 평가",
+            "프로젝트 평가"
+          ],
+          "status": "present",
+          "reason": "",
+          "fill_method": "ai_read",
+          "value_source": "rule_from_cell"
+        },
+        "timing": {
+          "value": "7월 (1회)",
+          "status": "present",
+          "reason": "",
+          "fill_method": "ai_read",
+          "value_source": "rule_from_cell"
+        },
+        "score": {
+          "value": "",
+          "status": "unconfirmed",
+          "reason": "AI: 원문에 없다고 답함(미검증)"
+        },
+        "weight": {
+          "value": "",
+          "status": "unconfirmed",
+          "reason": "AI: 원문에 없다고 답함(미검증)"
+        },
+        "standards": {
+          "value": [
+            "[9과03-01]",
+            "[9과03-02]",
+            "[9과03-03]"
+          ],
+          "status": "present",
+          "reason": "",
+          "fill_method": "ai_read",
+          "value_source": "rule_from_cell"
+        },
+        "rubric": {
+          "value": "",
+          "status": "unconfirmed",
+          "reason": "AI: 원문에 없다고 답함(미검증)"
+        },
+        "sub_scores": {
+          "value": [],
+          "status": "unconfirmed",
+          "reason": "AI: 원문에 없다고 답함(미검증)"
+        },
+        "free_semester": {
+          "value": false,
+          "reason": "해당 학년·학기 구간에 자유학기 근거 없음",
+          "status": "present",
+          "fill_method": "rule_reuse"
+        }
+      }
+    }
+  ],
+  "verification": {
+    "pytest_summary": "18 failed, 1337 passed in 13.26s",
+    "pytest_failures": [
+      "services/math-assessment-api/tests/test_catalog_api.py::test_subjects_expose_all_course_groups_and_keep_ambiguity_separate",
+      "services/math-assessment-api/tests/test_catalog_api.py::test_trends_return_verified_subject_counts_and_small_sample_warning",
+      "services/math-assessment-api/tests/test_catalog_api.py::test_cases_filter_by_course_without_exposing_local_paths_or_full_text",
+      "services/math-assessment-api/tests/test_catalog_api.py::test_cases_support_the_whole_library_without_course_filters",
+      "services/math-assessment-api/tests/test_catalog_api.py::test_curated_cases_use_transparent_evidence_priority",
+      "services/math-assessment-api/tests/test_catalog_api.py::test_cases_search_without_the_deploy_only_fts_tables",
+      "services/math-assessment-api/tests/test_catalog_api.py::test_facets_offer_course_specific_regions_and_action_tags",
+      "services/math-assessment-api/tests/test_catalog_api.py::test_region_facet_filters_the_library_and_preserves_its_count",
+      "services/math-assessment-api/tests/test_catalog_api.py::test_case_detail_uses_stable_identifier_and_public_schoolinfo_source",
+      "services/math-assessment-api/tests/test_catalog_api.py::test_list_and_filter_endpoints_do_not_materialize_the_detail_database",
+      "services/math-assessment-api/tests/test_catalog_api.py::test_review_query_parameter_cannot_bypass_confirmed_only_catalogue",
+      "services/math-assessment-api/tests/test_catalog_api.py::test_official_sources_keep_authority_layers_separate",
+      "services/math-assessment-api/tests/test_detail_api.py::test_detail_endpoints_return_the_source_bounded_item",
+      "services/math-assessment-api/tests/test_detail_api.py::test_bundle_review_item_does_not_publish_source_html",
+      "services/math-assessment-api/tests/test_district_filter.py::test_district_facets_and_case_filter_are_source_backed",
+      "services/math-assessment-api/tests/test_health.py::test_product_metadata_keeps_raw_documents_out_of_contract",
+      "services/math-assessment-api/tests/test_reference_page_api.py::test_reference_page_applies_subject_region_and_category_before_limiting",
+      "services/math-assessment-api/tests/test_reference_page_api.py::test_reference_page_can_be_narrowed_to_one_district"
+    ],
+    "pytest_new_failures": 0,
+    "s6e3_tests_passed": 74,
+    "ruff": "passed",
+    "diff_check": "passed",
+    "python": "py -3가 설치 Python을 찾지 못해 저장소 .venv/Scripts/python.exe 사용",
+    "scorer_bucket": "scripts/gold_score.py 1328~1335에서 ai_alignment 조합 키가 없으면 empty_fields() 버킷을 동적으로 생성함. 코드 읽기로 확인",
+    "prompt_sha256": "58b463c8d662dd0d79dada8179b19611fba19d511d384ef37f612acc1e900f9d",
+    "hardcoding_hits": [],
+    "list_merge_errors": 0,
+    "list_audit_cases": 62,
+    "boundary_fields": 15,
+    "boundary_tables": 3
+  },
+  "new_discards": []
+}

@@ -146,7 +146,7 @@ def test_detail_own_table_and_foreign_title_rejection():
     source = setup_source(text)
     field, _ = verify(source, "rubric", "변인을 통제하여 결과를 설명한다", None)
     assert field["evidence"][0]["ai_alignment"] == "own_table"
-    bad = setup_source(text.replace("<td>실험</td>", "<td>실험 생태 지도 만들기</td>"))
+    bad = setup_source(text.replace("<td>실험</td>", "<td>생태 지도 만들기</td>"))
     with pytest.raises(ValueError, match="표 위치"):
         verify(bad, "rubric", "변인을 통제하여 결과를 설명한다", None)
 
@@ -524,7 +524,7 @@ def test_neighboring_detail_continuation_only_one_table_without_foreign_titles()
     assert field["evidence"][0]["ai_alignment"] == "own_table"
     with pytest.raises(ValueError, match="표 위치"):
         verify(source, "rubric", "변인을 설명한다", None)
-    for changed in (continuation.replace("변인을 통제한다", "생태 지도 만들기 변인을 통제한다"),
+    for changed in (continuation.replace("채점기준", "생태 지도 만들기"),
                     continuation.replace("채점기준", "평가 과제")):
         bad = setup_source(detail + changed + "생태 지도 만들기")
         with pytest.raises(ValueError, match="표 위치"):
@@ -663,3 +663,171 @@ def test_mutation_command_writes_both_offline_reports(directory):
     assert result["calls"] == result["neighbor_accepted"] == 0
     assert result["mutations"] == result["rejected"] == 2
     assert (f.directory(directory, ROUND) / "mutation-check.md").exists()
+
+
+@pytest.mark.parametrize("separator", ["<br>", "<BR />", "\n"])
+def test_method_list_preserves_printed_breaks(separator):
+    raw = f"구술, 발표 평가{separator}포트폴리오 평가"
+    source = setup_source(column_text().replace("<td>실험</td>", f"<td>{raw}</td>"))
+    response = answer(source[0]["text"], raw, ["구술, 발표 평가", "포트폴리오 평가"])
+    response["evidence"][0]["line_end"] += raw.count("\n")
+    field, _ = f.verify_field(source[3][0], "method", response, source[1], source[0],
+                              source[4], source[5], source[3])
+    assert field["value"] == ["구술, 발표 평가", "포트폴리오 평가"]
+    assert all(f.rules.method_literal(v) for v in field["value"])
+    assert "ai_value_mismatch" not in field
+
+
+def test_task_list_uses_each_partial_citation_and_keeps_sentence_wrap():
+    quotes = ["입자의 운동을 모형<br>으로 나타내기", "관찰 결과 설명하기"]
+    raw = "평가 안내<br>" + "<br>".join(quotes) + "<br>각 10점"
+    source = setup_source(column_text().replace("<td>실험</td>", f"<td>{raw}</td>"))
+    response = {"status": "present", "value": quotes,
+                "evidence": [answer(source[0]["text"], q, [])['evidence'][0] for q in quotes]}
+    field, _ = f.verify_field(source[3][0], "task_text", response, source[1], source[0],
+                              source[4], source[5], source[3])
+    assert field["value"] == ["입자의 운동을 모형 으로 나타내기", "관찰 결과 설명하기"]
+    assert len(field["evidence"]) == 2
+    assert all(e["raw"] in quotes for e in field["evidence"])
+
+
+def test_standards_breaks_keep_individual_codes_and_range_expansion():
+    raw = "[9과01-01]<br>[9과01-02]~[9과01-03]"
+    source = setup_source(column_text().replace("[9과01-01]", raw))
+    field, _ = verify(source, "standards", raw, ["[9과01-01]"])
+    assert field["value"] == ["[9과01-01]", "[9과01-02]", "[9과01-03]"]
+
+
+def detail_text(value="실험"):
+    return ("<table>\n<tr><td>수행과제</td><td>온도 측정하기</td></tr>\n"
+            f"<tr><td>평가 방법</td><td>{value}</td></tr>\n"
+            "<tr><td>만점</td><td>100점</td></tr>\n</table>\n생태 지도 만들기")
+
+
+@pytest.mark.parametrize("status", ["candidate", "unconfirmed"])
+def test_foreign_title_requires_confirmed_task(status):
+    source = setup_source(detail_text("생태 지도 만들기"))
+    source[3][1]["extraction_status"] = status
+    field, _ = verify(source, "score", "100점", 100)
+    assert field["status"] == "present"
+    source[3][1].update(extraction_status="bounded", extraction_method="rule")
+    with pytest.raises(ValueError, match="표 위치"):
+        verify(source, "score", "100점", 100)
+
+
+def test_foreign_title_matches_whole_cell_only():
+    source = setup_source(detail_text("실험 생태 지도 만들기 결과"))
+    assert verify(source, "score", "100점", 100)[0]["status"] == "present"
+
+
+@pytest.mark.parametrize("role", ["summary_duplicate", "area_only"])
+def test_foreign_title_requires_confirmed_rule_performance_role(role):
+    source = setup_source(detail_text("생태 지도 만들기"))
+    source[3][1].update(extraction_status="bounded", extraction_method="rule",
+                        candidate_role=role)
+    assert verify(source, "score", "100점", 100)[0]["status"] == "present"
+
+
+@pytest.mark.parametrize("other", ["온도 측정", "온도 측정하기 보고서", "온도 측정하기"])
+def test_foreign_title_excludes_own_title_containment(other):
+    source = setup_source(detail_text(other), titles=("온도 측정하기",))
+    candidate = json.loads(json.dumps(source[3][0]))
+    candidate["item_id"] = "alias-task"
+    candidate["fields"]["title"]["value"] = other
+    source[3].append(candidate)
+    assert verify(source, "score", "100점", 100)[0]["status"] == "present"
+
+
+def test_foreign_title_excludes_label_cells():
+    source = setup_source(detail_text(), titles=("온도 측정하기",))
+    candidate = json.loads(json.dumps(source[3][0]))
+    candidate["item_id"] = "label-task"
+    candidate["fields"]["title"]["value"] = "평가 방법"
+    source[3].append(candidate)
+    assert verify(source, "score", "100점", 100)[0]["status"] == "present"
+
+
+def block_text():
+    return ("<table>\n<tr><td>수행과제</td><td>온도 측정하기</td></tr>\n"
+            "<tr><td>평가 방법</td><td>실험</td></tr>\n"
+            "<tr><td>만점</td><td>100점</td></tr>\n"
+            "<tr><td>수행과제</td><td>생태 지도 만들기</td></tr>\n"
+            "<tr><td>평가 방법</td><td>발표</td></tr>\n"
+            "<tr><td>만점</td><td>80점</td></tr>\n</table>")
+
+
+@pytest.mark.parametrize("known_neighbor", [True, False])
+def test_own_block_stops_at_next_title_label_and_mutates_neighbor(known_neighbor):
+    source = setup_source(block_text(), titles=("온도 측정하기", "생태 지도 만들기")
+                          if known_neighbor else ("온도 측정하기",))
+    field, _ = verify(source, "method", "실험", ["실험"])
+    assert field["evidence"][0]["ai_alignment"] == "own_block"
+    with pytest.raises(ValueError, match="표 위치"):
+        verify(source, "method", "발표", ["발표"])
+    results = f.mutate_cell_claims(source[3][0], field["evidence"][0]["locator"],
+                                   source[4], source[5], source[3], source[0]["text"])
+    assert len(results) == 3
+    assert all(r["kind"] == "neighbor_block" and not r["accepted"] for r in results)
+
+
+def test_own_block_uses_known_unlabelled_title_and_rejects_cross_boundary_span():
+    text = block_text().replace("<td>수행과제</td><td>생태 지도 만들기</td>",
+                                '<td colspan="2">생태 지도 만들기</td>')
+    source = setup_source(text)
+    field, _ = verify(source, "method", "실험", ["실험"])
+    assert field["evidence"][0]["ai_alignment"] == "own_block"
+    with pytest.raises(ValueError, match="표 위치"):
+        verify(source, "score", "80점", 80)
+    table = source[4][0]
+    cell = next(c for c in table["cells"] if c["raw"] == "100점")
+    cell["rowspan"] = 2
+    assert not f.own_block(table, cell, source[3][0], source[3][1:])
+
+
+def test_ambiguous_duplicate_block_title_is_rejected():
+    source = setup_source(block_text().replace("생태 지도 만들기", "온도 측정하기"),
+                          titles=("온도 측정하기",))
+    with pytest.raises(ValueError, match="표 위치"):
+        verify(source, "method", "실험", ["실험"])
+
+
+def test_ambiguous_unlabelled_duplicate_block_title_is_rejected():
+    text = block_text().replace("생태 지도 만들기", "온도 측정하기").replace(
+        "<td>수행과제</td><td>온도 측정하기</td>", '<td colspan="2">온도 측정하기</td>')
+    source = setup_source(text, titles=("온도 측정하기",))
+    with pytest.raises(ValueError, match="표 위치"):
+        verify(source, "method", "실험", ["실험"])
+
+
+def test_block_cannot_fall_back_to_whole_table_for_unknown_next_task():
+    text = block_text().replace("<td>수행과제</td><td>온도 측정하기</td>",
+                                '<td colspan="2">온도 측정하기</td>')
+    source = setup_source(text, titles=("온도 측정하기",))
+    assert verify(source, "method", "실험", ["실험"])[0]["evidence"][0][
+        "ai_alignment"] == "own_block"
+    with pytest.raises(ValueError, match="표 위치"):
+        verify(source, "method", "발표", ["발표"])
+
+
+def test_empty_trailing_rowspan_clips_without_moving_data_cells():
+    text = ("<table>\n<tr><td>수행과제</td><td>온도 측정하기</td>"
+            '<td rowspan="2"></td></tr>\n'
+            '<tr><td>평가 방법</td><td colspan="2">실험</td></tr>\n</table>')
+    source = setup_source(text, titles=("온도 측정하기",))
+    assert f.consistent_grid(source[4][0])
+    field, _ = verify(source, "method", "실험", ["실험"])
+    assert field["evidence"][0]["locator"]["col"] == 1
+    bad = setup_source(text.replace('rowspan="2"></td>', 'rowspan="2">메모</td>'),
+                       titles=("온도 측정하기",))
+    assert not f.consistent_grid(bad[4][0])
+    with pytest.raises(ValueError, match="표 위치"):
+        verify(bad, "method", "실험", ["실험"])
+
+
+def test_form_title_label_with_value_is_not_a_row_header():
+    text = ("<table>\n<tr><td>평가 영역</td><td>관찰 영역</td>"
+            "<td>시기</td><td>5월</td></tr>\n"
+            '<tr><td colspan="4">온도 측정하기</td></tr>\n</table>')
+    source = setup_source(text, titles=("온도 측정하기",))
+    field, _ = verify(source, "timing", "5월", "5월")
+    assert field["evidence"][0]["ai_alignment"] == "own_table"

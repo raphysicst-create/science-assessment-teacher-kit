@@ -271,7 +271,7 @@ def table_cell(tables, locator):
         raise ValueError(ALIGNMENT_FAILURE)
     table = containing[0]
     cells = [c for c in table["cells"] if inside(c, locator)]
-    if len(cells) != 1:
+    if len(cells) != 1 or not cells[0]["text"]:
         raise ValueError(ALIGNMENT_FAILURE)
     return table, cells[0]
 
@@ -281,18 +281,25 @@ def consistent_grid(table):
     rows, cells = table["rows"], table["cells"]
     if not rows or not cells:
         return False
-    occupied = set()
+    occupied = {}
     for cell in cells:
         if (cell["rowspan"] < 1 or cell["colspan"] < 1 or cell["col"] < 0
                 or not 0 <= cell["row"] < cell["row"] + cell["rowspan"] <= len(rows)):
             return False
         for row in range(cell["row"], cell["row"] + cell["rowspan"]):
             for col in range(cell["col"], cell["col"] + cell["colspan"]):
-                if (row, col) in occupied:
+                previous = occupied.get((row, col))
+                if previous and not (
+                        not previous["text"] and previous["row"] < cell["row"]
+                        and cell["col"] < previous["col"]
+                        and cell["col"] + cell["colspan"]
+                        == previous["col"] + previous["colspan"]):
                     return False
-                occupied.add((row, col))
+                # A trailing empty rowspan can overhang the next complete row.
+                # Its clipping changes no data-cell origin or width.
+                occupied[row, col] = cell
     width = max(c for _, c in occupied) + 1
-    return occupied == {(r, c) for r in range(len(rows)) for c in range(width)}
+    return set(occupied) == {(r, c) for r in range(len(rows)) for c in range(width)}
 
 
 def axes_overlap(left, right, axis):
@@ -310,7 +317,8 @@ def literal_orientation(table, title):
     column_proof = bool(labels_left and len(title_row_values(table, labels_left[-1])) > 1)
     labels_above = [c for c in table["cells"] if c["row"] < title["row"]
                     and axes_overlap(c, title, "col")
-                    and items.label_role(c["text"]) in title_roles]
+                    and items.label_role(c["text"]) in title_roles
+                    and not title_row_values(table, c)]
     row_proof = bool(labels_above and any(
         c["row"] == labels_above[-1]["row"] and c is not labels_above[-1]
         and items.label_role(c["text"]) not in title_roles | {None}
@@ -328,25 +336,80 @@ def title_row_values(table, label):
             and c["text"] and not items.label_role(c["text"])]
 
 
+def foreign_title_cells(table, item, local):
+    own = comparison_text(ai.rule_title(item))
+    titles = {comparison_text(ai.rule_title(other)) for other in local
+              if (is_ai(other) or (other.get("extraction_status") == "bounded"
+                                  and other.get("candidate_role") == "performance"))
+              and other["fields"]["title"].get("status") == "present"}
+    titles = {title for title in titles if title and own
+              and title not in own and own not in title}
+    return [c for c in table["cells"] if not items.label_role(c["text"])
+            and comparison_text(c["text"]) in titles]
+
+
+def block_bounds(table, item, local):
+    """Bound a vertical detail form by literal task and title-label rows."""
+    labels = [c for c in table["cells"] if items.label_role(c["text"]) in items.TITLE_ROLES]
+    own = comparison_text(ai.rule_title(item))
+    anchors = [c for c in table["cells"] if not items.label_role(c["text"])
+               and (comparison_text(c["text"]) == own or inside(c, title_locator(item)))]
+    if len(anchors) != 1:
+        return None
+    anchor = anchors[0]
+    # Horizontal task axes and headers are handled only by literal_orientation.
+    for label in labels:
+        if label["row"] == anchor["row"] and len(title_row_values(table, label)) != 1:
+            return None
+    foreign = foreign_title_cells(table, item, local)
+    boundaries = {c["row"] for c in labels + foreign}
+    boundaries.add(anchor["row"])
+    # A lone area header above an unlabelled task can be form metadata.
+    # Require evidence of another block, or the task's own title-label row.
+    if len(boundaries) < 2 or not (
+            any(r > anchor["row"] for r in boundaries)
+            or any(c["row"] < anchor["row"] for c in foreign)
+            or any(c["row"] == anchor["row"] for c in labels)):
+        return None
+    if any(c["row"] == anchor["row"] for c in foreign):
+        return None
+    end = min((r for r in boundaries if r > anchor["row"]), default=len(table["rows"]))
+    return anchor["row"], end
+
+
+def own_block(table, cell, item, local):
+    bounds = block_bounds(table, item, local)
+    return bool(bounds and bounds[0] <= cell["row"]
+                < cell["row"] + cell["rowspan"] <= bounds[1])
+
+
 def detail_table(table, item, local, text, *, continuation=False):
     table_text = comparison_text(text[table["start"]:table["end"]])
-    if any(comparison_text(ai.rule_title(other)) in table_text
-           for other in local if comparison_text(ai.rule_title(other))
-           and comparison_text(ai.rule_title(other)) != comparison_text(ai.rule_title(item))):
+    if foreign_title_cells(table, item, local):
         return False
     labels = [c for c in table["cells"] if items.label_role(c["text"]) in items.TITLE_ROLES]
+    if len({c["row"] for c in labels}) > 1:
+        return False
     if continuation:
         return not labels
     own_title = comparison_text(ai.rule_title(item))
     if not own_title or own_title not in table_text:
+        return False
+    width = max(c["col"] + c["colspan"] for c in table["cells"])
+    title_rows = {c["row"] for c in table["cells"]
+                  if c["col"] == 0 and c["colspan"] == width
+                  and not items.label_role(c["text"])
+                  and comparison_text(c["text"]) == own_title}
+    if len(title_rows) > 1:
         return False
     for label in labels:
         candidates = title_row_values(table, label)
         if len(candidates) > 1:
             return False
         # A title column is a header axis only when its row has other fields.
-        if any(items.label_role(c["text"]) not in items.TITLE_ROLES | {None}
-               for c in table["rows"][label["row"]]):
+        if not candidates and any(
+                items.label_role(c["text"]) not in items.TITLE_ROLES | {None}
+                for c in table["rows"][label["row"]]):
             candidates = [c for c in table["cells"] if c["row"] > label["row"]
                           and axes_overlap(c, label, "col") and c["text"]
                           and not items.label_role(c["text"])]
@@ -407,6 +470,10 @@ def alignment(item, locator, tables, structures, known, text):
                 return "same_column" if axis == "col" else "same_row", cell
         # A proved task axis cannot fall back to whole-table ownership.
         raise ValueError(ALIGNMENT_FAILURE)
+    if block_bounds(table, item, local):
+        if own_block(table, cell, item, local):
+            return "own_block", cell
+        raise ValueError(ALIGNMENT_FAILURE)
     if detail_table(table, item, local, text):
         return "own_table", cell
     preceding = next((t for t in reversed(tables) if t["end"] <= table["start"]), None)
@@ -433,7 +500,15 @@ def value_from_cells(name, observations, source_cells, conversion):
     if name == "standards":
         return items.standard_values(copy.deepcopy(observations))["value"]
     if name == "method":
-        result = items.method_values(copy.deepcopy(observations))
+        parts = []
+        for obs in observations:
+            # Keep checkbox grammar intact. Plain methods use printed breaks.
+            if items.METHOD_BOX_RE.search(obs["raw"]):
+                parts.append(copy.deepcopy(obs))
+                continue
+            for raw in re.split(r"<br\s*/?>|\r?\n", obs["raw"], flags=re.I):
+                parts.append({**obs, "raw": raw, "text": items.visible(raw)})
+        result = items.method_values(parts)
         return [re.sub(r"[‧･ㆍ・⋅•]", "·", v) for v in result["value"]
                 if rules.method_literal(v)]
     if name == "sub_scores":
@@ -580,6 +655,10 @@ def verify_field(item, name, answer, target, conversion, tables, structures, kno
         elif cell is None:
             source_observations.append({**observations[-1], "text": items.visible(quote)})
     extraction_cells = source_cells
+    if name == "task_text":
+        # Citation boundaries preserve separate tasks and partial-cell quotes.
+        source_observations = [{**obs, "text": items.visible(obs["raw"])}
+                               for obs in observations]
     if name == "sub_scores":
         # Label cells supply grammar only. Every data cell still needs its own
         # accepted citation, including a separately printed allocation number.
@@ -645,7 +724,7 @@ def field_summary(enriched, entries):
                                       or f["status"] == "source_absent" for f in values),
                         "empty": sum(f["status"] == "unconfirmed" for f in values)}
     alignments = Counter(dict.fromkeys(
-        ("same_column", "same_row", "own_table", "shared_span", "prose"), 0))
+        ("same_column", "same_row", "own_table", "own_block", "shared_span", "prose"), 0))
     alignments.update(
         e["ai_alignment"] for i in enriched for f in i["fields"].values()
         if f.get("fill_method") == "ai_read" for e in f["evidence"])
@@ -1025,20 +1104,27 @@ def mutate_cell_claims(item, locator, tables, structures, known, text):
     if table is None:
         return []
     title = geometry_title(table, item, tables)
-    if title is None:
-        return []
-    layout = literal_orientation(table, title)
-    if layout is None:
+    layout = literal_orientation(table, title) if title else None
+    local = [i for i in known if i["document_id"] == item["document_id"]
+             and i["item_id"] != item["item_id"]]
+    if layout:
+        axis = "col" if layout == "column" else "row"
+        cross_axis = "row" if axis == "col" else "col"
+        peers = [c for c in table["cells"] if c is not title and c["text"]
+                 and not items.label_role(c["text"])
+                 and (c["row"] == title["row"] if axis == "col"
+                      else axes_overlap(c, title, "col"))]
+        neighbors = [c for c in table["cells"] if c is not cell and c["text"]
+                     and axes_overlap(c, cell, cross_axis)
+                     and any(axes_overlap(c, p, axis) for p in peers)]
+        kind = "neighbor_column" if axis == "col" else "neighbor_row"
+    elif own_block(table, cell, item, local):
+        neighbors = [c for c in table["cells"] if c["text"]
+                     and not items.label_role(c["text"])
+                     and not own_block(table, c, item, local)]
+        kind = "neighbor_block"
+    else:
         return []  # A single-task detail form has no neighboring task axis.
-    axis = "col" if layout == "column" else "row"
-    cross_axis = "row" if axis == "col" else "col"
-    peers = [c for c in table["cells"] if c is not title and c["text"]
-             and not items.label_role(c["text"])
-             and (c["row"] == title["row"] if axis == "col"
-                  else axes_overlap(c, title, "col"))]
-    neighbors = [c for c in table["cells"] if c is not cell and c["text"]
-                 and axes_overlap(c, cell, cross_axis)
-                 and any(axes_overlap(c, p, axis) for p in peers)]
     results = []
     for neighbor in neighbors:
         mutated = {"start": neighbor["start"], "end": neighbor["end"]}
@@ -1048,7 +1134,7 @@ def mutate_cell_claims(item, locator, tables, structures, known, text):
         except ValueError as error:
             result = {"accepted": False, "alignment": None, "reason": str(error)}
         results.append({"original": locator, "mutated": mutated,
-                        "quote": neighbor["raw"], **result})
+                        "quote": neighbor["raw"], "kind": kind, **result})
     return results
 
 
