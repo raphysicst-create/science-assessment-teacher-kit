@@ -17,6 +17,8 @@ DEFAULT_ROUNDS = (
     "2026-round-1-dev2",
     "2026-round-1-gold",
     "2026-round-3-gold",
+    "2026-round-1-gold2",
+    "2026-round-3-gold2",
 )
 FORBIDDEN_PARTS = ("data/gold", "data/.gold-before-acl-fix", "docs/missions")
 

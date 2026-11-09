@@ -11,6 +11,7 @@
 검증: 같은 입력으로 두 번 돌려 출력이 같다(결정적).
 """
 
+# ruff: noqa: E501  (시군구 표본틀 데이터 줄은 줄바꿈하지 않는다)
 from __future__ import annotations
 
 import argparse

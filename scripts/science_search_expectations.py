@@ -29,13 +29,19 @@ def read_axes_json(path: Path) -> dict:
 
 def source_items(database: Path, paths: list[Path], activities: dict) -> dict:
     with closing(sqlite3.connect(f"{database.resolve().as_uri()}?mode=ro", uri=True)) as connection:
-        cases = dict(connection.execute("SELECT source_item_id, case_id FROM assessment_items"))
+        # 공개 조건(bounded)인 항목만 기대값에 넣는다. 감사 차단으로 review가 된 항목은 화면에 없다.
+        cases = dict(connection.execute(
+            "SELECT source_item_id, case_id FROM assessment_items "
+            "WHERE extraction_status = 'bounded'"
+        ))
     activity_ids = {name: value for value, name in activities.items()}
     items = {}
     for path in paths:
         for axis in read_axes_json(path)["items"]:
             original = axis["item_id"]
             identity = hashlib.sha256(original.encode("utf-8")).hexdigest()[:28]
+            if original not in cases:
+                continue
             if identity in items:
                 raise ValueError(f"duplicate source item: {original}")
             items[identity] = {
