@@ -166,15 +166,24 @@ def metadata_axes_dir(database: Path) -> str:
     return json.loads(row[0]) if row else "data/derived/axes"
 
 
+def database_rounds(database: Path) -> list[str]:
+    """DB에 실린 회차: 기본 회차 순서 먼저, 그 밖(전국 묶음 회차 등)은 이름순."""
+    with closing(sqlite3.connect(f"{database.resolve().as_uri()}?mode=ro", uri=True)) as db:
+        rows = db.execute("SELECT DISTINCT source_round FROM assessment_items")
+        present = {row[0] for row in rows}
+    return [r for r in DEFAULT_ROUNDS if r in present] + sorted(present - set(DEFAULT_ROUNDS))
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--database", required=True, type=Path)
-    parser.add_argument("--rounds", nargs="+", default=DEFAULT_ROUNDS)
+    parser.add_argument("--rounds", nargs="+", help="기본: DB에 실린 회차 전부")
     parser.add_argument("--axes-json", nargs="+", type=Path)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
     axes_dir = metadata_axes_dir(args.database)
-    paths = args.axes_json or [ROOT / axes_dir / f"{r}.json" for r in args.rounds]
+    rounds = args.rounds or database_rounds(args.database)
+    paths = args.axes_json or [ROOT / axes_dir / f"{r}.json" for r in rounds]
     report = run_check(args.database, paths)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
