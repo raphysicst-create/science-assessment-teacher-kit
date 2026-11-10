@@ -3,7 +3,7 @@
  * Verify: node --check apps/math-assessment-web/scripts/check-card-detail-text.mjs
  * Verify: node apps/math-assessment-web/scripts/check-card-detail-text.mjs --self-test
  * Sources: app/references/ReferenceExplorer.tsx, ReferenceCard.tsx, app/lib/catalog-api.ts,
- * next.config.ts. Browser transport follows check-mobile-overflow.mjs without dependencies.
+ * next.config.ts. List reading (429 wait/retry) lives in card-detail-list.mjs. Browser transport follows check-mobile-overflow.mjs without dependencies.
  */
 import { spawn } from "node:child_process";
 import { access, mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
@@ -12,13 +12,12 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 import { pathToFileURL } from "node:url";
+import { TIMEOUT_MS, fetchJson, publicCards } from "./card-detail-list.mjs";
 
-const TIMEOUT_MS = 20_000;
 const QUIET_MS = 500;
 // 방문자 카운터는 카드 내용이 아니고 API가 분당 12회로 제한한다(429). 이 경로의 오류만 실패로 세지 않는다.
 const IGNORED_ERROR_PATHS = ["/api/v1/visitors"];
 const HEIGHT = 844;
-const PAGE_SIZE = 30; // Same page size as ReferenceExplorer.
 const BROWSER_PATHS = [
   "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
   "C:/Program Files/Google/Chrome/Application/chrome.exe",
@@ -68,40 +67,6 @@ function optionsFrom(args) {
   options.screenshotIds = options.screenshotIds ? [...new Set(options.screenshotIds.split(",").map((id) => id.trim()).filter(Boolean))] : [];
   if (Boolean(options.screenshotDir) !== Boolean(options.screenshotIds.length)) throw new Error("Use --screenshot-dir and --screenshot-ids together");
   return options;
-}
-
-async function fetchJson(url, init = {}) {
-  const response = await fetch(url, { ...init, signal: AbortSignal.timeout(TIMEOUT_MS) });
-  if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
-  return response.json();
-}
-
-async function publicCards(options) {
-  const cards = [];
-  const seen = new Set();
-  let total;
-  while (total === undefined || cards.length < Math.min(total, options.limit)) {
-    const url = new URL("/api/v1/references", options.apiUrl);
-    url.search = new URLSearchParams({ limit: String(PAGE_SIZE), offset: String(cards.length) });
-    const page = await fetchJson(url);
-    if (!Array.isArray(page.items) || !Number.isSafeInteger(page.total_items) || page.total_items < 0 || page.offset !== cards.length) throw new Error(`Invalid list response: ${url}`);
-    if (total !== undefined && total !== page.total_items) throw new Error("Public card total changed during pagination. Rerun against stable data");
-    total = page.total_items;
-    if (!total || !page.items.length) throw new Error(`No public cards at offset ${cards.length} (total ${total})`);
-    for (const item of page.items) {
-      if (typeof item.item_id !== "string" || !item.item_id || typeof item.case_id !== "string" || !item.case_id || seen.has(item.item_id) || item.source_available === false) throw new Error("List contains an invalid, duplicate, or unavailable public card");
-      seen.add(item.item_id);
-      const detail = new URL(`/cases/${encodeURIComponent(item.case_id)}`, options.webUrl);
-      detail.searchParams.set("item", item.item_id);
-      cards.push({ item_id: item.item_id, url: detail.href });
-    }
-    if (cards.length > total) throw new Error("List returned more cards than total_items");
-  }
-  const selected = cards.slice(0, options.limit);
-  for (const id of options.screenshotIds) {
-    if (!selected.some((card) => card.item_id === id)) throw new Error(`Screenshot card is absent from the selected public cards: ${id}`);
-  }
-  return selected;
 }
 
 async function browserPath() {
