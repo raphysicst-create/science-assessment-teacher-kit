@@ -18,6 +18,7 @@ from pathlib import Path
 
 if __package__:
     from . import middle_ai_read as ai
+    from .course_subject import course_name_before, is_non_science_course
     from .middle_ai_first_merge import VERSION, fill_methods, merge_targets
     from .middle_ai_first_merge import merge_report as merge_report
     from .middle_fields import method_literal
@@ -31,6 +32,7 @@ if __package__:
     from .middle_segments import digest_id, text_locator
 else:
     import middle_ai_read as ai
+    from course_subject import course_name_before, is_non_science_course
     from middle_ai_first_merge import VERSION, fill_methods, merge_targets
     from middle_ai_first_merge import merge_report as merge_report
     from middle_fields import method_literal
@@ -291,6 +293,7 @@ def finalize_details(tasks, conversions):
 
 def verify_response(target, output, conversion, kept, discarded, outside, uncertain):
     response = ai.parse_response(output / f"responses/{target['target_id']}.json")
+    lines = conversion["text"].splitlines()
     uncertain.extend({"target_id": target["target_id"], "value": u} for u in response["uncertain"])
     for task in response["tasks"]:
         try:
@@ -300,6 +303,13 @@ def verify_response(target, output, conversion, kept, discarded, outside, uncert
             discarded.append({"target_id": target["target_id"], "task": task, "reason": str(error)})
             continue
         if verified["grade"] in {1, 2}:
+            first_line = min(e["line_start"] for e in verified["evidence"])
+            course = course_name_before(lines, first_line)
+            if course and is_non_science_course(course["course"]):
+                discarded.append({"target_id": target["target_id"], "task": task,
+                                  "reason": "other_subject_course:" + course["course"],
+                                  "course_evidence": course})
+                continue
             kept.append(verified)
         else:
             outside.append({**verified, "reason": "범위 밖"})

@@ -206,7 +206,8 @@ def test_methods_command_fills_standards_preserves_existing_values_and_repeats(
     first.main(["methods", "--round-key", ROUND])
     assert json.loads(capsys.readouterr().out) == {
         "round": ROUND, "changed_items": 1,
-        "changed_methods": int(not method_present), "changed_standards": 1}
+        "changed_methods": int(not method_present), "changed_standards": 1,
+        "changed_methods_detail_checked": 0}
     after = ai.read_json(path)
     standards = after["items"][0]["fields"]["standards"]
     assert standards["value"] == verified["kept"][0]["standards_from_detail"]["value"]
@@ -222,7 +223,8 @@ def test_methods_command_fills_standards_preserves_existing_values_and_repeats(
     assert after == before
     raw = path.read_bytes()
     assert first.fill_methods(root, ROUND) == {
-        "round": ROUND, "changed_items": 0, "changed_methods": 0, "changed_standards": 0}
+        "round": ROUND, "changed_items": 0, "changed_methods": 0, "changed_standards": 0,
+        "changed_methods_detail_checked": 0}
     assert path.read_bytes() == raw
 
 

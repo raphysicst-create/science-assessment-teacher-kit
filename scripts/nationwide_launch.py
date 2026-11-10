@@ -21,9 +21,11 @@ from scripts.nationwide_steps import (
     DEFAULT_MODEL,
     DEFAULT_WAIT_SECONDS,
     DEFAULT_WORKERS,
+    MAX_WORKERS,
     OUTPUT,
     Config,
     child_env,
+    round_steps,
 )
 
 DEFAULT_LAUNCH_RESTARTS = 3
@@ -59,12 +61,19 @@ def build_parser(description: str) -> argparse.ArgumentParser:
         start = commands.add_parser(name, help=f"{name} bundles with resumable checkpoints")
         start.add_argument("--bundles", type=parse_bundles, required=True)
         start.add_argument("--model", default=DEFAULT_MODEL)
-        start.add_argument("--workers", type=int, default=DEFAULT_WORKERS)
+        start.add_argument("--workers", type=int, choices=range(1, MAX_WORKERS + 1),
+                           default=DEFAULT_WORKERS)
+        start.add_argument("--sequential-rounds", action="store_true",
+                           help="run round 3 then round 1 instead of two threads")
         start.add_argument("--isolated-cwd", type=Path, default=DEFAULT_ISOLATED_CWD)
         start.add_argument("--wait-seconds", type=float, default=DEFAULT_WAIT_SECONDS)
         start.add_argument("--restart-on-failure", type=int, default=restarts)
     status = commands.add_parser("status", help="read checkpoints and check the runner PID")
     status.add_argument("--json", action="store_true")
+    reset = commands.add_parser("reset", help="clear round stages and later publication/gates")
+    reset.add_argument("--bundles", type=parse_bundles, required=True)
+    reset.add_argument("--from", dest="from_step", required=True,
+                       choices=[step.name for step in round_steps(Config(Path(".")), 1, 3)])
     return parser
 
 
@@ -85,6 +94,7 @@ def launch(cfg: Config, restart_on_failure: int = DEFAULT_LAUNCH_RESTARTS, *,
             "--bundles", ",".join(map(str, cfg.bundles)), "--model", cfg.model,
             "--workers", str(cfg.workers), "--isolated-cwd", str(cfg.isolated_cwd),
             "--wait-seconds", str(cfg.wait_seconds),
+            *(("--sequential-rounds",) if cfg.sequential_rounds else ()),
             "--restart-on-failure", str(restart_on_failure)]
     options = ({"creationflags": DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP}
                if (platform or os.name) == "nt" else {"start_new_session": True})

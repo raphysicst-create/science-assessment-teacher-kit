@@ -1,6 +1,7 @@
-"""Build the 77-task development key from the allowed fresh3/fresh4 Markdown inputs.
+"""Build development keys from the named fresh3/fresh4 or fresh6 Markdown inputs.
 
 Run .venv/Scripts/python.exe scripts/dev_task_key.py
+    .venv/Scripts/python.exe scripts/dev_task_key.py --set fresh6 --out PATH
 Verify .venv/Scripts/python.exe -m pytest -q
        services/math-assessment-api/tests/test_dev_recall_check.py
 Reads the six named development documents, activity definitions, and fresh3/fresh4
@@ -10,6 +11,7 @@ spans use Unicode codepoint offsets with an exclusive end (excluding newlines).
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import re
@@ -24,6 +26,12 @@ from scripts.dev_recall_check import title_key
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "docs/dev/2026-11-10-s20-dev-key.json"
+FRESH6_OUTPUT = ROOT / "docs/dev/2026-11-10-n2-fresh6-key.json"
+FRESH6_QUALITY = "docs/gold/2026-11-10-fresh6-astra-quality.md"
+FRESH6_SOURCES = "docs/gold/2026-11-10-fresh6-sources.md"
+FRESH6_TASK_COUNT = 28
+FRESH6_SCHOOL_ROUND = re.compile(r"^#{2,4}\s+(.+?)\s+`?(\d{4}-round-\d+-nw1)`?\s*$")
+METHOD_SEPARATOR = re.compile(r",\s*|\s+[·ㆍ･・‧⋅]\s+")
 INPUTS = {
     "fresh3": ("fresh3-astra-quality", "fresh3-astra-extra", "fresh3-cards", "fresh3-cards-extra"),
     "fresh4": ("fresh4-astra-quality", "fresh4-cards"),
@@ -123,6 +131,104 @@ def read_tasks(markdown: str, set_name: str) -> list[dict]:
                     "lines": line_ranges(evidence[2]),
                 }
             )
+    return tasks
+
+
+def fresh6_evidence(value: str) -> list[tuple[str, list[list[int]]]]:
+    """Keep each document's 1-based inclusive ranges separate."""
+    evidence = []
+    for part in value.split(";"):
+        match = re.fullmatch(r"\s*([0-9a-f]{8})\s*:\s*(.+?)\s*", part)
+        if match is None:
+            raise ValueError(f"Invalid fresh6 evidence: {value}")
+        evidence.append((match[1], line_ranges(match[2])))
+    return evidence
+
+
+def fresh6_sources(markdown: str) -> dict:
+    sources = {}
+    school = round_key = None
+    for line in markdown.splitlines():
+        heading = FRESH6_SCHOOL_ROUND.fullmatch(line)
+        if heading:
+            school, round_key = heading.groups()
+        for path in re.findall(r"`(data/derived/segments/[^`]+\.json)`", line):
+            if school is None or round_key is None:
+                raise ValueError(f"Missing fresh6 source heading: {path}")
+            key = school, round_key, Path(path).stem[:8]
+            if key in sources:
+                raise ValueError(f"Duplicate fresh6 source prefix: {key}")
+            sources[key] = path
+    return sources
+
+
+def fresh6_location(evidence: list, sources: dict, school: str, round_key: str, root: Path) -> dict:
+    """Use explicit document prefixes; ambiguous multi-document evidence has no locator."""
+    documents = {}
+    for prefix, ranges in evidence:
+        path = sources[school, round_key, prefix]
+        converted = json.loads((root / path).read_text(encoding="utf-8"))
+        text = converted["text"]
+        if any(last > len(text.split("\n")) for _, last in ranges):
+            raise ValueError(f"Evidence lines out of bounds: {path} {ranges}")
+        if path not in documents:
+            documents[path] = (converted, [])
+        documents[path][1].extend(ranges)
+    if len(documents) != 1:
+        return {"doc": None, "doc_reason": "multiple_documents", "spans": []}
+    path, (converted, ranges) = next(iter(documents.items()))
+    text = converted["text"]
+    cited = {number for first, last in ranges for number in range(first, last + 1)}
+    spans = []
+    offset = 0
+    for number, line in enumerate(text.split("\n"), 1):
+        if number in cited:
+            spans.append({"line": number, "start": offset, "end": offset + len(line)})
+        offset += len(line) + 1
+    return {
+        "doc": {
+            "doc_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
+            "converted_path": path,
+            "locator_sha256": converted.get("sha256") or Path(path).stem,
+        },
+        "doc_reason": None,
+        "spans": spans,
+    }
+
+
+def read_fresh6_tasks(markdown: str, sources: dict, root: Path = ROOT) -> list[dict]:
+    tasks = []
+    # Only section 1 supplies keys; card verdicts never supply task data.
+    markdown = re.split(r"^###\s+2절\b", markdown, maxsplit=1, flags=re.M)[0]
+    for section in re.split(r"(?=^####\s)", markdown, flags=re.M):
+        heading = FRESH6_SCHOOL_ROUND.fullmatch(section.splitlines()[0]) if section else None
+        rows = [row for row in table_rows(section) if "과제 제목(원문 그대로)" in row]
+        if rows and heading is None:
+            raise ValueError("Missing fresh6 task school/round heading")
+        for row in rows:
+            school, round_key = heading.groups()
+            evidence = fresh6_evidence(row["근거(줄)"])
+            tasks.append({
+                "task_id": f"F6-{len(tasks) + 1:02d}",
+                "set": "fresh6",
+                "school": school,
+                "round": round_key,
+                "grade": int(row["학년"]),
+                "semester": int(row["학기"]),
+                "title": row["과제 제목(원문 그대로)"],
+                "methods_key": METHOD_SEPARATOR.split(row["체크된 평가 방법"]),
+                "activity_key": None,
+                "lines": [pair for _, ranges in evidence for pair in ranges],
+                **fresh6_location(evidence, sources, school, round_key, root),
+            })
+    return tasks
+
+
+def build_fresh6_key(root: Path = ROOT) -> list[dict]:
+    sources = fresh6_sources((root / FRESH6_SOURCES).read_text(encoding="utf-8"))
+    tasks = read_fresh6_tasks((root / FRESH6_QUALITY).read_text(encoding="utf-8"), sources, root)
+    if len(tasks) != FRESH6_TASK_COUNT:
+        raise ValueError(f"Expected {FRESH6_TASK_COUNT} tasks in fresh6, got {len(tasks)}")
     return tasks
 
 
@@ -238,7 +344,8 @@ def build_key(root: Path = ROOT) -> list[dict]:
 
 def key_summary(tasks: list[dict]) -> dict:
     summary = {}
-    for name in (*EXPECTED_TASKS, "total"):
+    sets = dict.fromkeys([*EXPECTED_TASKS, *(task["set"] for task in tasks)])
+    for name in (*sets, "total"):
         subset = [task for task in tasks if name == "total" or task["set"] == name]
         summary[name] = dict(
             tasks=len(subset),
@@ -253,12 +360,17 @@ def key_summary(tasks: list[dict]) -> dict:
     return summary
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
-    tasks = build_key()
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(tasks, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--set", choices=["fresh3-fresh4", "fresh6"], default="fresh3-fresh4")
+    parser.add_argument("--out", type=Path)
+    args = parser.parse_args(argv)
+    tasks = build_fresh6_key() if args.set == "fresh6" else build_key()
+    output = args.out or (FRESH6_OUTPUT if args.set == "fresh6" else OUTPUT)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(tasks, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(key_summary(tasks), ensure_ascii=False, indent=2))
     return 0
 

@@ -1,0 +1,3640 @@
+[
+  {
+    "task_id": "F6-01",
+    "set": "fresh6",
+    "school": "남원중학교",
+    "round": "2026-round-3-nw1",
+    "grade": 1,
+    "semester": 2,
+    "title": "비열과 열팽창 탐구하기",
+    "methods_key": [
+      "실험실습",
+      "서술형"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1523,
+        1529
+      ],
+      [
+        1540,
+        1556
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "468ee459f43d9eb027b70014229480d0c7f166f1c33ffe2de122e91ca823519e",
+      "converted_path": "data/derived/segments/2026-round-3-nw1-conversions/71b42a3f964169689619b1e78b856a9eab33ce2b8fab699689b9d3a333205e1e.json",
+      "locator_sha256": "71b42a3f964169689619b1e78b856a9eab33ce2b8fab699689b9d3a333205e1e"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1523,
+        "start": 105450,
+        "end": 105561
+      },
+      {
+        "line": 1524,
+        "start": 105562,
+        "end": 105671
+      },
+      {
+        "line": 1525,
+        "start": 105672,
+        "end": 105751
+      },
+      {
+        "line": 1526,
+        "start": 105752,
+        "end": 105833
+      },
+      {
+        "line": 1527,
+        "start": 105834,
+        "end": 105924
+      },
+      {
+        "line": 1528,
+        "start": 105925,
+        "end": 106046
+      },
+      {
+        "line": 1529,
+        "start": 106047,
+        "end": 106240
+      },
+      {
+        "line": 1540,
+        "start": 106453,
+        "end": 106496
+      },
+      {
+        "line": 1541,
+        "start": 106497,
+        "end": 106497
+      },
+      {
+        "line": 1542,
+        "start": 106498,
+        "end": 106505
+      },
+      {
+        "line": 1543,
+        "start": 106506,
+        "end": 106640
+      },
+      {
+        "line": 1544,
+        "start": 106641,
+        "end": 106708
+      },
+      {
+        "line": 1545,
+        "start": 106709,
+        "end": 106792
+      },
+      {
+        "line": 1546,
+        "start": 106793,
+        "end": 106867
+      },
+      {
+        "line": 1547,
+        "start": 106868,
+        "end": 106984
+      },
+      {
+        "line": 1548,
+        "start": 106985,
+        "end": 107039
+      },
+      {
+        "line": 1549,
+        "start": 107040,
+        "end": 107106
+      },
+      {
+        "line": 1550,
+        "start": 107107,
+        "end": 107161
+      },
+      {
+        "line": 1551,
+        "start": 107162,
+        "end": 107216
+      },
+      {
+        "line": 1552,
+        "start": 107217,
+        "end": 107315
+      },
+      {
+        "line": 1553,
+        "start": 107316,
+        "end": 107370
+      },
+      {
+        "line": 1554,
+        "start": 107371,
+        "end": 107488
+      },
+      {
+        "line": 1555,
+        "start": 107489,
+        "end": 107543
+      },
+      {
+        "line": 1556,
+        "start": 107544,
+        "end": 107642
+      }
+    ]
+  },
+  {
+    "task_id": "F6-02",
+    "set": "fresh6",
+    "school": "남원중학교",
+    "round": "2026-round-3-nw1",
+    "grade": 1,
+    "semester": 2,
+    "title": "태양과 태양계 탐구하기",
+    "methods_key": [
+      "보고서",
+      "산출물",
+      "서술형"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1523,
+        1529
+      ],
+      [
+        1562,
+        1578
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "468ee459f43d9eb027b70014229480d0c7f166f1c33ffe2de122e91ca823519e",
+      "converted_path": "data/derived/segments/2026-round-3-nw1-conversions/71b42a3f964169689619b1e78b856a9eab33ce2b8fab699689b9d3a333205e1e.json",
+      "locator_sha256": "71b42a3f964169689619b1e78b856a9eab33ce2b8fab699689b9d3a333205e1e"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1523,
+        "start": 105450,
+        "end": 105561
+      },
+      {
+        "line": 1524,
+        "start": 105562,
+        "end": 105671
+      },
+      {
+        "line": 1525,
+        "start": 105672,
+        "end": 105751
+      },
+      {
+        "line": 1526,
+        "start": 105752,
+        "end": 105833
+      },
+      {
+        "line": 1527,
+        "start": 105834,
+        "end": 105924
+      },
+      {
+        "line": 1528,
+        "start": 105925,
+        "end": 106046
+      },
+      {
+        "line": 1529,
+        "start": 106047,
+        "end": 106240
+      },
+      {
+        "line": 1562,
+        "start": 107853,
+        "end": 107897
+      },
+      {
+        "line": 1563,
+        "start": 107898,
+        "end": 107898
+      },
+      {
+        "line": 1564,
+        "start": 107899,
+        "end": 107906
+      },
+      {
+        "line": 1565,
+        "start": 107907,
+        "end": 108105
+      },
+      {
+        "line": 1566,
+        "start": 108106,
+        "end": 108177
+      },
+      {
+        "line": 1567,
+        "start": 108178,
+        "end": 108261
+      },
+      {
+        "line": 1568,
+        "start": 108262,
+        "end": 108336
+      },
+      {
+        "line": 1569,
+        "start": 108337,
+        "end": 108506
+      },
+      {
+        "line": 1570,
+        "start": 108507,
+        "end": 108597
+      },
+      {
+        "line": 1571,
+        "start": 108598,
+        "end": 108750
+      },
+      {
+        "line": 1572,
+        "start": 108751,
+        "end": 108841
+      },
+      {
+        "line": 1573,
+        "start": 108842,
+        "end": 108981
+      },
+      {
+        "line": 1574,
+        "start": 108982,
+        "end": 109072
+      },
+      {
+        "line": 1575,
+        "start": 109073,
+        "end": 109148
+      },
+      {
+        "line": 1576,
+        "start": 109149,
+        "end": 109242
+      },
+      {
+        "line": 1577,
+        "start": 109243,
+        "end": 109336
+      },
+      {
+        "line": 1578,
+        "start": 109337,
+        "end": 109416
+      }
+    ]
+  },
+  {
+    "task_id": "F6-03",
+    "set": "fresh6",
+    "school": "남원중학교",
+    "round": "2026-round-3-nw1",
+    "grade": 1,
+    "semester": 2,
+    "title": "지구와 달의 운동 탐구하기",
+    "methods_key": [
+      "보고서",
+      "서술형"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1523,
+        1529
+      ],
+      [
+        1585,
+        1603
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "468ee459f43d9eb027b70014229480d0c7f166f1c33ffe2de122e91ca823519e",
+      "converted_path": "data/derived/segments/2026-round-3-nw1-conversions/71b42a3f964169689619b1e78b856a9eab33ce2b8fab699689b9d3a333205e1e.json",
+      "locator_sha256": "71b42a3f964169689619b1e78b856a9eab33ce2b8fab699689b9d3a333205e1e"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1523,
+        "start": 105450,
+        "end": 105561
+      },
+      {
+        "line": 1524,
+        "start": 105562,
+        "end": 105671
+      },
+      {
+        "line": 1525,
+        "start": 105672,
+        "end": 105751
+      },
+      {
+        "line": 1526,
+        "start": 105752,
+        "end": 105833
+      },
+      {
+        "line": 1527,
+        "start": 105834,
+        "end": 105924
+      },
+      {
+        "line": 1528,
+        "start": 105925,
+        "end": 106046
+      },
+      {
+        "line": 1529,
+        "start": 106047,
+        "end": 106240
+      },
+      {
+        "line": 1585,
+        "start": 109754,
+        "end": 109800
+      },
+      {
+        "line": 1586,
+        "start": 109801,
+        "end": 109801
+      },
+      {
+        "line": 1587,
+        "start": 109802,
+        "end": 109809
+      },
+      {
+        "line": 1588,
+        "start": 109810,
+        "end": 110007
+      },
+      {
+        "line": 1589,
+        "start": 110008,
+        "end": 110081
+      },
+      {
+        "line": 1590,
+        "start": 110082,
+        "end": 110165
+      },
+      {
+        "line": 1591,
+        "start": 110166,
+        "end": 110240
+      },
+      {
+        "line": 1592,
+        "start": 110241,
+        "end": 110360
+      },
+      {
+        "line": 1593,
+        "start": 110361,
+        "end": 110451
+      },
+      {
+        "line": 1594,
+        "start": 110452,
+        "end": 110542
+      },
+      {
+        "line": 1595,
+        "start": 110543,
+        "end": 110632
+      },
+      {
+        "line": 1596,
+        "start": 110633,
+        "end": 110723
+      },
+      {
+        "line": 1597,
+        "start": 110724,
+        "end": 110814
+      },
+      {
+        "line": 1598,
+        "start": 110815,
+        "end": 110978
+      },
+      {
+        "line": 1599,
+        "start": 110979,
+        "end": 111069
+      },
+      {
+        "line": 1600,
+        "start": 111070,
+        "end": 111159
+      },
+      {
+        "line": 1601,
+        "start": 111160,
+        "end": 111253
+      },
+      {
+        "line": 1602,
+        "start": 111254,
+        "end": 111347
+      },
+      {
+        "line": 1603,
+        "start": 111348,
+        "end": 111434
+      }
+    ]
+  },
+  {
+    "task_id": "F6-04",
+    "set": "fresh6",
+    "school": "남원중학교",
+    "round": "2026-round-3-nw1",
+    "grade": 2,
+    "semester": 2,
+    "title": "식물의 호흡과 광합성 탐구하기",
+    "methods_key": [
+      "실험실습",
+      "서술형"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1229,
+        1235
+      ],
+      [
+        1244,
+        1263
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "23f4cfd6152e3e381e922be6357eef45442d3829a0bb6460265b0af66fbbbe84",
+      "converted_path": "data/derived/segments/2026-round-3-nw1-conversions/db5e0fdef667fb10b6e189d2187e099a08b545bad9e6dfc2835a370775649522.json",
+      "locator_sha256": "db5e0fdef667fb10b6e189d2187e099a08b545bad9e6dfc2835a370775649522"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1229,
+        "start": 77994,
+        "end": 78087
+      },
+      {
+        "line": 1230,
+        "start": 78088,
+        "end": 78175
+      },
+      {
+        "line": 1231,
+        "start": 78176,
+        "end": 78245
+      },
+      {
+        "line": 1232,
+        "start": 78246,
+        "end": 78317
+      },
+      {
+        "line": 1233,
+        "start": 78318,
+        "end": 78393
+      },
+      {
+        "line": 1234,
+        "start": 78394,
+        "end": 78468
+      },
+      {
+        "line": 1235,
+        "start": 78469,
+        "end": 78656
+      },
+      {
+        "line": 1244,
+        "start": 78848,
+        "end": 78895
+      },
+      {
+        "line": 1245,
+        "start": 78896,
+        "end": 78896
+      },
+      {
+        "line": 1246,
+        "start": 78897,
+        "end": 78904
+      },
+      {
+        "line": 1247,
+        "start": 78905,
+        "end": 79103
+      },
+      {
+        "line": 1248,
+        "start": 79104,
+        "end": 79177
+      },
+      {
+        "line": 1249,
+        "start": 79178,
+        "end": 79261
+      },
+      {
+        "line": 1250,
+        "start": 79262,
+        "end": 79336
+      },
+      {
+        "line": 1251,
+        "start": 79337,
+        "end": 79456
+      },
+      {
+        "line": 1252,
+        "start": 79457,
+        "end": 79511
+      },
+      {
+        "line": 1253,
+        "start": 79512,
+        "end": 79586
+      },
+      {
+        "line": 1254,
+        "start": 79587,
+        "end": 79641
+      },
+      {
+        "line": 1255,
+        "start": 79642,
+        "end": 79696
+      },
+      {
+        "line": 1256,
+        "start": 79697,
+        "end": 79794
+      },
+      {
+        "line": 1257,
+        "start": 79795,
+        "end": 79849
+      },
+      {
+        "line": 1258,
+        "start": 79850,
+        "end": 79979
+      },
+      {
+        "line": 1259,
+        "start": 79980,
+        "end": 80034
+      },
+      {
+        "line": 1260,
+        "start": 80035,
+        "end": 80112
+      },
+      {
+        "line": 1261,
+        "start": 80113,
+        "end": 80167
+      },
+      {
+        "line": 1262,
+        "start": 80168,
+        "end": 80222
+      },
+      {
+        "line": 1263,
+        "start": 80223,
+        "end": 80332
+      }
+    ]
+  },
+  {
+    "task_id": "F6-05",
+    "set": "fresh6",
+    "school": "남원중학교",
+    "round": "2026-round-3-nw1",
+    "grade": 2,
+    "semester": 2,
+    "title": "소화 작용 탐구하기",
+    "methods_key": [
+      "실험실습",
+      "서술형"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1229,
+        1235
+      ],
+      [
+        1269,
+        1287
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "23f4cfd6152e3e381e922be6357eef45442d3829a0bb6460265b0af66fbbbe84",
+      "converted_path": "data/derived/segments/2026-round-3-nw1-conversions/db5e0fdef667fb10b6e189d2187e099a08b545bad9e6dfc2835a370775649522.json",
+      "locator_sha256": "db5e0fdef667fb10b6e189d2187e099a08b545bad9e6dfc2835a370775649522"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1229,
+        "start": 77994,
+        "end": 78087
+      },
+      {
+        "line": 1230,
+        "start": 78088,
+        "end": 78175
+      },
+      {
+        "line": 1231,
+        "start": 78176,
+        "end": 78245
+      },
+      {
+        "line": 1232,
+        "start": 78246,
+        "end": 78317
+      },
+      {
+        "line": 1233,
+        "start": 78318,
+        "end": 78393
+      },
+      {
+        "line": 1234,
+        "start": 78394,
+        "end": 78468
+      },
+      {
+        "line": 1235,
+        "start": 78469,
+        "end": 78656
+      },
+      {
+        "line": 1269,
+        "start": 80543,
+        "end": 80584
+      },
+      {
+        "line": 1270,
+        "start": 80585,
+        "end": 80585
+      },
+      {
+        "line": 1271,
+        "start": 80586,
+        "end": 80593
+      },
+      {
+        "line": 1272,
+        "start": 80594,
+        "end": 80718
+      },
+      {
+        "line": 1273,
+        "start": 80719,
+        "end": 80792
+      },
+      {
+        "line": 1274,
+        "start": 80793,
+        "end": 80876
+      },
+      {
+        "line": 1275,
+        "start": 80877,
+        "end": 80951
+      },
+      {
+        "line": 1276,
+        "start": 80952,
+        "end": 81082
+      },
+      {
+        "line": 1277,
+        "start": 81083,
+        "end": 81137
+      },
+      {
+        "line": 1278,
+        "start": 81138,
+        "end": 81192
+      },
+      {
+        "line": 1279,
+        "start": 81193,
+        "end": 81291
+      },
+      {
+        "line": 1280,
+        "start": 81292,
+        "end": 81346
+      },
+      {
+        "line": 1281,
+        "start": 81347,
+        "end": 81464
+      },
+      {
+        "line": 1282,
+        "start": 81465,
+        "end": 81519
+      },
+      {
+        "line": 1283,
+        "start": 81520,
+        "end": 81618
+      },
+      {
+        "line": 1284,
+        "start": 81619,
+        "end": 81673
+      },
+      {
+        "line": 1285,
+        "start": 81674,
+        "end": 81778
+      },
+      {
+        "line": 1286,
+        "start": 81779,
+        "end": 81833
+      },
+      {
+        "line": 1287,
+        "start": 81834,
+        "end": 81932
+      }
+    ]
+  },
+  {
+    "task_id": "F6-06",
+    "set": "fresh6",
+    "school": "조천중학교",
+    "round": "2026-round-3-nw1",
+    "grade": 1,
+    "semester": 2,
+    "title": "상태 변화와 온도탐구하기",
+    "methods_key": [
+      "실험",
+      "서‧논술형"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1722,
+        1729
+      ],
+      [
+        1724,
+        1731
+      ]
+    ],
+    "doc": null,
+    "doc_reason": "multiple_documents",
+    "spans": []
+  },
+  {
+    "task_id": "F6-07",
+    "set": "fresh6",
+    "school": "조천중학교",
+    "round": "2026-round-3-nw1",
+    "grade": 1,
+    "semester": 2,
+    "title": "탄성력 탐구하기",
+    "methods_key": [
+      "실험",
+      "서‧논술형"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1722,
+        1729
+      ],
+      [
+        1724,
+        1731
+      ]
+    ],
+    "doc": null,
+    "doc_reason": "multiple_documents",
+    "spans": []
+  },
+  {
+    "task_id": "F6-08",
+    "set": "fresh6",
+    "school": "조천중학교",
+    "round": "2026-round-3-nw1",
+    "grade": 2,
+    "semester": 2,
+    "title": "전기 에너지의 전환과 소비 전력탐구하기",
+    "methods_key": [
+      "서·논술형"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1304,
+        1311
+      ],
+      [
+        1379,
+        1386
+      ]
+    ],
+    "doc": null,
+    "doc_reason": "multiple_documents",
+    "spans": []
+  },
+  {
+    "task_id": "F6-09",
+    "set": "fresh6",
+    "school": "조천중학교",
+    "round": "2026-round-3-nw1",
+    "grade": 2,
+    "semester": 2,
+    "title": "환경요인과 광합성의 관계탐구하기",
+    "methods_key": [
+      "서·논술형"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1304,
+        1311
+      ],
+      [
+        1379,
+        1386
+      ]
+    ],
+    "doc": null,
+    "doc_reason": "multiple_documents",
+    "spans": []
+  },
+  {
+    "task_id": "F6-10",
+    "set": "fresh6",
+    "school": "조치원중학교",
+    "round": "2026-round-3-nw1",
+    "grade": 1,
+    "semester": 2,
+    "title": "탐구 계획 보고서",
+    "methods_key": [
+      "서술·논술"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        204,
+        220
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "c6d6ab49d2a61fe261cf1f1d6685e5fe75b841c46709553bd75c535722e21ab4",
+      "converted_path": "data/derived/segments/2026-round-3-nw1-conversions/73951b7362675d459e17a75de68e78caaaa09c21896cc1fd56bbea1c82d20259.json",
+      "locator_sha256": "73951b7362675d459e17a75de68e78caaaa09c21896cc1fd56bbea1c82d20259"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 204,
+        "start": 17436,
+        "end": 17542
+      },
+      {
+        "line": 205,
+        "start": 17543,
+        "end": 17645
+      },
+      {
+        "line": 206,
+        "start": 17646,
+        "end": 17716
+      },
+      {
+        "line": 207,
+        "start": 17717,
+        "end": 17812
+      },
+      {
+        "line": 208,
+        "start": 17813,
+        "end": 17897
+      },
+      {
+        "line": 209,
+        "start": 17898,
+        "end": 17906
+      },
+      {
+        "line": 210,
+        "start": 17907,
+        "end": 17907
+      },
+      {
+        "line": 211,
+        "start": 17908,
+        "end": 17923
+      },
+      {
+        "line": 212,
+        "start": 17924,
+        "end": 17924
+      },
+      {
+        "line": 213,
+        "start": 17925,
+        "end": 17932
+      },
+      {
+        "line": 214,
+        "start": 17933,
+        "end": 18048
+      },
+      {
+        "line": 215,
+        "start": 18049,
+        "end": 18149
+      },
+      {
+        "line": 216,
+        "start": 18150,
+        "end": 18272
+      },
+      {
+        "line": 217,
+        "start": 18273,
+        "end": 18318
+      },
+      {
+        "line": 218,
+        "start": 18319,
+        "end": 18590
+      },
+      {
+        "line": 219,
+        "start": 18591,
+        "end": 18751
+      },
+      {
+        "line": 220,
+        "start": 18752,
+        "end": 19033
+      }
+    ]
+  },
+  {
+    "task_id": "F6-11",
+    "set": "fresh6",
+    "school": "조치원중학교",
+    "round": "2026-round-3-nw1",
+    "grade": 1,
+    "semester": 2,
+    "title": "멸종위기생물 보호 보고서",
+    "methods_key": [
+      "서술·논술"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        204,
+        208
+      ],
+      [
+        223,
+        231
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "c6d6ab49d2a61fe261cf1f1d6685e5fe75b841c46709553bd75c535722e21ab4",
+      "converted_path": "data/derived/segments/2026-round-3-nw1-conversions/73951b7362675d459e17a75de68e78caaaa09c21896cc1fd56bbea1c82d20259.json",
+      "locator_sha256": "73951b7362675d459e17a75de68e78caaaa09c21896cc1fd56bbea1c82d20259"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 204,
+        "start": 17436,
+        "end": 17542
+      },
+      {
+        "line": 205,
+        "start": 17543,
+        "end": 17645
+      },
+      {
+        "line": 206,
+        "start": 17646,
+        "end": 17716
+      },
+      {
+        "line": 207,
+        "start": 17717,
+        "end": 17812
+      },
+      {
+        "line": 208,
+        "start": 17813,
+        "end": 17897
+      },
+      {
+        "line": 223,
+        "start": 19044,
+        "end": 19063
+      },
+      {
+        "line": 224,
+        "start": 19064,
+        "end": 19064
+      },
+      {
+        "line": 225,
+        "start": 19065,
+        "end": 19072
+      },
+      {
+        "line": 226,
+        "start": 19073,
+        "end": 19192
+      },
+      {
+        "line": 227,
+        "start": 19193,
+        "end": 19293
+      },
+      {
+        "line": 228,
+        "start": 19294,
+        "end": 19416
+      },
+      {
+        "line": 229,
+        "start": 19417,
+        "end": 19462
+      },
+      {
+        "line": 230,
+        "start": 19463,
+        "end": 19698
+      },
+      {
+        "line": 231,
+        "start": 19699,
+        "end": 19957
+      }
+    ]
+  },
+  {
+    "task_id": "F6-12",
+    "set": "fresh6",
+    "school": "조치원중학교",
+    "round": "2026-round-3-nw1",
+    "grade": 1,
+    "semester": 2,
+    "title": "태양계 탐구 보고서",
+    "methods_key": [
+      "서술·논술"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        204,
+        208
+      ],
+      [
+        234,
+        243
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "c6d6ab49d2a61fe261cf1f1d6685e5fe75b841c46709553bd75c535722e21ab4",
+      "converted_path": "data/derived/segments/2026-round-3-nw1-conversions/73951b7362675d459e17a75de68e78caaaa09c21896cc1fd56bbea1c82d20259.json",
+      "locator_sha256": "73951b7362675d459e17a75de68e78caaaa09c21896cc1fd56bbea1c82d20259"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 204,
+        "start": 17436,
+        "end": 17542
+      },
+      {
+        "line": 205,
+        "start": 17543,
+        "end": 17645
+      },
+      {
+        "line": 206,
+        "start": 17646,
+        "end": 17716
+      },
+      {
+        "line": 207,
+        "start": 17717,
+        "end": 17812
+      },
+      {
+        "line": 208,
+        "start": 17813,
+        "end": 17897
+      },
+      {
+        "line": 234,
+        "start": 19968,
+        "end": 19984
+      },
+      {
+        "line": 235,
+        "start": 19985,
+        "end": 19985
+      },
+      {
+        "line": 236,
+        "start": 19986,
+        "end": 19993
+      },
+      {
+        "line": 237,
+        "start": 19994,
+        "end": 20188
+      },
+      {
+        "line": 238,
+        "start": 20189,
+        "end": 20289
+      },
+      {
+        "line": 239,
+        "start": 20290,
+        "end": 20412
+      },
+      {
+        "line": 240,
+        "start": 20413,
+        "end": 20458
+      },
+      {
+        "line": 241,
+        "start": 20459,
+        "end": 20814
+      },
+      {
+        "line": 242,
+        "start": 20815,
+        "end": 21159
+      },
+      {
+        "line": 243,
+        "start": 21160,
+        "end": 21489
+      }
+    ]
+  },
+  {
+    "task_id": "F6-13",
+    "set": "fresh6",
+    "school": "조치원중학교",
+    "round": "2026-round-3-nw1",
+    "grade": 2,
+    "semester": 2,
+    "title": "주기율표 작성하기",
+    "methods_key": [
+      "서술·논술"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        542,
+        547
+      ],
+      [
+        551,
+        567
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "c6d6ab49d2a61fe261cf1f1d6685e5fe75b841c46709553bd75c535722e21ab4",
+      "converted_path": "data/derived/segments/2026-round-3-nw1-conversions/73951b7362675d459e17a75de68e78caaaa09c21896cc1fd56bbea1c82d20259.json",
+      "locator_sha256": "73951b7362675d459e17a75de68e78caaaa09c21896cc1fd56bbea1c82d20259"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 542,
+        "start": 50507,
+        "end": 50578
+      },
+      {
+        "line": 543,
+        "start": 50579,
+        "end": 50686
+      },
+      {
+        "line": 544,
+        "start": 50687,
+        "end": 50769
+      },
+      {
+        "line": 545,
+        "start": 50770,
+        "end": 50854
+      },
+      {
+        "line": 546,
+        "start": 50855,
+        "end": 50946
+      },
+      {
+        "line": 547,
+        "start": 50947,
+        "end": 51136
+      },
+      {
+        "line": 551,
+        "start": 51238,
+        "end": 51258
+      },
+      {
+        "line": 552,
+        "start": 51259,
+        "end": 51259
+      },
+      {
+        "line": 553,
+        "start": 51260,
+        "end": 51267
+      },
+      {
+        "line": 554,
+        "start": 51268,
+        "end": 51394
+      },
+      {
+        "line": 555,
+        "start": 51395,
+        "end": 51495
+      },
+      {
+        "line": 556,
+        "start": 51496,
+        "end": 51567
+      },
+      {
+        "line": 557,
+        "start": 51568,
+        "end": 51762
+      },
+      {
+        "line": 558,
+        "start": 51763,
+        "end": 51839
+      },
+      {
+        "line": 559,
+        "start": 51840,
+        "end": 51916
+      },
+      {
+        "line": 560,
+        "start": 51917,
+        "end": 51993
+      },
+      {
+        "line": 561,
+        "start": 51994,
+        "end": 52070
+      },
+      {
+        "line": 562,
+        "start": 52071,
+        "end": 52174
+      },
+      {
+        "line": 563,
+        "start": 52175,
+        "end": 52241
+      },
+      {
+        "line": 564,
+        "start": 52242,
+        "end": 52305
+      },
+      {
+        "line": 565,
+        "start": 52306,
+        "end": 52399
+      },
+      {
+        "line": 566,
+        "start": 52400,
+        "end": 52458
+      },
+      {
+        "line": 567,
+        "start": 52459,
+        "end": 52514
+      }
+    ]
+  },
+  {
+    "task_id": "F6-14",
+    "set": "fresh6",
+    "school": "조치원중학교",
+    "round": "2026-round-3-nw1",
+    "grade": 2,
+    "semester": 2,
+    "title": "전기 회로 실험 보고서",
+    "methods_key": [
+      "서술·논술",
+      "실험·실습"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        542,
+        547
+      ],
+      [
+        572,
+        583
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "c6d6ab49d2a61fe261cf1f1d6685e5fe75b841c46709553bd75c535722e21ab4",
+      "converted_path": "data/derived/segments/2026-round-3-nw1-conversions/73951b7362675d459e17a75de68e78caaaa09c21896cc1fd56bbea1c82d20259.json",
+      "locator_sha256": "73951b7362675d459e17a75de68e78caaaa09c21896cc1fd56bbea1c82d20259"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 542,
+        "start": 50507,
+        "end": 50578
+      },
+      {
+        "line": 543,
+        "start": 50579,
+        "end": 50686
+      },
+      {
+        "line": 544,
+        "start": 50687,
+        "end": 50769
+      },
+      {
+        "line": 545,
+        "start": 50770,
+        "end": 50854
+      },
+      {
+        "line": 546,
+        "start": 50855,
+        "end": 50946
+      },
+      {
+        "line": 547,
+        "start": 50947,
+        "end": 51136
+      },
+      {
+        "line": 572,
+        "start": 52712,
+        "end": 52735
+      },
+      {
+        "line": 573,
+        "start": 52736,
+        "end": 52736
+      },
+      {
+        "line": 574,
+        "start": 52737,
+        "end": 52744
+      },
+      {
+        "line": 575,
+        "start": 52745,
+        "end": 52873
+      },
+      {
+        "line": 576,
+        "start": 52874,
+        "end": 52974
+      },
+      {
+        "line": 577,
+        "start": 52975,
+        "end": 53052
+      },
+      {
+        "line": 578,
+        "start": 53053,
+        "end": 53232
+      },
+      {
+        "line": 579,
+        "start": 53233,
+        "end": 53473
+      },
+      {
+        "line": 580,
+        "start": 53474,
+        "end": 53562
+      },
+      {
+        "line": 581,
+        "start": 53563,
+        "end": 53834
+      },
+      {
+        "line": 582,
+        "start": 53835,
+        "end": 53923
+      },
+      {
+        "line": 583,
+        "start": 53924,
+        "end": 54071
+      }
+    ]
+  },
+  {
+    "task_id": "F6-15",
+    "set": "fresh6",
+    "school": "남원중학교",
+    "round": "2026-round-1-nw1",
+    "grade": 1,
+    "semester": 1,
+    "title": "힘의 작용 탐구하기",
+    "methods_key": [
+      "실험 실습",
+      "프로젝트"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1427,
+        1447
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "73af67bbb5a4515511b4842cce614005a82b75ded0f28b7a7a9464b276351fd0",
+      "converted_path": "data/derived/segments/2026-round-1-nw1-conversions/3dd2a927213a37771506f2d4a561158b9bec569b7b96d103b86f34ce22bf920b.json",
+      "locator_sha256": "3dd2a927213a37771506f2d4a561158b9bec569b7b96d103b86f34ce22bf920b"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1427,
+        "start": 106600,
+        "end": 106655
+      },
+      {
+        "line": 1428,
+        "start": 106656,
+        "end": 106720
+      },
+      {
+        "line": 1429,
+        "start": 106721,
+        "end": 106781
+      },
+      {
+        "line": 1430,
+        "start": 106782,
+        "end": 106848
+      },
+      {
+        "line": 1431,
+        "start": 106849,
+        "end": 106932
+      },
+      {
+        "line": 1432,
+        "start": 106933,
+        "end": 106941
+      },
+      {
+        "line": 1433,
+        "start": 106942,
+        "end": 106942
+      },
+      {
+        "line": 1434,
+        "start": 106943,
+        "end": 106970
+      },
+      {
+        "line": 1435,
+        "start": 106971,
+        "end": 106971
+      },
+      {
+        "line": 1436,
+        "start": 106972,
+        "end": 106989
+      },
+      {
+        "line": 1437,
+        "start": 106990,
+        "end": 106990
+      },
+      {
+        "line": 1438,
+        "start": 106991,
+        "end": 106998
+      },
+      {
+        "line": 1439,
+        "start": 106999,
+        "end": 107204
+      },
+      {
+        "line": 1440,
+        "start": 107205,
+        "end": 107276
+      },
+      {
+        "line": 1441,
+        "start": 107277,
+        "end": 107379
+      },
+      {
+        "line": 1442,
+        "start": 107380,
+        "end": 107466
+      },
+      {
+        "line": 1443,
+        "start": 107467,
+        "end": 107523
+      },
+      {
+        "line": 1444,
+        "start": 107524,
+        "end": 107795
+      },
+      {
+        "line": 1445,
+        "start": 107796,
+        "end": 107993
+      },
+      {
+        "line": 1446,
+        "start": 107994,
+        "end": 108297
+      },
+      {
+        "line": 1447,
+        "start": 108298,
+        "end": 108506
+      }
+    ]
+  },
+  {
+    "task_id": "F6-16",
+    "set": "fresh6",
+    "school": "남원중학교",
+    "round": "2026-round-1-nw1",
+    "grade": 1,
+    "semester": 1,
+    "title": "생물다양성보전 홍보하기",
+    "methods_key": [
+      "프로젝트"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1428,
+        1431
+      ],
+      [
+        1450,
+        1460
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "73af67bbb5a4515511b4842cce614005a82b75ded0f28b7a7a9464b276351fd0",
+      "converted_path": "data/derived/segments/2026-round-1-nw1-conversions/3dd2a927213a37771506f2d4a561158b9bec569b7b96d103b86f34ce22bf920b.json",
+      "locator_sha256": "3dd2a927213a37771506f2d4a561158b9bec569b7b96d103b86f34ce22bf920b"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1428,
+        "start": 106656,
+        "end": 106720
+      },
+      {
+        "line": 1429,
+        "start": 106721,
+        "end": 106781
+      },
+      {
+        "line": 1430,
+        "start": 106782,
+        "end": 106848
+      },
+      {
+        "line": 1431,
+        "start": 106849,
+        "end": 106932
+      },
+      {
+        "line": 1450,
+        "start": 108517,
+        "end": 108536
+      },
+      {
+        "line": 1451,
+        "start": 108537,
+        "end": 108537
+      },
+      {
+        "line": 1452,
+        "start": 108538,
+        "end": 108545
+      },
+      {
+        "line": 1453,
+        "start": 108546,
+        "end": 108710
+      },
+      {
+        "line": 1454,
+        "start": 108711,
+        "end": 108776
+      },
+      {
+        "line": 1455,
+        "start": 108777,
+        "end": 108867
+      },
+      {
+        "line": 1456,
+        "start": 108868,
+        "end": 108942
+      },
+      {
+        "line": 1457,
+        "start": 108943,
+        "end": 108999
+      },
+      {
+        "line": 1458,
+        "start": 109000,
+        "end": 109167
+      },
+      {
+        "line": 1459,
+        "start": 109168,
+        "end": 109389
+      },
+      {
+        "line": 1460,
+        "start": 109390,
+        "end": 109575
+      }
+    ]
+  },
+  {
+    "task_id": "F6-17",
+    "set": "fresh6",
+    "school": "남원중학교",
+    "round": "2026-round-1-nw1",
+    "grade": 2,
+    "semester": 1,
+    "title": "혼합물 분리하기",
+    "methods_key": [
+      "탐구 실험",
+      "서술형"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1242,
+        1248
+      ],
+      [
+        1259,
+        1276
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "19d32e83673cad22b6ea61e4804e4cfca7639970ccb649dd39f91b358b131f2c",
+      "converted_path": "data/derived/segments/2026-round-1-nw1-conversions/fe3073637da703f44b3d7be36c6542c6eea2f36696fd6c02e0c38f558c657198.json",
+      "locator_sha256": "fe3073637da703f44b3d7be36c6542c6eea2f36696fd6c02e0c38f558c657198"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1242,
+        "start": 87922,
+        "end": 88023
+      },
+      {
+        "line": 1243,
+        "start": 88024,
+        "end": 88127
+      },
+      {
+        "line": 1244,
+        "start": 88128,
+        "end": 88213
+      },
+      {
+        "line": 1245,
+        "start": 88214,
+        "end": 88295
+      },
+      {
+        "line": 1246,
+        "start": 88296,
+        "end": 88386
+      },
+      {
+        "line": 1247,
+        "start": 88387,
+        "end": 88478
+      },
+      {
+        "line": 1248,
+        "start": 88479,
+        "end": 88694
+      },
+      {
+        "line": 1259,
+        "start": 88907,
+        "end": 88946
+      },
+      {
+        "line": 1260,
+        "start": 88947,
+        "end": 88947
+      },
+      {
+        "line": 1261,
+        "start": 88948,
+        "end": 88955
+      },
+      {
+        "line": 1262,
+        "start": 88956,
+        "end": 89135
+      },
+      {
+        "line": 1263,
+        "start": 89136,
+        "end": 89208
+      },
+      {
+        "line": 1264,
+        "start": 89209,
+        "end": 89293
+      },
+      {
+        "line": 1265,
+        "start": 89294,
+        "end": 89368
+      },
+      {
+        "line": 1266,
+        "start": 89369,
+        "end": 89619
+      },
+      {
+        "line": 1267,
+        "start": 89620,
+        "end": 89680
+      },
+      {
+        "line": 1268,
+        "start": 89681,
+        "end": 89872
+      },
+      {
+        "line": 1269,
+        "start": 89873,
+        "end": 89936
+      },
+      {
+        "line": 1270,
+        "start": 89937,
+        "end": 90155
+      },
+      {
+        "line": 1271,
+        "start": 90156,
+        "end": 90219
+      },
+      {
+        "line": 1272,
+        "start": 90220,
+        "end": 90461
+      },
+      {
+        "line": 1273,
+        "start": 90462,
+        "end": 90522
+      },
+      {
+        "line": 1274,
+        "start": 90523,
+        "end": 90834
+      },
+      {
+        "line": 1275,
+        "start": 90835,
+        "end": 90898
+      },
+      {
+        "line": 1276,
+        "start": 90899,
+        "end": 91134
+      }
+    ]
+  },
+  {
+    "task_id": "F6-18",
+    "set": "fresh6",
+    "school": "남원중학교",
+    "round": "2026-round-1-nw1",
+    "grade": 2,
+    "semester": 1,
+    "title": "물질의 구성입자 탐구하기",
+    "methods_key": [
+      "자료 해석",
+      "서술형"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1242,
+        1248
+      ],
+      [
+        1282,
+        1301
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "19d32e83673cad22b6ea61e4804e4cfca7639970ccb649dd39f91b358b131f2c",
+      "converted_path": "data/derived/segments/2026-round-1-nw1-conversions/fe3073637da703f44b3d7be36c6542c6eea2f36696fd6c02e0c38f558c657198.json",
+      "locator_sha256": "fe3073637da703f44b3d7be36c6542c6eea2f36696fd6c02e0c38f558c657198"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1242,
+        "start": 87922,
+        "end": 88023
+      },
+      {
+        "line": 1243,
+        "start": 88024,
+        "end": 88127
+      },
+      {
+        "line": 1244,
+        "start": 88128,
+        "end": 88213
+      },
+      {
+        "line": 1245,
+        "start": 88214,
+        "end": 88295
+      },
+      {
+        "line": 1246,
+        "start": 88296,
+        "end": 88386
+      },
+      {
+        "line": 1247,
+        "start": 88387,
+        "end": 88478
+      },
+      {
+        "line": 1248,
+        "start": 88479,
+        "end": 88694
+      },
+      {
+        "line": 1282,
+        "start": 91354,
+        "end": 91398
+      },
+      {
+        "line": 1283,
+        "start": 91399,
+        "end": 91399
+      },
+      {
+        "line": 1284,
+        "start": 91400,
+        "end": 91407
+      },
+      {
+        "line": 1285,
+        "start": 91408,
+        "end": 91700
+      },
+      {
+        "line": 1286,
+        "start": 91701,
+        "end": 91773
+      },
+      {
+        "line": 1287,
+        "start": 91774,
+        "end": 91858
+      },
+      {
+        "line": 1288,
+        "start": 91859,
+        "end": 91933
+      },
+      {
+        "line": 1289,
+        "start": 91934,
+        "end": 92170
+      },
+      {
+        "line": 1290,
+        "start": 92171,
+        "end": 92234
+      },
+      {
+        "line": 1291,
+        "start": 92235,
+        "end": 92429
+      },
+      {
+        "line": 1292,
+        "start": 92430,
+        "end": 92493
+      },
+      {
+        "line": 1293,
+        "start": 92494,
+        "end": 92710
+      },
+      {
+        "line": 1294,
+        "start": 92711,
+        "end": 92771
+      },
+      {
+        "line": 1295,
+        "start": 92772,
+        "end": 93061
+      },
+      {
+        "line": 1296,
+        "start": 93062,
+        "end": 93122
+      },
+      {
+        "line": 1297,
+        "start": 93123,
+        "end": 93326
+      },
+      {
+        "line": 1298,
+        "start": 93327,
+        "end": 93390
+      },
+      {
+        "line": 1299,
+        "start": 93391,
+        "end": 93649
+      },
+      {
+        "line": 1300,
+        "start": 93650,
+        "end": 93710
+      },
+      {
+        "line": 1301,
+        "start": 93711,
+        "end": 94022
+      }
+    ]
+  },
+  {
+    "task_id": "F6-19",
+    "set": "fresh6",
+    "school": "조천중학교",
+    "round": "2026-round-1-nw1",
+    "grade": 1,
+    "semester": 1,
+    "title": "가상생물 창작하고 분류하기",
+    "methods_key": [
+      "산출물 평가"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1857,
+        1860
+      ],
+      [
+        1865,
+        1897
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "70c086050aac31d88ea3636469a4ade42d5758f049b76575f8870f79530e68bf",
+      "converted_path": "data/derived/segments/2026-round-1-nw1-conversions/0211f88825c9cb3ae0895f47a07d8a622412aaf75def8e33204570db164354a2.json",
+      "locator_sha256": "0211f88825c9cb3ae0895f47a07d8a622412aaf75def8e33204570db164354a2"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1857,
+        "start": 132816,
+        "end": 132885
+      },
+      {
+        "line": 1858,
+        "start": 132886,
+        "end": 132942
+      },
+      {
+        "line": 1859,
+        "start": 132943,
+        "end": 132988
+      },
+      {
+        "line": 1860,
+        "start": 132989,
+        "end": 133071
+      },
+      {
+        "line": 1865,
+        "start": 133101,
+        "end": 133122
+      },
+      {
+        "line": 1866,
+        "start": 133123,
+        "end": 133123
+      },
+      {
+        "line": 1867,
+        "start": 133124,
+        "end": 133131
+      },
+      {
+        "line": 1868,
+        "start": 133132,
+        "end": 133414
+      },
+      {
+        "line": 1869,
+        "start": 133415,
+        "end": 133469
+      },
+      {
+        "line": 1870,
+        "start": 133470,
+        "end": 133557
+      },
+      {
+        "line": 1871,
+        "start": 133558,
+        "end": 133618
+      },
+      {
+        "line": 1872,
+        "start": 133619,
+        "end": 133661
+      },
+      {
+        "line": 1873,
+        "start": 133662,
+        "end": 133838
+      },
+      {
+        "line": 1874,
+        "start": 133839,
+        "end": 133999
+      },
+      {
+        "line": 1875,
+        "start": 134000,
+        "end": 134008
+      },
+      {
+        "line": 1876,
+        "start": 134009,
+        "end": 134009
+      },
+      {
+        "line": 1877,
+        "start": 134010,
+        "end": 134023
+      },
+      {
+        "line": 1878,
+        "start": 134024,
+        "end": 134024
+      },
+      {
+        "line": 1879,
+        "start": 134025,
+        "end": 134038
+      },
+      {
+        "line": 1880,
+        "start": 134039,
+        "end": 134039
+      },
+      {
+        "line": 1881,
+        "start": 134040,
+        "end": 134053
+      },
+      {
+        "line": 1882,
+        "start": 134054,
+        "end": 134054
+      },
+      {
+        "line": 1883,
+        "start": 134055,
+        "end": 134063
+      },
+      {
+        "line": 1884,
+        "start": 134064,
+        "end": 134064
+      },
+      {
+        "line": 1885,
+        "start": 134065,
+        "end": 134094
+      },
+      {
+        "line": 1886,
+        "start": 134095,
+        "end": 134095
+      },
+      {
+        "line": 1887,
+        "start": 134096,
+        "end": 134110
+      },
+      {
+        "line": 1888,
+        "start": 134111,
+        "end": 134111
+      },
+      {
+        "line": 1889,
+        "start": 134112,
+        "end": 134140
+      },
+      {
+        "line": 1890,
+        "start": 134141,
+        "end": 134141
+      },
+      {
+        "line": 1891,
+        "start": 134142,
+        "end": 134144
+      },
+      {
+        "line": 1892,
+        "start": 134145,
+        "end": 134145
+      },
+      {
+        "line": 1893,
+        "start": 134146,
+        "end": 134152
+      },
+      {
+        "line": 1894,
+        "start": 134153,
+        "end": 134153
+      },
+      {
+        "line": 1895,
+        "start": 134154,
+        "end": 134163
+      },
+      {
+        "line": 1896,
+        "start": 134164,
+        "end": 134164
+      },
+      {
+        "line": 1897,
+        "start": 134165,
+        "end": 134171
+      }
+    ]
+  },
+  {
+    "task_id": "F6-20",
+    "set": "fresh6",
+    "school": "조천중학교",
+    "round": "2026-round-1-nw1",
+    "grade": 1,
+    "semester": 1,
+    "title": "열 활용 발명품 설계하기",
+    "methods_key": [
+      "산출물 평가"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1857,
+        1860
+      ],
+      [
+        1899,
+        1909
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "70c086050aac31d88ea3636469a4ade42d5758f049b76575f8870f79530e68bf",
+      "converted_path": "data/derived/segments/2026-round-1-nw1-conversions/0211f88825c9cb3ae0895f47a07d8a622412aaf75def8e33204570db164354a2.json",
+      "locator_sha256": "0211f88825c9cb3ae0895f47a07d8a622412aaf75def8e33204570db164354a2"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1857,
+        "start": 132816,
+        "end": 132885
+      },
+      {
+        "line": 1858,
+        "start": 132886,
+        "end": 132942
+      },
+      {
+        "line": 1859,
+        "start": 132943,
+        "end": 132988
+      },
+      {
+        "line": 1860,
+        "start": 132989,
+        "end": 133071
+      },
+      {
+        "line": 1899,
+        "start": 134173,
+        "end": 134193
+      },
+      {
+        "line": 1900,
+        "start": 134194,
+        "end": 134194
+      },
+      {
+        "line": 1901,
+        "start": 134195,
+        "end": 134202
+      },
+      {
+        "line": 1902,
+        "start": 134203,
+        "end": 134460
+      },
+      {
+        "line": 1903,
+        "start": 134461,
+        "end": 134524
+      },
+      {
+        "line": 1904,
+        "start": 134525,
+        "end": 134612
+      },
+      {
+        "line": 1905,
+        "start": 134613,
+        "end": 134673
+      },
+      {
+        "line": 1906,
+        "start": 134674,
+        "end": 134716
+      },
+      {
+        "line": 1907,
+        "start": 134717,
+        "end": 134960
+      },
+      {
+        "line": 1908,
+        "start": 134961,
+        "end": 135168
+      },
+      {
+        "line": 1909,
+        "start": 135169,
+        "end": 135394
+      }
+    ]
+  },
+  {
+    "task_id": "F6-21",
+    "set": "fresh6",
+    "school": "조천중학교",
+    "round": "2026-round-1-nw1",
+    "grade": 1,
+    "semester": 1,
+    "title": "과학 포스터 만들기",
+    "methods_key": [
+      "산출물 평가",
+      "발표"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        4710,
+        4714
+      ],
+      [
+        4808,
+        4842
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "70c086050aac31d88ea3636469a4ade42d5758f049b76575f8870f79530e68bf",
+      "converted_path": "data/derived/segments/2026-round-1-nw1-conversions/0211f88825c9cb3ae0895f47a07d8a622412aaf75def8e33204570db164354a2.json",
+      "locator_sha256": "0211f88825c9cb3ae0895f47a07d8a622412aaf75def8e33204570db164354a2"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 4710,
+        "start": 300127,
+        "end": 300180
+      },
+      {
+        "line": 4711,
+        "start": 300181,
+        "end": 300181
+      },
+      {
+        "line": 4712,
+        "start": 300182,
+        "end": 300216
+      },
+      {
+        "line": 4713,
+        "start": 300217,
+        "end": 300254
+      },
+      {
+        "line": 4714,
+        "start": 300255,
+        "end": 300298
+      },
+      {
+        "line": 4808,
+        "start": 306572,
+        "end": 306627
+      },
+      {
+        "line": 4809,
+        "start": 306628,
+        "end": 306685
+      },
+      {
+        "line": 4810,
+        "start": 306686,
+        "end": 306743
+      },
+      {
+        "line": 4811,
+        "start": 306744,
+        "end": 306789
+      },
+      {
+        "line": 4812,
+        "start": 306790,
+        "end": 306898
+      },
+      {
+        "line": 4813,
+        "start": 306899,
+        "end": 306907
+      },
+      {
+        "line": 4814,
+        "start": 306908,
+        "end": 306908
+      },
+      {
+        "line": 4815,
+        "start": 306909,
+        "end": 306926
+      },
+      {
+        "line": 4816,
+        "start": 306927,
+        "end": 306927
+      },
+      {
+        "line": 4817,
+        "start": 306928,
+        "end": 306945
+      },
+      {
+        "line": 4818,
+        "start": 306946,
+        "end": 306946
+      },
+      {
+        "line": 4819,
+        "start": 306947,
+        "end": 306954
+      },
+      {
+        "line": 4820,
+        "start": 306955,
+        "end": 307241
+      },
+      {
+        "line": 4821,
+        "start": 307242,
+        "end": 307319
+      },
+      {
+        "line": 4822,
+        "start": 307320,
+        "end": 307404
+      },
+      {
+        "line": 4823,
+        "start": 307405,
+        "end": 307465
+      },
+      {
+        "line": 4824,
+        "start": 307466,
+        "end": 307508
+      },
+      {
+        "line": 4825,
+        "start": 307509,
+        "end": 307761
+      },
+      {
+        "line": 4826,
+        "start": 307762,
+        "end": 308013
+      },
+      {
+        "line": 4827,
+        "start": 308014,
+        "end": 308249
+      },
+      {
+        "line": 4828,
+        "start": 308250,
+        "end": 308258
+      },
+      {
+        "line": 4829,
+        "start": 308259,
+        "end": 308259
+      },
+      {
+        "line": 4830,
+        "start": 308260,
+        "end": 308274
+      },
+      {
+        "line": 4831,
+        "start": 308275,
+        "end": 308275
+      },
+      {
+        "line": 4832,
+        "start": 308276,
+        "end": 308284
+      },
+      {
+        "line": 4833,
+        "start": 308285,
+        "end": 308285
+      },
+      {
+        "line": 4834,
+        "start": 308286,
+        "end": 308300
+      },
+      {
+        "line": 4835,
+        "start": 308301,
+        "end": 308301
+      },
+      {
+        "line": 4836,
+        "start": 308302,
+        "end": 308330
+      },
+      {
+        "line": 4837,
+        "start": 308331,
+        "end": 308331
+      },
+      {
+        "line": 4838,
+        "start": 308332,
+        "end": 308336
+      },
+      {
+        "line": 4839,
+        "start": 308337,
+        "end": 308337
+      },
+      {
+        "line": 4840,
+        "start": 308338,
+        "end": 308351
+      },
+      {
+        "line": 4841,
+        "start": 308352,
+        "end": 308352
+      },
+      {
+        "line": 4842,
+        "start": 308353,
+        "end": 308365
+      }
+    ]
+  },
+  {
+    "task_id": "F6-22",
+    "set": "fresh6",
+    "school": "조천중학교",
+    "round": "2026-round-1-nw1",
+    "grade": 1,
+    "semester": 1,
+    "title": "과학 신문 만들기",
+    "methods_key": [
+      "산출물 평가",
+      "발표"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        4710,
+        4714
+      ],
+      [
+        4808,
+        4812
+      ],
+      [
+        4844,
+        4855
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "70c086050aac31d88ea3636469a4ade42d5758f049b76575f8870f79530e68bf",
+      "converted_path": "data/derived/segments/2026-round-1-nw1-conversions/0211f88825c9cb3ae0895f47a07d8a622412aaf75def8e33204570db164354a2.json",
+      "locator_sha256": "0211f88825c9cb3ae0895f47a07d8a622412aaf75def8e33204570db164354a2"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 4710,
+        "start": 300127,
+        "end": 300180
+      },
+      {
+        "line": 4711,
+        "start": 300181,
+        "end": 300181
+      },
+      {
+        "line": 4712,
+        "start": 300182,
+        "end": 300216
+      },
+      {
+        "line": 4713,
+        "start": 300217,
+        "end": 300254
+      },
+      {
+        "line": 4714,
+        "start": 300255,
+        "end": 300298
+      },
+      {
+        "line": 4808,
+        "start": 306572,
+        "end": 306627
+      },
+      {
+        "line": 4809,
+        "start": 306628,
+        "end": 306685
+      },
+      {
+        "line": 4810,
+        "start": 306686,
+        "end": 306743
+      },
+      {
+        "line": 4811,
+        "start": 306744,
+        "end": 306789
+      },
+      {
+        "line": 4812,
+        "start": 306790,
+        "end": 306898
+      },
+      {
+        "line": 4844,
+        "start": 308367,
+        "end": 308383
+      },
+      {
+        "line": 4845,
+        "start": 308384,
+        "end": 308384
+      },
+      {
+        "line": 4846,
+        "start": 308385,
+        "end": 308392
+      },
+      {
+        "line": 4847,
+        "start": 308393,
+        "end": 308663
+      },
+      {
+        "line": 4848,
+        "start": 308664,
+        "end": 308731
+      },
+      {
+        "line": 4849,
+        "start": 308732,
+        "end": 308816
+      },
+      {
+        "line": 4850,
+        "start": 308817,
+        "end": 308877
+      },
+      {
+        "line": 4851,
+        "start": 308878,
+        "end": 308920
+      },
+      {
+        "line": 4852,
+        "start": 308921,
+        "end": 309238
+      },
+      {
+        "line": 4853,
+        "start": 309239,
+        "end": 309466
+      },
+      {
+        "line": 4854,
+        "start": 309467,
+        "end": 309678
+      },
+      {
+        "line": 4855,
+        "start": 309679,
+        "end": 309857
+      }
+    ]
+  },
+  {
+    "task_id": "F6-23",
+    "set": "fresh6",
+    "school": "조천중학교",
+    "round": "2026-round-1-nw1",
+    "grade": 2,
+    "semester": 1,
+    "title": "광물과 암석 탐구하기",
+    "methods_key": [
+      "서·논술형"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1230,
+        1237
+      ],
+      [
+        1252,
+        1265
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "a8d2862f7c24176b8f6a37e78b9edfcb212503dcbabb3d14b6ee12d0f1dbf29a",
+      "converted_path": "data/derived/segments/2026-round-1-nw1-conversions/54c2bb353e6929f1e2a1272086c6a58499f1df85b6607d4842a8cfabd87482a2.json",
+      "locator_sha256": "54c2bb353e6929f1e2a1272086c6a58499f1df85b6607d4842a8cfabd87482a2"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1230,
+        "start": 80627,
+        "end": 80718
+      },
+      {
+        "line": 1231,
+        "start": 80719,
+        "end": 80797
+      },
+      {
+        "line": 1232,
+        "start": 80798,
+        "end": 80867
+      },
+      {
+        "line": 1233,
+        "start": 80868,
+        "end": 80939
+      },
+      {
+        "line": 1234,
+        "start": 80940,
+        "end": 81037
+      },
+      {
+        "line": 1235,
+        "start": 81038,
+        "end": 81114
+      },
+      {
+        "line": 1236,
+        "start": 81115,
+        "end": 81185
+      },
+      {
+        "line": 1237,
+        "start": 81186,
+        "end": 81370
+      },
+      {
+        "line": 1252,
+        "start": 81530,
+        "end": 81548
+      },
+      {
+        "line": 1253,
+        "start": 81549,
+        "end": 81549
+      },
+      {
+        "line": 1254,
+        "start": 81550,
+        "end": 81557
+      },
+      {
+        "line": 1255,
+        "start": 81558,
+        "end": 81734
+      },
+      {
+        "line": 1256,
+        "start": 81735,
+        "end": 81786
+      },
+      {
+        "line": 1257,
+        "start": 81787,
+        "end": 81860
+      },
+      {
+        "line": 1258,
+        "start": 81861,
+        "end": 81926
+      },
+      {
+        "line": 1259,
+        "start": 81927,
+        "end": 82316
+      },
+      {
+        "line": 1260,
+        "start": 82317,
+        "end": 82418
+      },
+      {
+        "line": 1261,
+        "start": 82419,
+        "end": 82746
+      },
+      {
+        "line": 1262,
+        "start": 82747,
+        "end": 82837
+      },
+      {
+        "line": 1263,
+        "start": 82838,
+        "end": 83164
+      },
+      {
+        "line": 1264,
+        "start": 83165,
+        "end": 83255
+      },
+      {
+        "line": 1265,
+        "start": 83256,
+        "end": 83645
+      }
+    ]
+  },
+  {
+    "task_id": "F6-24",
+    "set": "fresh6",
+    "school": "조천중학교",
+    "round": "2026-round-1-nw1",
+    "grade": 2,
+    "semester": 1,
+    "title": "빛과 소리의 특성 탐구하기",
+    "methods_key": [
+      "서·논술형"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1230,
+        1237
+      ],
+      [
+        1269,
+        1282
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "a8d2862f7c24176b8f6a37e78b9edfcb212503dcbabb3d14b6ee12d0f1dbf29a",
+      "converted_path": "data/derived/segments/2026-round-1-nw1-conversions/54c2bb353e6929f1e2a1272086c6a58499f1df85b6607d4842a8cfabd87482a2.json",
+      "locator_sha256": "54c2bb353e6929f1e2a1272086c6a58499f1df85b6607d4842a8cfabd87482a2"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1230,
+        "start": 80627,
+        "end": 80718
+      },
+      {
+        "line": 1231,
+        "start": 80719,
+        "end": 80797
+      },
+      {
+        "line": 1232,
+        "start": 80798,
+        "end": 80867
+      },
+      {
+        "line": 1233,
+        "start": 80868,
+        "end": 80939
+      },
+      {
+        "line": 1234,
+        "start": 80940,
+        "end": 81037
+      },
+      {
+        "line": 1235,
+        "start": 81038,
+        "end": 81114
+      },
+      {
+        "line": 1236,
+        "start": 81115,
+        "end": 81185
+      },
+      {
+        "line": 1237,
+        "start": 81186,
+        "end": 81370
+      },
+      {
+        "line": 1269,
+        "start": 83758,
+        "end": 83779
+      },
+      {
+        "line": 1270,
+        "start": 83780,
+        "end": 83780
+      },
+      {
+        "line": 1271,
+        "start": 83781,
+        "end": 83788
+      },
+      {
+        "line": 1272,
+        "start": 83789,
+        "end": 84152
+      },
+      {
+        "line": 1273,
+        "start": 84153,
+        "end": 84203
+      },
+      {
+        "line": 1274,
+        "start": 84204,
+        "end": 84277
+      },
+      {
+        "line": 1275,
+        "start": 84278,
+        "end": 84343
+      },
+      {
+        "line": 1276,
+        "start": 84344,
+        "end": 84809
+      },
+      {
+        "line": 1277,
+        "start": 84810,
+        "end": 84911
+      },
+      {
+        "line": 1278,
+        "start": 84912,
+        "end": 85370
+      },
+      {
+        "line": 1279,
+        "start": 85371,
+        "end": 85472
+      },
+      {
+        "line": 1280,
+        "start": 85473,
+        "end": 85796
+      },
+      {
+        "line": 1281,
+        "start": 85797,
+        "end": 85887
+      },
+      {
+        "line": 1282,
+        "start": 85888,
+        "end": 86312
+      }
+    ]
+  },
+  {
+    "task_id": "F6-25",
+    "set": "fresh6",
+    "school": "조치원중학교",
+    "round": "2026-round-1-nw1",
+    "grade": 1,
+    "semester": 1,
+    "title": "물질의 상태변화 탐구활동",
+    "methods_key": [
+      "서술·논술"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1876,
+        1881
+      ],
+      [
+        1885,
+        1905
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "8e7b886c55a8ba43b390f02bf45e7f28b24d39bab9a7081b5cdb953761e41f66",
+      "converted_path": "data/derived/segments/2026-round-1-nw1-conversions/f11fa031aee5c2dfbeb4bfe8e1e25629946412123aa97a7c9b07feb4eb4b255d.json",
+      "locator_sha256": "f11fa031aee5c2dfbeb4bfe8e1e25629946412123aa97a7c9b07feb4eb4b255d"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1876,
+        "start": 146991,
+        "end": 147068
+      },
+      {
+        "line": 1877,
+        "start": 147069,
+        "end": 147173
+      },
+      {
+        "line": 1878,
+        "start": 147174,
+        "end": 147256
+      },
+      {
+        "line": 1879,
+        "start": 147257,
+        "end": 147341
+      },
+      {
+        "line": 1880,
+        "start": 147342,
+        "end": 147431
+      },
+      {
+        "line": 1881,
+        "start": 147432,
+        "end": 147617
+      },
+      {
+        "line": 1885,
+        "start": 147717,
+        "end": 147741
+      },
+      {
+        "line": 1886,
+        "start": 147742,
+        "end": 147742
+      },
+      {
+        "line": 1887,
+        "start": 147743,
+        "end": 147750
+      },
+      {
+        "line": 1888,
+        "start": 147751,
+        "end": 147859
+      },
+      {
+        "line": 1889,
+        "start": 147860,
+        "end": 147960
+      },
+      {
+        "line": 1890,
+        "start": 147961,
+        "end": 148032
+      },
+      {
+        "line": 1891,
+        "start": 148033,
+        "end": 148239
+      },
+      {
+        "line": 1892,
+        "start": 148240,
+        "end": 148315
+      },
+      {
+        "line": 1893,
+        "start": 148316,
+        "end": 148391
+      },
+      {
+        "line": 1894,
+        "start": 148392,
+        "end": 148467
+      },
+      {
+        "line": 1895,
+        "start": 148468,
+        "end": 148543
+      },
+      {
+        "line": 1896,
+        "start": 148544,
+        "end": 148619
+      },
+      {
+        "line": 1897,
+        "start": 148620,
+        "end": 148695
+      },
+      {
+        "line": 1898,
+        "start": 148696,
+        "end": 148819
+      },
+      {
+        "line": 1899,
+        "start": 148820,
+        "end": 148890
+      },
+      {
+        "line": 1900,
+        "start": 148891,
+        "end": 148961
+      },
+      {
+        "line": 1901,
+        "start": 148962,
+        "end": 149032
+      },
+      {
+        "line": 1902,
+        "start": 149033,
+        "end": 149169
+      },
+      {
+        "line": 1903,
+        "start": 149170,
+        "end": 149255
+      },
+      {
+        "line": 1904,
+        "start": 149256,
+        "end": 149343
+      },
+      {
+        "line": 1905,
+        "start": 149344,
+        "end": 149420
+      }
+    ]
+  },
+  {
+    "task_id": "F6-26",
+    "set": "fresh6",
+    "school": "조치원중학교",
+    "round": "2026-round-1-nw1",
+    "grade": 1,
+    "semester": 1,
+    "title": "탄성력 측정 보고서 작성",
+    "methods_key": [
+      "서술·논술"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1876,
+        1881
+      ],
+      [
+        1910,
+        1927
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "8e7b886c55a8ba43b390f02bf45e7f28b24d39bab9a7081b5cdb953761e41f66",
+      "converted_path": "data/derived/segments/2026-round-1-nw1-conversions/f11fa031aee5c2dfbeb4bfe8e1e25629946412123aa97a7c9b07feb4eb4b255d.json",
+      "locator_sha256": "f11fa031aee5c2dfbeb4bfe8e1e25629946412123aa97a7c9b07feb4eb4b255d"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1876,
+        "start": 146991,
+        "end": 147068
+      },
+      {
+        "line": 1877,
+        "start": 147069,
+        "end": 147173
+      },
+      {
+        "line": 1878,
+        "start": 147174,
+        "end": 147256
+      },
+      {
+        "line": 1879,
+        "start": 147257,
+        "end": 147341
+      },
+      {
+        "line": 1880,
+        "start": 147342,
+        "end": 147431
+      },
+      {
+        "line": 1881,
+        "start": 147432,
+        "end": 147617
+      },
+      {
+        "line": 1910,
+        "start": 149618,
+        "end": 149642
+      },
+      {
+        "line": 1911,
+        "start": 149643,
+        "end": 149643
+      },
+      {
+        "line": 1912,
+        "start": 149644,
+        "end": 149651
+      },
+      {
+        "line": 1913,
+        "start": 149652,
+        "end": 149768
+      },
+      {
+        "line": 1914,
+        "start": 149769,
+        "end": 149869
+      },
+      {
+        "line": 1915,
+        "start": 149870,
+        "end": 149941
+      },
+      {
+        "line": 1916,
+        "start": 149942,
+        "end": 150154
+      },
+      {
+        "line": 1917,
+        "start": 150155,
+        "end": 150237
+      },
+      {
+        "line": 1918,
+        "start": 150238,
+        "end": 150320
+      },
+      {
+        "line": 1919,
+        "start": 150321,
+        "end": 150396
+      },
+      {
+        "line": 1920,
+        "start": 150397,
+        "end": 150497
+      },
+      {
+        "line": 1921,
+        "start": 150498,
+        "end": 150576
+      },
+      {
+        "line": 1922,
+        "start": 150577,
+        "end": 150655
+      },
+      {
+        "line": 1923,
+        "start": 150656,
+        "end": 150742
+      },
+      {
+        "line": 1924,
+        "start": 150743,
+        "end": 150852
+      },
+      {
+        "line": 1925,
+        "start": 150853,
+        "end": 150930
+      },
+      {
+        "line": 1926,
+        "start": 150931,
+        "end": 151008
+      },
+      {
+        "line": 1927,
+        "start": 151009,
+        "end": 151086
+      }
+    ]
+  },
+  {
+    "task_id": "F6-27",
+    "set": "fresh6",
+    "school": "조치원중학교",
+    "round": "2026-round-1-nw1",
+    "grade": 2,
+    "semester": 1,
+    "title": "광합성 탐구 보고서",
+    "methods_key": [
+      "서술·논술"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1814,
+        1819
+      ],
+      [
+        1823,
+        1840
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "b099dacfbb81cabcfb3016abd779a720ca937f4347ecdedb06fc324f3c926b9d",
+      "converted_path": "data/derived/segments/2026-round-1-nw1-conversions/73202fbaf31794c910da18008b9fbe71e0d7ba90eaf3619f46f925b239177c67.json",
+      "locator_sha256": "73202fbaf31794c910da18008b9fbe71e0d7ba90eaf3619f46f925b239177c67"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1814,
+        "start": 151446,
+        "end": 151519
+      },
+      {
+        "line": 1815,
+        "start": 151520,
+        "end": 151624
+      },
+      {
+        "line": 1816,
+        "start": 151625,
+        "end": 151707
+      },
+      {
+        "line": 1817,
+        "start": 151708,
+        "end": 151792
+      },
+      {
+        "line": 1818,
+        "start": 151793,
+        "end": 151884
+      },
+      {
+        "line": 1819,
+        "start": 151885,
+        "end": 152077
+      },
+      {
+        "line": 1823,
+        "start": 152177,
+        "end": 152198
+      },
+      {
+        "line": 1824,
+        "start": 152199,
+        "end": 152199
+      },
+      {
+        "line": 1825,
+        "start": 152200,
+        "end": 152207
+      },
+      {
+        "line": 1826,
+        "start": 152208,
+        "end": 152321
+      },
+      {
+        "line": 1827,
+        "start": 152322,
+        "end": 152422
+      },
+      {
+        "line": 1828,
+        "start": 152423,
+        "end": 152494
+      },
+      {
+        "line": 1829,
+        "start": 152495,
+        "end": 152686
+      },
+      {
+        "line": 1830,
+        "start": 152687,
+        "end": 152751
+      },
+      {
+        "line": 1831,
+        "start": 152752,
+        "end": 152826
+      },
+      {
+        "line": 1832,
+        "start": 152827,
+        "end": 152876
+      },
+      {
+        "line": 1833,
+        "start": 152877,
+        "end": 152980
+      },
+      {
+        "line": 1834,
+        "start": 152981,
+        "end": 153064
+      },
+      {
+        "line": 1835,
+        "start": 153065,
+        "end": 153147
+      },
+      {
+        "line": 1836,
+        "start": 153148,
+        "end": 153215
+      },
+      {
+        "line": 1837,
+        "start": 153216,
+        "end": 153362
+      },
+      {
+        "line": 1838,
+        "start": 153363,
+        "end": 153474
+      },
+      {
+        "line": 1839,
+        "start": 153475,
+        "end": 153586
+      },
+      {
+        "line": 1840,
+        "start": 153587,
+        "end": 153699
+      }
+    ]
+  },
+  {
+    "task_id": "F6-28",
+    "set": "fresh6",
+    "school": "조치원중학교",
+    "round": "2026-round-1-nw1",
+    "grade": 2,
+    "semester": 1,
+    "title": "지구계 탐구 보고서",
+    "methods_key": [
+      "서술·논술"
+    ],
+    "activity_key": null,
+    "lines": [
+      [
+        1814,
+        1819
+      ],
+      [
+        1845,
+        1859
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "b099dacfbb81cabcfb3016abd779a720ca937f4347ecdedb06fc324f3c926b9d",
+      "converted_path": "data/derived/segments/2026-round-1-nw1-conversions/73202fbaf31794c910da18008b9fbe71e0d7ba90eaf3619f46f925b239177c67.json",
+      "locator_sha256": "73202fbaf31794c910da18008b9fbe71e0d7ba90eaf3619f46f925b239177c67"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1814,
+        "start": 151446,
+        "end": 151519
+      },
+      {
+        "line": 1815,
+        "start": 151520,
+        "end": 151624
+      },
+      {
+        "line": 1816,
+        "start": 151625,
+        "end": 151707
+      },
+      {
+        "line": 1817,
+        "start": 151708,
+        "end": 151792
+      },
+      {
+        "line": 1818,
+        "start": 151793,
+        "end": 151884
+      },
+      {
+        "line": 1819,
+        "start": 151885,
+        "end": 152077
+      },
+      {
+        "line": 1845,
+        "start": 153897,
+        "end": 153918
+      },
+      {
+        "line": 1846,
+        "start": 153919,
+        "end": 153919
+      },
+      {
+        "line": 1847,
+        "start": 153920,
+        "end": 153927
+      },
+      {
+        "line": 1848,
+        "start": 153928,
+        "end": 154110
+      },
+      {
+        "line": 1849,
+        "start": 154111,
+        "end": 154211
+      },
+      {
+        "line": 1850,
+        "start": 154212,
+        "end": 154283
+      },
+      {
+        "line": 1851,
+        "start": 154284,
+        "end": 154457
+      },
+      {
+        "line": 1852,
+        "start": 154458,
+        "end": 154531
+      },
+      {
+        "line": 1853,
+        "start": 154532,
+        "end": 154604
+      },
+      {
+        "line": 1854,
+        "start": 154605,
+        "end": 154704
+      },
+      {
+        "line": 1855,
+        "start": 154705,
+        "end": 154776
+      },
+      {
+        "line": 1856,
+        "start": 154777,
+        "end": 154848
+      },
+      {
+        "line": 1857,
+        "start": 154849,
+        "end": 154904
+      },
+      {
+        "line": 1858,
+        "start": 154905,
+        "end": 155021
+      },
+      {
+        "line": 1859,
+        "start": 155022,
+        "end": 155079
+      }
+    ]
+  }
+]

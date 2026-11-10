@@ -122,6 +122,30 @@ def test_run_cli_passes_restart_and_argv(tmp_path, monkeypatch):
     assert calls[1][1]["restart_on_failure"] == 0
 
 
+@pytest.mark.parametrize("command", ["run", "launch"])
+def test_workers_thirteen_is_argument_error_without_any_output(tmp_path, command):
+    with pytest.raises(SystemExit) as error:
+        runner.main([command, "--bundles", "1", "--workers", "13"], root=tmp_path)
+    assert error.value.code == 2 and not (tmp_path / OUTPUT).exists()
+
+
+@pytest.mark.parametrize("command", ["run", "launch"])
+def test_sequential_rounds_cli_is_forwarded(tmp_path, monkeypatch, command):
+    calls = []
+    monkeypatch.setattr(runner, "run", lambda cfg, **kw: calls.append(cfg) or 0)
+
+    def popen(argv, **kwargs):
+        assert "--sequential-rounds" in argv
+        parsed = launcher.build_parser("").parse_args(argv[2:])
+        assert parsed.sequential_rounds is True and parsed.workers == 12
+        calls.append(parsed)
+        return SimpleNamespace(pid=123)
+
+    assert runner.main([command, "--bundles", "1", "--workers", "12",
+                        "--sequential-rounds"], root=tmp_path, popen=popen) == 0
+    assert calls[0].sequential_rounds is True and calls[0].workers == 12
+
+
 def test_restart_resumes_same_bundles_and_holds_lock_during_wait(setup):
     cfg, fake = setup
     cfg = replace(cfg, bundles=(1, 2))

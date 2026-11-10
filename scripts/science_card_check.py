@@ -31,6 +31,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DATABASE = ROOT / "data/publish/science/math_assessment_catalog_detail.sqlite"
 DEFAULT_OUT_DIR = ROOT / "data/derived/card_check"
 WINDOW_CHARS = 3000
+MIN_SIBLING_TITLE_CHARS = 6
 OMITTED = "…(생략)"
 NOT_TASK_KINDS = {"지필", "단원명", "방법칸", "운영문구", "성취수준표", "기타"}
 CARD_FIELDS = ("item_id", "title", "task_no", "score", "weight", "method", "timing",
@@ -165,7 +166,23 @@ def negative_decisions(task: dict) -> list[tuple[str, object]]:
     return decisions
 
 
-def check_task(task: dict, card: dict, ids: set[str], verdict: dict, discarded: list) -> list:
+def merged_sibling_row(quote: str, sibling_titles: tuple[str, ...]) -> bool:
+    if "|" not in quote:
+        return False
+    titles = [re.sub(r"[\W_]+", "", title) for title in sibling_titles]
+    for cell in quote.split("|"):
+        value = re.sub(r"[\W_]+", "", cell)
+        for title in titles:
+            if value and title and (value == title or (
+                min(len(value), len(title)) >= MIN_SIBLING_TITLE_CHARS
+                and (value in title or title in value)
+            )):
+                return True
+    return False
+
+
+def check_task(task: dict, card: dict, ids: set[str], verdict: dict, discarded: list,
+               sibling_titles: tuple[str, ...] = ()) -> list:
     quote = task.get("quote")
     text = card["window"][:WINDOW_CHARS]
     quote_matches = isinstance(quote, str) and bool(quote.strip()) and (
@@ -180,6 +197,8 @@ def check_task(task: dict, card: dict, ids: set[str], verdict: dict, discarded: 
         elif kind == "duplicate" and (not isinstance(value, str) or value not in ids
                                        or value == card["item_id"]):
             reason = "discarded_invalid_duplicate"
+        elif kind == "merged" and merged_sibling_row(quote, sibling_titles):
+            reason = "discarded_merged_sibling_row"
         if reason:
             entry = {**evidence, "reason": reason}
             discarded.append(entry)
@@ -235,7 +254,9 @@ def verify_group(cards: list[dict], response: dict, verdicts: dict, discarded: l
             discarded.append({"card_id": identity, "reason": "discarded_invalid_card_id"})
             continue
         verdicts[identity]["checked"] = True
-        edges.extend(check_task(task, by_id[identity], set(by_id), verdicts[identity], discarded))
+        sibling_titles = tuple(card["title"] for card in cards if card["item_id"] != identity)
+        edges.extend(check_task(task, by_id[identity], set(by_id), verdicts[identity], discarded,
+                                sibling_titles))
     resolve_duplicates(cards, edges, verdicts)
 
 

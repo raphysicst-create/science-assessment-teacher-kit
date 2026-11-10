@@ -11,13 +11,15 @@ import json
 import os
 import sqlite3
 import subprocess
+import sys
 import tempfile
+import threading
 import time
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 
-from scripts.nationwide_steps import OUTPUT
+from scripts.nationwide_steps import OUTPUT, ROUND_ORDER, Config, round_key, round_steps
 
 STATE_VERSION = 1
 REPLACE_ATTEMPTS = 10
@@ -95,16 +97,33 @@ def update_totals(state: dict) -> None:
 
 
 class Checkpoint:
-    def __init__(self, root: Path):
+    def __init__(self, root: Path, lock=None):
         self.root = root
+        self.lock = lock if lock is not None else threading.Lock()
         self.state = load_state(root)
 
+    @contextmanager
+    def edit(self):
+        with self.lock:
+            try:
+                yield self.state
+            finally:
+                self._save()
+
     def save(self) -> None:
+        with self.lock:
+            self._save()
+
+    def _save(self) -> None:
         update_totals(self.state)
         self.state["updated_at"] = now()
         atomic_json(self.root / OUTPUT / "state.json", self.state)
 
     def event(self, event: str, **details) -> None:
+        with self.lock:
+            self._event(event, **details)
+
+    def _event(self, event: str, **details) -> None:
         timestamp = now()
         path = self.root / OUTPUT / "events.jsonl"
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -114,24 +133,58 @@ class Checkpoint:
             stream.flush()
         if "runner" in self.state:
             self.state["runner"]["heartbeat_at"] = timestamp
-            self.save()
+            self._save()
 
     def start_runner(self, argv: list[str]) -> None:
-        timestamp = now()
-        self.state["runner"] = {"pid": os.getpid(), "started_at": timestamp,
-                                "heartbeat_at": timestamp, "argv": list(argv)}
-        self.state["status"] = "running"
-        self.state.pop("last_stop", None)
-        self.event("runner-start", pid=os.getpid())
+        with self.lock:
+            timestamp = now()
+            self.state["runner"] = {"pid": os.getpid(), "started_at": timestamp,
+                                    "heartbeat_at": timestamp, "argv": list(argv)}
+            self.state["status"] = "running"
+            self.state.pop("last_stop", None)
+            self._event("runner-start", pid=os.getpid())
 
     def end_runner(self, code: int) -> None:
-        self.state["runner"].update(ended_at=now(), exit_code=code)
-        self.event("runner-end", exit_code=code)
+        with self.lock:
+            self.state["runner"].update(ended_at=now(), exit_code=code)
+            self._event("runner-end", exit_code=code)
 
     def stop(self, status: str, reason: str, code: int) -> None:
-        self.state.update(status=status, last_stop={"reason": reason, "time": now(), "code": code})
-        self.save()
-        self.event("stop", status=status, reason=reason, exit_code=code)
+        with self.lock:
+            self.state.update(status=status,
+                              last_stop={"reason": reason, "time": now(), "code": code})
+            self._save()
+            self._event("stop", status=status, reason=reason, exit_code=code)
+
+
+def reset(root: Path, bundles: tuple[int, ...], from_step: str) -> int:
+    names = [step.name for step in round_steps(Config(root), 1, 3)]
+    following = names[names.index(from_step):]
+    try:
+        with runner_lock(root):
+            checkpoint = Checkpoint(root)
+            with checkpoint.edit() as state:
+                for number, bundle in state["bundles"].items():
+                    if int(number) in bundles:
+                        for term in ROUND_ORDER:
+                            scope = bundle["rounds"].get(round_key(int(number), term))
+                            if scope is not None:
+                                for name in following:
+                                    scope["steps"].pop(name, None)
+                                scope["status"] = "pending"
+                    if int(number) >= min(bundles):
+                        bundle.pop("publish", None)
+                        bundle.pop("gate", None)
+                        bundle["status"] = "pending"
+                state["status"] = "pending"
+                state.pop("last_stop", None)
+            checkpoint.event("reset", bundles=list(bundles), from_step=from_step)
+        return 0
+    except sqlite3.OperationalError as error:
+        if "locked" not in str(error).casefold():
+            raise
+        print("nationwide runner is already locked", file=sys.stderr)
+        return 5
 
 
 def pid_is_alive(pid: int, *, run_command=None, platform=None, kill=None) -> bool:
@@ -191,6 +244,7 @@ def status_text(state: dict, *, pid_alive=None) -> str:
             if "school_count" in scope:
                 lines.append(f"  {key} 학교 수 {scope['school_count']}")
         lines.append(f"nw{number} 합계 | 초 {bundle.get('seconds', 0):.3f} | "
+                     f"wall_seconds {bundle.get('wall_seconds', 0):.3f} | "
                      f"학교 수 {bundle.get('school_count', 0)} | "
                      f"학교·회차당 초 {bundle.get('seconds_per_school_round')}")
     stop = state.get("last_stop")

@@ -9,19 +9,26 @@ Verify .venv/Scripts/python.exe -m ruff check scripts/dev_task_key.py
 import hashlib
 import json
 import sqlite3
+from pathlib import Path
 
 import pytest
+from scripts import dev_task_key
 from scripts.count_astra_card_verdicts import count_verdicts
 from scripts.dev_recall_check import check_recall, main, method_set, titles_match
 from scripts.dev_task_key import (
     assign_activities,
     expand_task_ids,
+    fresh6_evidence,
+    fresh6_sources,
     line_ranges,
+    read_fresh6_tasks,
     read_tasks,
     resolve_documents,
 )
 
 ROUND = "2026-round-3-fresh4"
+FRESH6_ROUND = "2026-round-3-nw1"
+LEGACY_KEY_SHA256 = "440a0763d043b44f06da1cdf1fe5a9e66b09db075eb0cc474bcf2d0bf4f6e79d"
 
 
 def task(task_id="T01", title="기체의 압력 탐구하기", **changes):
@@ -416,3 +423,125 @@ def test_document_resolution_requires_one_title_near_evidence(tmp_path, matching
         assert tasks[0]["doc_reason"] == (
             "no_title_near_lines" if matching_documents == 0 else "multiple_documents"
         )
+
+
+@pytest.mark.parametrize(
+    ("evidence", "expected_lines", "multiple"),
+    [
+        ("01234567:1–2,4-4", [[1, 2], [4, 4]], False),
+        ("01234567:1-2,4–4", [[1, 2], [4, 4]], False),
+        ("01234567:1–2; 89abcdef:3-4,5", [[1, 2], [3, 4], [5, 5]], True),
+    ],
+)
+@pytest.mark.parametrize(
+    "methods", ["서술·논술,실험･실습, 구술·발표", "서술·논술 · 실험･실습 ㆍ 구술·발표"],
+)
+def test_fresh6_document_evidence_methods_and_spans(tmp_path, evidence, expected_lines,
+                                                  multiple, methods):
+    text = "😀\n첫 과제\n공통\n끝\n"
+    paths = [f"data/derived/segments/{FRESH6_ROUND}-conversions/{prefix}.json"
+             for prefix in ("01234567", "89abcdef")]
+    sources_md = f"## 테스트중학교 `{FRESH6_ROUND}`\n"
+    for path in paths:
+        converted = tmp_path / path
+        converted.parent.mkdir(parents=True, exist_ok=True)
+        converted.write_text(json.dumps({"text": text, "sha256": Path(path).stem}),
+                             encoding="utf-8")
+        sources_md += f"- `{path}` · 파일 `과학.pdf`\n"
+    markdown = f"""### 1절 원문 과제 목록
+#### 테스트중학교 {FRESH6_ROUND}
+| 학년 | 학기 | 과제 제목(원문 그대로) | 체크된 평가 방법 | 근거(줄) |
+|---|---|---|---|---|
+| 1 | 2 | 첫 과제 | {methods} | {evidence} |
+### 2절 카드 판정
+#### 다른학교 {FRESH6_ROUND}
+| 학년 | 학기 | 과제 제목(원문 그대로) | 체크된 평가 방법 | 근거(줄) |
+|---|---|---|---|---|
+| 2 | 2 | 키에 들어가면 안 됨 | 발표 | 잘못된 근거 |
+"""
+    tasks = read_fresh6_tasks(markdown, fresh6_sources(sources_md), tmp_path)
+    assert len(tasks) == 1
+    parsed = tasks[0]
+    assert parsed["task_id"] == "F6-01" and parsed["set"] == "fresh6"
+    assert (parsed["school"], parsed["round"]) == ("테스트중학교", FRESH6_ROUND)
+    assert (parsed["grade"], parsed["semester"], parsed["title"]) == (1, 2, "첫 과제")
+    assert parsed["activity_key"] is None
+    assert parsed["methods_key"] == ["서술·논술", "실험･실습", "구술·발표"]
+    assert parsed["lines"] == expected_lines
+    if multiple:
+        assert parsed["doc"] is None and parsed["doc_reason"] == "multiple_documents"
+        assert parsed["spans"] == []
+    else:
+        assert parsed["doc"]["doc_sha256"] == hashlib.sha256(text.encode()).hexdigest()
+        assert parsed["doc"]["locator_sha256"] == "01234567"
+        assert parsed["doc"]["converted_path"] == paths[0]
+        assert parsed["doc_reason"] is None
+        assert parsed["spans"] == [
+            {"line": 1, "start": 0, "end": 1},
+            {"line": 2, "start": 2, "end": 6},
+            {"line": 4, "start": 10, "end": 11},
+        ]
+
+
+@pytest.mark.parametrize("evidence", ["01234567:0-2", "01234567:3–2", "no-prefix:1-2"])
+def test_fresh6_rejects_invalid_evidence(evidence):
+    with pytest.raises(ValueError):
+        fresh6_evidence(evidence)
+
+
+def test_cli_schools_filter_applies_to_tasks_and_cards(tmp_path, capsys):
+    tasks = [task(), task("T02", school="다른중학교")]
+    database = make_database(tmp_path, [
+        {"title": tasks[0]["title"]},
+        {"title": tasks[1]["title"], "school": "다른중학교"},
+        {"title": "키에 없는 학교 카드", "school": "키없는중학교"},
+    ])
+    key = tmp_path / "key.json"
+    key.write_text(json.dumps(tasks, ensure_ascii=False), encoding="utf-8")
+    prefix = tmp_path / "schools"
+    assert main(["--database", str(database), "--key", str(key), "--out-prefix", str(prefix),
+                 "--rounds", ROUND, "--schools", "테스트중학교"]) == 0
+    report = json.loads(prefix.with_suffix(".json").read_text(encoding="utf-8"))
+    assert report["recall"]["total"] == {"numerator": 1, "denominator": 1, "rate": 1}
+    assert report["public_card_ids"] == ["item-0"]
+    assert report["unmatched_tasks"] == report["unmatched_cards"] == []
+    assert report["card_verdicts"][0]["card"] == "E01"
+    assert json.loads(capsys.readouterr().out)["public_card_ids"] == 1
+    assert len(check_recall(database, tasks)["public_card_ids"]) == 3
+    for schools in ([], ["없는학교"], ["테스트중학교", "없는학교"]):
+        with pytest.raises(ValueError, match="schools present"):
+            check_recall(database, tasks, schools=schools)
+
+
+def test_fresh6_cli_builds_28_tasks_without_legacy_gold_reads(tmp_path, monkeypatch, capsys):
+    original_read = Path.read_text
+
+    def read_allowed(path, *args, **kwargs):
+        if path.parent.name == "gold":
+            assert path == dev_task_key.ROOT / dev_task_key.FRESH6_QUALITY or (
+                path == dev_task_key.ROOT / dev_task_key.FRESH6_SOURCES
+            )
+        return original_read(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", read_allowed)
+    output = tmp_path / "fresh6.json"
+    assert dev_task_key.main(["--set", "fresh6", "--out", str(output)]) == 0
+    tasks = json.loads(output.read_text(encoding="utf-8"))
+    assert [t["task_id"] for t in tasks] == [f"F6-{number:02d}" for number in range(1, 29)]
+    assert all(t["set"] == "fresh6" and t["activity_key"] is None for t in tasks)
+    assert sum(t["doc"] is None for t in tasks) == 4
+    assert json.loads(capsys.readouterr().out)["fresh6"]["tasks"] == 28
+
+
+def test_legacy_cli_preserves_saved_77_task_bytes(tmp_path, monkeypatch, capsys):
+    """Exercise legacy CLI serialization; original gold Markdown must not be read here."""
+    original = dev_task_key.OUTPUT.read_bytes()
+    assert hashlib.sha256(original).hexdigest() == LEGACY_KEY_SHA256
+    saved_tasks = json.loads(original)
+    assert len(saved_tasks) == 77
+    monkeypatch.setattr(dev_task_key, "build_key", lambda: saved_tasks)
+    output = tmp_path / "legacy-key.json"
+    assert dev_task_key.main(["--out", str(output)]) == 0
+    assert output.read_bytes() == original
+    assert dev_task_key.OUTPUT.read_bytes() == original
+    assert json.loads(capsys.readouterr().out)["total"]["tasks"] == 77

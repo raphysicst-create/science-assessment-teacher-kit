@@ -22,6 +22,7 @@ WEB_URL = "http://127.0.0.1:3102"
 ROUND_ORDER = (3, 1)
 DEFAULT_MODEL = "gpt-6.1-terra"
 DEFAULT_WORKERS = 8
+MAX_WORKERS = 12
 DEFAULT_WAIT_SECONDS = 3600
 AI_OK_CODES = (0, 3)
 DEFAULT_ISOLATED_CWD = Path("C:/Users/USER/codex-isolated/math-n1-8")
@@ -40,6 +41,7 @@ class Config:
     workers: int = DEFAULT_WORKERS
     isolated_cwd: Path = DEFAULT_ISOLATED_CWD
     wait_seconds: float = DEFAULT_WAIT_SECONDS
+    sequential_rounds: bool = False
 
 
 @dataclass(frozen=True)

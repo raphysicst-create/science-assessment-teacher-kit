@@ -263,3 +263,78 @@ def test_duplicate_chain_keeps_one_and_rejects_repeated_answers(workspace):
     report = check.verify_targets(workspace["output"], workspace["database"])
     exam = next(card for card in report["cards"] if card["item_id"] == "exam")
     assert exam["is_task"] and not exam["checked"]
+
+
+@pytest.mark.parametrize("title,cell,discarded", [
+    ("과제 B", "과제B", True),
+    ("생태 지도 만들기", "생태·지도 만들기!", True),
+    ("생태 지도 만들기", "생태 지도 만들기 (100점)", True),
+    ("생태 지도 만들기 보고서", "생태 지도 만들기", True),
+    ("실험", "실험 보고서", False),
+])
+def test_merged_summary_row_uses_sibling_database_title(workspace, title, cell, discarded):
+    quote = "온도 측정하기 | " + cell
+    with sqlite3.connect(workspace["database"]) as db:
+        db.execute("UPDATE assessment_items SET title=? WHERE item_id='other'", (title,))
+        db.execute("UPDATE assessment_items SET source_html_zlib=? WHERE item_id='detail'",
+                   (zlib.compress(quote.encode()),))
+    answer = response()
+    answer["tasks"][0].update(duplicate_of=None, merged=True, quote=quote)
+    assert fake_run(workspace, answer) == 0
+    report = check.verify_targets(workspace["output"], workspace["database"])
+    card = next(c for c in report["cards"] if c["item_id"] == "detail")
+    assert card["merged"] is not discarded
+    assert check.blocking_codes(card) == ([] if discarded else ["AI3:merged"])
+    reasons = [e["reason"] for e in card["discarded"]]
+    assert reasons == (["discarded_merged_sibling_row"] if discarded else [])
+    assert all(e in report["discarded"] for e in card["discarded"])
+
+
+def test_merged_own_cell_with_two_separate_scores_still_blocks(workspace):
+    quote = "온도 측정 100점 + 기체 탐구 100점 | 별도 만점"
+    with sqlite3.connect(workspace["database"]) as db:
+        db.execute("UPDATE assessment_items SET source_html_zlib=? WHERE item_id='detail'",
+                   (zlib.compress(quote.encode()),))
+    answer = response()
+    answer["tasks"][0].update(duplicate_of=None, merged=True, quote=quote)
+    assert fake_run(workspace, answer) == 0
+    report = check.verify_targets(workspace["output"], workspace["database"])
+    card = next(c for c in report["cards"] if c["item_id"] == "detail")
+    assert check.blocking_codes(card) == ["AI3:merged"]
+    assert card["discarded"] == []
+
+
+@pytest.mark.parametrize("scope", ["grade", "semester", "case_id"])
+def test_merged_sibling_title_in_another_group_does_not_override(workspace, scope):
+    quote = "온도 측정하기 | 생태 지도 만들기"
+    with sqlite3.connect(workspace["database"]) as db:
+        db.execute("INSERT INTO cases VALUES ('second', '다른학교', 'second-sha')")
+        db.execute(f"UPDATE assessment_items SET {scope}=? WHERE item_id!='detail'",
+                   ("second" if scope == "case_id" else 2,))
+        db.execute("UPDATE assessment_items SET title='생태 지도 만들기' WHERE item_id='other'")
+        db.execute("UPDATE assessment_items SET source_html_zlib=? WHERE item_id='detail'",
+                   (zlib.compress(quote.encode()),))
+    answer = response()
+    answer["tasks"][0].update(duplicate_of=None, merged=True, quote=quote)
+    assert fake_run(workspace, answer) == 0
+    report = check.verify_targets(workspace["output"], workspace["database"])
+    card = next(c for c in report["cards"] if c["item_id"] == "detail")
+    assert check.blocking_codes(card) == ["AI3:merged"]
+    assert card["discarded"] == []
+
+
+def test_sibling_row_discards_only_merged_decision(workspace):
+    quote = "온도 측정하기 | 생태 지도 만들기"
+    with sqlite3.connect(workspace["database"]) as db:
+        db.execute("UPDATE assessment_items SET title='생태 지도 만들기' WHERE item_id='other'")
+        db.execute("UPDATE assessment_items SET source_html_zlib=? WHERE item_id='detail'",
+                   (zlib.compress((quote * 5).encode()),))
+    answer = response()
+    answer["tasks"][0].update(is_task=False, not_task_kind="기타", duplicate_of="other",
+                              merged=True, quote=quote)
+    assert fake_run(workspace, answer) == 0
+    report = check.verify_targets(workspace["output"], workspace["database"])
+    cards = {c["item_id"]: c for c in report["cards"]}
+    assert not cards["detail"]["is_task"] and not cards["detail"]["merged"]
+    assert cards["other"]["duplicate_of"] == "detail"
+    assert [e["reason"] for e in report["discarded"]] == ["discarded_merged_sibling_row"]

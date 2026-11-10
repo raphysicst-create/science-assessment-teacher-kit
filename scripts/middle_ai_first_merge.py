@@ -12,9 +12,11 @@ import json
 
 if __package__:
     from . import middle_ai_read as ai
+    from .detail_method import detail_methods
     from .middle_ai_fields import item_slices
 else:
     import middle_ai_read as ai
+    from detail_method import detail_methods
     from middle_ai_fields import item_slices
 
 VERSION = "middle-ai-first-v1"
@@ -225,11 +227,14 @@ def fill_methods(root, round_key):
             != ai.sha(json.dumps(verified, sort_keys=True))):
         raise ValueError("병합 이후 verified 변경됨. merge 필요")
     entries, changed = field_entries(report, verified), 0
-    counts = {"changed_methods": 0, "changed_standards": 0}
+    details = detail_methods(root, report["items"])
+    counts = {"changed_methods": 0, "changed_standards": 0,
+              "changed_methods_detail_checked": 0}
     for item, start, end in reversed(item_slices(raw)):
         fields = entries.get(item["item_id"], {})
         replacements = {
-            "method": updated_method(item, fields.get("method", [])),
+            "method": (details.get(item["item_id"])
+                       or updated_method(item, fields.get("method", []))),
             "standards": updated_standards(item, fields.get("standards", [])),
         }
         item_raw = raw[start:end]
@@ -237,6 +242,8 @@ def fill_methods(root, round_key):
             if value is not None:
                 item_raw = replace_field(item_raw, name, value)
                 counts[f"changed_{'methods' if name == 'method' else name}"] += 1
+                if name == "method" and item["item_id"] in details:
+                    counts["changed_methods_detail_checked"] += 1
         if item_raw != raw[start:end]:
             raw = raw[:start] + item_raw + raw[end:]
             changed += 1

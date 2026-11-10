@@ -127,8 +127,9 @@ def restore_generated(runner, logs: Path, name: str) -> None:
 
 
 def launch(runner, bundle: int, step: Step, logs: Path, servers: list, marker: str) -> None:
-    record = runner.scope(bundle, "gate")["steps"].setdefault(step.name, {})
-    record.update(status="running", started_at=now())
+    with runner.checkpoint.edit():
+        record = runner.scope(bundle, "gate")["steps"].setdefault(step.name, {})
+        record.update(status="running", started_at=now())
     started = time.monotonic()
     try:
         server = runner.start_server(step, logs / f"{step.name}.out")
@@ -136,14 +137,16 @@ def launch(runner, bundle: int, step: Step, logs: Path, servers: list, marker: s
         runner.checkpoint.event("server-start", bundle=bundle, step=step.name,
                                 pid=server.process.pid)
         runner.wait_ready(server, marker)
-        record.update(status="done", exit_code=0)
+        with runner.checkpoint.edit():
+            record.update(status="done", exit_code=0)
     except BaseException as error:
-        record.update(status="failed", exit_code=None, reason=str(error))
+        with runner.checkpoint.edit():
+            record.update(status="failed", exit_code=None, reason=str(error))
         raise
     finally:
-        record.update(ended_at=now(),
-                      seconds=round(record.get("seconds", 0) + time.monotonic() - started, 3))
-        runner.checkpoint.save()
+        with runner.checkpoint.edit():
+            record.update(ended_at=now(),
+                          seconds=round(record.get("seconds", 0) + time.monotonic() - started, 3))
 
 
 def live_gates(runner, bundle: int, logs: Path) -> None:
@@ -175,7 +178,8 @@ def live_gates(runner, bundle: int, logs: Path) -> None:
 
 
 def run_gates(runner, bundle: int) -> None:
-    scope = runner.scope(bundle, "gate")
+    with runner.checkpoint.edit():
+        scope = runner.scope(bundle, "gate")
     if scope.get("status") == "done":
         return
     logs = runner.cfg.root / OUTPUT / f"logs/nw{bundle}/gate"
@@ -189,13 +193,16 @@ def run_gates(runner, bundle: int) -> None:
             runner.step(bundle, "gate", command(runner.cfg, "verify", "npm", "run", "verify"))
         finally:
             restore_generated(runner, logs, "restore-after-verify")
-        scope["status"] = "done"
+        with runner.checkpoint.edit():
+            scope["status"] = "done"
     except BaseException:
-        scope["status"] = "failed"
+        with runner.checkpoint.edit():
+            scope["status"] = "failed"
         raise
     finally:
         runner.checkpoint.save()
-        audit = runner.scope(bundle, "publish")["steps"].get("audit-public", {})
+        with runner.checkpoint.lock:
+            audit = runner.scope(bundle, "publish")["steps"].get("audit-public", {})
         atomic_json(runner.cfg.root / OUTPUT / f"gates/nw{bundle}.json",
                     {"time": now(), "status": scope.get("status", "failed"),
                      "audit-public": audit, "steps": scope["steps"],

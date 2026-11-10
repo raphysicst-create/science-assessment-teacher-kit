@@ -1,7 +1,7 @@
 """Measure development-task recall and activity/method agreement on public cards.
 
 Run .venv/Scripts/python.exe scripts/dev_recall_check.py --database DB --key KEY
-    --out-prefix PREFIX [--rounds ROUND ...]
+    --out-prefix PREFIX [--rounds ROUND ...] [--schools SCHOOL ...]
 Verify .venv/Scripts/python.exe -m pytest -q
        services/math-assessment-api/tests/test_dev_recall_check.py
 Writes PREFIX.json and PREFIX-verdicts.md. Opens SQLite in read-only mode.
@@ -28,6 +28,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MIN_CONTAINED_TITLE = 6
 VERDICT_COLUMNS = ("수행평가 과제", "제목", "단원", "활동", "방법")
 METHOD_DOTS = str.maketrans("ㆍ･・‧⋅", "·····")
+LEGACY_SETS = ("fresh3", "fresh4")
 
 
 def title_key(value: str) -> str:
@@ -58,11 +59,18 @@ def method_set(values: list[str] | str | None) -> set[str]:
     return normalized
 
 
-def load_public_cards(database: Path, rounds: list[str]) -> list[dict]:
+def load_public_cards(
+    database: Path, rounds: list[str], schools: list[str] | None = None,
+) -> list[dict]:
     axes = json.loads((ROOT / "data/reference/science_axes.json").read_text(encoding="utf-8"))
     activity_names = {row["id"]: row["name"] for row in axes["activities"]}
     activity_names.update({name: name for name in activity_names.values()})
     placeholders = ",".join("?" for _ in rounds)
+    parameters = list(rounds)
+    school_filter = ""
+    if schools is not None:
+        school_filter = " AND c.school_name IN (" + ",".join("?" for _ in schools) + ")"
+        parameters.extend(schools)
     query = f"""
         SELECT i.item_id, c.school_name AS school, i.source_round AS round,
                i.grade, i.semester, i.title, i.method, i.locator, a.value AS activity
@@ -71,11 +79,12 @@ def load_public_cards(database: Path, rounds: list[str]) -> list[dict]:
         LEFT JOIN assessment_item_axes a
           ON a.item_id = i.item_id AND a.axis = 'activity' AND a.rank = 1
         WHERE i.extraction_status = 'bounded' AND i.source_round IN ({placeholders})
+        {school_filter}
         ORDER BY c.school_name, i.source_round, i.grade, i.semester, i.title, i.item_id
     """
     with closing(sqlite3.connect(database.resolve().as_uri() + "?mode=ro", uri=True)) as db:
         db.row_factory = sqlite3.Row
-        cards = [dict(row) for row in db.execute(query, rounds)]
+        cards = [dict(row) for row in db.execute(query, parameters)]
     if len({card["item_id"] for card in cards}) != len(cards):
         raise ValueError("Duplicate primary activity rows for a public card")
     for card in cards:
@@ -223,9 +232,13 @@ def verdict_markdown(cards: list[dict]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def key_sets(tasks: list[dict]) -> list[str]:
+    return [*LEGACY_SETS, *sorted({t["set"] for t in tasks} - set(LEGACY_SETS))]
+
+
 def recall_summary(tasks: list[dict], matched_ids: set[str]) -> dict:
     result = {}
-    for name in ("fresh3", "fresh4", "total"):
+    for name in (*key_sets(tasks), "total"):
         subset = [t for t in tasks if name == "total" or t["set"] == name]
         numerator = sum(t["task_id"] in matched_ids for t in subset)
         denominator = len(subset)
@@ -237,7 +250,10 @@ def recall_summary(tasks: list[dict], matched_ids: set[str]) -> dict:
     return result
 
 
-def check_recall(database: Path, tasks: list[dict], rounds: list[str] | None = None) -> dict:
+def check_recall(
+    database: Path, tasks: list[dict], rounds: list[str] | None = None,
+    schools: list[str] | None = None,
+) -> dict:
     if len({task["task_id"] for task in tasks}) != len(tasks):
         raise ValueError("Duplicate task IDs in key")
     key_rounds = {task["round"] for task in tasks}
@@ -245,14 +261,18 @@ def check_recall(database: Path, tasks: list[dict], rounds: list[str] | None = N
     if not selected or not set(selected) <= key_rounds:
         raise ValueError("Select one or more rounds present in the development key")
     tasks = [task for task in tasks if task["round"] in selected]
+    round_sets = {task["round"]: task["set"] for task in tasks}
+    if schools is not None:
+        if not schools or not set(schools) <= {task["school"] for task in tasks}:
+            raise ValueError("Select one or more schools present in the development key rounds")
+        tasks = [task for task in tasks if task["school"] in schools]
     by_scope = defaultdict(list)
     for task in tasks:
         by_scope[scope(task)].append(task)
     positions = position_spans(tasks)
-    round_sets = {task["round"]: task["set"] for task in tasks}
     cards = []
     task_cards = defaultdict(list)
-    for index, card in enumerate(load_public_cards(database, selected), 1):
+    for index, card in enumerate(load_public_cards(database, selected, schools), 1):
         card.update(card=f"E{index:02d}", set=round_sets[card["round"]])
         matches, basis = match_card(card, by_scope[scope(card)], positions)
         verdict = classify_card(card, matches)
@@ -283,7 +303,7 @@ def check_recall(database: Path, tasks: list[dict], rounds: list[str] | None = N
         "verdict_counts": count_verdicts(markdown),
         "verdict_counts_by_set": {
             name: count_verdicts(verdict_markdown([c for c in cards if c["set"] == name]))
-            for name in ("fresh3", "fresh4")
+            for name in key_sets(tasks)
         },
         "public_card_ids": [card["item_id"] for card in cards],
     }
@@ -297,10 +317,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--key", type=Path, required=True)
     parser.add_argument("--out-prefix", type=Path, required=True)
     parser.add_argument("--rounds", nargs="+")
+    parser.add_argument("--schools", nargs="+")
     args = parser.parse_args(argv)
     tasks = json.loads(args.key.read_text(encoding="utf-8"))
     rounds = None if args.rounds is None else [r for v in args.rounds for r in v.split(",")]
-    result = check_recall(args.database, tasks, rounds)
+    result = check_recall(args.database, tasks, rounds, args.schools)
     args.out_prefix.parent.mkdir(parents=True, exist_ok=True)
     Path(f"{args.out_prefix}.json").write_text(
         json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"

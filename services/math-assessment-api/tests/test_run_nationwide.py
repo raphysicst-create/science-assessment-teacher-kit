@@ -107,7 +107,8 @@ def setup(tmp_path):
         db.execute("CREATE TABLE assessment_items (case_id TEXT, item_id TEXT, source_round TEXT)")
         db.executemany("INSERT INTO assessment_items VALUES (?, ?, ?)",
                        [(f"case{b}", f"item{b}", round_key(b, 3)) for b in (1, 2, 3)])
-    return Config(tmp_path, isolated_cwd=iso), Fake()
+    # Existing order assertions exercise the explicit compatibility mode.
+    return Config(tmp_path, isolated_cwd=iso, sequential_rounds=True), Fake()
 
 
 def first_record(cfg):

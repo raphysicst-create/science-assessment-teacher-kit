@@ -9,6 +9,7 @@ from collections import Counter
 from pathlib import Path
 
 from audit_middle_subjects import atomic_write, escape, location
+from course_subject import course_name_before, is_non_science_course
 from middle_identity import reconcile_items
 from middle_item_editions import edition_history, select_editions
 from middle_items import (
@@ -25,6 +26,21 @@ from middle_pdf_cells import verified_title_splits
 from middle_rounds import roster_codes, roster_path
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def science_course_items(items: list[dict], text: str, document: dict, excluded: list) -> list:
+    lines = text.splitlines()
+    kept = []
+    for item in items:
+        line_no = text.count("\n", 0, item["locator"]["start"]) + 1
+        course = course_name_before(lines, line_no)
+        if course and is_non_science_course(course["course"]):
+            excluded.append({**document, "item_id": item["item_id"],
+                             "section_id": item["section_id"], "locator": item["locator"],
+                             "reason": "other_subject_course", "course_evidence": course})
+        else:
+            kept.append(item)
+    return kept
 
 
 def audit(input_path: Path, roster: Path | None = None) -> dict:
@@ -189,7 +205,7 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
             item.setdefault("semester_evidence", next(
                 (s["semester_evidence"] for s in assessment_templates
                  if s["grade"] == item["grade"] and s["semester"] == item["semester"]), []))
-        items[document_item_start:] = recovered
+        items[document_item_start:] = science_course_items(recovered, text, document, excluded)
     reconcile_items(items)
     items, history = edition_history(documents, items)
     errors = ownership_errors(items)
