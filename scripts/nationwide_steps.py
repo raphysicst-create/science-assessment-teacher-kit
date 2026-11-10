@@ -23,6 +23,7 @@ ROUND_ORDER = (3, 1)
 DEFAULT_MODEL = "gpt-6.1-terra"
 DEFAULT_WORKERS = 8
 DEFAULT_WAIT_SECONDS = 3600
+AI_OK_CODES = (0, 3)
 DEFAULT_ISOLATED_CWD = Path("C:/Users/USER/codex-isolated/math-n1-8")
 CODEX_PATTERN = "C:/Users/USER/AppData/Local/OpenAI/Codex/bin/*/codex.exe"
 ROUND_COLUMNS = (
@@ -60,6 +61,8 @@ def child_env(model: str, extra: dict | None = None) -> dict[str, str]:
 
 def command(cfg: Config, name: str, *argv: str, kind="command", ok_codes=(0,),
             env=None, cwd=None) -> Step:
+    if kind == "ai":
+        ok_codes = AI_OK_CODES
     return Step(name, tuple(argv), ok_codes, kind, child_env(cfg.model, env), cwd or cfg.root)
 
 

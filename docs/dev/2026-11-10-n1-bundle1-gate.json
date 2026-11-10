@@ -1,0 +1,137 @@
+{
+  "time": "2026-11-10T15:26:53+09:00",
+  "status": "done",
+  "audit-public": {
+    "status": "done",
+    "started_at": "2026-11-10T15:16:03+09:00",
+    "attempt_started_at": "2026-11-10T15:19:26+09:00",
+    "attempts": 2,
+    "exit_code": 0,
+    "ended_at": "2026-11-10T15:19:52+09:00",
+    "seconds": 52.5
+  },
+  "steps": {
+    "renderer": {
+      "status": "done",
+      "started_at": "2026-11-10T15:19:52+09:00",
+      "attempt_started_at": "2026-11-10T15:19:52+09:00",
+      "attempts": 1,
+      "exit_code": 0,
+      "metrics": {
+        "source_text_loss_document_count": 0,
+        "rendered_table_topology_failure_count": 0
+      },
+      "ended_at": "2026-11-10T15:20:04+09:00",
+      "seconds": 11.281
+    },
+    "registry": {
+      "status": "done",
+      "started_at": "2026-11-10T15:20:04+09:00",
+      "attempt_started_at": "2026-11-10T15:20:04+09:00",
+      "attempts": 1,
+      "exit_code": 0,
+      "ended_at": "2026-11-10T15:20:04+09:00",
+      "seconds": 0.328
+    },
+    "package": {
+      "status": "done",
+      "started_at": "2026-11-10T15:20:04+09:00",
+      "attempt_started_at": "2026-11-10T15:20:04+09:00",
+      "attempts": 1,
+      "exit_code": 0,
+      "ended_at": "2026-11-10T15:20:05+09:00",
+      "seconds": 1.422
+    },
+    "api-server": {
+      "status": "done",
+      "started_at": "2026-11-10T15:20:05+09:00",
+      "exit_code": 0,
+      "ended_at": "2026-11-10T15:20:06+09:00",
+      "seconds": 1.032
+    },
+    "web-build": {
+      "status": "done",
+      "started_at": "2026-11-10T15:20:07+09:00",
+      "attempt_started_at": "2026-11-10T15:20:07+09:00",
+      "attempts": 1,
+      "exit_code": 0,
+      "ended_at": "2026-11-10T15:20:31+09:00",
+      "seconds": 24.766
+    },
+    "web-server": {
+      "status": "done",
+      "started_at": "2026-11-10T15:20:31+09:00",
+      "exit_code": 0,
+      "ended_at": "2026-11-10T15:20:36+09:00",
+      "seconds": 4.859
+    },
+    "mobile-1": {
+      "status": "done",
+      "started_at": "2026-11-10T15:20:36+09:00",
+      "attempt_started_at": "2026-11-10T15:20:36+09:00",
+      "attempts": 1,
+      "exit_code": 0,
+      "metrics": {
+        "overflow_px": 0
+      },
+      "ended_at": "2026-11-10T15:20:41+09:00",
+      "seconds": 4.703
+    },
+    "mobile-2": {
+      "status": "done",
+      "started_at": "2026-11-10T15:20:41+09:00",
+      "attempt_started_at": "2026-11-10T15:20:41+09:00",
+      "attempts": 1,
+      "exit_code": 0,
+      "metrics": {
+        "overflow_px": 0
+      },
+      "ended_at": "2026-11-10T15:20:46+09:00",
+      "seconds": 4.766
+    },
+    "mobile-3": {
+      "status": "done",
+      "started_at": "2026-11-10T15:20:46+09:00",
+      "attempt_started_at": "2026-11-10T15:20:46+09:00",
+      "attempts": 1,
+      "exit_code": 0,
+      "metrics": {
+        "overflow_px": 0
+      },
+      "ended_at": "2026-11-10T15:20:51+09:00",
+      "seconds": 4.797
+    },
+    "mobile-4": {
+      "status": "done",
+      "started_at": "2026-11-10T15:20:51+09:00",
+      "attempt_started_at": "2026-11-10T15:20:51+09:00",
+      "attempts": 1,
+      "exit_code": 0,
+      "metrics": {
+        "overflow_px": 0
+      },
+      "ended_at": "2026-11-10T15:20:55+09:00",
+      "seconds": 4.578
+    },
+    "detail": {
+      "status": "done",
+      "started_at": "2026-11-10T15:20:55+09:00",
+      "attempt_started_at": "2026-11-10T15:20:55+09:00",
+      "attempts": 1,
+      "exit_code": 0,
+      "ended_at": "2026-11-10T15:23:59+09:00",
+      "seconds": 183.687
+    },
+    "verify": {
+      "status": "done",
+      "started_at": "2026-11-10T15:24:00+09:00",
+      "attempt_started_at": "2026-11-10T15:24:00+09:00",
+      "attempts": 1,
+      "exit_code": 0,
+      "ended_at": "2026-11-10T15:26:53+09:00",
+      "seconds": 172.922
+    }
+  },
+  "blocking_public_items": 0,
+  "detail_seconds": 183.687
+}

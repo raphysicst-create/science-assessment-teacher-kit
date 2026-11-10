@@ -133,6 +133,8 @@ def test_step_contracts_and_gold_environment(setup, monkeypatch):
         assert not any(key.upper().endswith("_GOLD") for key in step.env)
         assert step.env["MIDDLE_AI_MODEL"] == cfg.model
         assert step.env["PYTHONIOENCODING"] == "utf-8"
+        if step.kind == "ai":
+            assert step.ok_codes == (0, 3)
     assert "--per-card" in next(s for s in all_steps if s.name == "ax-targets").argv
     with pytest.raises(ValueError):
         round_steps(cfg, 1, 3, key="2026-round-3-gold")
@@ -191,6 +193,100 @@ def test_low_rate_waits_and_retries_only_same_command(setup):
     assert all("T" in event["time"] for event in events)
 
 
+@pytest.mark.parametrize("include_skipped", [True, False])
+def test_cached_successes_do_not_hide_fresh_failures(setup, include_skipped):
+    cfg, fake = setup
+    first = {"called": 20, "valid": 82, "total": 100}
+    retry = {"called": 19, "valid": 81, "total": 100}
+    full = {"called": 19, "valid": 100, "total": 100}
+    if include_skipped:
+        for summary, skipped in ((first, 80), (retry, 81), (full, 81)):
+            summary["skipped"] = skipped
+    fake.responses["first-run"] = [(0, first), (0, retry), (0, full)]
+
+    def sleep(seconds):
+        fake.waits.append(seconds)
+        record = first_record(cfg)
+        assert record["status"] == "waiting" and record["attempts"] == 2
+        assert (record["called"], record["fresh_valid"]) == (39, 2)
+        assert record["last_fresh_rate"] == pytest.approx(2 / 39)
+        events = [json.loads(line) for line in
+                  (cfg.root / OUTPUT / "events.jsonl").read_text().splitlines()]
+        assert events[-1]["event"] == "wait" and events[-1]["seconds"] == 3600
+        assert events[-1]["valid_rate"] == pytest.approx(2 / 39)
+
+    assert fake.run(cfg, sleep=sleep) == 0
+    assert fake.waits == [3600]
+    record = first_record(cfg)
+    assert (record["called"], record["fresh_valid"], record["valid"], record["total"]) == (
+        58, 21, 100, 100)
+    assert record["last_fresh_rate"] == 1 and record["low_streak"] == 0
+    calls = [step.argv for key, name, step in fake.calls
+             if key == round_key(1, 3) and name == "first-run"]
+    assert len(calls) == 3 and calls[0] == calls[1] == calls[2]
+
+
+def test_all_failed_exit_waits_then_recovers(setup):
+    cfg, fake = setup
+    failed = {"called": 20, "valid": 80, "total": 100, "skipped": 80, "all_failed": True}
+    full = {"called": 20, "valid": 100, "total": 100, "skipped": 80}
+    fake.responses["first-run"] = [(3, failed), (3, failed), (0, full)]
+
+    def sleep(seconds):
+        fake.waits.append(seconds)
+        record = first_record(cfg)
+        assert record["exit_code"] == 3 and record["status"] == "waiting"
+        assert record["called"] == 40 and record["fresh_valid"] == 0
+        assert record["last_fresh_rate"] == 0
+
+    assert fake.run(cfg, sleep=sleep) == 0
+    assert fake.waits == [3600]
+    record = first_record(cfg)
+    assert record["status"] == "done" and record["exit_code"] == 0
+    assert record["called"] == 60 and record["fresh_valid"] == 20
+
+
+@pytest.mark.parametrize("code, extra", [
+    (3, {}), (3, {"all_failed": False}), (3, {"all_failed": 1}),
+    (2, {"all_failed": True}), (4, {"all_failed": True}),
+])
+def test_ai_invalid_exit_is_step_failure(setup, code, extra):
+    cfg, fake = setup
+    fake.responses["first-run"] = [(code, {**FULL, **extra})]
+    assert fake.run(cfg) == 1
+    record = first_record(cfg)
+    assert record["status"] == "failed" and record["exit_code"] == code
+    assert record["attempts"] == 1 and not fake.waits
+    assert load_state(cfg.root)["status"] == "failed"
+
+
+@pytest.mark.parametrize("include_skipped", [True, False])
+def test_all_cached_needs_no_wait(setup, include_skipped):
+    cfg, fake = setup
+    summary = {"called": 0, "valid": 100, "total": 100}
+    if include_skipped:
+        summary["skipped"] = 100
+    fake.responses["first-run"] = [(0, summary)]
+    assert fake.run(cfg) == 0
+    record = first_record(cfg)
+    assert record["called"] == record["fresh_valid"] == 0
+    assert record["last_fresh_rate"] == 1 and record["attempts"] == 1
+    assert not fake.waits
+
+
+def test_completed_retry_passes_even_with_low_combined_fresh_rate(setup):
+    cfg, fake = setup
+    fake.responses["first-run"] = [
+        (0, {"called": 20, "valid": 80, "total": 100, "skipped": 80}),
+        (0, {"called": 20, "valid": 100, "total": 100, "skipped": 80}),
+    ]
+    assert fake.run(cfg) == 0
+    record = first_record(cfg)
+    assert record["called"] == 40 and record["fresh_valid"] == 20
+    assert record["last_fresh_rate"] == 0.5 and record["low_streak"] == 0
+    assert record["attempts"] == 2 and not fake.waits
+
+
 def test_three_low_cycles_stop_with_usage_limit(setup):
     cfg, fake = setup
     fake.responses["first-run"] = [(0, HALF)] * 6
@@ -203,7 +299,7 @@ def test_three_low_cycles_stop_with_usage_limit(setup):
 
 
 @pytest.mark.parametrize("summary", [
-    {"called": 1, "valid": 9, "total": 10},
+    {"called": 5, "valid": 9, "total": 10},
     {"called": 0, "valid": 0, "results": []},
 ])
 def test_ai_incomplete_retries_once_and_zero_total_is_valid(setup, summary):
@@ -338,6 +434,9 @@ def test_interrupted_wait_resumes_same_ai_stage(setup):
     count = len(fake.calls)
     assert fake.run(cfg) == 0
     assert fake.calls[count][1] == "first-run"
+    record = first_record(cfg)
+    assert record["called"] == 5 and record["fresh_valid"] == 3
+    assert record["last_fresh_rate"] == 1 and record["low_streak"] == 0
 
 
 def test_restore_failure_is_ignored_and_successful_gates_record_detail_seconds(setup):
@@ -359,7 +458,22 @@ def test_restore_failure_is_ignored_and_successful_gates_record_detail_seconds(s
 
 def test_last_json_reads_outer_report_and_results_fallback():
     text = 'progress {broken}\n{"old": 0}\n{"called": 2, "valid": 1, "results": [{"x": 3}]}'
-    assert runner.ai_metrics(text) == {"called": 2, "valid": 1, "total": 1}
+    assert runner.ai_metrics(text) == {"called": 2, "valid": 1, "total": 1, "fresh_valid": 2}
+
+
+@pytest.mark.parametrize("include_skipped", [True, False])
+def test_fresh_valid_is_clamped_at_zero(include_skipped):
+    summary = {"called": 20, "valid": 79, "total": 100}
+    if include_skipped:
+        summary["skipped"] = 80
+    assert runner.ai_metrics(json.dumps(summary))["fresh_valid"] == 0
+
+
+def test_all_failed_exit_forces_zero_fresh_valid():
+    summary = {"called": 20, "valid": 82, "skipped": 80, "all_failed": True,
+               "results": [{}] * 100}
+    counts = runner.ai_metrics(json.dumps(summary), exit_code=3)
+    assert counts == {"called": 20, "valid": 82, "total": 100, "fresh_valid": 0}
 
 
 def test_server_readiness_failure_cleans_started_process(setup):

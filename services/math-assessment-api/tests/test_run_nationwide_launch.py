@@ -161,6 +161,28 @@ def test_nonretryable_exit_never_restarts(setup, code):
     assert load_state(cfg.root)["runner"]["exit_code"] == code
 
 
+@pytest.mark.parametrize("step_name", ["first-run", "fields-run", "ax-run", "cc-run"])
+def test_all_failed_exit_uses_usage_limit_stop_without_restart(setup, step_name):
+    cfg, fake = setup
+    failed = {"called": 20, "valid": 80, "skipped": 80, "all_failed": True,
+              "results": [{}] * 100}
+    fake.responses[step_name] = [(3, failed)] * 6
+    assert fake.run(cfg, restart_on_failure=3) == 3
+    assert fake.waits == [3600, 3600]
+    state = load_state(cfg.root)
+    assert state["status"] == "usage_limit_stop"
+    assert state["runner"]["exit_code"] == state["last_stop"]["code"] == 3
+    scope = (state["bundles"]["1"]["publish"] if step_name in ("ax-run", "cc-run")
+             else state["bundles"]["1"]["rounds"][round_key(1, 3)])
+    record = scope["steps"][step_name]
+    assert record["attempts"] == 6 and record["low_streak"] == 3
+    assert record["called"] == 120 and record["fresh_valid"] == 0
+    assert record["last_fresh_rate"] == 0
+    records = events(cfg.root)
+    assert not any(event["event"] == "restart" for event in records)
+    assert [event["valid_rate"] for event in records if event["event"] == "wait"] == [0, 0]
+
+
 def test_locked_run_does_not_retry_or_write_runner(setup):
     cfg, fake = setup
     with runner_lock(cfg.root):

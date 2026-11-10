@@ -1,0 +1,331 @@
+{
+ "school_rounds": 138,
+ "stages": {
+  "collect": {
+   "seconds": 1.9689999999999999,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.01
+  },
+  "collect-retry": {
+   "seconds": 54.36,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.39
+  },
+  "conversion": {
+   "seconds": 1144.9850000000001,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 8.3
+  },
+  "segments": {
+   "seconds": 1079.204,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 7.82
+  },
+  "subjects": {
+   "seconds": 360.35900000000004,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 2.61
+  },
+  "items": {
+   "seconds": 154.406,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 1.12
+  },
+  "first-targets": {
+   "seconds": 36.266,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.26
+  },
+  "first-run": {
+   "seconds": 804.798,
+   "called": 374,
+   "total": 374,
+   "valid": 374,
+   "per_school_round_seconds": 5.83
+  },
+  "first-verify": {
+   "seconds": 15.391,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.11
+  },
+  "first-merge": {
+   "seconds": 220.64,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 1.6
+  },
+  "fields-rule": {
+   "seconds": 8.61,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.06
+  },
+  "fields-targets": {
+   "seconds": 3.0309999999999997,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.02
+  },
+  "fields-run": {
+   "seconds": 320.359,
+   "called": 57,
+   "total": 57,
+   "valid": 57,
+   "per_school_round_seconds": 2.32
+  },
+  "fields-verify": {
+   "seconds": 12.657,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.09
+  },
+  "fields-merge": {
+   "seconds": 22.36,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.16
+  },
+  "first-methods": {
+   "seconds": 25.232999999999997,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.18
+  },
+  "axes": {
+   "seconds": 2.391,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.02
+  },
+  "collect(실행기 전, 기본 간격)": {
+   "seconds": 1096,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 7.94
+  },
+  "publish:build0": {
+   "seconds": 24.937,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.18
+  },
+  "publish:context": {
+   "seconds": 7.625,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.06
+  },
+  "publish:ax-targets": {
+   "seconds": 1.453,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.01
+  },
+  "publish:ax-run": {
+   "seconds": 927.078,
+   "called": 687,
+   "total": 1174,
+   "valid": 1174,
+   "per_school_round_seconds": 6.72
+  },
+  "publish:ax-export": {
+   "seconds": 2.703,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.02
+  },
+  "publish:hybrid": {
+   "seconds": 0.172,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.0
+  },
+  "publish:build": {
+   "seconds": 14.75,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.11
+  },
+  "publish:cc-targets": {
+   "seconds": 0.781,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.01
+  },
+  "publish:cc-run": {
+   "seconds": 337.172,
+   "called": 274,
+   "total": 473,
+   "valid": 473,
+   "per_school_round_seconds": 2.44
+  },
+  "publish:cc-excl": {
+   "seconds": 1.328,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.01
+  },
+  "publish:audit-full": {
+   "seconds": 32.187,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.23
+  },
+  "publish:exclusions": {
+   "seconds": 0.703,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.01
+  },
+  "publish:audit-public": {
+   "seconds": 52.5,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.38
+  },
+  "publish:method-text": {
+   "seconds": 0.14,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.0
+  },
+  "gate:renderer": {
+   "seconds": 11.281,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.08
+  },
+  "gate:registry": {
+   "seconds": 0.328,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.0
+  },
+  "gate:package": {
+   "seconds": 1.422,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.01
+  },
+  "gate:api-server": {
+   "seconds": 1.032,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.01
+  },
+  "gate:web-build": {
+   "seconds": 24.766,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.18
+  },
+  "gate:web-server": {
+   "seconds": 4.859,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.04
+  },
+  "gate:mobile-1": {
+   "seconds": 4.703,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.03
+  },
+  "gate:mobile-2": {
+   "seconds": 4.766,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.03
+  },
+  "gate:mobile-3": {
+   "seconds": 4.797,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.03
+  },
+  "gate:mobile-4": {
+   "seconds": 4.578,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 0.03
+  },
+  "gate:detail": {
+   "seconds": 183.687,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 1.33
+  },
+  "gate:verify": {
+   "seconds": 172.922,
+   "called": 0,
+   "total": 0,
+   "valid": 0,
+   "per_school_round_seconds": 1.25
+  }
+ },
+ "round_stage_seconds": 5363.0,
+ "round_stage_per_school_round": 38.86,
+ "publish_seconds": 1403.5,
+ "gate_seconds": 419.1,
+ "ai_calls": {
+  "first-run": 374,
+  "fields-run": 57,
+  "publish:ax-run": 687,
+  "publish:cc-run": 274
+ },
+ "invalid": {
+  "first-run": 0,
+  "fields-run": 0,
+  "publish:ax-run": 0,
+  "publish:cc-run": 0
+ },
+ "nation_school_rounds": 6780,
+ "nation_round_stage_hours_serial": 73.2
+}

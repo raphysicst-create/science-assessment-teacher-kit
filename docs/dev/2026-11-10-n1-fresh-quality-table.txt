@@ -1,0 +1,68 @@
+[
+ {
+  "label": "S18",
+  "source_tasks": 31,
+  "tasks_with_card": 22,
+  "recall": 0.71,
+  "cards": 19,
+  "precision": "19/19",
+  "title_ok": 19,
+  "unit_ok": 19,
+  "activity_ok": 18,
+  "activity_blank": 0,
+  "method_ok": 16,
+  "method_blank": 0,
+  "recall_source": "보충 파일"
+ },
+ {
+  "label": "S19",
+  "source_tasks": 46,
+  "tasks_with_card": 25,
+  "recall": 0.543,
+  "cards": 17,
+  "precision": "17/17",
+  "title_ok": 17,
+  "unit_ok": 16,
+  "activity_ok": 4,
+  "activity_blank": 6,
+  "method_ok": 5,
+  "method_blank": 12,
+  "recall_source": "4절 요약"
+ },
+ {
+  "label": "S20",
+  "source_tasks": 25,
+  "tasks_with_card": 21,
+  "recall": 0.84,
+  "cards": 21,
+  "precision": "21/21",
+  "title_ok": 21,
+  "unit_ok": 19,
+  "activity_ok": 20,
+  "activity_blank": 0,
+  "method_ok": 15,
+  "method_blank": 2,
+  "recall_source": "4절 요약"
+ },
+ {
+  "label": "N1",
+  "source_tasks": 28,
+  "tasks_with_card": 27,
+  "recall": 0.964,
+  "cards": 29,
+  "precision": "27/29",
+  "title_ok": 27,
+  "unit_ok": 27,
+  "activity_ok": 24,
+  "activity_blank": 2,
+  "method_ok": 16,
+  "method_blank": 6,
+  "recall_source": "4절 요약"
+ }
+]
+| 회 | 원문 과제 | 카드 있는 과제 | 재현율 | 카드 | 정밀도(과제 맞음) | 제목 | 단원 | 활동 맞음(빈칸) | 방법 맞음(빈칸) |
+|---|---:|---:|---:|---:|---|---:|---:|---|---|
+| S18 | 31 | 22 | 0.71 | 19 | 19/19 | 19 | 19 | 18(0) | 16(0) |
+| S19 | 46 | 25 | 0.543 | 17 | 17/17 | 17 | 16 | 4(6) | 5(12) |
+| S20 | 25 | 21 | 0.84 | 21 | 21/21 | 21 | 19 | 20(0) | 15(2) |
+| N1 | 28 | 27 | 0.964 | 29 | 27/29 | 27 | 27 | 24(2) | 16(6) |

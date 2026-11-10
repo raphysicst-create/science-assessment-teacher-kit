@@ -95,14 +95,20 @@ def last_json(text: str) -> dict:
     return result
 
 
-def ai_metrics(text: str) -> dict:
+def ai_metrics(text: str, *, exit_code: int = 0) -> dict:
     value = last_json(text)
+    if exit_code == 3 and value.get("all_failed") is not True:
+        raise ValueError("AI exit 3 requires all_failed: true")
     total = value["total"] if "total" in value else len(value["results"])
     counts = {"called": value["called"], "valid": value["valid"], "total": total}
     if any(type(count) is not int or count < 0 for count in counts.values()):
         raise ValueError("AI counts must be nonnegative integers")
     if counts["valid"] > total:
         raise ValueError("AI valid count exceeds total")
+    skipped = value.get("skipped", total - counts["called"])
+    if "skipped" in value and (type(skipped) is not int or skipped < 0):
+        raise ValueError("AI skipped count must be a nonnegative integer")
+    counts["fresh_valid"] = 0 if exit_code == 3 else max(0, counts["valid"] - skipped)
     return counts
 
 
@@ -209,9 +215,10 @@ class Runner:
 
     def metrics(self, step: Step, text: str, record: dict) -> dict | None:
         if step.kind == "ai":
-            counts = ai_metrics(text)
+            counts = ai_metrics(text, exit_code=record["exit_code"])
             record.update(valid=counts["valid"], total=counts["total"],
-                          called=record.get("called", 0) + counts["called"])
+                          called=record.get("called", 0) + counts["called"],
+                          fresh_valid=record.get("fresh_valid", 0) + counts["fresh_valid"])
             return counts
         if step.kind in ("renderer", "mobile"):
             keys = RENDERER_METRICS if step.kind == "renderer" else ("overflow_px",)
@@ -224,11 +231,16 @@ class Runner:
     def ai_step(self, bundle: int, key: str, step: Step, record: dict) -> None:
         while True:
             counts = self.attempt(bundle, key, step, record)
+            called, fresh_valid = counts["called"], counts["fresh_valid"]
             if counts["valid"] < counts["total"]:
                 counts = self.attempt(bundle, key, step, record)
-            rate = counts["valid"] / counts["total"] if counts["total"] else 1
-            record["low_streak"] = record.get("low_streak", 0) + 1 if rate < MIN_VALID_RATE else 0
-            if rate >= MIN_VALID_RATE:
+                called += counts["called"]
+                fresh_valid += counts["fresh_valid"]
+            rate = fresh_valid / called if called else 1
+            record["last_fresh_rate"] = rate
+            low_rate = rate < MIN_VALID_RATE and counts["valid"] < counts["total"]
+            record["low_streak"] = record.get("low_streak", 0) + 1 if low_rate else 0
+            if not low_rate:
                 return
             if record["low_streak"] >= MAX_LOW_CYCLES:
                 raise StopRun(3, "usage_limit_stop", f"{key}/{step.name} valid rate {rate:.3f}")
