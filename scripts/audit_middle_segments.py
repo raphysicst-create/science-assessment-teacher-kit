@@ -25,6 +25,7 @@ from middle_segments import (
     resolve_versions,
     segment_document,
 )
+from text_clean import clean_tree
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -37,7 +38,7 @@ def audit_document(source: dict, root: Path, output: Path, *, reuse: bool = Fals
     kordoc = root / "node_modules/kordoc/dist/cli.js"
     text_path = output / f"{source['sha256']}.json"
     if reuse and text_path.exists():
-        conversion = json.loads(text_path.read_text(encoding="utf-8"))
+        conversion = clean_tree(json.loads(text_path.read_text(encoding="utf-8")))
         if conversion.get("sha256", source["sha256"]) != source["sha256"]:
             raise ValueError("cached conversion source hash mismatch")
     elif path.suffix.lower() in {".pdf", ".zip"}:

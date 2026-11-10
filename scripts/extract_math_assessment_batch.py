@@ -20,6 +20,7 @@ from pathlib import Path
 
 from assessment_method_checks import compare_method_rows, pdf_method_rows, structured_method_rows
 from math_subject_aliases import curriculum_from_codes, subject_hits
+from text_clean import clean_text, clean_tree
 
 CHECKED_SYMBOLS = frozenset("■☑☒✓✔✅þ▣●√")
 EMPTY_SYMBOLS = frozenset("□☐○")
@@ -72,7 +73,7 @@ def convert_pdf(path: Path, *, conversion_only: bool = False) -> dict:
         method_rows = []
         with fitz.open(path) as document:
             for number, page in enumerate(document, 1):
-                text = page.get_text("text")
+                text = clean_text(page.get_text("text"))
                 has_image = bool(page.get_image_info())
                 texts.append(text)
                 if not conversion_only:
@@ -186,7 +187,8 @@ def convert_kordoc(
                 return failed_conversion(
                     "kordoc", f"exit={completed.returncode}: {completed.stderr[:500]}",
                 )
-            parsed = json.loads(output.read_text(encoding="utf-8"))
+            # N2b: kordoc JSON may hold lone surrogates; clean once here for every later step.
+            parsed = clean_tree(json.loads(output.read_text(encoding="utf-8")))
             if not parsed.get("success"):
                 return failed_conversion("kordoc", parsed.get("error", "unsuccessful parse"))
             text = parsed["markdown"]

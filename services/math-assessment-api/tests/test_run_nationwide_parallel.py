@@ -119,6 +119,74 @@ def test_parallel_resume_skips_every_completed_step(setup):
                load_state(cfg.root)["bundles"]["1"]["rounds"].values())
 
 
+@pytest.mark.parametrize("exit_code", [1, 9])
+def test_step_failure_leaves_other_round_running_to_completion(setup, monkeypatch, exit_code):
+    cfg, fake = setup
+    cfg = replace(cfg, bundles=(2,), sequential_rounds=False)
+    failed, independent = round_key(2, 3), round_key(2, 1)
+    fake.responses[(failed, "conversion")] = [(exit_code, "synthetic defect")]
+    failure_seen = threading.Event()
+    original_fail = parallel.fail
+
+    def fail(instance, error):
+        original_fail(instance, error)
+        if isinstance(error, runner.StopRun) and error.code == 1:
+            failure_seen.set()
+
+    def execute(step, path):
+        if path.parent.name == independent and step.name == "conversion":
+            assert failure_seen.wait(10)
+            assert not instance.stop_event.is_set()
+        return fake.execute(step, path)
+
+    monkeypatch.setattr(parallel, "fail", fail)
+    instance = make_runner(cfg, fake, execute)
+    assert runner.run_attempt(instance) == 1
+    assert failure_seen.is_set() and not instance.stop_event.is_set()
+    state = load_state(cfg.root)
+    rounds = state["bundles"]["2"]["rounds"]
+    assert rounds[failed]["status"] == "failed"
+    assert rounds[independent]["status"] == "done"
+    assert all(record["status"] == "done" for record in rounds[independent]["steps"].values())
+    assert [name for key, name, _ in fake.calls if key == independent] == [
+        step.name for step in round_steps(cfg, 2, 1)]
+    assert not any(key in ("publish", "gate") for key, _, _ in fake.calls)
+    assert state["last_stop"]["code"] == 1 and state["last_stop"]["scope"] == failed
+    count = len(fake.calls)
+    assert fake.run(cfg) == 0
+    assert not any(key == independent for key, _, _ in fake.calls[count:])
+
+
+def test_repeated_failure_checks_both_rounds_before_restart(setup, monkeypatch):
+    cfg, fake = setup
+    cfg = replace(cfg, sequential_rounds=False)
+    use_rounds(monkeypatch, {3: [Step("conversion", ())], 1: [Step("conversion", ())]})
+    first, repeated = round_key(1, 3), round_key(1, 1)
+    instance = make_runner(cfg, fake, fake.execute)
+    instance.plan()
+    with instance.checkpoint.edit():
+        instance.scope(1, repeated)["steps"]["conversion"].update(status="failed", failures=1)
+    first_failed = threading.Event()
+    original_fail = parallel.fail
+
+    def fail(instance, error):
+        original_fail(instance, error)
+        if str(error).startswith(first):
+            first_failed.set()
+
+    def execute(step, path):
+        if path.parent.name == repeated:
+            assert first_failed.wait(10)
+        fake.calls.append((path.parent.name, step.name, step))
+        return 1, "same defect"
+
+    monkeypatch.setattr(parallel, "fail", fail)
+    assert fake.run(cfg, execute=execute, restart_on_failure=3) == 7
+    assert not fake.waits and fake.names() == ["conversion", "conversion"]
+    stop = load_state(cfg.root)["last_stop"]
+    assert (stop["scope"], stop["step"], stop["failures"]) == (repeated, "conversion", 2)
+
+
 @pytest.mark.parametrize("later_exit", [0, 9])
 def test_restriction_finishes_current_step_and_keeps_first_stop_code(
         setup, monkeypatch, later_exit):

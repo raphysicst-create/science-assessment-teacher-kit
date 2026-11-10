@@ -22,6 +22,7 @@ from pathlib import Path
 from scripts.nationwide_steps import OUTPUT, ROUND_ORDER, Config, round_key, round_steps
 
 STATE_VERSION = 1
+REPEATED_FAILURE_CODE = 7
 REPLACE_ATTEMPTS = 10
 REPLACE_RETRY_SECONDS = 0.05
 STATUS_LABELS = {"done": "완료", "failed": "실패", "pending": "대기",
@@ -149,12 +150,25 @@ class Checkpoint:
             self.state["runner"].update(ended_at=now(), exit_code=code)
             self._event("runner-end", exit_code=code)
 
-    def stop(self, status: str, reason: str, code: int) -> None:
+    def stop(self, status: str, reason: str, code: int, **details) -> None:
         with self.lock:
             self.state.update(status=status,
-                              last_stop={"reason": reason, "time": now(), "code": code})
+                              last_stop={"reason": reason, "time": now(), "code": code,
+                                         "status": status, **details})
             self._save()
-            self._event("stop", status=status, reason=reason, exit_code=code)
+            self._event("stop", status=status, reason=reason, exit_code=code, **details)
+
+    def stop_repeated_failure(self, maximum: int, failures=()) -> bool:
+        stops = (self.state["last_stop"], *failures)
+        stop = next((stop for stop in stops if stop.get("status") == "failed"
+                     and stop.get("step") and stop.get("failures", 0) >= maximum), None)
+        if stop is None:
+            return False
+        details = {key: stop[key] for key in ("scope", "step", "failures")}
+        reason = f"{stop['scope']}/{stop['step']} failed {stop['failures']} consecutive times"
+        self.stop("repeated_failure", reason, REPEATED_FAILURE_CODE, **details)
+        self.event("repeated_failure", reason=reason, exit_code=REPEATED_FAILURE_CODE, **details)
+        return True
 
 
 def reset(root: Path, bundles: tuple[int, ...], from_step: str) -> int:
@@ -213,11 +227,18 @@ def runner_status(state: dict, pid_alive=None) -> str:
     if not runner:
         return ""
     pid, heartbeat = runner["pid"], runner["heartbeat_at"]
+    stop = state.get("last_stop", {})
+    failure = (f"실패: {stop.get('scope')} {stop.get('step')}, "
+               f"연속 {stop.get('failures', 0)}회")
     if runner.get("ended_at"):
+        if stop.get("status") == "repeated_failure":
+            return f"실행기: 멈춤({failure}, 끝난 시각 {runner['ended_at']})"
         reason = state.get("last_stop", {}).get("reason", state["status"])
         return (f"실행기: 멈춤(종료 코드 {runner['exit_code']}, "
                 f"끝난 시각 {runner['ended_at']}, 이유 {reason})")
     if (pid_alive or pid_is_alive)(pid):
+        if state["status"] == "restart_wait" and stop.get("step"):
+            return f"실행기: 재시작 대기({failure}, PID {pid})"
         return f"실행기: 실행 중(PID {pid}, 마지막 기록 {heartbeat})"
     return f"실행기: 끊김(PID {pid}, 마지막 기록 {heartbeat}) — 같은 launch 명령으로 이으면 된다"
 

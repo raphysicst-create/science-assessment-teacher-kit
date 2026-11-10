@@ -21,16 +21,19 @@ from scripts.nationwide_steps import (
 
 
 class StopRun(Exception):
-    def __init__(self, code: int, status: str, reason: str):
+    def __init__(self, code: int, status: str, reason: str, *, stop_others=None):
         super().__init__(reason)
         self.code, self.status = code, status
+        self.stop_others = (code != 1 or status != "failed") if stop_others is None else stop_others
+        self.details = {}
 
 
 def fail(runner, error: BaseException) -> None:
     with runner.checkpoint_lock:
         if not any(previous is error for previous in runner.failures):
             runner.failures.append(error)
-        runner.stop_event.set()
+        if not isinstance(error, StopRun) or error.stop_others:
+            runner.stop_event.set()
 
 
 def run_step(runner, bundle: int, key: str, step) -> bool:
@@ -39,6 +42,7 @@ def run_step(runner, bundle: int, key: str, step) -> bool:
     with runner.checkpoint_lock:
         scope = runner.scope(bundle, key)
         record = scope["steps"].setdefault(step.name, {"status": "pending"})
+        record.setdefault("failures", 0)
         if record["status"] == "done":
             return True
     resource = {"ai": runner.ai_lock, "collect": runner.collect_lock}.get(step.kind)
@@ -51,14 +55,22 @@ def run_step(runner, bundle: int, key: str, step) -> bool:
             else:
                 runner.attempt(bundle, key, step, record)
             with runner.checkpoint.edit():
-                record["status"] = "done"
+                record.update(status="done", failures=0)
             return True
         except BaseException as error:
+            if isinstance(error, Exception) and not isinstance(error, StopRun):
+                # Unexpected Python errors keep their shared stop while gaining step context.
+                error = StopRun(1, "failed", str(error), stop_others=True)
             fail(runner, error)
             with runner.checkpoint.edit():
                 record.update(status="failed", reason=str(error))
                 scope["status"] = "failed"
-            raise
+                if isinstance(error, StopRun):
+                    if error.code == 1 and error.status == "failed":
+                        record["failures"] += 1
+                    error.details.update(scope=scope.get("key", key), step=step.name,
+                                         failures=record["failures"])
+            raise error
 
 
 def run_round(runner, bundle: int, number: int) -> None:
@@ -82,7 +94,7 @@ def run_rounds(runner, bundle: int) -> None:
     if runner.cfg.sequential_rounds:
         for number in ROUND_ORDER:
             run_round(runner, bundle, number)
-            if runner.stop_event.is_set():
+            if runner.failures or runner.stop_event.is_set():
                 break
     else:
         threads = [threading.Thread(target=run_round, args=(runner, bundle, number),

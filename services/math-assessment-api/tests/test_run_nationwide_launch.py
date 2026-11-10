@@ -54,6 +54,7 @@ def test_launch_detaches_and_passes_config(tmp_path, capsys, platform):
     args = launcher.build_parser("").parse_args(argv[2:])
     assert (args.bundles, args.model, args.workers, args.isolated_cwd, args.wait_seconds) == (
         cfg.bundles, cfg.model, cfg.workers, cfg.isolated_cwd, cfg.wait_seconds)
+    assert args.max_step_failures == 2
     assert argv[-2:] == ["--restart-on-failure", "3"]
     assert options["stdin"] == subprocess.DEVNULL
     assert options["stderr"] == subprocess.STDOUT
@@ -86,8 +87,11 @@ def test_launch_cli_forwards_options_and_default_restart(tmp_path):
     assert calls[0][4] == "2,3,4,5,6"
     assert str(tmp_path / "isolated") in calls[0]
     assert calls[0][-2:] == ["--restart-on-failure", "3"]
-    assert runner.main([*argv, "--restart-on-failure", "8"], root=tmp_path, popen=popen) == 0
+    assert launcher.build_parser("").parse_args(calls[0][2:]).max_step_failures == 2
+    assert runner.main([*argv, "--restart-on-failure", "8", "--max-step-failures", "3"],
+                       root=tmp_path, popen=popen) == 0
     assert calls[1][-2:] == ["--restart-on-failure", "8"]
+    assert launcher.build_parser("").parse_args(calls[1][2:]).max_step_failures == 3
 
 
 def test_launch_locked_never_spawns_or_changes_state(tmp_path):
@@ -110,16 +114,25 @@ def test_cli_requires_bundles_and_nonnegative_restarts(tmp_path, command):
     assert not (tmp_path / OUTPUT).exists()
 
 
+@pytest.mark.parametrize("command", ["run", "launch"])
+@pytest.mark.parametrize("maximum", ["0", "-1", "1.5"])
+def test_cli_rejects_invalid_max_step_failures(tmp_path, command, maximum):
+    with pytest.raises(SystemExit) as error:
+        runner.main([command, "--bundles", "1", "--max-step-failures", maximum], root=tmp_path)
+    assert error.value.code == 2 and not (tmp_path / OUTPUT).exists()
+
+
 def test_run_cli_passes_restart_and_argv(tmp_path, monkeypatch):
     calls = []
     monkeypatch.setattr(runner, "run", lambda cfg, **kwargs: calls.append((cfg, kwargs)) or 0)
-    args = ["run", "--bundles", "2-3", "--restart-on-failure", "4"]
+    args = ["run", "--bundles", "2-3", "--restart-on-failure", "4", "--max-step-failures", "3"]
     assert runner.main(args, root=tmp_path) == 0
     assert calls[0][0].bundles == (2, 3)
-    assert calls[0][1] == {"restart_on_failure": 4,
+    assert calls[0][1] == {"restart_on_failure": 4, "max_step_failures": 3,
                            "argv": ["scripts/run_nationwide.py", *args]}
     assert runner.main(["run", "--bundles", "1"], root=tmp_path) == 0
     assert calls[1][1]["restart_on_failure"] == 0
+    assert calls[1][1]["max_step_failures"] == 2
 
 
 @pytest.mark.parametrize("command", ["run", "launch"])
@@ -155,6 +168,10 @@ def test_restart_resumes_same_bundles_and_holds_lock_during_wait(setup):
         fake.waits.append(seconds)
         state = load_state(cfg.root)
         assert "ended_at" not in state["runner"]
+        key = round_key(1, 3)
+        assert state["bundles"]["1"]["rounds"][key]["steps"]["conversion"]["failures"] == 1
+        assert state_module.status_text(state, pid_alive=lambda pid: True).splitlines()[0] == (
+            f"실행기: 재시작 대기(실패: {key} conversion, 연속 1회, PID {state['runner']['pid']})")
         assert runner.main(["launch", "--bundles", "1,2"], root=cfg.root) == 5
 
     assert fake.run(cfg, restart_on_failure=3, sleep=sleep) == 0
@@ -166,6 +183,8 @@ def test_restart_resumes_same_bundles_and_holds_lock_during_wait(setup):
     assert restarts[0]["attempt"] == 1 and restarts[0]["seconds"] == 300
     assert restarts[0]["reason"] == f"{round_key(1, 3)}/conversion exited 1"
     assert all(load_state(cfg.root)["bundles"][str(b)]["status"] == "done" for b in (1, 2))
+    record = load_state(cfg.root)["bundles"]["1"]["rounds"][round_key(1, 3)]["steps"]["conversion"]
+    assert record["failures"] == 0 and record["attempts"] == 2
 
 
 @pytest.mark.parametrize("code", [2, 3, 4, 6])
@@ -218,7 +237,7 @@ def test_locked_run_does_not_retry_or_write_runner(setup):
 def test_restart_budget_returns_last_failure(setup):
     cfg, fake = setup
     fake.responses["conversion"] = [(9, "still failed")] * 3
-    assert fake.run(cfg, restart_on_failure=2) == 1
+    assert fake.run(cfg, restart_on_failure=2, max_step_failures=4) == 1
     assert fake.waits == [300, 300]
     assert fake.names().count("collect") == 1
     assert fake.names().count("conversion") == 3
@@ -229,12 +248,46 @@ def test_restart_budget_returns_last_failure(setup):
     assert state["last_stop"]["reason"].endswith("exited 9")
 
 
+@pytest.mark.parametrize("maximum", [1, 2, 3])
+def test_repeated_step_failure_stops_before_another_wait(setup, monkeypatch, capsys, maximum):
+    cfg, fake = setup
+    cfg = replace(cfg, bundles=(2,))
+    key = round_key(2, 3)
+    fake.responses[(key, "conversion")] = [(1, "same defect")] * 4
+    monkeypatch.setattr(state_module, "now", lambda: ENDED)
+    options = {} if maximum == 2 else {"max_step_failures": maximum}
+    assert fake.run(cfg, restart_on_failure=3, **options) == 7
+    assert fake.names().count("conversion") == maximum
+    assert len(fake.responses[(key, "conversion")]) == 4 - maximum
+    assert fake.waits == [300] * (maximum - 1)
+    state = load_state(cfg.root)
+    assert state["status"] == "repeated_failure"
+    assert state["runner"]["exit_code"] == 7 and state["runner"]["ended_at"] == ENDED
+    assert state["last_stop"] == {
+        "code": 7, "status": "repeated_failure", "scope": key, "step": "conversion",
+        "reason": f"{key}/conversion failed {maximum} consecutive times",
+        "failures": maximum, "time": ENDED,
+    }
+    record = state["bundles"]["2"]["rounds"][key]["steps"]["conversion"]
+    assert record["failures"] == record["attempts"] == maximum
+    assert record["status"] == "failed" and record["exit_code"] == 1
+    repeated = [event for event in events(cfg.root) if event["event"] == "repeated_failure"]
+    assert len(repeated) == 1
+    assert (repeated[0]["scope"], repeated[0]["step"], repeated[0]["failures"]) == (
+        key, "conversion", maximum)
+    assert len([event for event in events(cfg.root) if event["event"] == "restart"]) == maximum - 1
+    assert runner.main(["status"], root=cfg.root) == 0
+    assert capsys.readouterr().out.splitlines()[0] == (
+        f"실행기: 멈춤(실패: {key} conversion, 연속 {maximum}회, 끝난 시각 {ENDED})")
+
+
 @pytest.mark.parametrize("injected, expected", [(None, 9), (7, 7)])
 def test_restart_wait_can_be_changed_without_real_sleep(setup, monkeypatch, injected, expected):
     cfg, fake = setup
     monkeypatch.setattr(runner, "RESTART_WAIT_SECONDS", 9)
     fake.responses["collect"] = [(1, "fail")] * 2
-    assert fake.run(cfg, restart_on_failure=1, restart_wait_seconds=injected) == 1
+    assert fake.run(cfg, restart_on_failure=1, restart_wait_seconds=injected,
+                    max_step_failures=3) == 1
     assert fake.waits == [expected]
 
 

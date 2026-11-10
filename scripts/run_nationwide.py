@@ -32,9 +32,15 @@ from scripts.nationwide_gates import (  # noqa: E402
     stop_server,
     wait_ready,
 )
-from scripts.nationwide_launch import build_parser, launch, parse_bundles  # noqa: E402, F401
+from scripts.nationwide_launch import (  # noqa: E402, F401
+    DEFAULT_MAX_STEP_FAILURES,
+    build_parser,
+    launch,
+    parse_bundles,
+)
 from scripts.nationwide_parallel import StopRun, run_bundle, run_step  # noqa: E402
 from scripts.nationwide_state import (  # noqa: E402
+    REPEATED_FAILURE_CODE,
     Checkpoint,
     load_state,
     now,
@@ -143,11 +149,12 @@ class Runner:
                 for key, steps in phases:
                     scope = self.scope(bundle, key)
                     for step in steps:
-                        scope["steps"].setdefault(step.name, {"status": "pending"})
+                        record = scope["steps"].setdefault(step.name, {"status": "pending"})
+                        record.setdefault("failures", 0)
                 gate = self.scope(bundle, "gate")["steps"]
                 for name in ("api-server", "web-build", "web-server", "mobile-1", "mobile-2",
                              "mobile-3", "mobile-4", "detail", "verify"):
-                    gate.setdefault(name, {"status": "pending"})
+                    gate.setdefault(name, {"status": "pending", "failures": 0})
 
     def prepare_bundle(self, bundle: int) -> None:
         school_ids = set()
@@ -234,7 +241,7 @@ class Runner:
         return None
 
     def stop_if_requested(self, key: str, step: Step) -> None:
-        # N2 재검수: 다른 회차가 멈췄으면 재시도·대기 뒤 새 호출을 시작하지 않는다.
+        # 공유 중단 원인이 생기면 재시도·대기 뒤 새 호출을 시작하지 않는다.
         if self.stop_event.is_set():
             raise StopRun(1, "stopped", f"{key}/{step.name}: other round stopped")
 
@@ -300,7 +307,7 @@ def run_attempt(runner: Runner) -> int:
             checkpoint.state["status"] = "done"
         return 0
     except StopRun as error:
-        checkpoint.stop(error.status, str(error), error.code)
+        checkpoint.stop(error.status, str(error), error.code, **error.details)
         return error.code
     except (Exception, KeyboardInterrupt) as error:
         status = "interrupted" if isinstance(error, KeyboardInterrupt) else "failed"
@@ -310,8 +317,11 @@ def run_attempt(runner: Runner) -> int:
 
 def run(cfg: Config, *, execute=execute, sleep=time.sleep, start_server=start_server,
         stop_server=stop_server, wait_ready=wait_ready, find_codex=codex_available,
-        restart_on_failure=0, restart_wait_seconds=None, argv=None,
+        restart_on_failure=0, restart_wait_seconds=None,
+        max_step_failures=DEFAULT_MAX_STEP_FAILURES, argv=None,
         ai_lock=None, collect_lock=None, checkpoint_lock=None) -> int:
+    if max_step_failures < 1:
+        raise ValueError("max-step-failures must be positive")
     wait = RESTART_WAIT_SECONDS if restart_wait_seconds is None else restart_wait_seconds
     try:
         with runner_lock(cfg.root):
@@ -324,8 +334,15 @@ def run(cfg: Config, *, execute=execute, sleep=time.sleep, start_server=start_se
             try:
                 for attempt in range(restart_on_failure + 1):
                     code = run_attempt(runner)
+                    failures = ({"status": error.status, **error.details}
+                                for error in runner.failures if isinstance(error, StopRun)
+                                and error.code == 1)
+                    if code == 1 and checkpoint.stop_repeated_failure(max_step_failures, failures):
+                        code = REPEATED_FAILURE_CODE
                     if code != 1 or attempt == restart_on_failure:
                         return code
+                    with checkpoint.edit():
+                        checkpoint.state["status"] = "restart_wait"
                     checkpoint.event("restart", attempt=attempt + 1,
                                      reason=checkpoint.state["last_stop"]["reason"], seconds=wait)
                     sleep(wait)
@@ -354,16 +371,20 @@ def main(argv=None, *, root=None, popen=None, pid_alive=None) -> int:
         return 0
     if args.command == "reset":
         return reset(project, args.bundles, args.from_step)
-    if args.workers < 1 or args.wait_seconds < 0 or args.restart_on_failure < 0:
-        parser.error("workers must be positive; wait-seconds and restart-on-failure nonnegative")
+    if (args.workers < 1 or args.max_step_failures < 1 or args.wait_seconds < 0
+            or args.restart_on_failure < 0):
+        parser.error("workers and max-step-failures must be positive; "
+                     "wait-seconds and restart-on-failure nonnegative")
     isolated = args.isolated_cwd
     if not isolated.is_absolute():
         isolated = project / isolated
     cfg = Config(project, args.bundles, args.model, args.workers, isolated, args.wait_seconds,
                  args.sequential_rounds)
     if args.command == "launch":
-        return launch(cfg, args.restart_on_failure, popen=popen)
+        return launch(cfg, args.restart_on_failure, max_step_failures=args.max_step_failures,
+                      popen=popen)
     return run(cfg, restart_on_failure=args.restart_on_failure,
+               max_step_failures=args.max_step_failures,
                argv=sys.argv if argv is None else ["scripts/run_nationwide.py", *argv])
 
 
