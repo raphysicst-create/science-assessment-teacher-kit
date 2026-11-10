@@ -1,0 +1,74 @@
+{
+ "database": "data/publish/science/math_assessment_catalog_detail.public.sqlite",
+ "database_sha256": "36226cb41c27cc3cf1cf5933e33ebcfccc0678b08112a5aa1cd058452017d60c",
+ "cards": [
+  {
+   "card": "D01",
+   "item_id": "e0148f336a7e395983e62ab46f73"
+  },
+  {
+   "card": "D02",
+   "item_id": "391a84a2fe143191cdbec01b9a66"
+  },
+  {
+   "card": "D03",
+   "item_id": "e293a51f9ad32ca49b6055ac7764"
+  },
+  {
+   "card": "D04",
+   "item_id": "4564169719335118d89fe227aa45"
+  },
+  {
+   "card": "D05",
+   "item_id": "3cd9b8517cd88cd31d30123ec378"
+  },
+  {
+   "card": "D06",
+   "item_id": "c15a15de04ddb9b365141ebffdac"
+  },
+  {
+   "card": "D07",
+   "item_id": "053a05e68b997804c264af6e9695"
+  },
+  {
+   "card": "D08",
+   "item_id": "87660080b09ac24c098ea63dec7d"
+  },
+  {
+   "card": "D09",
+   "item_id": "e9bb97ece3b24ff9caa3b6030879"
+  },
+  {
+   "card": "D10",
+   "item_id": "d93bcc6e46d157b0a56bf481211f"
+  },
+  {
+   "card": "D11",
+   "item_id": "59474dab0a765625889cdd5e9420"
+  },
+  {
+   "card": "D12",
+   "item_id": "08dc8edb7c184ff5ab9ff789bad7"
+  },
+  {
+   "card": "D13",
+   "item_id": "434cbb0bf3256f1e78cd9c767480"
+  },
+  {
+   "card": "D14",
+   "item_id": "293013fbc85dc555844a8ea861a4"
+  },
+  {
+   "card": "D15",
+   "item_id": "ee422d811a8455e45127351d986c"
+  },
+  {
+   "card": "D16",
+   "item_id": "1bbcd53ef8b34184a452291d5cf7"
+  },
+  {
+   "card": "D17",
+   "item_id": "fc296d9a7de52250329445e0d6ef"
+  }
+ ]
+}
