@@ -20,6 +20,7 @@ from middle_subjects import (
     table_diagnostics,
     table_spans,
 )
+from text_clean import read_conversion
 
 ROOT = Path(__file__).resolve().parents[1]
 STATES = ("target", "other", "mixed", "unknown", "image_only")
@@ -78,7 +79,7 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
         if schools is not None and str(document["source"]["school_code"]) not in schools:
             continue
         path = ROOT / document["converted_path"]
-        conversion = json.loads(path.read_text(encoding="utf-8"))
+        conversion = read_conversion(path)
         text = conversion["text"]
         text_sha = hashlib.sha256(text.encode("utf-8")).hexdigest()
         if text_sha != document["text_sha256"]:

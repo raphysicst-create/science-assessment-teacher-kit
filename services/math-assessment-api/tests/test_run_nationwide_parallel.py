@@ -306,3 +306,20 @@ def test_ai_wait_rechecks_stop_before_next_call(setup):
         instance.step(1, key, Step("first-run", (), kind="ai"))
     assert [name for name in fake.names() if name == "first-run"] == ["first-run"] * 2
     assert fake.waits == [3600]
+
+
+def test_shared_stop_after_step_failure_outranks_it(setup, monkeypatch):
+    # N2b 검수: 일반 실패 뒤 다른 회차의 학교알리미 제한(4)이 나면 4를 올려 재시작하지 않는다.
+    cfg, fake = setup
+    cfg = replace(cfg, bundles=(2,), sequential_rounds=False)
+    failed, other = round_key(2, 3), round_key(2, 1)
+    fake.responses[(failed, "conversion")] = [(1, "synthetic defect")]
+    original = fake.execute
+
+    def execute(step, path):
+        if path.parent.name == other and step.kind == "collect":
+            return 1, "paused after Schoolinfo access restriction"
+        return original(step, path)
+
+    instance = make_runner(cfg, fake, execute)
+    assert runner.run_attempt(instance) == 4

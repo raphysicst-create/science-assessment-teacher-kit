@@ -36,10 +36,12 @@ if __package__:
     from .middle_items import FIELDS
     from .middle_segments import SUBJECT_LABELS, digest_id, text_locator
     from .middle_subjects import subject_headers, table_spans
+    from .text_clean import clean_tree
 else:
     from middle_items import FIELDS
     from middle_segments import SUBJECT_LABELS, digest_id, text_locator
     from middle_subjects import subject_headers, table_spans
+    from text_clean import clean_tree
 
 ROOT = Path(__file__).resolve().parents[1]
 CODEX_GLOB = "C:/Users/USER/AppData/Local/OpenAI/Codex/bin/*/codex.exe"
@@ -121,7 +123,7 @@ def conversion_for(root: Path, document: dict) -> dict:
     path = guard_path(root / document["converted_path"])
     if not path.is_relative_to(root.resolve()):
         raise ValueError("변환본 경로가 저장소 밖임")
-    conversion = read_json(path)
+    conversion = clean_tree(read_json(path))  # N2b: lone surrogates never reach hashes/AI input
     text = conversion["text"]
     if sha(text) != document["text_sha256"]:
         raise ValueError("S4 원문 해시 불일치")

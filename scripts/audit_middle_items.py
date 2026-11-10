@@ -24,6 +24,7 @@ from middle_items import (
 )
 from middle_pdf_cells import verified_title_splits
 from middle_rounds import roster_codes, roster_path
+from text_clean import read_conversion
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -73,7 +74,7 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
         if schools is not None and str(document["school_code"]) not in schools:
             continue
         documents.append(document)
-        conversion = json.loads((ROOT / document["converted_path"]).read_text(encoding="utf-8"))
+        conversion = read_conversion(ROOT / document["converted_path"])
         source_document = source_documents[document["converted_path"]]
         conversion["document_grade_evidence"] = [g for s in source_document["segments"]
                                                   for g in s["grade_evidence"]]

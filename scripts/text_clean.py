@@ -10,7 +10,9 @@ Verify: pytest -q services/math-assessment-api/tests/test_n2b_surrogates.py
 
 from __future__ import annotations
 
+import json
 import re
+from pathlib import Path
 
 REPLACEMENT = "�"
 LONE_SURROGATE_RE = re.compile("[\ud800-\udfff]")
@@ -32,3 +34,8 @@ def clean_tree(value):
     if isinstance(value, dict):
         return {clean_tree(key): clean_tree(item) for key, item in value.items()}
     return value
+
+
+def read_conversion(path: Path) -> dict:
+    """Read a saved conversion JSON with every string cleaned (all re-read paths use this)."""
+    return clean_tree(json.loads(Path(path).read_text(encoding="utf-8")))

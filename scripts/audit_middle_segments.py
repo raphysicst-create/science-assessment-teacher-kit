@@ -25,7 +25,7 @@ from middle_segments import (
     resolve_versions,
     segment_document,
 )
-from text_clean import clean_tree
+from text_clean import clean_tree, read_conversion
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -97,7 +97,7 @@ def independent_documents(document: dict, root: Path) -> list[dict]:
     if not document["children"]:
         return [document]
     conversion_path = root / document["converted_path"]
-    conversion = json.loads(conversion_path.read_text(encoding="utf-8"))
+    conversion = read_conversion(conversion_path)
     result = []
     for child in conversion["children"]:
         identity = child_identifier(document["sha256"], child)

@@ -113,7 +113,10 @@ def run_rounds(runner, bundle: int) -> None:
                 thread.join()
     if runner.failures:
         stops = [error for error in runner.failures if isinstance(error, StopRun)]
-        raise (stops or runner.failures)[0]
+        # N2b review: a shared stop (limit 3, restriction 4, ...) outranks an earlier step failure
+        # so the restart loop never retries through a usage limit or access restriction.
+        shared = [error for error in stops if error.code != 1]
+        raise (shared or stops or runner.failures)[0]
 
 
 def run_bundle(runner, bundle: int, run_gates) -> None:

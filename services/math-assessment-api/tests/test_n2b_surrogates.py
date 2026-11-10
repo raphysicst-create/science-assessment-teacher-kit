@@ -68,3 +68,13 @@ def test_reused_conversion_cache_is_cleaned(modules):
     text_clean = modules[0]
     cached = json.loads('{"text": "창의\\udfb3융합", "sha256": "x"}')
     assert text_clean.clean_tree(cached)["text"].encode("utf-8") == "창의�융합".encode()
+
+
+def test_saved_conversion_reread_paths_clean_text(modules, tmp_path):
+    # N2b 검수: 변환본 JSON을 다시 읽는 공통 함수가 서로게이트 이스케이프를 정리한다.
+    text_clean = modules[0]
+    path = tmp_path / "conversion.json"
+    path.write_text('{"text": "창의\\udfb3융합", "sha256": "x"}', encoding="utf-8")
+    conversion = text_clean.read_conversion(path)
+    assert conversion["text"] == "창의\ufffd융합"
+    hashlib.sha256(conversion["text"].encode("utf-8")).hexdigest()
