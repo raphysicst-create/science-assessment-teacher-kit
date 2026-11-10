@@ -274,17 +274,20 @@ def test_all_cached_needs_no_wait(setup, include_skipped):
     assert not fake.waits
 
 
-def test_completed_retry_passes_even_with_low_combined_fresh_rate(setup):
+def test_completed_retry_still_waits_when_fresh_rate_is_low(setup):
+    # 재시도로 다 채워져도 새 호출 유효율 20/40 < 80%면 60분 쉬고 그 단계를 다시 부른다.
     cfg, fake = setup
     fake.responses["first-run"] = [
         (0, {"called": 20, "valid": 80, "total": 100, "skipped": 80}),
         (0, {"called": 20, "valid": 100, "total": 100, "skipped": 80}),
+        (0, {"called": 0, "valid": 100, "total": 100, "skipped": 100}),
     ]
     assert fake.run(cfg) == 0
     record = first_record(cfg)
     assert record["called"] == 40 and record["fresh_valid"] == 20
-    assert record["last_fresh_rate"] == 0.5 and record["low_streak"] == 0
-    assert record["attempts"] == 2 and not fake.waits
+    assert fake.waits == [3600]
+    assert record["last_fresh_rate"] == 1 and record["low_streak"] == 0
+    assert record["attempts"] == 3
 
 
 def test_three_low_cycles_stop_with_usage_limit(setup):

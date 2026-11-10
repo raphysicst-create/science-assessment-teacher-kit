@@ -238,7 +238,8 @@ class Runner:
                 fresh_valid += counts["fresh_valid"]
             rate = fresh_valid / called if called else 1
             record["last_fresh_rate"] = rate
-            low_rate = rate < MIN_VALID_RATE and counts["valid"] < counts["total"]
+            # 새 호출 유효율 80% 미만이면 재시도로 다 채워졌어도 쉬고 잇는다(N1 재검수).
+            low_rate = rate < MIN_VALID_RATE
             record["low_streak"] = record.get("low_streak", 0) + 1 if low_rate else 0
             if not low_rate:
                 return
