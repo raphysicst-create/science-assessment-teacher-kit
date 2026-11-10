@@ -56,6 +56,9 @@ def test_course_name_in_plan_title(phrase):
     ("코딩반", True), ("로봇제작", True), ("수학", True), ("과학", False),
     (" 과 학 탐구반 ", False), ("", False), ("  ", False), ("공통", False),
     ("전교과", False), ("통합", False), ("전 과목", False),
+    # N2 개발 회차 오탐: 과학 동아리·주제 이름·칸이 어긋난 머리표는 막지 않는다(fail-open).
+    ("싸이언스 홀릭", False), ("주제선택 (지구의 세포들)", False), ("1학년", False),
+    ("정보", True), ("수학탐구", True),
 ])
 def test_non_science_course_names(name, blocked):
     assert is_non_science_course(name) is blocked
@@ -162,3 +165,22 @@ def test_rule_items_audit_excludes_course_despite_science_codes(tmp_path, monkey
     else:
         assert report["summary"]["bounded"] == 1
         assert report["items"][0]["fields"]["standards"]["value"] == ["[9과01-01]"]
+
+
+def test_science_heading_stops_before_previous_subject_cover():
+    # N2 개발 회차: "# 과학 평가" 아래 항목이 수백 줄 위 수학 계획 머리표를 가져오면 안 된다.
+    lines = ["# 평가 운영 계획", "| 학교명 | 과목 | 학년 |", "| --- | --- | --- |",
+             "| 가중 | 수학 | 1 |", *["본문"] * 50, "# 과학 평가", "", "온도 관찰 보고서"]
+    found = course_name_before(lines, len(lines))
+    assert found == {"course": "과학", "line": len(lines) - 2, "kind": "heading"}
+    assert not is_non_science_course(found["course"])
+
+
+def test_science_word_in_policy_heading_is_not_a_boundary():
+    # 코딩반 계획 안의 방침 문장 "### 아. … 과학적 문제 해결력"은 경계가 아니다.
+    lines = ["2026학년도 자유학기 주제선택활동(코딩반)", "교수학습 및 평가 계획", "",
+             "| 학년 | 과목 | 학기 |", "| --- | --- | --- |", "| 1학년 | 코딩반 | 1학기 |",
+             "### 아. 창의적 사고력, 과학적 문제 해결력을 평가한다.", "",
+             "메타버스 학교 만들기"]
+    found = course_name_before(lines, len(lines))
+    assert found["course"] == "코딩반" and is_non_science_course(found["course"])
