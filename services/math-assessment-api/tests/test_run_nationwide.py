@@ -34,6 +34,14 @@ FULL = {"called": 1, "valid": 2, "total": 2}
 HALF = {"called": 2, "valid": 1, "total": 2}
 
 
+@pytest.fixture(autouse=True)
+def no_real_children(monkeypatch):
+    def reject(*args, **kwargs):
+        pytest.fail("nationwide tests must inject fake child processes")
+
+    monkeypatch.setattr("subprocess.Popen", reject)
+
+
 class Fake:
     def __init__(self):
         self.calls, self.waits, self.started, self.stopped = [], [], [], []

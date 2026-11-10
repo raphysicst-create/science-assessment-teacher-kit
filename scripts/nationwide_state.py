@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import os
 import sqlite3
+import subprocess
 import tempfile
 import time
 from contextlib import contextmanager
@@ -104,12 +105,28 @@ class Checkpoint:
         atomic_json(self.root / OUTPUT / "state.json", self.state)
 
     def event(self, event: str, **details) -> None:
+        timestamp = now()
         path = self.root / OUTPUT / "events.jsonl"
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a", encoding="utf-8") as stream:
-            stream.write(json.dumps({"time": now(), "event": event, **details},
+            stream.write(json.dumps({"time": timestamp, "event": event, **details},
                                     ensure_ascii=False) + "\n")
             stream.flush()
+        if "runner" in self.state:
+            self.state["runner"]["heartbeat_at"] = timestamp
+            self.save()
+
+    def start_runner(self, argv: list[str]) -> None:
+        timestamp = now()
+        self.state["runner"] = {"pid": os.getpid(), "started_at": timestamp,
+                                "heartbeat_at": timestamp, "argv": list(argv)}
+        self.state["status"] = "running"
+        self.state.pop("last_stop", None)
+        self.event("runner-start", pid=os.getpid())
+
+    def end_runner(self, code: int) -> None:
+        self.state["runner"].update(ended_at=now(), exit_code=code)
+        self.event("runner-end", exit_code=code)
 
     def stop(self, status: str, reason: str, code: int) -> None:
         self.state.update(status=status, last_stop={"reason": reason, "time": now(), "code": code})
@@ -117,11 +134,50 @@ class Checkpoint:
         self.event("stop", status=status, reason=reason, exit_code=code)
 
 
-def status_text(state: dict) -> str:
+def pid_is_alive(pid: int, *, run_command=None, platform=None, kill=None) -> bool:
+    if pid <= 0:
+        return False
+    if (platform or os.name) == "nt":
+        try:
+            result = (run_command or subprocess.run)(
+                ["tasklist", "/FI", f"PID eq {pid}", "/NH"], stdin=subprocess.DEVNULL,
+                stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True,
+                encoding="utf-8", errors="replace", check=False)
+            return result.returncode == 0 and str(pid) in result.stdout.split()
+        except OSError:
+            return False
+    try:
+        (kill or os.kill)(pid, 0)
+        return True
+    except PermissionError:
+        return True
+    except OSError:
+        return False
+
+
+def runner_status(state: dict, pid_alive=None) -> str:
+    runner = state.get("runner")
+    if not runner:
+        return ""
+    pid, heartbeat = runner["pid"], runner["heartbeat_at"]
+    if runner.get("ended_at"):
+        reason = state.get("last_stop", {}).get("reason", state["status"])
+        return (f"실행기: 멈춤(종료 코드 {runner['exit_code']}, "
+                f"끝난 시각 {runner['ended_at']}, 이유 {reason})")
+    if (pid_alive or pid_is_alive)(pid):
+        return f"실행기: 실행 중(PID {pid}, 마지막 기록 {heartbeat})"
+    return f"실행기: 끊김(PID {pid}, 마지막 기록 {heartbeat}) — 같은 launch 명령으로 이으면 된다"
+
+
+def status_text(state: dict, *, pid_alive=None) -> str:
+    lines = []
+    if heading := runner_status(state, pid_alive):
+        lines.append(heading)
     if not state.get("bundles"):
-        return "기록 없음"
-    lines = [f"상태 {state['status']}",
-             "묶음 | 회차/구분 | 단계 | 상태 | 초 | called | valid | total | 무효 | 재시도 | 대기"]
+        return "\n".join([*lines, "기록 없음"])
+    lines.extend([f"상태 {state['status']}",
+                  "묶음 | 회차/구분 | 단계 | 상태 | 초 | called | valid | total | "
+                  "무효 | 재시도 | 대기"])
     for number in sorted(state["bundles"], key=int):
         bundle = state["bundles"][number]
         for key, scope in scopes(bundle):

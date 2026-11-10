@@ -1,6 +1,7 @@
 """Run nationwide bundles sequentially with resumable checkpoints and local gates.
 
 Run .venv/Scripts/python.exe scripts/run_nationwide.py run --bundles 2-6.
+Launch .venv/Scripts/python.exe scripts/run_nationwide.py launch --bundles 2-6.
 Inspect .venv/Scripts/python.exe scripts/run_nationwide.py status [--json].
 Verify .venv/Scripts/python.exe -m pytest -q
        services/math-assessment-api/tests/test_run_nationwide.py.
@@ -8,7 +9,6 @@ Verify .venv/Scripts/python.exe -m pytest -q
 
 from __future__ import annotations
 
-import argparse
 import csv
 import glob
 import hashlib
@@ -31,6 +31,7 @@ from scripts.nationwide_gates import (  # noqa: E402
     stop_server,
     wait_ready,
 )
+from scripts.nationwide_launch import build_parser, launch, parse_bundles  # noqa: E402, F401
 from scripts.nationwide_state import (  # noqa: E402
     Checkpoint,
     load_state,
@@ -40,10 +41,6 @@ from scripts.nationwide_state import (  # noqa: E402
 )
 from scripts.nationwide_steps import (  # noqa: E402
     CODEX_PATTERN,
-    DEFAULT_ISOLATED_CWD,
-    DEFAULT_MODEL,
-    DEFAULT_WAIT_SECONDS,
-    DEFAULT_WORKERS,
     OUTPUT,
     ROUND_COLUMNS,
     ROUND_ORDER,
@@ -60,6 +57,7 @@ from scripts.nationwide_steps import (  # noqa: E402
 MIN_VALID_RATE = 0.8
 MAX_LOW_CYCLES = 3
 RESTRICTION_MESSAGE = "paused after Schoolinfo access restriction"
+RESTART_WAIT_SECONDS = 300
 
 
 class StopRun(Exception):
@@ -293,26 +291,51 @@ class Runner:
         self.checkpoint.save()
 
 
+def run_attempt(runner: Runner) -> int:
+    checkpoint = runner.checkpoint
+    try:
+        checkpoint.state["status"] = "running"
+        checkpoint.state.pop("last_stop", None)
+        runner.plan()
+        for bundle in runner.cfg.bundles:
+            runner.bundle(bundle)
+        checkpoint.state["status"] = "done"
+        checkpoint.save()
+        return 0
+    except StopRun as error:
+        checkpoint.stop(error.status, str(error), error.code)
+        return error.code
+    except (Exception, KeyboardInterrupt) as error:
+        status = "interrupted" if isinstance(error, KeyboardInterrupt) else "failed"
+        checkpoint.stop(status, str(error), 1)
+        return 1
+
+
 def run(cfg: Config, *, execute=execute, sleep=time.sleep, start_server=start_server,
-        stop_server=stop_server, wait_ready=wait_ready, find_codex=codex_available) -> int:
+        stop_server=stop_server, wait_ready=wait_ready, find_codex=codex_available,
+        restart_on_failure=0, restart_wait_seconds=None, argv=None) -> int:
+    wait = RESTART_WAIT_SECONDS if restart_wait_seconds is None else restart_wait_seconds
     try:
         with runner_lock(cfg.root):
             runner = Runner(cfg, execute, sleep, start_server, stop_server, wait_ready, find_codex)
+            checkpoint = runner.checkpoint
+            checkpoint.start_runner(sys.argv if argv is None else argv)
+            code = 1
             try:
-                runner.checkpoint.state["status"] = "running"
-                runner.plan()
-                for bundle in cfg.bundles:
-                    runner.bundle(bundle)
-                runner.checkpoint.state["status"] = "done"
-                runner.checkpoint.save()
-                return 0
-            except StopRun as error:
-                runner.checkpoint.stop(error.status, str(error), error.code)
-                return error.code
+                for attempt in range(restart_on_failure + 1):
+                    code = run_attempt(runner)
+                    if code != 1 or attempt == restart_on_failure:
+                        return code
+                    checkpoint.event("restart", attempt=attempt + 1,
+                                     reason=checkpoint.state["last_stop"]["reason"], seconds=wait)
+                    sleep(wait)
             except (Exception, KeyboardInterrupt) as error:
                 status = "interrupted" if isinstance(error, KeyboardInterrupt) else "failed"
-                runner.checkpoint.stop(status, str(error), 1)
-                return 1
+                code = 1
+                checkpoint.stop(status, str(error), code)
+                return code
+            finally:
+                checkpoint.end_runner(code)
     except sqlite3.OperationalError as error:
         if "locked" not in str(error).casefold():
             raise
@@ -320,50 +343,27 @@ def run(cfg: Config, *, execute=execute, sleep=time.sleep, start_server=start_se
         return 5
 
 
-def parse_bundles(value: str) -> tuple[int, ...]:
-    try:
-        numbers = set()
-        for part in value.split(","):
-            bounds = [int(item) for item in part.split("-")]
-            if any(number not in range(1, 7) for number in bounds):
-                raise ValueError
-            if len(bounds) == 1:
-                numbers.add(bounds[0])
-            elif len(bounds) == 2 and bounds[0] <= bounds[1]:
-                numbers.update(range(bounds[0], bounds[1] + 1))
-            else:
-                raise ValueError
-        if not numbers or not numbers <= set(range(1, 7)):
-            raise ValueError
-        return tuple(sorted(numbers))
-    except ValueError as error:
-        raise argparse.ArgumentTypeError("bundles must be 1..6, e.g. 2-6 or 2,3") from error
-
-
-def main(argv=None, *, root=None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    commands = parser.add_subparsers(dest="command", required=True)
-    start = commands.add_parser("run", help="run bundles sequentially, resuming completed steps")
-    start.add_argument("--bundles", type=parse_bundles, required=True)
-    start.add_argument("--model", default=DEFAULT_MODEL)
-    start.add_argument("--workers", type=int, default=DEFAULT_WORKERS)
-    start.add_argument("--isolated-cwd", type=Path, default=DEFAULT_ISOLATED_CWD)
-    start.add_argument("--wait-seconds", type=float, default=DEFAULT_WAIT_SECONDS)
-    status = commands.add_parser("status", help="read checkpoints only")
-    status.add_argument("--json", action="store_true")
+def main(argv=None, *, root=None, popen=None, pid_alive=None) -> int:
+    parser = build_parser(__doc__)
     args = parser.parse_args(argv)
     project = Path(root or Path(__file__).resolve().parents[1]).resolve()
     if args.command == "status":
         state = load_state(project)
-        print(json.dumps(state, ensure_ascii=False, indent=2) if args.json else status_text(state))
+        print(json.dumps(state, ensure_ascii=False, indent=2) if args.json
+              else status_text(state, pid_alive=pid_alive))
         return 0
-    if args.workers < 1 or args.wait_seconds < 0:
-        parser.error("workers must be positive and wait-seconds must be nonnegative")
+    if args.workers < 1 or args.wait_seconds < 0 or args.restart_on_failure < 0:
+        parser.error("workers must be positive; wait-seconds and restart-on-failure nonnegative")
     isolated = args.isolated_cwd
     if not isolated.is_absolute():
         isolated = project / isolated
-    return run(Config(project, args.bundles, args.model, args.workers, isolated, args.wait_seconds))
+    cfg = Config(project, args.bundles, args.model, args.workers, isolated, args.wait_seconds)
+    if args.command == "launch":
+        return launch(cfg, args.restart_on_failure, popen=popen)
+    return run(cfg, restart_on_failure=args.restart_on_failure,
+               argv=sys.argv if argv is None else ["scripts/run_nationwide.py", *argv])
 
 
 if __name__ == "__main__":
+    sys.stdout.reconfigure(encoding="utf-8")  # Windows 콘솔·Git Bash에서 상태 표 한글이 깨지지 않게
     raise SystemExit(main())
