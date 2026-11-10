@@ -2,6 +2,7 @@
 
 실행 .venv/Scripts/python.exe scripts/science_axes_ai.py targets --database DB
 targets --context PATH: 항목별 AI 우선 세부표 문맥으로 카드 창을 교체한다.
+targets --per-card: 카드마다 독립 지시문을 만들고 다른 카드 구성과 무관한 해시를 유지한다.
 이어서 run --isolated-cwd DIR [--fake-responses DIR], verify, export --axes-out DIR.
 모델 선택: run --model → MIDDLE_AI_MODEL → middle_ai_read.DEFAULT_AI_MODEL.
 검증 .venv/Scripts/python.exe -m pytest -q
@@ -99,25 +100,28 @@ def load_cards(database: Path, rounds: list[str] | None = None,
     return result
 
 
-def grouped_targets(cards: list[dict]):
+def grouped_targets(cards: list[dict], per_card: bool = False):
     sections, _ = definition_sections()
-    for scope, _, group in check.grouped_targets(cards):
-        content = {key: scope[key] for key in ("case_id", "grade", "semester")}
+    groups = ([card] for card in cards) if per_card else (
+        group for _, _, group in check.grouped_targets(cards))
+    for group in groups:
+        scope = {key: group[0][key] for key in ("case_id", "grade", "semester")}
+        content = dict(scope)
         content["cards"] = [{name: card[name] for name in CARD_FIELDS} for card in group]
         prompt = sections + INSTRUCTIONS + "\n" + json.dumps(
             content, ensure_ascii=False, indent=2) + "\n"
         digest = ai.sha(prompt)
-        target = {key: scope[key] for key in ("case_id", "grade", "semester", "card_ids")}
+        target = {**scope, "card_ids": [card["item_id"] for card in group]}
         yield {**target, "target_id": digest[:16], "prompt_sha256": digest}, prompt, group
 
 
 def build_targets(database: Path, output: Path, rounds: list[str] | None = None,
-                  context: Path | None = None) -> dict:
+                  context: Path | None = None, per_card: bool = False) -> dict:
     output = checked_path(output)
     context = checked_path(context) if context is not None else None
     cards = load_cards(database, rounds, context)
     targets = []
-    for target, prompt, group in grouped_targets(cards):
+    for target, prompt, group in grouped_targets(cards, per_card):
         ai.write_text(output / f"prompts/{target['target_id']}.md", prompt)
         if context is not None:
             target["cards"] = group
@@ -125,6 +129,8 @@ def build_targets(database: Path, output: Path, rounds: list[str] | None = None,
     ai.write_text(output / "targets.jsonl", "".join(
         json.dumps(target, ensure_ascii=False) + "\n" for target in targets))
     selection = {"rounds": rounds}
+    if per_card:
+        selection["per_card"] = True
     if context is not None:
         selection["context"] = str(context)
     ai.save_json(output / "selection.json", selection)
@@ -185,7 +191,7 @@ def verify_targets(output: Path, database: Path) -> dict:
     else:
         cards = load_cards(database, selection["rounds"])
     current = {target["target_id"]: ({**target, **({"cards": group} if saved else {})}, group)
-               for target, _, group in grouped_targets(cards)}
+               for target, _, group in grouped_targets(cards, selection.get("per_card", False))}
     _, names = definition_sections()
     verdicts, discarded, uncertain = [], [], []
     valid = 0
@@ -283,6 +289,7 @@ def main(argv: list[str] | None = None) -> int:
         if name == "targets":
             command.add_argument("--rounds", nargs="+")
             command.add_argument("--context", type=Path)
+            command.add_argument("--per-card", action="store_true")
         elif name == "run":
             command.add_argument("--isolated-cwd", type=Path, required=True)
             command.add_argument("--workers", type=int, default=DEFAULT_WORKERS)
@@ -294,7 +301,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         output = checked_path(args.out_dir)
         if args.command == "targets":
-            result = build_targets(args.database, output, args.rounds, args.context)
+            result = build_targets(args.database, output, args.rounds, args.context, args.per_card)
         elif args.command == "run":
             fake = checked_path(args.fake_responses) if args.fake_responses is not None else None
             result = ai.run_targets(ROOT, None, args.isolated_cwd, workers=args.workers,

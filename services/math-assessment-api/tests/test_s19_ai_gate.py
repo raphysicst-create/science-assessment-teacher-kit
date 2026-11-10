@@ -1,5 +1,6 @@
 """Verify science warning/privacy/AI publication gates using persisted synthetic inputs.
 
+Repeated performance-task labels warn in B5 while AI0/AI3 still block the same card.
 Run: .venv/Scripts/python.exe -m pytest -q
      services/math-assessment-api/tests/test_s19_ai_gate.py
 """
@@ -176,3 +177,69 @@ def test_runner_optional_ai_gate_merges_codes_and_keeps_warnings_out(tmp_path, m
     with Path(report["risk_queue"]).open(encoding="utf-8-sig", newline="") as stream:
         rows = list(csv.DictReader(stream))
     assert len(rows) == 1 and rows[0]["blocking_codes"] == "B6|AI0"
+
+
+def performance_labels_database(tmp_path, *, invalid_span=False):
+    db = database(tmp_path, extra="수행과제 수행과제")
+    if invalid_span:
+        with sqlite3.connect(db) as connection:
+            source = connection.execute(
+                "SELECT source_html_zlib FROM assessment_items").fetchone()[0]
+            markup = zlib.decompress(source).decode("utf-8").replace(
+                "<td>", "<td colspan='invalid'>", 1)
+            connection.execute("UPDATE assessment_items SET source_html_zlib=?",
+                               (zlib.compress(markup.encode("utf-8")),))
+    return db
+
+
+def test_b5_performance_labels_warn_and_stay_out_of_combined_queue(tmp_path, monkeypatch):
+    from scripts import run_science_audits as runner
+
+    flag = "multiple_performance_task_labels"
+    db = performance_labels_database(tmp_path)
+    assert rules.table_flags(rules.public_items(db)[0]) == {flag}
+    assert flag in rules.WARNING_TABLE_FLAGS and flag not in rules.BLOCKING_TABLE_FLAGS
+    assert flag in rules.RECOVERY_BLOCKING_TABLE_FLAGS
+    result, report, rows = invoke(tmp_path, db, "audit_math_assessment_table_structure.py")
+    assert result.returncode == 0, result.stderr
+    assert report["passed"] and report["blocking_public_items"] == 0
+    assert report["warning_items"] == 1 and report["warning_flag_counts"] == {flag: 1}
+    assert len(rows) == 1
+    assert rows[0]["severity"] == "warning" and rows[0]["blocking_codes"] == "B5"
+    assert rows[0]["reasons"] == "B5:multiple_performance_task_labels"
+    # Exercise the real table CLI and queue merger, isolating unrelated audit schemas.
+    monkeypatch.setattr(runner, "AUDITS", (("tables", "audit_math_assessment_table_structure.py",
+                                          "--output"),))
+    combined = runner.run(db, tmp_path / "combined")
+    assert combined["passed"] and combined["blocking_public_items"] == 0
+    with Path(combined["risk_queue"]).open(encoding="utf-8-sig", newline="") as stream:
+        assert list(csv.DictReader(stream)) == []
+
+
+def test_b5_other_structural_blocker_still_blocks_with_performance_labels(tmp_path):
+    db = performance_labels_database(tmp_path, invalid_span=True)
+    assert rules.table_flags(rules.public_items(db)[0]) == {
+        "multiple_performance_task_labels", "invalid_span_value"}
+    result, report, rows = invoke(tmp_path, db, "audit_math_assessment_table_structure.py")
+    assert result.returncode == 1, result.stderr
+    assert not report["passed"] and report["blocking_public_items"] == 1
+    assert len(rows) == 1
+    assert rows[0]["severity"] == "blocking" and rows[0]["blocking_codes"] == "B5"
+    assert rows[0]["reasons"] == "B5:invalid_span_value"
+
+
+@pytest.mark.parametrize("judgment,code", [
+    (None, "AI0"), (verdict(merged=True), "AI3"), (verdict(), None),
+])
+def test_b5_warning_card_still_requires_ai_approval(tmp_path, judgment, code):
+    db = performance_labels_database(tmp_path)
+    verified = tmp_path / "verified.json"
+    verified.write_text(json.dumps({"cards": [] if judgment is None else [judgment]}),
+                        encoding="utf-8")
+    result, report, rows = invoke(tmp_path, db, "audit_science_ai_gate.py",
+                                  ["--verified", str(verified)])
+    assert result.returncode == int(code is not None), result.stderr
+    assert report["passed"] == (code is None)
+    assert report["blocking_public_items"] == int(code is not None)
+    assert [row["blocking_codes"] for row in rows] == ([] if code is None else [code])
+    assert all(row["severity"] == "blocking" for row in rows)

@@ -1,5 +1,6 @@
 """Verify source-bound activity contexts and saved quote windows entirely offline.
 
+Saved context windows also survive per-card target reconstruction.
 Run .venv/Scripts/python.exe -m pytest -q
     services/math-assessment-api/tests/test_activity_context.py
 Verify .venv/Scripts/python.exe -m ruff check
@@ -172,7 +173,8 @@ def test_targets_without_context_keep_legacy_bytes(database, tmp_path):
     assert (output / "selection.json").read_bytes() == b'{\n  "rounds": null\n}\n'
 
 
-def test_context_changes_only_source_item_window(database, tmp_path):
+@pytest.mark.parametrize("per_card", [False, True])
+def test_context_changes_only_source_item_window(database, tmp_path, per_card):
     original = axes.load_cards(database)
     context_path = tmp_path / "activity_context.json"
     detail = "평가" * 1700 + " 새로운 평가기준"
@@ -188,8 +190,9 @@ def test_context_changes_only_source_item_window(database, tmp_path):
             assert basis == "card"
         assert before == after
     output = tmp_path / "run"
+    flags = ["--per-card"] if per_card else []
     assert axes.main(["targets", "--database", str(database), "--out-dir", str(output),
-                      "--context", str(context_path)]) == 0
+                      "--context", str(context_path), *flags]) == 0
     saved = [c for target in ai.load_targets(output) for c in target["cards"]]
     assert next(c for c in saved if c["source_item_id"] == "demo-item-1")["window"] == detail
     assert axes.checked_path(axes.ROOT / "data/derived/activity_context.json")
@@ -214,8 +217,9 @@ def fake_run(output, tmp_path, monkeypatch, quote):
 
 
 @pytest.mark.parametrize("use_detail_quote", [True, False])
+@pytest.mark.parametrize("per_card", [False, True])
 def test_verify_uses_saved_windows_after_context_and_db_change(
-    database, tmp_path, monkeypatch, use_detail_quote,
+    database, tmp_path, monkeypatch, use_detail_quote, per_card,
 ):
     card = next(c for c in axes.load_cards(database) if c["source_item_id"] == "demo-item-1")
     legacy_quote = card["window"][:15]
@@ -223,7 +227,7 @@ def test_verify_uses_saved_windows_after_context_and_db_change(
     detail = "가" * 3300 + "\n" + detail_quote
     context_path, output = tmp_path / "activity_context.json", tmp_path / "run"
     save(context_path, {"contexts": {"demo-item-1": {"text": detail}}})
-    axes.build_targets(database, output, context=context_path)
+    axes.build_targets(database, output, context=context_path, per_card=per_card)
     fake_run(output, tmp_path, monkeypatch, detail_quote if use_detail_quote else legacy_quote)
     save(context_path, {"contexts": {"demo-item-1": {"text": "바뀐 문맥"}}})
     with sqlite3.connect(database) as db:

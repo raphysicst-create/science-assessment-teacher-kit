@@ -1,0 +1,52 @@
+{
+  "total_schools": 3484,
+  "by_sido": {
+    "강원특별자치도": 168,
+    "경기도": 696,
+    "경상남도": 299,
+    "경상북도": 304,
+    "대구광역시": 141,
+    "대전광역시": 92,
+    "부산광역시": 183,
+    "서울특별시": 392,
+    "세종특별자치시": 28,
+    "울산광역시": 65,
+    "인천광역시": 149,
+    "전남광주통합특별시": 367,
+    "전북특별자치도": 212,
+    "제주특별자치도": 45,
+    "충청남도": 200,
+    "충청북도": 143
+  },
+  "branch_campus_excluded": 44,
+  "sample_rows": 68,
+  "matched_samples": 68,
+  "matched_schools": 56,
+  "unmatched_samples": [],
+  "mcp_comparison": [
+    {
+      "sido": "세종특별자치시",
+      "sgg": "세종특별자치시",
+      "mcp_schools": 28,
+      "roster_schools": 28,
+      "only_in_mcp": [],
+      "only_in_roster": []
+    },
+    {
+      "sido": "제주특별자치도",
+      "sgg": "제주시",
+      "mcp_schools": 30,
+      "roster_schools": 30,
+      "only_in_mcp": [],
+      "only_in_roster": []
+    },
+    {
+      "sido": "제주특별자치도",
+      "sgg": "서귀포시",
+      "mcp_schools": 15,
+      "roster_schools": 15,
+      "only_in_mcp": [],
+      "only_in_roster": []
+    }
+  ]
+}

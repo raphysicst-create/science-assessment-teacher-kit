@@ -1,5 +1,6 @@
 """Test DB-only activity classification and optional catalog overrides offline.
 
+Per-card targets retain prompt hashes and saved responses when peer cards change.
 Run .venv/Scripts/python.exe -m pytest -q
     services/math-assessment-api/tests/test_science_axes_ai.py
 Verify .venv/Scripts/python.exe -m ruff check
@@ -107,12 +108,17 @@ def prepare_run(workspace):
     assert axes.main(run_args(workspace)) == 0
 
 
-def test_targets_run_verify_export_and_source_identity(workspace):
+@pytest.mark.parametrize("per_card", [False, True])
+def test_targets_run_verify_export_and_source_identity(workspace, per_card):
     common = ["--database", str(workspace["database"]), "--out-dir", str(workspace["output"])]
-    assert axes.main(["targets", *common]) == 0
+    flags = ["--per-card"] if per_card else []
+    assert axes.main(["targets", *common, *flags]) == 0
     targets = ai.load_targets(workspace["output"])
-    assert len(targets) == 2 and sum(len(t["card_ids"]) for t in targets) == 5
-    assert axes.main(["targets", *common]) == 0
+    assert len(targets) == (5 if per_card else 2)
+    assert sum(len(t["card_ids"]) for t in targets) == 5
+    assert ai.read_json(workspace["output"] / "selection.json") == (
+        {"rounds": None, "per_card": True} if per_card else {"rounds": None})
+    assert axes.main(["targets", *common, *flags]) == 0
     assert ai.load_targets(workspace["output"]) == targets
     definitions = axes.DEFINITIONS.read_text(encoding="utf-8")
     sections = definitions[definitions.index("## 2. "):definitions.index("## 4. ")]
@@ -122,13 +128,17 @@ def test_targets_run_verify_export_and_source_identity(workspace):
         assert target["target_id"] == ai.sha(prompt)[:16]
         assert target["prompt_sha256"] == ai.sha(prompt)
         content = json.loads(prompt.split(axes.INSTRUCTIONS + "\n", 1)[1])
+        assert set(content) == {"case_id", "grade", "semester", "cards"}
+        assert [card["item_id"] for card in content["cards"]] == target["card_ids"]
+        if per_card:
+            assert len(content["cards"]) == 1
         assert all(set(axes.CARD_FIELDS) == set(card) for card in content["cards"])
         assert all(len(card["window"]) <= 3000 for card in content["cards"])
     fake_answers(workspace)
     assert axes.main(run_args(workspace)) == 0
     fake_answers(workspace, bad_event=True)
     assert axes.main(run_args(workspace)) == 0  # Saved valid responses are reused.
-    assert ai.read_json(workspace["output"] / "run.json")["skipped"] == 2
+    assert ai.read_json(workspace["output"] / "run.json")["skipped"] == len(targets)
     assert axes.main(["verify", *common]) == 0
     assert axes.main(["export", *common, "--axes-out", str(workspace["axes_out"])]) == 0
     predictions = load_axes([workspace["axes_out"] / f"{r}.json" for r in ROUNDS])
@@ -329,3 +339,34 @@ def test_empty_targets_and_export_rechecks_run(workspace):
     # A prior verified.json cannot authorize an answer that no longer passes valid_run.
     result = axes.export_axes(workspace["output"], workspace["database"], workspace["axes_out"])
     assert result["exported"] == 0 and result["unverified_items"] == 4
+
+
+@pytest.mark.parametrize("per_card", [False, True])
+def test_peer_card_changes_preserve_only_per_card_hashes_and_saved_runs(workspace, per_card):
+    database, output = workspace["database"], workspace["output"]
+    axes.build_targets(database, output, per_card=per_card)
+    before = ai.load_targets(output)
+    target = before[0]
+    identity = target["card_ids"][0]
+    prompt = (output / f"prompts/{target['target_id']}.md").read_bytes()
+    fake_answers(workspace)
+    assert axes.main(run_args(workspace)) == 0
+    with sqlite3.connect(database) as db:
+        db.row_factory = sqlite3.Row
+        row = dict(db.execute("SELECT * FROM assessment_items WHERE item_id=?",
+                              (identity,)).fetchone())
+        row.update(item_id="added-card", source_item_id="added-source-item", item_order=100)
+        db.execute(f"INSERT INTO assessment_items ({','.join(row)}) "
+                   f"VALUES ({','.join('?' for _ in row)})", list(row.values()))
+    axes.build_targets(database, output, per_card=per_card)
+    after = ai.load_targets(output)
+    changed = next(t for t in after if identity in t["card_ids"])
+    assert len(after) == len(before) + int(per_card)
+    assert (changed["target_id"] == target["target_id"]) == per_card
+    if per_card:
+        assert changed == target
+        assert (output / f"prompts/{changed['target_id']}.md").read_bytes() == prompt
+    fake_answers(workspace)
+    assert axes.main(run_args(workspace)) == 0
+    assert ai.read_json(output / "run.json")["skipped"] == len(before) - int(not per_card)
+    assert axes.verify_targets(output, database)["summary"]["cards"] == 6

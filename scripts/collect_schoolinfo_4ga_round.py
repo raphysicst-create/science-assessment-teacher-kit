@@ -1,4 +1,8 @@
-"""Collect one explicitly verified Schoolinfo 4-ga disclosure round."""
+"""Collect one explicitly verified Schoolinfo 4-ga disclosure round.
+
+Run .venv/Scripts/python.exe scripts/collect_schoolinfo_4ga_round.py --help for options.
+Verify offline with .venv/Scripts/python.exe -m pytest -q -k 'collect or roster or rounds'.
+"""
 
 from __future__ import annotations
 
@@ -10,7 +14,6 @@ import re
 import sqlite3
 import sys
 import threading
-import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -31,13 +34,17 @@ from pilot_2ga_http import (  # noqa: E402
     post,
     resolve_shl_idf,
 )
-from schoolinfo_2ga_request_audit import classify_download_payload, classify_response_html  # noqa: E402
+from schoolinfo_2ga_request_audit import (  # noqa: E402
+    classify_download_payload,
+    classify_response_html,
+)
 from schoolinfo_documents_core import BASE_URL, School, parse_hidden_params  # noqa: E402
-
 
 ITEM_PATH = "/ei/pp/Pneipp_b43_s0p.do"
 DOWNLOAD_FORM = re.compile(r'<form\b[^>]*\bid="eiFileDownForm"[^>]*>(.*?)</form>', re.I | re.S)
-ROUND_SELECTOR = re.compile(r'<select\b[^>]*\bid="select_trans_dt"[^>]*>(.*?)</select>', re.I | re.S)
+ROUND_SELECTOR = re.compile(
+    r'<select\b[^>]*\bid="select_trans_dt"[^>]*>(.*?)</select>', re.I | re.S,
+)
 ROUND_OPTION = re.compile(r'<option\b[^>]*\bvalue="(\d+)"[^>]*\bselected\b[^>]*>', re.I)
 NON_PLAN = re.compile(r"학업\s*성적\s*관리\s*(?:규정|위원회)|제?\s*규정집|협의록|회의록")
 PLAN = re.compile(r"평가\s*(?:계획|운영|안)|교수\s*[·ㆍ\-]?\s*학습")
@@ -73,19 +80,30 @@ def read_roster(path: Path) -> list[School]:
         ]
     ids = {school.school_id for school in schools}
     codes = [school.school_code for school in schools if school.school_code]
-    if not schools or len(ids) != len(schools) or not all(re.fullmatch(r"[\w-]+", key) for key in ids):
+    if (not schools or len(ids) != len(schools)
+            or not all(re.fullmatch(r"[\w-]+", key) for key in ids)):
         raise ValueError("roster must contain unique safe school IDs")
-    if len(codes) != len(set(codes)) or not all(re.fullmatch(r"[A-Za-z0-9]+", code) for code in codes):
+    if (len(codes) != len(set(codes))
+            or not all(re.fullmatch(r"[A-Za-z0-9]+", code) for code in codes)):
         raise ValueError("nonempty school codes must be unique and alphanumeric")
     return schools
 
 
+def read_roster_shl_ids(path: Path) -> dict[str, str]:
+    with path.open(encoding="utf-8", newline="") as stream:
+        reader = csv.DictReader(stream)
+        reader.fieldnames = [name.removeprefix("\ufeff") for name in reader.fieldnames or []]
+        return {row["school_id"].strip(): (row.get("shl_idf_cd") or "").strip()
+                for row in reader}
+
+
 def collect_school(
     school: School, project: Path, raw: Path, year: int, round_no: int,
-    pause: float, stop: threading.Event,
+    pause: float, stop: threading.Event, shl_ids: dict[str, str] | None = None,
 ) -> dict:
     identity = {
-        "school_id": school.school_id, "school_code": school.school_code, "school_name": school.school_name,
+        "school_id": school.school_id, "school_code": school.school_code,
+        "school_name": school.school_name,
         "region": school.region_sido, "region_sgg": school.region_sgg,
         "item_no": "4-가", "year": year, "disclosure_round": round_no,
     }
@@ -97,13 +115,16 @@ def collect_school(
         if stop.wait(pause):
             return {**record, "status": "stopped"}
         browser = opener()
-        uid, error = resolve_shl_idf(browser, school, school.school_kind)
+        uid = (shl_ids or {}).get(school.school_id, "")
         if not uid:
-            if re.search(r"HTTP Error (403|429|503)\b", error):
-                stop.set()
-            return {**record, "status": stage, "detail": error}
+            uid, error = resolve_shl_idf(browser, school, school.school_kind)
+            if not uid:
+                if re.search(r"HTTP Error (403|429|503)\b", error):
+                    stop.set()
+                return {**record, "status": stage, "detail": error}
         stage = "page_failed"
-        source_url = f"{BASE_URL}{ITEM_PATH}?{urlencode({'SHL_IDF_CD': uid, 'JG_YEAR': year, 'JG_CHASU': round_no})}"
+        query = urlencode({'SHL_IDF_CD': uid, 'JG_YEAR': year, 'JG_CHASU': round_no})
+        source_url = f"{BASE_URL}{ITEM_PATH}?{query}"
         record["source_url"] = source_url
         meta = post(browser, HANGMOK_URL, {"SHL_IDF_CD": uid}, 15)
         payload = json.loads(meta.body)
@@ -137,18 +158,23 @@ def collect_school(
             classification = classify_response_html(int(page.status_code), page.body)
             if classification.result_status == "blocked":
                 stop.set()
-            status = "no_attachments_reported" if classification.error_pattern == "no_file" else stage
-            return {**record, "status": status, "detail": classification.error_pattern or "no_recognized_links"}
+            status = (
+                "no_attachments_reported" if classification.error_pattern == "no_file" else stage
+            )
+            return {**record, "status": status,
+                    "detail": classification.error_pattern or "no_recognized_links"}
         form = DOWNLOAD_FORM.search(page.body)
         download_params = parse_hidden_params(form[1]) if form else {}
         expected = {"SHL_IDF_CD": uid, "JG_YEAR": str(year), "JG_CHASU": str(round_no)}
         if any(download_params.get(key) != value for key, value in expected.items()):
-            return {**record, "status": "round_unconfirmed", "detail": "download_form_scope_mismatch"}
+            return {**record, "status": "round_unconfirmed",
+                    "detail": "download_form_scope_mismatch"}
         if len({attachment.file_seq for attachment in attachments}) != len(attachments):
             return {**record, "status": stage, "detail": "duplicate_file_sequences"}
         for attachment in attachments:
             filename = attachment.filename
-            final_url = f"{BASE_URL}/servlets/EiFileDownLoad.do?{urlencode(download_params | {'FILE_SEQ': attachment.file_seq})}"
+            download_query = urlencode(download_params | {'FILE_SEQ': attachment.file_seq})
+            final_url = f"{BASE_URL}/servlets/EiFileDownLoad.do?{download_query}"
             row = {
                 **identity, "record_type": "attachment", "candidate_name": filename,
                 "file_seq": attachment.file_seq, "source_url": source_url, "final_url": final_url,
@@ -183,12 +209,16 @@ def collect_school(
                     atomic_bytes(target, payload.body)
                 row.update(result="downloaded", sha256=digest, size_bytes=len(payload.body),
                            saved_path=target.relative_to(project).as_posix(),
-                           content_type=payload.content_type, status_detail=validation.detected_type)
+                           content_type=payload.content_type,
+                           status_detail=validation.detected_type)
             except (OSError, ValueError) as exc:
                 if isinstance(exc, HTTPError) and exc.code in {403, 429, 503}:
                     stop.set()
                 row.update(result="failed", failure_reason=f"{type(exc).__name__}: {exc}")
-        status = "attachment_failed" if any(row["result"] == "failed" for row in record["attachments"]) else "listed"
+        status = (
+            "attachment_failed"
+            if any(row["result"] == "failed" for row in record["attachments"]) else "listed"
+        )
         return {**record, "status": status}
     except (OSError, ValueError) as exc:
         if isinstance(exc, HTTPError) and exc.code in {403, 429, 503}:
@@ -196,7 +226,9 @@ def collect_school(
         return {**record, "status": stage, "detail": f"{type(exc).__name__}: {exc}"}
 
 
-def save_summary(project: Path, derived: Path, schools: list[School], latest: dict[str, dict]) -> None:
+def save_summary(
+    project: Path, derived: Path, schools: list[School], latest: dict[str, dict],
+) -> None:
     rows = [row for receipt in latest.values() for row in receipt["attachments"]]
     files = {row["saved_path"]: row for row in rows if row["result"] == "downloaded"}
     statuses = Counter(receipt["status"] for receipt in latest.values())
@@ -211,11 +243,17 @@ def save_summary(project: Path, derived: Path, schools: list[School], latest: di
         "updated_at": now(),
         "roster_schools": len(schools), "attempted_schools": len(latest),
         "unattempted_schools": len(schools) - len(latest), "school_statuses": dict(statuses),
-        "unconfirmed_schools": sum(statuses[status] for status in RETRYABLE | {"roster_identity_unconfirmed"}),
+        "unconfirmed_schools": sum(
+            statuses[status] for status in RETRYABLE | {"roster_identity_unconfirmed"}
+        ),
         "schools_with_downloads": len({row["school_code"] for row in files.values()}),
-        "attachment_rows": len(rows), "attachment_statuses": dict(Counter(row["result"] for row in rows)),
-        "downloaded_unique_paths": len(files), "unique_content_hashes": len({row["sha256"] for row in files.values()}),
-        "duplicate_download_rows_by_path": sum(row["result"] == "downloaded" for row in rows) - len(files),
+        "attachment_rows": len(rows),
+        "attachment_statuses": dict(Counter(row["result"] for row in rows)),
+        "downloaded_unique_paths": len(files),
+        "unique_content_hashes": len({row["sha256"] for row in files.values()}),
+        "duplicate_download_rows_by_path": (
+            sum(row["result"] == "downloaded" for row in rows) - len(files)
+        ),
         "stored_bytes": sum(row["size_bytes"] for row in files.values()),
         "semester_signals": dict(Counter(row["semester_signal"] for row in files.values())),
         "missing_or_size_mismatch_paths": mismatches,
@@ -229,7 +267,9 @@ def main() -> None:
     parser.add_argument("--roster", type=Path, required=True)
     parser.add_argument("--year", type=int, default=2026)
     parser.add_argument("--round", type=int, choices=(1, 3), default=3)
-    parser.add_argument("--limit", type=int, default=0, help="cap schools attempted in this invocation")
+    parser.add_argument(
+        "--limit", type=int, default=0, help="cap schools attempted in this invocation",
+    )
     parser.add_argument("--workers", type=int, choices=(1, 2, 3), default=2)
     parser.add_argument("--pause", type=float, default=0.25)
     parser.add_argument("--retry-failed", action="store_true")
@@ -251,6 +291,7 @@ def main() -> None:
     receipts = derived / "school_receipts"
     receipts.mkdir(parents=True, exist_ok=True)
     schools = read_roster(args.roster)
+    shl_ids = read_roster_shl_ids(args.roster)
     stop = threading.Event()
     with sqlite3.connect(derived / "collector_lock.sqlite", timeout=0) as lock:
         lock.execute("BEGIN IMMEDIATE")
@@ -281,7 +322,7 @@ def main() -> None:
                     break
                 batch = pending[start:start + args.workers]
                 jobs = [pool.submit(collect_school, school, project, raw, args.year,
-                                    args.round, args.pause, stop) for school in batch]
+                                    args.round, args.pause, stop, shl_ids) for school in batch]
                 for job in jobs:
                     result = job.result()
                     code = result["school_id"]

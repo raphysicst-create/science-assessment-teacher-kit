@@ -1,5 +1,6 @@
 """Audit every public assessment item's reconstructed HTML table structure.
 
+Multiple performance-task labels produce a B5 warning; AI3 screens merged cards.
 This audit is intentionally conservative.  It never rewrites source text or
 guesses a missing cell.  Instead it identifies deterministic geometry defects,
 page-split table fragments, and text that escaped a table so parser/renderer
@@ -443,6 +444,11 @@ def main() -> None:
         warning_items += bool(warnings)
         if blockers:
             queue.append(risk_record(row, ["B5"]))
+        elif "multiple_performance_task_labels" in warnings:
+            queue.append(
+                risk_record(row, ["B5"], severity="warning",
+                            reasons="B5:" + "|".join(sorted(warnings)))
+            )
         elif warnings:
             queue.append(
                 risk_record(row, [], severity="warning", reasons="|".join(sorted(warnings)))

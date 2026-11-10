@@ -12,7 +12,7 @@ heading/rubric/policy/fragment rules remain, even for explicit source labels.
 과학과 다른 교과가 섞임,
 (B2) 제목에 과학 외 교과 이름이 있고 항목에 `[9과` 코드가 없음,
 (B4) 제목·근거의 원문 위치(locator)나 원문 조각 해시가 없음,
-(B5) 표 구조 차단 플래그,
+(B5) 표 구조 차단 플래그. 수행과제 표지 여럿은 warning, AI3(합친 카드)이 막는다.
 (B6) 원문 HTML·채점표 HTML·제목·방법 칸의 고위험 개인정보 패턴.
 B3 제목 규칙은 이유를 유지한 warning이며 공개를 차단하지 않는다.
 카드 AI 판정은 선택 감사에서 AI0 미확인·AI1 비과제·AI2 중복·AI3 합침을 차단한다.
@@ -84,7 +84,6 @@ BLOCKING_TABLE_FLAGS = frozenset(
         "rowspan_overflows_table",
         "multiple_course_code_prefixes",
         "multiple_distinct_assessment_areas",
-        "multiple_performance_task_labels",
         "likely_unbounded_public_item",
         "whole_plan_policy_leak",
         "html_decode_failed",
@@ -93,6 +92,7 @@ BLOCKING_TABLE_FLAGS = frozenset(
 )
 WARNING_TABLE_FLAGS = frozenset(
     {
+        "multiple_performance_task_labels",
         "oversized_html",
         "excessive_table_count",
         "orphan_achievement_codes",
@@ -112,6 +112,7 @@ WARNING_TABLE_FLAGS = frozenset(
 # Recovery proposals retain their stricter geometry screening without changing B5.
 RECOVERY_BLOCKING_TABLE_FLAGS = BLOCKING_TABLE_FLAGS | frozenset(
     {
+        "multiple_performance_task_labels",
         "excessive_table_count",
         "inconsistent_effective_columns",
         "multiple_assessment_area_labels",

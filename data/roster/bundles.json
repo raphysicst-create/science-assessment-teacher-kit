@@ -1,0 +1,68 @@
+{
+  "bundles": [
+    {
+      "bundle": 1,
+      "sido": [
+        "세종특별자치시",
+        "제주특별자치도"
+      ],
+      "schools": 73,
+      "round_1_schools": 69,
+      "round_3_schools": 69
+    },
+    {
+      "bundle": 2,
+      "sido": [
+        "울산광역시",
+        "대전광역시"
+      ],
+      "schools": 157,
+      "round_1_schools": 151,
+      "round_3_schools": 151
+    },
+    {
+      "bundle": 3,
+      "sido": [
+        "강원특별자치도",
+        "충청북도",
+        "충청남도",
+        "전북특별자치도"
+      ],
+      "schools": 723,
+      "round_1_schools": 710,
+      "round_3_schools": 706
+    },
+    {
+      "bundle": 4,
+      "sido": [
+        "부산광역시",
+        "대구광역시",
+        "인천광역시"
+      ],
+      "schools": 473,
+      "round_1_schools": 463,
+      "round_3_schools": 463
+    },
+    {
+      "bundle": 5,
+      "sido": [
+        "전남광주통합특별시",
+        "경상북도",
+        "경상남도"
+      ],
+      "schools": 970,
+      "round_1_schools": 916,
+      "round_3_schools": 916
+    },
+    {
+      "bundle": 6,
+      "sido": [
+        "서울특별시",
+        "경기도"
+      ],
+      "schools": 1088,
+      "round_1_schools": 1087,
+      "round_3_schools": 1079
+    }
+  ]
+}
