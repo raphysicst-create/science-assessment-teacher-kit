@@ -25,9 +25,11 @@ SCIENCE_TOPIC_RE = re.compile(
     r"파동|기후|날씨|환경|광합성|실험|탐구"
 )
 NOT_COURSE_VALUE_RE = re.compile(r"\d+(?:학년|학기|반)(?:\S*)")
+MAX_COURSE_NAME_CHARS = 15
+NOT_COURSE_NAME_RE = re.compile(r"시험|평가|주제선택|수행|과제|계획|하기$|관찰|작성|제출")
 OTHER_COURSE_RE = re.compile(
     r"국어|도덕|사회|역사|수학|기술|가정|정보|체육|음악|미술|영어|한문|진로|중국어|일본어|"
-    r"코딩|프로그래밍|소프트웨어|SW|로봇|인공지능|AI|메이커",
+    r"코딩|프로그래밍|소프트웨어|SW|로봇|인공지능|AI|메이커|디지털|리터러시|연극|경제|금융",
     re.I,
 )
 PLAN_TITLE_RE = re.compile(r"(?:교수\s*[·ㆍ]?\s*학습.*?계획|평가\s*계획)(?![가-힣])")
@@ -91,13 +93,17 @@ def course_name_before(lines: list[str], line_no: int) -> dict | None:
 
 
 def is_non_science_course(name: str) -> bool:
-    """True when the course name is not science (rule ②).
+    """True when the course name is not science (rule ②), in this order:
 
-    Science = a science word or a science topic word (지구·세포·물질 ...). A cover cell that
-    holds a grade/semester/class value (a misaligned table, "1학년") is not a course name.
+    science word or science topic word -> science; another subject/IT/career/arts word ->
+    not science; a value that is not a course name (cover label such as "2회 정기시험",
+    "주제선택활동", a task sentence ending in -하기/관찰, a grade value "1학년") -> no
+    decision (keep); any other named elective ("쓸모의 재발견") -> not science.
     """
     name = re.sub(r"\s+", "", name)
     if (not name or name in NON_SUBJECT_NAMES or NOT_COURSE_VALUE_RE.fullmatch(name)
-            or SCIENCE_NAME_RE.search(name)):
+            or SCIENCE_NAME_RE.search(name) or SCIENCE_TOPIC_RE.search(name)):
         return False
-    return not SCIENCE_TOPIC_RE.search(name) or bool(OTHER_COURSE_RE.search(name))
+    if OTHER_COURSE_RE.search(name):
+        return True
+    return not NOT_COURSE_NAME_RE.search(name) and len(name) <= MAX_COURSE_NAME_CHARS

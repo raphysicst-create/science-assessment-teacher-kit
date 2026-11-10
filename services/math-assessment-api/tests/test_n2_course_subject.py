@@ -62,6 +62,10 @@ def test_course_name_in_plan_title(phrase):
     # N2 검수: 과학 낱말·과학 주제 낱말이 없는 강좌는 막는다.
     ("디지털리터러시", True), ("연극반", True), ("경제금융", True), ("자기주도학습반", True),
     ("생태 환경 탐사반", False),
+    # N2 묶음 1 실데이터: 강좌명이 아닌 머리 칸 값·과제 문장은 판단하지 않는다.
+    ("2회 정기시험", False), ("주제선택활동", False),
+    ("모형을 이용하여 달의 위상 변화 관찰하기", False),
+    ("진로탐색활동", True), ("쓸모의 재발견", True), ("즐거운수학", True),
 ])
 def test_non_science_course_names(name, blocked):
     assert is_non_science_course(name) is blocked
