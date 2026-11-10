@@ -54,6 +54,8 @@ SCORER_RE = re.compile(
     r"|(?:개별|개인별|개인|모둠별|모둠|조별)\s*(?:수행|평가)?"
 )
 METHOD_SEPARATOR_RE = re.compile(r"(\s*[,，/、]\s*)")
+# N2: a form word before the method ("개별 서·논술형평가") is a whole form piece.
+LEADING_FORM_RE = re.compile(r"^(개별|개인별|개인|모둠별|모둠|조별)\s+(\S.*)$")
 FIELDS = (
     "title",
     "assessment_area",
@@ -443,7 +445,12 @@ def split_method_text(text: str, kind: str = "method") -> tuple[str, list[str]]:
             continue
         if kind in {"evaluator", "organization"} or SCORER_RE.fullmatch(part):
             scorers.append(part)
-        else:
+            continue
+        leading = LEADING_FORM_RE.match(part)
+        if leading:
+            scorers.append(leading[1])
+            part = leading[2]
+        if part:
             separator = parts[index - 1] if retained and index else ""
             retained.extend((separator, part))
     return "".join(retained), scorers

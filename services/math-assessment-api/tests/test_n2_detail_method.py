@@ -209,3 +209,12 @@ def test_method_cells_stop_at_next_label_cell():
     values, scorers = method_values_without_scorers(
         [o for o in options if o["state"] == "checked"])
     assert values == ["서·논술형"] and scorers == ["교사 관찰 및 기록"]
+
+
+def test_leading_form_word_is_not_part_of_method():
+    # N2 묶음 1: 요약표 평문 앞머리 형태 낱말(개별)은 방법이 아니다(S19 방법 규칙).
+    from scripts.middle_items import split_method_text
+    assert split_method_text("개별 서·논술형평가") == ("서·논술형평가", ["개별"])
+    assert split_method_text("모둠 프로젝트, 실험") == ("프로젝트, 실험", ["모둠"])
+    assert split_method_text("서술형 평가") == ("서술형 평가", [])
+    assert split_method_text("교사 관찰 및 기록") == ("", ["교사 관찰 및 기록"])
