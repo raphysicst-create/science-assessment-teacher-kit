@@ -338,3 +338,20 @@ def test_sibling_row_discards_only_merged_decision(workspace):
     assert not cards["detail"]["is_task"] and not cards["detail"]["merged"]
     assert cards["other"]["duplicate_of"] == "detail"
     assert [e["reason"] for e in report["discarded"]] == ["discarded_merged_sibling_row"]
+
+
+def test_summary_column_card_numeric_row_does_not_block(workspace):
+    # N2 검수 변이: 요약표 열 카드(첫 줄이 이웃 카드 제목과 나란한 머리 행)는 자기 세부표가 없으므로
+    # 요약표 숫자 줄("만점 | 100 | 100")을 합친 근거로 내도 막지 않는다.
+    window = "온도 측정하기 | 생태 지도 만들기\n만점 | 100 | 100\n비율 | 20% | 20%"
+    with sqlite3.connect(workspace["database"]) as db:
+        db.execute("UPDATE assessment_items SET title='생태 지도 만들기' WHERE item_id='other'")
+        db.execute("UPDATE assessment_items SET source_html_zlib=? WHERE item_id='detail'",
+                   (zlib.compress(window.encode()),))
+    answer = response()
+    answer["tasks"][0].update(duplicate_of=None, merged=True, quote="만점 | 100 | 100")
+    assert fake_run(workspace, answer) == 0
+    report = check.verify_targets(workspace["output"], workspace["database"])
+    card = next(c for c in report["cards"] if c["item_id"] == "detail")
+    assert check.blocking_codes(card) == []
+    assert [e["reason"] for e in card["discarded"]] == ["discarded_merged_summary_column"]

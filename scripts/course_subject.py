@@ -19,6 +19,12 @@ NON_SUBJECT_NAMES = {"공통", "전교과", "통합", "전과목", "전체", "�
 SCIENCE_NAME_RE = re.compile(r"과학|싸이언스|사이언스|science", re.I)
 # Heading that starts with science ("# 과학 평가"), not prose ("과학적").
 SCIENCE_HEADING_RE = re.compile(r"^#+\s*(?:[0-9ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+[.)]?\s*)?과학(?!적)")
+# Science topic words keep a topic-named elective ("지구의 세포들") as science.
+SCIENCE_TOPIC_RE = re.compile(
+    r"지구|우주|천체|천문|행성|생명|생물|세포|유전|생태|물리|화학|물질|원소|에너지|전기|자기장|"
+    r"파동|기후|날씨|환경|광합성|실험|탐구"
+)
+NOT_COURSE_VALUE_RE = re.compile(r"\d+(?:학년|학기|반)(?:\S*)")
 OTHER_COURSE_RE = re.compile(
     r"국어|도덕|사회|역사|수학|기술|가정|정보|체육|음악|미술|영어|한문|진로|중국어|일본어|"
     r"코딩|프로그래밍|소프트웨어|SW|로봇|인공지능|AI|메이커",
@@ -85,8 +91,13 @@ def course_name_before(lines: list[str], line_no: int) -> dict | None:
 
 
 def is_non_science_course(name: str) -> bool:
-    """True only when the name clearly names another subject or coding/IT and no science word."""
+    """True when the course name is not science (rule ②).
+
+    Science = a science word or a science topic word (지구·세포·물질 ...). A cover cell that
+    holds a grade/semester/class value (a misaligned table, "1학년") is not a course name.
+    """
     name = re.sub(r"\s+", "", name)
-    if not name or name in NON_SUBJECT_NAMES or SCIENCE_NAME_RE.search(name):
+    if (not name or name in NON_SUBJECT_NAMES or NOT_COURSE_VALUE_RE.fullmatch(name)
+            or SCIENCE_NAME_RE.search(name)):
         return False
-    return bool(OTHER_COURSE_RE.search(name))
+    return not SCIENCE_TOPIC_RE.search(name) or bool(OTHER_COURSE_RE.search(name))

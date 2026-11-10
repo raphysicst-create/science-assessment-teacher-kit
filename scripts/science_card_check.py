@@ -181,6 +181,12 @@ def merged_sibling_row(quote: str, sibling_titles: tuple[str, ...]) -> bool:
     return False
 
 
+def summary_column_card(window: str, sibling_titles: tuple[str, ...]) -> bool:
+    """True when the window's first line is a summary header row naming a sibling card."""
+    first = next((line for line in window.splitlines() if line.strip()), "")
+    return merged_sibling_row(first, sibling_titles)
+
+
 def check_task(task: dict, card: dict, ids: set[str], verdict: dict, discarded: list,
                sibling_titles: tuple[str, ...] = ()) -> list:
     quote = task.get("quote")
@@ -199,6 +205,10 @@ def check_task(task: dict, card: dict, ids: set[str], verdict: dict, discarded: 
             reason = "discarded_invalid_duplicate"
         elif kind == "merged" and merged_sibling_row(quote, sibling_titles):
             reason = "discarded_merged_sibling_row"
+        elif kind == "merged" and summary_column_card(text, sibling_titles):
+            # Rule ①: a summary-column card has no own detail table in its window,
+            # so no merged evidence can lie inside its detail table.
+            reason = "discarded_merged_summary_column"
         if reason:
             entry = {**evidence, "reason": reason}
             discarded.append(entry)

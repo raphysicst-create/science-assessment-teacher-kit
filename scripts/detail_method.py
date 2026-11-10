@@ -43,8 +43,11 @@ def eligible(item):
     # all_unselected, unknown/conversion_loss for checkbox readings. Preserve
     # all those readings, even if no selected value survived; options also
     # protect mixed plain/scorer-checkbox cells. ai_first_literal is AI-filled.
+    # Rule ③ (N2 review): the detail table's checks win over any summary reading,
+    # checked or plain. AI-filled values and already replaced fields stay.
     return (item.get("table_role") == "summary" and not is_ai(item)
-            and field.get("state") in NON_CHECK_STATES and not field.get("options")
+            and field.get("fill_method") != "detail_checked"
+            and field.get("state") != "ai_first_literal"
             and not field.get("fill_method", "").startswith("ai_"))
 
 

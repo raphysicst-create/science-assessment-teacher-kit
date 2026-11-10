@@ -148,17 +148,25 @@ def test_non_summary_is_unchanged(tmp_path, install, role):
 
 
 @pytest.mark.parametrize("method", [
-    {"state": state, "value": []} for state in
-    ("checked", "all_unselected", "unknown", "conversion_loss", "ai_first_literal")
-] + [
-    {"state": "plain", "value": ["서술형"], "options": [{"state": "checked"}]},
+    {"state": "ai_first_literal", "value": []},
     {"state": "plain", "value": ["서술형"], "fill_method": "ai_first"},
 ])
-def test_existing_check_readings_and_ai_fields_are_unchanged(tmp_path, install, method):
+def test_ai_filled_methods_are_unchanged(tmp_path, install, method):
     path, _, _ = install(detail(), method=method)
     before = path.read_bytes()
     assert merge.fill_methods(tmp_path, ROUND)["changed_items"] == 0
     assert path.read_bytes() == before
+
+
+@pytest.mark.parametrize("method", [
+    {"state": state, "value": []} for state in
+    ("checked", "all_unselected", "unknown", "conversion_loss")
+] + [{"state": "plain", "value": ["서술형"], "options": [{"state": "checked"}]}])
+def test_detail_checks_win_over_any_summary_reading(tmp_path, install, method):
+    # N2 검수: 요약표에 체크값이 있어도 그 과제 세부표 체크값을 먼저 쓴다(규칙 ③).
+    path, _, _ = install(detail(), method=method)
+    assert merge.fill_methods(tmp_path, ROUND)["changed_items"] == 1
+    assert merge.fill_methods(tmp_path, ROUND)["changed_items"] == 0
 
 
 def test_ai_first_item_is_unchanged(tmp_path, install):

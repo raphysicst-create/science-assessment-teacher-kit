@@ -59,6 +59,9 @@ def test_course_name_in_plan_title(phrase):
     # N2 개발 회차 오탐: 과학 동아리·주제 이름·칸이 어긋난 머리표는 막지 않는다(fail-open).
     ("싸이언스 홀릭", False), ("주제선택 (지구의 세포들)", False), ("1학년", False),
     ("정보", True), ("수학탐구", True),
+    # N2 검수: 과학 낱말·과학 주제 낱말이 없는 강좌는 막는다.
+    ("디지털리터러시", True), ("연극반", True), ("경제금융", True), ("자기주도학습반", True),
+    ("생태 환경 탐사반", False),
 ])
 def test_non_science_course_names(name, blocked):
     assert is_non_science_course(name) is blocked
