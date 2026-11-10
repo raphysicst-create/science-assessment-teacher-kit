@@ -1,0 +1,60 @@
+{
+ "bundle1": {
+  "cases": 2,
+  "schools": 1,
+  "by_kind": {
+   "task_column": 0,
+   "steps_column": 2
+  },
+  "no_score_table": 0,
+  "lines_total": 6,
+  "cases_with_public_card": 0,
+  "merged_public_cards": 0,
+  "lines_in_cases_with_merged_card": 0,
+  "scanned_schools_with_science_section": 66
+ },
+ "dev": {
+  "cases": 5,
+  "schools": 1,
+  "by_kind": {
+   "task_column": 3,
+   "steps_column": 2
+  },
+  "no_score_table": 5,
+  "lines_total": 20,
+  "cases_with_public_card": 5,
+  "merged_public_cards": 5,
+  "lines_in_cases_with_merged_card": 20,
+  "scanned_schools_with_science_section": 11
+ },
+ "options": {
+  "dev_recall_now": "70/77",
+  "dev_key_tasks_in_cases": 13,
+  "dev_public_cards_in_cases_now": 5,
+  "bundle1_public_cards_now": 685,
+  "A": {
+   "dev_tasks_in_cases": 5,
+   "dev_key_size": 69,
+   "dev_recall": "62/69",
+   "dev_recall_rate": 0.8986,
+   "bundle1_tasks_in_cases": 2,
+   "bundle1_cells": 2
+  },
+  "B": {
+   "dev_tasks_in_cases": 18,
+   "dev_key_size": 82,
+   "dev_recall": "75/82",
+   "dev_recall_rate": 0.9146,
+   "bundle1_tasks_in_cases": 6,
+   "bundle1_cells": 2
+  },
+  "C": {
+   "dev_tasks_in_cases": 13,
+   "dev_key_size": 77,
+   "dev_recall": "70/77",
+   "dev_recall_rate": 0.9091,
+   "bundle1_tasks_in_cases": 2,
+   "bundle1_cells": 2
+  }
+ }
+}
