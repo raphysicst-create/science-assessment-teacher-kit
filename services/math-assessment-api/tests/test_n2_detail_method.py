@@ -183,3 +183,29 @@ def test_memory_function_never_mutates_items_or_conversion(install):
     method = updated_detail_method(report["items"][0], conversion, report["items"])
     assert method["value"] == ["서술·논술"]
     assert (conversion, report) == before
+
+
+def test_checked_option_drops_form_words():
+    # N2 묶음 1: 체크 선택지의 수행 형태(개별)는 방법에 넣지 않는다(S19 방법 규칙).
+    from scripts.detail_method import method_values_without_scorers
+    checked = [{"option_text": "개별 서·논술형평가"}, {"option_text": "모둠 프로젝트"},
+               {"option_text": "실험·실습"}]
+    assert method_values_without_scorers(checked) == (
+        ["서·논술형평가", "프로젝트", "실험·실습"], ["개별", "모둠"])
+    assert method_values_without_scorers([{"option_text": "개별"}]) == ([], ["개별"])
+
+
+def test_method_cells_stop_at_next_label_cell():
+    # N2 개발 회차: 방법 선택지 두 칸 뒤 "교과 역량" 칸의 체크(■과학적 사고력)는 방법이 아니다.
+    from scripts.detail_method import block_options
+    row = ('<table><tr><td colspan="2">평가<br>방법</td><td>■서·논술형<br>▢토의·토론</td>'
+           '<td>▢구술·발표<br>■교사 관찰 및 기록</td><td>교과<br>역량</td>'
+           '<td>■ 과학적 사고력<br>□ 과학적 의사소통 능력</td></tr></table>')
+    conversion = {"text": row, "converter": "kordoc"}
+    options = block_options(row, (0, len(row)), conversion, "item_x")
+    checked = [o["option_text"].strip() for o in options if o["state"] == "checked"]
+    assert "과학적 사고력" not in " ".join(checked)
+    from scripts.detail_method import method_values_without_scorers
+    values, scorers = method_values_without_scorers(
+        [o for o in options if o["state"] == "checked"])
+    assert values == ["서·논술형"] and scorers == ["교사 관찰 및 기록"]

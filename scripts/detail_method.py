@@ -16,12 +16,12 @@ import re
 if __package__:
     from . import middle_ai_read as ai
     from .middle_ai_fields import is_ai
-    from .middle_items import method_options, visible
+    from .middle_items import METHOD_BOX_RE, SCORER_RE, method_options, visible
     from .middle_segments import text_locator
 else:
     import middle_ai_read as ai
     from middle_ai_fields import is_ai
-    from middle_items import method_options, visible
+    from middle_items import METHOD_BOX_RE, SCORER_RE, method_options, visible
     from middle_segments import text_locator
 
 MAX_BLOCK_LINES = 120
@@ -115,6 +115,10 @@ def block_options(text, block, conversion, identity):
             header_locator = text_locator(offset + header.start(1),
                                           offset + header.end(1), conversion)
             for cell in cells[number + 1:]:
+                # Options may span several cells; a cell without boxes is the next label
+                # (e.g. "교과 역량"), and its checkboxes are not methods.
+                if not METHOD_BOX_RE.search(cell[1]):
+                    break
                 observation = {"raw": cell[1], "locator": text_locator(
                     offset + cell.start(1), offset + cell.end(1), conversion)}
                 options.extend({**option, "text": option["option_text"],
@@ -123,6 +127,21 @@ def block_options(text, block, conversion, identity):
                                for option in method_options(observation))
             break
     return options
+
+
+def method_values_without_scorers(checked):
+    """Drop whole scorer/form words: "개별 서·논술형평가" -> "서·논술형평가" (S19 rule)."""
+    values, scorers = [], []
+    for option in checked:
+        if SCORER_RE.fullmatch(option["option_text"].strip()):
+            scorers.append(option["option_text"].strip())
+            continue
+        words = option["option_text"].split()
+        scorers.extend(word for word in words if SCORER_RE.fullmatch(word))
+        value = " ".join(word for word in words if not SCORER_RE.fullmatch(word))
+        if value and value not in values:
+            values.append(value)
+    return values, scorers
 
 
 def updated_detail_method(item, conversion, items):
@@ -140,8 +159,11 @@ def updated_detail_method(item, conversion, items):
     checked = [option for option in options if option["state"] == "checked"]
     if not checked:
         return None
+    values, scorers = method_values_without_scorers(checked)
+    if not values:
+        return None
     field = item.get("fields", {}).get("method", {})
-    return {**field, "value": [option["option_text"] for option in checked],
+    return {**field, "value": values, "scorer_values": scorers,
             "state": "checked", "status": "present", "reason": "",
             "options": options, "evidence": checked, "plain": [], "source_absent": False,
             "summary_value": copy.deepcopy(field.get("value", [])),
