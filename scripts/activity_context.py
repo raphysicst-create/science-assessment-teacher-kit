@@ -91,6 +91,8 @@ def round_contexts(round_key: str, skipped: list[dict]):
     for task in sorted(tasks, key=lambda value: json.dumps(value, sort_keys=True)):
         task_id = task.get("ai_task_id")
         item_ids = matches.get(task_id, [])
+        if isinstance(item_ids, str):  # 옛 병합 산출물은 새 항목 id를 문자열로 저장했다
+            item_ids = [item_ids]
         if not item_ids:
             continue
         entry = {"round": round_key, "ai_task_id": task_id, "item_ids": sorted(set(item_ids))}

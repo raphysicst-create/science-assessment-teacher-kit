@@ -244,3 +244,11 @@ def test_verify_uses_saved_windows_after_context_and_db_change(
     targets[0]["cards"][0]["window"] = "위조된 문맥"
     ai.write_text(output / "targets.jsonl", "".join(json.dumps(t) + "\n" for t in targets))
     assert axes.verify_targets(output, database)["summary"]["discarded_target_mismatch"] == 1
+
+
+def test_string_match_from_old_merge_is_one_item(source_root):
+    """S20 검수: 옛 병합은 새 항목 id를 문자열로 남겼다. 글자로 쪼개지 않고 항목 하나로 읽는다."""
+    only = task(source_root, "new-task", "새 과제 세부표 글")
+    round_inputs(source_root, {"new-task": "aitask_new"}, [only])
+    result = context.build([ROUND], source_root / "out.json")
+    assert list(result["contexts"]) == ["aitask_new"]

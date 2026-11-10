@@ -182,7 +182,8 @@ def test_merge_five_rules(root, case, expected, added):
         assert result["ai_relations"][expected][0]["rule_item_ids"] == ["rule-1", "rule-2"]
         assert is_ai(result["items"][-1])
         assert result["items"][-1]["rule_version"] == first.VERSION
-        assert result["ai_first_matches"][candidate["ai_task_id"]] == candidate["ai_task_id"]
+        # 계약: ai_first_matches 값은 언제나 item_id 목록(activity_context가 목록으로 읽는다).
+        assert result["ai_first_matches"][candidate["ai_task_id"]] == [candidate["ai_task_id"]]
 
 
 def test_merge_uses_all_anchors_and_one_bounded_wins_over_unbounded(root):

@@ -88,7 +88,7 @@ def merge_report(rules, verified):
             item = ai.ai_item(task)
             item.update(rule_version=VERSION, locator=copy.deepcopy(task["locator"]))
             result["items"].append(item)
-            links[task["ai_task_id"]] = item["item_id"]
+            links[task["ai_task_id"]] = [item["item_id"]]  # 형식: 항상 item_id 목록(S20 검수)
             addition = {**relation, "item_id": item["item_id"]}
             relations["new"].append(addition)
         if kind != "new":
