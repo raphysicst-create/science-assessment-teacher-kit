@@ -233,11 +233,18 @@ class Runner:
                 raise ValueError(f"{step.name} requires numeric zero metrics: {record['metrics']}")
         return None
 
+    def stop_if_requested(self, key: str, step: Step) -> None:
+        # N2 재검수: 다른 회차가 멈췄으면 재시도·대기 뒤 새 호출을 시작하지 않는다.
+        if self.stop_event.is_set():
+            raise StopRun(1, "stopped", f"{key}/{step.name}: other round stopped")
+
     def ai_step(self, bundle: int, key: str, step: Step, record: dict) -> None:
         while True:
+            self.stop_if_requested(key, step)
             counts = self.attempt(bundle, key, step, record)
             called, fresh_valid = counts["called"], counts["fresh_valid"]
             if counts["valid"] < counts["total"]:
+                self.stop_if_requested(key, step)
                 counts = self.attempt(bundle, key, step, record)
                 called += counts["called"]
                 fresh_valid += counts["fresh_valid"]

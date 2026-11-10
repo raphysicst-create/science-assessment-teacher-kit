@@ -218,3 +218,23 @@ def test_sequential_rounds_preserve_complete_old_order(setup):
     keys = [key for key, _, _ in fake.calls if key not in ("publish", "gate")]
     length = len(round_steps(cfg, 1, 3))
     assert keys == [round_key(1, 3)] * length + [round_key(1, 1)] * length
+
+
+def test_ai_wait_rechecks_stop_before_next_call(setup):
+    # N2 재검수 재현: 한도 대기 중 다른 회차가 멈추면 대기 뒤 세 번째 호출을 시작하지 않는다.
+    cfg, fake = setup
+    instance = runner.Runner(cfg, fake.execute, None, fake.start, fake.stop,
+                             lambda server, marker: None, lambda: True)
+    instance.plan()
+    key = round_key(1, 3)
+    fake.responses[(key, "first-run")] = [(0, HALF), (0, HALF), (0, HALF)]
+
+    def sleep(seconds):
+        fake.waits.append(seconds)
+        instance.stop_event.set()  # 다른 회차 실패를 흉내 낸다
+
+    instance.sleep = sleep
+    with pytest.raises(runner.StopRun):
+        instance.step(1, key, Step("first-run", (), kind="ai"))
+    assert [name for name in fake.names() if name == "first-run"] == ["first-run"] * 2
+    assert fake.waits == [3600]
