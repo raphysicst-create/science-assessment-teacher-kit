@@ -1,0 +1,173 @@
+[
+ {
+  "sido": "울산광역시",
+  "stratum": "city",
+  "sgg": "남구",
+  "private_only": false,
+  "queried_at": "2026-11-10",
+  "schools": [
+   {
+    "name": "대현중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "동평중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "삼호중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "신일중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "신정중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "옥동중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "옥현중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "울산서여자중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "월평중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "울산중앙중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "울산강남중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "태화중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "학성중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "무거중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "야음중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "문수중학교",
+    "founding": "공립"
+   }
+  ]
+ },
+ {
+  "sido": "강원특별자치도",
+  "stratum": "city",
+  "sgg": "태백시",
+  "private_only": false,
+  "queried_at": "2026-11-10",
+  "schools": [
+   {
+    "name": "상장중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "장성여자중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "철암중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "태백중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "함태중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "세연중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "황지중학교",
+    "founding": "공립"
+   }
+  ]
+ },
+ {
+  "sido": "전북특별자치도",
+  "stratum": "city",
+  "sgg": "김제시",
+  "private_only": true,
+  "queried_at": "2026-11-10",
+  "schools": [
+   {
+    "name": "금구중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "동국대학교사범대학부속금산중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "금성중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "한들중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "김제중앙중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "김제중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "덕암중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "만경여자중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "만경중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "봉남중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "용지중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "청하중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "지평선중학교",
+    "founding": "사립"
+   }
+  ]
+ }
+]

@@ -117,6 +117,24 @@ def test_shared_span_and_collision_rejection():
     assert all(e["field"] is None for e in f.reject_collisions(entries))
 
 
+def test_shared_span_dropped_when_field_has_own_column_cell():
+    """S20: 자기 열 칸과 공유 범위(이웃 열 병합) 칸을 함께 인용하면 공유 범위 칸은 버린다."""
+    text = column_text().replace(
+        "<tr><td>성취기준</td><td>[9과01-01]</td><td>[9과02-01]</td></tr>",
+        "<tr><td>성취기준</td><td>[9과01-01]</td><td>[9과02-01]</td></tr>\n"
+        '<tr><td>추가 기준</td><td colspan="2">[9과03-01]</td></tr>')
+    source = setup_source(text)
+    conversion, target, _, known, tables, structures = source
+    both = answer(text, "[9과01-01]", ["[9과01-01]", "[9과03-01]"])
+    both["evidence"] += answer(text, "[9과03-01]", [])["evidence"]
+    field, cells = f.verify_field(known[0], "standards", both, target, conversion,
+                                  tables, structures, known)
+    assert field["value"] == ["[9과01-01]"]
+    assert {c[3] for c in cells} == {"same_column"}
+    only_shared, _ = verify(source, "standards", "[9과03-01]", ["[9과03-01]"])
+    assert only_shared["value"] == ["[9과03-01]"]
+
+
 def test_wrong_owner_claim_invalidates_legitimate_cell_too():
     source = setup_source()
     field, cells = verify(source, "method", "실험", ["실험"])

@@ -1,0 +1,8756 @@
+[
+  {
+    "task_id": "P01",
+    "set": "fresh3",
+    "school": "금성중학교",
+    "round": "2026-round-3-fresh3",
+    "grade": 1,
+    "semester": 2,
+    "title": "포트폴리오",
+    "methods_key": [
+      "포트폴리오"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        192,
+        199
+      ]
+    ],
+    "doc": null,
+    "doc_reason": "multiple_documents",
+    "spans": []
+  },
+  {
+    "task_id": "P02",
+    "set": "fresh3",
+    "school": "금성중학교",
+    "round": "2026-round-3-fresh3",
+    "grade": 1,
+    "semester": 2,
+    "title": "발표",
+    "methods_key": [
+      "구술·발표"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        218,
+        225
+      ]
+    ],
+    "doc": null,
+    "doc_reason": "multiple_documents",
+    "spans": []
+  },
+  {
+    "task_id": "P03",
+    "set": "fresh3",
+    "school": "금성중학교",
+    "round": "2026-round-3-fresh3",
+    "grade": 1,
+    "semester": 2,
+    "title": "과학 탐구 보고서",
+    "methods_key": [
+      "서술·논술",
+      "구술·발표",
+      "프로젝트"
+    ],
+    "activity_key": "발표·토론",
+    "activity_accept": [
+      "발표·토론"
+    ],
+    "lines": [
+      [
+        244,
+        251
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "fd9f8efebf695e709802b1d209391267a4b7706b53866751316d2b648095aa6d",
+      "converted_path": "data/derived/segments/2026-round-3-fresh3-conversions/child_c186949ad0fdd34b4269215ea9f808495a6fc37d5d8917922453350b1ca0853d.json",
+      "locator_sha256": "47907a5d46a028beb206b2e83512f9dcf2c7a1e7501640dcfe126496cb79eec0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 244,
+        "start": 15269,
+        "end": 15366
+      },
+      {
+        "line": 245,
+        "start": 15367,
+        "end": 15507
+      },
+      {
+        "line": 246,
+        "start": 15508,
+        "end": 15668
+      },
+      {
+        "line": 247,
+        "start": 15669,
+        "end": 15782
+      },
+      {
+        "line": 248,
+        "start": 15783,
+        "end": 15876
+      },
+      {
+        "line": 249,
+        "start": 15877,
+        "end": 15983
+      },
+      {
+        "line": 250,
+        "start": 15984,
+        "end": 16083
+      },
+      {
+        "line": 251,
+        "start": 16084,
+        "end": 16194
+      }
+    ]
+  },
+  {
+    "task_id": "P04",
+    "set": "fresh3",
+    "school": "금성중학교",
+    "round": "2026-round-3-fresh3",
+    "grade": 2,
+    "semester": 2,
+    "title": "포트폴리오 평가",
+    "methods_key": [
+      "서술·논술",
+      "포트폴리오"
+    ],
+    "activity_key": "과정평가",
+    "activity_accept": [
+      "과정평가"
+    ],
+    "lines": [
+      [
+        100,
+        102
+      ],
+      [
+        139,
+        146
+      ]
+    ],
+    "doc": null,
+    "doc_reason": "multiple_documents",
+    "spans": []
+  },
+  {
+    "task_id": "P05",
+    "set": "fresh3",
+    "school": "금성중학교",
+    "round": "2026-round-3-fresh3",
+    "grade": 2,
+    "semester": 2,
+    "title": "탐구실험",
+    "methods_key": [
+      "서술·논술",
+      "구술·발표",
+      "실험･실습"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        100,
+        102
+      ],
+      [
+        162,
+        172
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "aa49c63d8aa475492969703a56953fd1a1bfb91d0157145c839aa00ce672fd0e",
+      "converted_path": "data/derived/segments/2026-round-3-fresh3-conversions/child_cdbf6ecb72075f50d4bd0ccf8d8ef3635c3c52986e02fea1b7663de176cc6ab6.json",
+      "locator_sha256": "6ff0cff0cbd59bbe9aff4abc292a9dffe8273d4ef1f7bf0bf9eb4745b70ed0b2"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 100,
+        "start": 9044,
+        "end": 9176
+      },
+      {
+        "line": 101,
+        "start": 9177,
+        "end": 9265
+      },
+      {
+        "line": 102,
+        "start": 9266,
+        "end": 9481
+      },
+      {
+        "line": 162,
+        "start": 12682,
+        "end": 12689
+      },
+      {
+        "line": 163,
+        "start": 12690,
+        "end": 12690
+      },
+      {
+        "line": 164,
+        "start": 12691,
+        "end": 12698
+      },
+      {
+        "line": 165,
+        "start": 12699,
+        "end": 12795
+      },
+      {
+        "line": 166,
+        "start": 12796,
+        "end": 12919
+      },
+      {
+        "line": 167,
+        "start": 12920,
+        "end": 13108
+      },
+      {
+        "line": 168,
+        "start": 13109,
+        "end": 13256
+      },
+      {
+        "line": 169,
+        "start": 13257,
+        "end": 13394
+      },
+      {
+        "line": 170,
+        "start": 13395,
+        "end": 13510
+      },
+      {
+        "line": 171,
+        "start": 13511,
+        "end": 13623
+      },
+      {
+        "line": 172,
+        "start": 13624,
+        "end": 13733
+      }
+    ]
+  },
+  {
+    "task_id": "P06",
+    "set": "fresh3",
+    "school": "대광중학교",
+    "round": "2026-round-3-fresh3",
+    "grade": 1,
+    "semester": 2,
+    "title": "기체의 성질 탐구 및 논술하기",
+    "methods_key": [
+      "논술",
+      "포트폴리오"
+    ],
+    "activity_key": "추론·설명",
+    "activity_accept": [
+      "추론·설명"
+    ],
+    "lines": [
+      [
+        2325,
+        2325
+      ],
+      [
+        2347,
+        2360
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "aee0953c90a2888e35b1cf8b08cca667a5646f0b2f4f192e6fe311649c8f31de",
+      "converted_path": "data/derived/segments/2026-round-3-fresh3-conversions/d64110bd87e98d88bdf2b9f1ab797f13049497f8a2545e00c888d89d4b8aac8f.json",
+      "locator_sha256": "d64110bd87e98d88bdf2b9f1ab797f13049497f8a2545e00c888d89d4b8aac8f"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 2325,
+        "start": 185114,
+        "end": 185264
+      },
+      {
+        "line": 2347,
+        "start": 186636,
+        "end": 186732
+      },
+      {
+        "line": 2348,
+        "start": 186733,
+        "end": 186827
+      },
+      {
+        "line": 2349,
+        "start": 186828,
+        "end": 186894
+      },
+      {
+        "line": 2350,
+        "start": 186895,
+        "end": 187145
+      },
+      {
+        "line": 2351,
+        "start": 187146,
+        "end": 187265
+      },
+      {
+        "line": 2352,
+        "start": 187266,
+        "end": 187380
+      },
+      {
+        "line": 2353,
+        "start": 187381,
+        "end": 187470
+      },
+      {
+        "line": 2354,
+        "start": 187471,
+        "end": 187542
+      },
+      {
+        "line": 2355,
+        "start": 187543,
+        "end": 187793
+      },
+      {
+        "line": 2356,
+        "start": 187794,
+        "end": 187913
+      },
+      {
+        "line": 2357,
+        "start": 187914,
+        "end": 188028
+      },
+      {
+        "line": 2358,
+        "start": 188029,
+        "end": 188118
+      },
+      {
+        "line": 2359,
+        "start": 188119,
+        "end": 188190
+      },
+      {
+        "line": 2360,
+        "start": 188191,
+        "end": 188310
+      }
+    ]
+  },
+  {
+    "task_id": "P07",
+    "set": "fresh3",
+    "school": "대광중학교",
+    "round": "2026-round-3-fresh3",
+    "grade": 1,
+    "semester": 2,
+    "title": "일상생활 속 힘의 작용 탐구 및 논술하기",
+    "methods_key": [
+      "논술",
+      "프로젝트"
+    ],
+    "activity_key": "추론·설명",
+    "activity_accept": [
+      "추론·설명"
+    ],
+    "lines": [
+      [
+        2325,
+        2325
+      ],
+      [
+        2383,
+        2391
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "aee0953c90a2888e35b1cf8b08cca667a5646f0b2f4f192e6fe311649c8f31de",
+      "converted_path": "data/derived/segments/2026-round-3-fresh3-conversions/d64110bd87e98d88bdf2b9f1ab797f13049497f8a2545e00c888d89d4b8aac8f.json",
+      "locator_sha256": "d64110bd87e98d88bdf2b9f1ab797f13049497f8a2545e00c888d89d4b8aac8f"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 2325,
+        "start": 185114,
+        "end": 185264
+      },
+      {
+        "line": 2383,
+        "start": 189971,
+        "end": 190073
+      },
+      {
+        "line": 2384,
+        "start": 190074,
+        "end": 190160
+      },
+      {
+        "line": 2385,
+        "start": 190161,
+        "end": 190227
+      },
+      {
+        "line": 2386,
+        "start": 190228,
+        "end": 190528
+      },
+      {
+        "line": 2387,
+        "start": 190529,
+        "end": 190677
+      },
+      {
+        "line": 2388,
+        "start": 190678,
+        "end": 190795
+      },
+      {
+        "line": 2389,
+        "start": 190796,
+        "end": 190912
+      },
+      {
+        "line": 2390,
+        "start": 190913,
+        "end": 191022
+      },
+      {
+        "line": 2391,
+        "start": 191023,
+        "end": 191142
+      }
+    ]
+  },
+  {
+    "task_id": "P08",
+    "set": "fresh3",
+    "school": "대광중학교",
+    "round": "2026-round-3-fresh3",
+    "grade": 1,
+    "semester": 2,
+    "title": "지구의 운동과 천체의 변화 논술하기",
+    "methods_key": [
+      "논술"
+    ],
+    "activity_key": "추론·설명",
+    "activity_accept": [
+      "추론·설명"
+    ],
+    "lines": [
+      [
+        2325,
+        2325
+      ],
+      [
+        2414,
+        2422
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "aee0953c90a2888e35b1cf8b08cca667a5646f0b2f4f192e6fe311649c8f31de",
+      "converted_path": "data/derived/segments/2026-round-3-fresh3-conversions/d64110bd87e98d88bdf2b9f1ab797f13049497f8a2545e00c888d89d4b8aac8f.json",
+      "locator_sha256": "d64110bd87e98d88bdf2b9f1ab797f13049497f8a2545e00c888d89d4b8aac8f"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 2325,
+        "start": 185114,
+        "end": 185264
+      },
+      {
+        "line": 2414,
+        "start": 192730,
+        "end": 192829
+      },
+      {
+        "line": 2415,
+        "start": 192830,
+        "end": 192927
+      },
+      {
+        "line": 2416,
+        "start": 192928,
+        "end": 192994
+      },
+      {
+        "line": 2417,
+        "start": 192995,
+        "end": 193273
+      },
+      {
+        "line": 2418,
+        "start": 193274,
+        "end": 193293
+      },
+      {
+        "line": 2419,
+        "start": 193294,
+        "end": 193432
+      },
+      {
+        "line": 2420,
+        "start": 193433,
+        "end": 193536
+      },
+      {
+        "line": 2421,
+        "start": 193537,
+        "end": 193615
+      },
+      {
+        "line": 2422,
+        "start": 193616,
+        "end": 193735
+      }
+    ]
+  },
+  {
+    "task_id": "P09",
+    "set": "fresh3",
+    "school": "대광중학교",
+    "round": "2026-round-3-fresh3",
+    "grade": 2,
+    "semester": 2,
+    "title": "광합성 산물의 저장과 이용 표현 및 논술하기",
+    "methods_key": [
+      "논술",
+      "실험･실습"
+    ],
+    "activity_key": "추론·설명",
+    "activity_accept": [
+      "추론·설명"
+    ],
+    "lines": [
+      [
+        1852,
+        1852
+      ],
+      [
+        1874,
+        1882
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "ff4bfba36886349f41ac475c6e4fa658445ac0284b1dad5b58d860fb33ee89d4",
+      "converted_path": "data/derived/segments/2026-round-3-fresh3-conversions/ddf4b620aaea1a683f40aef854e62c0e858dca790878766501026855a34f9204.json",
+      "locator_sha256": "ddf4b620aaea1a683f40aef854e62c0e858dca790878766501026855a34f9204"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1852,
+        "start": 139661,
+        "end": 139811
+      },
+      {
+        "line": 1874,
+        "start": 141222,
+        "end": 141326
+      },
+      {
+        "line": 1875,
+        "start": 141327,
+        "end": 141422
+      },
+      {
+        "line": 1876,
+        "start": 141423,
+        "end": 141489
+      },
+      {
+        "line": 1877,
+        "start": 141490,
+        "end": 141667
+      },
+      {
+        "line": 1878,
+        "start": 141668,
+        "end": 141747
+      },
+      {
+        "line": 1879,
+        "start": 141748,
+        "end": 141831
+      },
+      {
+        "line": 1880,
+        "start": 141832,
+        "end": 141899
+      },
+      {
+        "line": 1881,
+        "start": 141900,
+        "end": 141963
+      },
+      {
+        "line": 1882,
+        "start": 141964,
+        "end": 142083
+      }
+    ]
+  },
+  {
+    "task_id": "P10",
+    "set": "fresh3",
+    "school": "대광중학교",
+    "round": "2026-round-3-fresh3",
+    "grade": 2,
+    "semester": 2,
+    "title": "기관계의 통합적 작용 표현 및 논술하기",
+    "methods_key": [
+      "논술",
+      "프로젝트"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        1852,
+        1852
+      ],
+      [
+        1906,
+        1914
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "ff4bfba36886349f41ac475c6e4fa658445ac0284b1dad5b58d860fb33ee89d4",
+      "converted_path": "data/derived/segments/2026-round-3-fresh3-conversions/ddf4b620aaea1a683f40aef854e62c0e858dca790878766501026855a34f9204.json",
+      "locator_sha256": "ddf4b620aaea1a683f40aef854e62c0e858dca790878766501026855a34f9204"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1852,
+        "start": 139661,
+        "end": 139811
+      },
+      {
+        "line": 1906,
+        "start": 143693,
+        "end": 143794
+      },
+      {
+        "line": 1907,
+        "start": 143795,
+        "end": 143899
+      },
+      {
+        "line": 1908,
+        "start": 143900,
+        "end": 143966
+      },
+      {
+        "line": 1909,
+        "start": 143967,
+        "end": 144193
+      },
+      {
+        "line": 1910,
+        "start": 144194,
+        "end": 144315
+      },
+      {
+        "line": 1911,
+        "start": 144316,
+        "end": 144412
+      },
+      {
+        "line": 1912,
+        "start": 144413,
+        "end": 144484
+      },
+      {
+        "line": 1913,
+        "start": 144485,
+        "end": 144558
+      },
+      {
+        "line": 1914,
+        "start": 144559,
+        "end": 144678
+      }
+    ]
+  },
+  {
+    "task_id": "P11",
+    "set": "fresh3",
+    "school": "대광중학교",
+    "round": "2026-round-3-fresh3",
+    "grade": 2,
+    "semester": 2,
+    "title": "전기 에너지의 전환과 소비 전력 논술하기",
+    "methods_key": [
+      "논술"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        1852,
+        1852
+      ],
+      [
+        1938,
+        1946
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "ff4bfba36886349f41ac475c6e4fa658445ac0284b1dad5b58d860fb33ee89d4",
+      "converted_path": "data/derived/segments/2026-round-3-fresh3-conversions/ddf4b620aaea1a683f40aef854e62c0e858dca790878766501026855a34f9204.json",
+      "locator_sha256": "ddf4b620aaea1a683f40aef854e62c0e858dca790878766501026855a34f9204"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1852,
+        "start": 139661,
+        "end": 139811
+      },
+      {
+        "line": 1938,
+        "start": 146386,
+        "end": 146488
+      },
+      {
+        "line": 1939,
+        "start": 146489,
+        "end": 146588
+      },
+      {
+        "line": 1940,
+        "start": 146589,
+        "end": 146655
+      },
+      {
+        "line": 1941,
+        "start": 146656,
+        "end": 146981
+      },
+      {
+        "line": 1942,
+        "start": 146982,
+        "end": 147133
+      },
+      {
+        "line": 1943,
+        "start": 147134,
+        "end": 147279
+      },
+      {
+        "line": 1944,
+        "start": 147280,
+        "end": 147382
+      },
+      {
+        "line": 1945,
+        "start": 147383,
+        "end": 147483
+      },
+      {
+        "line": 1946,
+        "start": 147484,
+        "end": 147603
+      }
+    ]
+  },
+  {
+    "task_id": "P12",
+    "set": "fresh3",
+    "school": "번암중학교",
+    "round": "2026-round-3-fresh3",
+    "grade": 2,
+    "semester": 2,
+    "title": "과학 실험 수행 및 보고서 작성하기",
+    "methods_key": [
+      "실험･실습"
+    ],
+    "activity_key": "실험평가",
+    "activity_accept": [
+      "실험평가"
+    ],
+    "lines": [
+      [
+        254,
+        256
+      ],
+      [
+        295,
+        302
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "7271e1473bd2d041f3878cbd98e16a103c16fb7e5cc5eaf56a0e7c5fec7fc7b4",
+      "converted_path": "data/derived/segments/2026-round-3-fresh3-conversions/fe46dba82d4eff06ff0e303aaa149d293b9f228ec89d4a9031039356d6ee647f.json",
+      "locator_sha256": "fe46dba82d4eff06ff0e303aaa149d293b9f228ec89d4a9031039356d6ee647f"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 254,
+        "start": 23466,
+        "end": 23622
+      },
+      {
+        "line": 255,
+        "start": 23623,
+        "end": 23782
+      },
+      {
+        "line": 256,
+        "start": 23783,
+        "end": 24194
+      },
+      {
+        "line": 295,
+        "start": 26153,
+        "end": 26216
+      },
+      {
+        "line": 296,
+        "start": 26217,
+        "end": 26343
+      },
+      {
+        "line": 297,
+        "start": 26344,
+        "end": 26502
+      },
+      {
+        "line": 298,
+        "start": 26503,
+        "end": 26638
+      },
+      {
+        "line": 299,
+        "start": 26639,
+        "end": 26766
+      },
+      {
+        "line": 300,
+        "start": 26767,
+        "end": 26901
+      },
+      {
+        "line": 301,
+        "start": 26902,
+        "end": 27017
+      },
+      {
+        "line": 302,
+        "start": 27018,
+        "end": 27127
+      }
+    ]
+  },
+  {
+    "task_id": "P13",
+    "set": "fresh3",
+    "school": "번암중학교",
+    "round": "2026-round-3-fresh3",
+    "grade": 2,
+    "semester": 2,
+    "title": "과학 인포그래픽 제작 및 발표하기",
+    "methods_key": [
+      "구술·발표"
+    ],
+    "activity_key": "발표·토론",
+    "activity_accept": [
+      "발표·토론"
+    ],
+    "lines": [
+      [
+        254,
+        256
+      ],
+      [
+        319,
+        326
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "7271e1473bd2d041f3878cbd98e16a103c16fb7e5cc5eaf56a0e7c5fec7fc7b4",
+      "converted_path": "data/derived/segments/2026-round-3-fresh3-conversions/fe46dba82d4eff06ff0e303aaa149d293b9f228ec89d4a9031039356d6ee647f.json",
+      "locator_sha256": "fe46dba82d4eff06ff0e303aaa149d293b9f228ec89d4a9031039356d6ee647f"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 254,
+        "start": 23466,
+        "end": 23622
+      },
+      {
+        "line": 255,
+        "start": 23623,
+        "end": 23782
+      },
+      {
+        "line": 256,
+        "start": 23783,
+        "end": 24194
+      },
+      {
+        "line": 319,
+        "start": 28586,
+        "end": 28648
+      },
+      {
+        "line": 320,
+        "start": 28649,
+        "end": 28758
+      },
+      {
+        "line": 321,
+        "start": 28759,
+        "end": 28920
+      },
+      {
+        "line": 322,
+        "start": 28921,
+        "end": 29053
+      },
+      {
+        "line": 323,
+        "start": 29054,
+        "end": 29178
+      },
+      {
+        "line": 324,
+        "start": 29179,
+        "end": 29304
+      },
+      {
+        "line": 325,
+        "start": 29305,
+        "end": 29421
+      },
+      {
+        "line": 326,
+        "start": 29422,
+        "end": 29531
+      }
+    ]
+  },
+  {
+    "task_id": "P14",
+    "set": "fresh3",
+    "school": "번암중학교",
+    "round": "2026-round-3-fresh3",
+    "grade": 2,
+    "semester": 2,
+    "title": "배움 기록하기",
+    "methods_key": [
+      "포트폴리오"
+    ],
+    "activity_key": "과정평가",
+    "activity_accept": [
+      "과정평가"
+    ],
+    "lines": [
+      [
+        254,
+        256
+      ],
+      [
+        340,
+        347
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "7271e1473bd2d041f3878cbd98e16a103c16fb7e5cc5eaf56a0e7c5fec7fc7b4",
+      "converted_path": "data/derived/segments/2026-round-3-fresh3-conversions/fe46dba82d4eff06ff0e303aaa149d293b9f228ec89d4a9031039356d6ee647f.json",
+      "locator_sha256": "fe46dba82d4eff06ff0e303aaa149d293b9f228ec89d4a9031039356d6ee647f"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 254,
+        "start": 23466,
+        "end": 23622
+      },
+      {
+        "line": 255,
+        "start": 23623,
+        "end": 23782
+      },
+      {
+        "line": 256,
+        "start": 23783,
+        "end": 24194
+      },
+      {
+        "line": 340,
+        "start": 30708,
+        "end": 30759
+      },
+      {
+        "line": 341,
+        "start": 30760,
+        "end": 30890
+      },
+      {
+        "line": 342,
+        "start": 30891,
+        "end": 31016
+      },
+      {
+        "line": 343,
+        "start": 31017,
+        "end": 31116
+      },
+      {
+        "line": 344,
+        "start": 31117,
+        "end": 31216
+      },
+      {
+        "line": 345,
+        "start": 31217,
+        "end": 31320
+      },
+      {
+        "line": 346,
+        "start": 31321,
+        "end": 31429
+      },
+      {
+        "line": 347,
+        "start": 31430,
+        "end": 31539
+      }
+    ]
+  },
+  {
+    "task_id": "P15",
+    "set": "fresh3",
+    "school": "금성중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 1,
+    "semester": 1,
+    "title": "과학적 탐구 보고서",
+    "methods_key": [
+      "서술·논술",
+      "실험･실습"
+    ],
+    "activity_key": "추론·설명",
+    "activity_accept": [
+      "추론·설명"
+    ],
+    "lines": [
+      [
+        99,
+        103
+      ],
+      [
+        137,
+        157
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "01c09a98c2392d53b4c6e95971a78f6389d67a065bc9d11c7793bfa84bb04b98",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/child_4c3396b5e61a0fdda3be615307aac4151c0794f2edfaddbb9ad81429793b84c6.json",
+      "locator_sha256": "66929f6fb63b39105af2cb0eb6f31fb365bd2b89ef666a14a0643688651e4684"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 99,
+        "start": 6622,
+        "end": 6717
+      },
+      {
+        "line": 100,
+        "start": 6718,
+        "end": 6795
+      },
+      {
+        "line": 101,
+        "start": 6796,
+        "end": 7105
+      },
+      {
+        "line": 102,
+        "start": 7106,
+        "end": 7181
+      },
+      {
+        "line": 103,
+        "start": 7182,
+        "end": 7254
+      },
+      {
+        "line": 137,
+        "start": 8038,
+        "end": 8051
+      },
+      {
+        "line": 138,
+        "start": 8052,
+        "end": 8052
+      },
+      {
+        "line": 139,
+        "start": 8053,
+        "end": 8060
+      },
+      {
+        "line": 140,
+        "start": 8061,
+        "end": 8128
+      },
+      {
+        "line": 141,
+        "start": 8129,
+        "end": 8597
+      },
+      {
+        "line": 142,
+        "start": 8598,
+        "end": 8741
+      },
+      {
+        "line": 143,
+        "start": 8742,
+        "end": 8834
+      },
+      {
+        "line": 144,
+        "start": 8835,
+        "end": 8917
+      },
+      {
+        "line": 145,
+        "start": 8918,
+        "end": 9027
+      },
+      {
+        "line": 146,
+        "start": 9028,
+        "end": 9121
+      },
+      {
+        "line": 147,
+        "start": 9122,
+        "end": 9205
+      },
+      {
+        "line": 148,
+        "start": 9206,
+        "end": 9312
+      },
+      {
+        "line": 149,
+        "start": 9313,
+        "end": 9402
+      },
+      {
+        "line": 150,
+        "start": 9403,
+        "end": 9482
+      },
+      {
+        "line": 151,
+        "start": 9483,
+        "end": 9581
+      },
+      {
+        "line": 152,
+        "start": 9582,
+        "end": 9657
+      },
+      {
+        "line": 153,
+        "start": 9658,
+        "end": 9732
+      },
+      {
+        "line": 154,
+        "start": 9733,
+        "end": 9821
+      },
+      {
+        "line": 155,
+        "start": 9822,
+        "end": 9892
+      },
+      {
+        "line": 156,
+        "start": 9893,
+        "end": 9958
+      },
+      {
+        "line": 157,
+        "start": 9959,
+        "end": 10079
+      }
+    ]
+  },
+  {
+    "task_id": "P16",
+    "set": "fresh3",
+    "school": "금성중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 1,
+    "semester": 1,
+    "title": "과학적 탐구 발표",
+    "methods_key": [
+      "서술·논술",
+      "실험･실습"
+    ],
+    "activity_key": "발표·토론",
+    "activity_accept": [
+      "발표·토론"
+    ],
+    "lines": [
+      [
+        99,
+        103
+      ],
+      [
+        173,
+        193
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "01c09a98c2392d53b4c6e95971a78f6389d67a065bc9d11c7793bfa84bb04b98",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/child_4c3396b5e61a0fdda3be615307aac4151c0794f2edfaddbb9ad81429793b84c6.json",
+      "locator_sha256": "66929f6fb63b39105af2cb0eb6f31fb365bd2b89ef666a14a0643688651e4684"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 99,
+        "start": 6622,
+        "end": 6717
+      },
+      {
+        "line": 100,
+        "start": 6718,
+        "end": 6795
+      },
+      {
+        "line": 101,
+        "start": 6796,
+        "end": 7105
+      },
+      {
+        "line": 102,
+        "start": 7106,
+        "end": 7181
+      },
+      {
+        "line": 103,
+        "start": 7182,
+        "end": 7254
+      },
+      {
+        "line": 173,
+        "start": 11071,
+        "end": 11083
+      },
+      {
+        "line": 174,
+        "start": 11084,
+        "end": 11084
+      },
+      {
+        "line": 175,
+        "start": 11085,
+        "end": 11092
+      },
+      {
+        "line": 176,
+        "start": 11093,
+        "end": 11167
+      },
+      {
+        "line": 177,
+        "start": 11168,
+        "end": 11636
+      },
+      {
+        "line": 178,
+        "start": 11637,
+        "end": 11782
+      },
+      {
+        "line": 179,
+        "start": 11783,
+        "end": 11879
+      },
+      {
+        "line": 180,
+        "start": 11880,
+        "end": 11977
+      },
+      {
+        "line": 181,
+        "start": 11978,
+        "end": 12073
+      },
+      {
+        "line": 182,
+        "start": 12074,
+        "end": 12164
+      },
+      {
+        "line": 183,
+        "start": 12165,
+        "end": 12243
+      },
+      {
+        "line": 184,
+        "start": 12244,
+        "end": 12330
+      },
+      {
+        "line": 185,
+        "start": 12331,
+        "end": 12419
+      },
+      {
+        "line": 186,
+        "start": 12420,
+        "end": 12496
+      },
+      {
+        "line": 187,
+        "start": 12497,
+        "end": 12582
+      },
+      {
+        "line": 188,
+        "start": 12583,
+        "end": 12664
+      },
+      {
+        "line": 189,
+        "start": 12665,
+        "end": 12738
+      },
+      {
+        "line": 190,
+        "start": 12739,
+        "end": 12822
+      },
+      {
+        "line": 191,
+        "start": 12823,
+        "end": 12889
+      },
+      {
+        "line": 192,
+        "start": 12890,
+        "end": 12955
+      },
+      {
+        "line": 193,
+        "start": 12956,
+        "end": 13076
+      }
+    ]
+  },
+  {
+    "task_id": "P17",
+    "set": "fresh3",
+    "school": "금성중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 1,
+    "semester": 1,
+    "title": "과학 독서토론",
+    "methods_key": [
+      "구술·발표",
+      "토의･토론"
+    ],
+    "activity_key": "발표·토론",
+    "activity_accept": [
+      "발표·토론"
+    ],
+    "lines": [
+      [
+        99,
+        103
+      ],
+      [
+        209,
+        229
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "01c09a98c2392d53b4c6e95971a78f6389d67a065bc9d11c7793bfa84bb04b98",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/child_4c3396b5e61a0fdda3be615307aac4151c0794f2edfaddbb9ad81429793b84c6.json",
+      "locator_sha256": "66929f6fb63b39105af2cb0eb6f31fb365bd2b89ef666a14a0643688651e4684"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 99,
+        "start": 6622,
+        "end": 6717
+      },
+      {
+        "line": 100,
+        "start": 6718,
+        "end": 6795
+      },
+      {
+        "line": 101,
+        "start": 6796,
+        "end": 7105
+      },
+      {
+        "line": 102,
+        "start": 7106,
+        "end": 7181
+      },
+      {
+        "line": 103,
+        "start": 7182,
+        "end": 7254
+      },
+      {
+        "line": 209,
+        "start": 13766,
+        "end": 13776
+      },
+      {
+        "line": 210,
+        "start": 13777,
+        "end": 13777
+      },
+      {
+        "line": 211,
+        "start": 13778,
+        "end": 13785
+      },
+      {
+        "line": 212,
+        "start": 13786,
+        "end": 13863
+      },
+      {
+        "line": 213,
+        "start": 13864,
+        "end": 14332
+      },
+      {
+        "line": 214,
+        "start": 14333,
+        "end": 14486
+      },
+      {
+        "line": 215,
+        "start": 14487,
+        "end": 14588
+      },
+      {
+        "line": 216,
+        "start": 14589,
+        "end": 14688
+      },
+      {
+        "line": 217,
+        "start": 14689,
+        "end": 14804
+      },
+      {
+        "line": 218,
+        "start": 14805,
+        "end": 14898
+      },
+      {
+        "line": 219,
+        "start": 14899,
+        "end": 14989
+      },
+      {
+        "line": 220,
+        "start": 14990,
+        "end": 15083
+      },
+      {
+        "line": 221,
+        "start": 15084,
+        "end": 15180
+      },
+      {
+        "line": 222,
+        "start": 15181,
+        "end": 15265
+      },
+      {
+        "line": 223,
+        "start": 15266,
+        "end": 15354
+      },
+      {
+        "line": 224,
+        "start": 15355,
+        "end": 15448
+      },
+      {
+        "line": 225,
+        "start": 15449,
+        "end": 15531
+      },
+      {
+        "line": 226,
+        "start": 15532,
+        "end": 15619
+      },
+      {
+        "line": 227,
+        "start": 15620,
+        "end": 15703
+      },
+      {
+        "line": 228,
+        "start": 15704,
+        "end": 15782
+      },
+      {
+        "line": 229,
+        "start": 15783,
+        "end": 15904
+      }
+    ]
+  },
+  {
+    "task_id": "P18",
+    "set": "fresh3",
+    "school": "금성중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 2,
+    "semester": 1,
+    "title": "포트폴리오 평가",
+    "methods_key": [
+      "서술·논술",
+      "포트폴리오"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        101,
+        103
+      ],
+      [
+        140,
+        147
+      ]
+    ],
+    "doc": null,
+    "doc_reason": "multiple_documents",
+    "spans": []
+  },
+  {
+    "task_id": "P19",
+    "set": "fresh3",
+    "school": "금성중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 2,
+    "semester": 1,
+    "title": "탐구실험",
+    "methods_key": [
+      "서술·논술",
+      "구술·발표",
+      "실험･실습"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        101,
+        103
+      ],
+      [
+        163,
+        173
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "e05d59f292184dc8bbb915717343ab10c0fed107119d6b0a3a840901caf0215d",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/child_1c081db5ae64499a3dad46765f1a3ff60ff16cb511c0e3e7c3205675ae3ec8af.json",
+      "locator_sha256": "ce79041165b358cad2f78f1c3587db35a2bc9dde43d341fc5f075d9e788b5c91"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 101,
+        "start": 9496,
+        "end": 9628
+      },
+      {
+        "line": 102,
+        "start": 9629,
+        "end": 9717
+      },
+      {
+        "line": 103,
+        "start": 9718,
+        "end": 9933
+      },
+      {
+        "line": 163,
+        "start": 13152,
+        "end": 13159
+      },
+      {
+        "line": 164,
+        "start": 13160,
+        "end": 13160
+      },
+      {
+        "line": 165,
+        "start": 13161,
+        "end": 13168
+      },
+      {
+        "line": 166,
+        "start": 13169,
+        "end": 13278
+      },
+      {
+        "line": 167,
+        "start": 13279,
+        "end": 13393
+      },
+      {
+        "line": 168,
+        "start": 13394,
+        "end": 13542
+      },
+      {
+        "line": 169,
+        "start": 13543,
+        "end": 13662
+      },
+      {
+        "line": 170,
+        "start": 13663,
+        "end": 13767
+      },
+      {
+        "line": 171,
+        "start": 13768,
+        "end": 13865
+      },
+      {
+        "line": 172,
+        "start": 13866,
+        "end": 13943
+      },
+      {
+        "line": 173,
+        "start": 13944,
+        "end": 14053
+      }
+    ]
+  },
+  {
+    "task_id": "P20",
+    "set": "fresh3",
+    "school": "대광중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 1,
+    "semester": 1,
+    "title": "세포 관찰 및 탐구하기",
+    "methods_key": [
+      "실험･실습"
+    ],
+    "activity_key": "실험평가",
+    "activity_accept": [
+      "실험평가"
+    ],
+    "lines": [
+      [
+        2030,
+        2044
+      ],
+      [
+        2050,
+        2070
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "02bd0fa2ce3a96c6543d1454a8e203262c10747a746115841802d3dd2bae5856",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/2a54c26b489e4f60f960b4dbff1059f027e3af5015ae4017e9f4de16cb29075c.json",
+      "locator_sha256": "2a54c26b489e4f60f960b4dbff1059f027e3af5015ae4017e9f4de16cb29075c"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 2030,
+        "start": 150888,
+        "end": 150947
+      },
+      {
+        "line": 2031,
+        "start": 150948,
+        "end": 151009
+      },
+      {
+        "line": 2032,
+        "start": 151010,
+        "end": 151103
+      },
+      {
+        "line": 2033,
+        "start": 151104,
+        "end": 151180
+      },
+      {
+        "line": 2034,
+        "start": 151181,
+        "end": 151291
+      },
+      {
+        "line": 2035,
+        "start": 151292,
+        "end": 151401
+      },
+      {
+        "line": 2036,
+        "start": 151402,
+        "end": 151476
+      },
+      {
+        "line": 2037,
+        "start": 151477,
+        "end": 151485
+      },
+      {
+        "line": 2038,
+        "start": 151486,
+        "end": 151486
+      },
+      {
+        "line": 2039,
+        "start": 151487,
+        "end": 151503
+      },
+      {
+        "line": 2040,
+        "start": 151504,
+        "end": 151517
+      },
+      {
+        "line": 2041,
+        "start": 151518,
+        "end": 151518
+      },
+      {
+        "line": 2042,
+        "start": 151519,
+        "end": 151537
+      },
+      {
+        "line": 2043,
+        "start": 151538,
+        "end": 151551
+      },
+      {
+        "line": 2044,
+        "start": 151552,
+        "end": 151561
+      },
+      {
+        "line": 2050,
+        "start": 151605,
+        "end": 151695
+      },
+      {
+        "line": 2051,
+        "start": 151696,
+        "end": 151773
+      },
+      {
+        "line": 2052,
+        "start": 151774,
+        "end": 151840
+      },
+      {
+        "line": 2053,
+        "start": 151841,
+        "end": 152085
+      },
+      {
+        "line": 2054,
+        "start": 152086,
+        "end": 152207
+      },
+      {
+        "line": 2055,
+        "start": 152208,
+        "end": 152341
+      },
+      {
+        "line": 2056,
+        "start": 152342,
+        "end": 152478
+      },
+      {
+        "line": 2057,
+        "start": 152479,
+        "end": 152567
+      },
+      {
+        "line": 2058,
+        "start": 152568,
+        "end": 152750
+      },
+      {
+        "line": 2059,
+        "start": 152751,
+        "end": 152828
+      },
+      {
+        "line": 2060,
+        "start": 152829,
+        "end": 152901
+      },
+      {
+        "line": 2061,
+        "start": 152902,
+        "end": 152977
+      },
+      {
+        "line": 2062,
+        "start": 152978,
+        "end": 153054
+      },
+      {
+        "line": 2063,
+        "start": 153055,
+        "end": 153179
+      },
+      {
+        "line": 2064,
+        "start": 153180,
+        "end": 153239
+      },
+      {
+        "line": 2065,
+        "start": 153240,
+        "end": 153318
+      },
+      {
+        "line": 2066,
+        "start": 153319,
+        "end": 153512
+      },
+      {
+        "line": 2067,
+        "start": 153513,
+        "end": 153635
+      },
+      {
+        "line": 2068,
+        "start": 153636,
+        "end": 153743
+      },
+      {
+        "line": 2069,
+        "start": 153744,
+        "end": 153840
+      },
+      {
+        "line": 2070,
+        "start": 153841,
+        "end": 153913
+      }
+    ]
+  },
+  {
+    "task_id": "P21",
+    "set": "fresh3",
+    "school": "대광중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 1,
+    "semester": 1,
+    "title": "생물을 계 수준에서 분류하기",
+    "methods_key": [
+      "실험･실습"
+    ],
+    "activity_key": "분석",
+    "activity_accept": [
+      "분석"
+    ],
+    "lines": [
+      [
+        2030,
+        2044
+      ],
+      [
+        2074,
+        2089
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "02bd0fa2ce3a96c6543d1454a8e203262c10747a746115841802d3dd2bae5856",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/2a54c26b489e4f60f960b4dbff1059f027e3af5015ae4017e9f4de16cb29075c.json",
+      "locator_sha256": "2a54c26b489e4f60f960b4dbff1059f027e3af5015ae4017e9f4de16cb29075c"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 2030,
+        "start": 150888,
+        "end": 150947
+      },
+      {
+        "line": 2031,
+        "start": 150948,
+        "end": 151009
+      },
+      {
+        "line": 2032,
+        "start": 151010,
+        "end": 151103
+      },
+      {
+        "line": 2033,
+        "start": 151104,
+        "end": 151180
+      },
+      {
+        "line": 2034,
+        "start": 151181,
+        "end": 151291
+      },
+      {
+        "line": 2035,
+        "start": 151292,
+        "end": 151401
+      },
+      {
+        "line": 2036,
+        "start": 151402,
+        "end": 151476
+      },
+      {
+        "line": 2037,
+        "start": 151477,
+        "end": 151485
+      },
+      {
+        "line": 2038,
+        "start": 151486,
+        "end": 151486
+      },
+      {
+        "line": 2039,
+        "start": 151487,
+        "end": 151503
+      },
+      {
+        "line": 2040,
+        "start": 151504,
+        "end": 151517
+      },
+      {
+        "line": 2041,
+        "start": 151518,
+        "end": 151518
+      },
+      {
+        "line": 2042,
+        "start": 151519,
+        "end": 151537
+      },
+      {
+        "line": 2043,
+        "start": 151538,
+        "end": 151551
+      },
+      {
+        "line": 2044,
+        "start": 151552,
+        "end": 151561
+      },
+      {
+        "line": 2074,
+        "start": 153932,
+        "end": 154025
+      },
+      {
+        "line": 2075,
+        "start": 154026,
+        "end": 154102
+      },
+      {
+        "line": 2076,
+        "start": 154103,
+        "end": 154169
+      },
+      {
+        "line": 2077,
+        "start": 154170,
+        "end": 154347
+      },
+      {
+        "line": 2078,
+        "start": 154348,
+        "end": 154430
+      },
+      {
+        "line": 2079,
+        "start": 154431,
+        "end": 154506
+      },
+      {
+        "line": 2080,
+        "start": 154507,
+        "end": 154572
+      },
+      {
+        "line": 2081,
+        "start": 154573,
+        "end": 154628
+      },
+      {
+        "line": 2082,
+        "start": 154629,
+        "end": 154753
+      },
+      {
+        "line": 2083,
+        "start": 154754,
+        "end": 154813
+      },
+      {
+        "line": 2084,
+        "start": 154814,
+        "end": 154892
+      },
+      {
+        "line": 2085,
+        "start": 154893,
+        "end": 155059
+      },
+      {
+        "line": 2086,
+        "start": 155060,
+        "end": 155166
+      },
+      {
+        "line": 2087,
+        "start": 155167,
+        "end": 155259
+      },
+      {
+        "line": 2088,
+        "start": 155260,
+        "end": 155347
+      },
+      {
+        "line": 2089,
+        "start": 155348,
+        "end": 155443
+      }
+    ]
+  },
+  {
+    "task_id": "P22",
+    "set": "fresh3",
+    "school": "대광중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 1,
+    "semester": 1,
+    "title": "비열 비교 실험하기",
+    "methods_key": [
+      "논술"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        2030,
+        2044
+      ],
+      [
+        2093,
+        2108
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "02bd0fa2ce3a96c6543d1454a8e203262c10747a746115841802d3dd2bae5856",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/2a54c26b489e4f60f960b4dbff1059f027e3af5015ae4017e9f4de16cb29075c.json",
+      "locator_sha256": "2a54c26b489e4f60f960b4dbff1059f027e3af5015ae4017e9f4de16cb29075c"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 2030,
+        "start": 150888,
+        "end": 150947
+      },
+      {
+        "line": 2031,
+        "start": 150948,
+        "end": 151009
+      },
+      {
+        "line": 2032,
+        "start": 151010,
+        "end": 151103
+      },
+      {
+        "line": 2033,
+        "start": 151104,
+        "end": 151180
+      },
+      {
+        "line": 2034,
+        "start": 151181,
+        "end": 151291
+      },
+      {
+        "line": 2035,
+        "start": 151292,
+        "end": 151401
+      },
+      {
+        "line": 2036,
+        "start": 151402,
+        "end": 151476
+      },
+      {
+        "line": 2037,
+        "start": 151477,
+        "end": 151485
+      },
+      {
+        "line": 2038,
+        "start": 151486,
+        "end": 151486
+      },
+      {
+        "line": 2039,
+        "start": 151487,
+        "end": 151503
+      },
+      {
+        "line": 2040,
+        "start": 151504,
+        "end": 151517
+      },
+      {
+        "line": 2041,
+        "start": 151518,
+        "end": 151518
+      },
+      {
+        "line": 2042,
+        "start": 151519,
+        "end": 151537
+      },
+      {
+        "line": 2043,
+        "start": 151538,
+        "end": 151551
+      },
+      {
+        "line": 2044,
+        "start": 151552,
+        "end": 151561
+      },
+      {
+        "line": 2093,
+        "start": 155462,
+        "end": 155550
+      },
+      {
+        "line": 2094,
+        "start": 155551,
+        "end": 155663
+      },
+      {
+        "line": 2095,
+        "start": 155664,
+        "end": 155730
+      },
+      {
+        "line": 2096,
+        "start": 155731,
+        "end": 155968
+      },
+      {
+        "line": 2097,
+        "start": 155969,
+        "end": 156104
+      },
+      {
+        "line": 2098,
+        "start": 156105,
+        "end": 156230
+      },
+      {
+        "line": 2099,
+        "start": 156231,
+        "end": 156346
+      },
+      {
+        "line": 2100,
+        "start": 156347,
+        "end": 156452
+      },
+      {
+        "line": 2101,
+        "start": 156453,
+        "end": 156577
+      },
+      {
+        "line": 2102,
+        "start": 156578,
+        "end": 156637
+      },
+      {
+        "line": 2103,
+        "start": 156638,
+        "end": 156716
+      },
+      {
+        "line": 2104,
+        "start": 156717,
+        "end": 156891
+      },
+      {
+        "line": 2105,
+        "start": 156892,
+        "end": 157016
+      },
+      {
+        "line": 2106,
+        "start": 157017,
+        "end": 157134
+      },
+      {
+        "line": 2107,
+        "start": 157135,
+        "end": 157238
+      },
+      {
+        "line": 2108,
+        "start": 157239,
+        "end": 157344
+      }
+    ]
+  },
+  {
+    "task_id": "P23",
+    "set": "fresh3",
+    "school": "대광중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 2,
+    "semester": 1,
+    "title": "광물 관련 과학 탐구 글쓰기",
+    "methods_key": [
+      "논술"
+    ],
+    "activity_key": "작성",
+    "activity_accept": [
+      "작성"
+    ],
+    "lines": [
+      [
+        1861,
+        1861
+      ],
+      [
+        1885,
+        1893
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "6e48c52f0323738980b8023e8d0dde42db5a71d4b4711da073c572ecae99b338",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/f2506d53edb81107fab97246a21ccc7213e55ac82d18a54da75a69112a9da38a.json",
+      "locator_sha256": "f2506d53edb81107fab97246a21ccc7213e55ac82d18a54da75a69112a9da38a"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1861,
+        "start": 137691,
+        "end": 137841
+      },
+      {
+        "line": 1885,
+        "start": 139042,
+        "end": 139149
+      },
+      {
+        "line": 1886,
+        "start": 139150,
+        "end": 139242
+      },
+      {
+        "line": 1887,
+        "start": 139243,
+        "end": 139309
+      },
+      {
+        "line": 1888,
+        "start": 139310,
+        "end": 139539
+      },
+      {
+        "line": 1889,
+        "start": 139540,
+        "end": 139649
+      },
+      {
+        "line": 1890,
+        "start": 139650,
+        "end": 139753
+      },
+      {
+        "line": 1891,
+        "start": 139754,
+        "end": 139845
+      },
+      {
+        "line": 1892,
+        "start": 139846,
+        "end": 139937
+      },
+      {
+        "line": 1893,
+        "start": 139938,
+        "end": 140062
+      }
+    ]
+  },
+  {
+    "task_id": "P24",
+    "set": "fresh3",
+    "school": "대광중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 2,
+    "semester": 1,
+    "title": "빛의 반사와 굴절 탐구하기",
+    "methods_key": [
+      "논술",
+      "실험･실습"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        1861,
+        1861
+      ],
+      [
+        1911,
+        1924
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "6e48c52f0323738980b8023e8d0dde42db5a71d4b4711da073c572ecae99b338",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/f2506d53edb81107fab97246a21ccc7213e55ac82d18a54da75a69112a9da38a.json",
+      "locator_sha256": "f2506d53edb81107fab97246a21ccc7213e55ac82d18a54da75a69112a9da38a"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1861,
+        "start": 137691,
+        "end": 137841
+      },
+      {
+        "line": 1911,
+        "start": 141701,
+        "end": 141807
+      },
+      {
+        "line": 1912,
+        "start": 141808,
+        "end": 141908
+      },
+      {
+        "line": 1913,
+        "start": 141909,
+        "end": 141975
+      },
+      {
+        "line": 1914,
+        "start": 141976,
+        "end": 142189
+      },
+      {
+        "line": 1915,
+        "start": 142190,
+        "end": 142294
+      },
+      {
+        "line": 1916,
+        "start": 142295,
+        "end": 142385
+      },
+      {
+        "line": 1917,
+        "start": 142386,
+        "end": 142473
+      },
+      {
+        "line": 1918,
+        "start": 142474,
+        "end": 142566
+      },
+      {
+        "line": 1919,
+        "start": 142567,
+        "end": 142803
+      },
+      {
+        "line": 1920,
+        "start": 142804,
+        "end": 142919
+      },
+      {
+        "line": 1921,
+        "start": 142920,
+        "end": 143035
+      },
+      {
+        "line": 1922,
+        "start": 143036,
+        "end": 143113
+      },
+      {
+        "line": 1923,
+        "start": 143114,
+        "end": 143179
+      },
+      {
+        "line": 1924,
+        "start": 143180,
+        "end": 143304
+      }
+    ]
+  },
+  {
+    "task_id": "P25",
+    "set": "fresh3",
+    "school": "대광중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 2,
+    "semester": 1,
+    "title": "주기율표 원소 타이포그래피 디자인 및 논술",
+    "methods_key": [
+      "논술",
+      "실험･실습"
+    ],
+    "activity_key": "추론·설명",
+    "activity_accept": [
+      "추론·설명"
+    ],
+    "lines": [
+      [
+        1861,
+        1861
+      ],
+      [
+        1947,
+        1955
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "6e48c52f0323738980b8023e8d0dde42db5a71d4b4711da073c572ecae99b338",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/f2506d53edb81107fab97246a21ccc7213e55ac82d18a54da75a69112a9da38a.json",
+      "locator_sha256": "f2506d53edb81107fab97246a21ccc7213e55ac82d18a54da75a69112a9da38a"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 1861,
+        "start": 137691,
+        "end": 137841
+      },
+      {
+        "line": 1947,
+        "start": 145584,
+        "end": 145699
+      },
+      {
+        "line": 1948,
+        "start": 145700,
+        "end": 145798
+      },
+      {
+        "line": 1949,
+        "start": 145799,
+        "end": 145865
+      },
+      {
+        "line": 1950,
+        "start": 145866,
+        "end": 146086
+      },
+      {
+        "line": 1951,
+        "start": 146087,
+        "end": 146204
+      },
+      {
+        "line": 1952,
+        "start": 146205,
+        "end": 146298
+      },
+      {
+        "line": 1953,
+        "start": 146299,
+        "end": 146374
+      },
+      {
+        "line": 1954,
+        "start": 146375,
+        "end": 146438
+      },
+      {
+        "line": 1955,
+        "start": 146439,
+        "end": 146563
+      }
+    ]
+  },
+  {
+    "task_id": "P26",
+    "set": "fresh3",
+    "school": "번암중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 1,
+    "semester": 1,
+    "title": "과학 실험 수행 및 보고서 작성하기",
+    "methods_key": [
+      "실험･실습"
+    ],
+    "activity_key": "실험평가",
+    "activity_accept": [
+      "실험평가"
+    ],
+    "lines": [
+      [
+        224,
+        226
+      ],
+      [
+        280,
+        287
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "943bcced1fe574092146bc6b180a11df51081dff8fdbed148c0ce336f49a2d75",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/945dc4eeb62de21f0ae41a9f45ebb757acbb8e31fe6a94c3544bd87ce8891323.json",
+      "locator_sha256": "945dc4eeb62de21f0ae41a9f45ebb757acbb8e31fe6a94c3544bd87ce8891323"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 224,
+        "start": 31181,
+        "end": 31337
+      },
+      {
+        "line": 225,
+        "start": 31338,
+        "end": 31497
+      },
+      {
+        "line": 226,
+        "start": 31498,
+        "end": 31863
+      },
+      {
+        "line": 280,
+        "start": 35270,
+        "end": 35333
+      },
+      {
+        "line": 281,
+        "start": 35334,
+        "end": 35504
+      },
+      {
+        "line": 282,
+        "start": 35505,
+        "end": 35663
+      },
+      {
+        "line": 283,
+        "start": 35664,
+        "end": 35799
+      },
+      {
+        "line": 284,
+        "start": 35800,
+        "end": 35927
+      },
+      {
+        "line": 285,
+        "start": 35928,
+        "end": 36062
+      },
+      {
+        "line": 286,
+        "start": 36063,
+        "end": 36191
+      },
+      {
+        "line": 287,
+        "start": 36192,
+        "end": 36301
+      }
+    ]
+  },
+  {
+    "task_id": "P27",
+    "set": "fresh3",
+    "school": "번암중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 1,
+    "semester": 1,
+    "title": "과학 인포그래픽 제작 및 발표하기",
+    "methods_key": [
+      "구술·발표"
+    ],
+    "activity_key": "발표·토론",
+    "activity_accept": [
+      "발표·토론"
+    ],
+    "lines": [
+      [
+        224,
+        226
+      ],
+      [
+        304,
+        311
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "943bcced1fe574092146bc6b180a11df51081dff8fdbed148c0ce336f49a2d75",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/945dc4eeb62de21f0ae41a9f45ebb757acbb8e31fe6a94c3544bd87ce8891323.json",
+      "locator_sha256": "945dc4eeb62de21f0ae41a9f45ebb757acbb8e31fe6a94c3544bd87ce8891323"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 224,
+        "start": 31181,
+        "end": 31337
+      },
+      {
+        "line": 225,
+        "start": 31338,
+        "end": 31497
+      },
+      {
+        "line": 226,
+        "start": 31498,
+        "end": 31863
+      },
+      {
+        "line": 304,
+        "start": 37887,
+        "end": 37949
+      },
+      {
+        "line": 305,
+        "start": 37950,
+        "end": 38065
+      },
+      {
+        "line": 306,
+        "start": 38066,
+        "end": 38227
+      },
+      {
+        "line": 307,
+        "start": 38228,
+        "end": 38360
+      },
+      {
+        "line": 308,
+        "start": 38361,
+        "end": 38485
+      },
+      {
+        "line": 309,
+        "start": 38486,
+        "end": 38611
+      },
+      {
+        "line": 310,
+        "start": 38612,
+        "end": 38736
+      },
+      {
+        "line": 311,
+        "start": 38737,
+        "end": 38846
+      }
+    ]
+  },
+  {
+    "task_id": "P28",
+    "set": "fresh3",
+    "school": "번암중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 1,
+    "semester": 1,
+    "title": "배움 기록하기",
+    "methods_key": [
+      "포트폴리오"
+    ],
+    "activity_key": "추론·설명",
+    "activity_accept": [
+      "추론·설명"
+    ],
+    "lines": [
+      [
+        224,
+        226
+      ],
+      [
+        328,
+        335
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "943bcced1fe574092146bc6b180a11df51081dff8fdbed148c0ce336f49a2d75",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/945dc4eeb62de21f0ae41a9f45ebb757acbb8e31fe6a94c3544bd87ce8891323.json",
+      "locator_sha256": "945dc4eeb62de21f0ae41a9f45ebb757acbb8e31fe6a94c3544bd87ce8891323"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 224,
+        "start": 31181,
+        "end": 31337
+      },
+      {
+        "line": 225,
+        "start": 31338,
+        "end": 31497
+      },
+      {
+        "line": 226,
+        "start": 31498,
+        "end": 31863
+      },
+      {
+        "line": 328,
+        "start": 40404,
+        "end": 40455
+      },
+      {
+        "line": 329,
+        "start": 40456,
+        "end": 40580
+      },
+      {
+        "line": 330,
+        "start": 40581,
+        "end": 40706
+      },
+      {
+        "line": 331,
+        "start": 40707,
+        "end": 40806
+      },
+      {
+        "line": 332,
+        "start": 40807,
+        "end": 40906
+      },
+      {
+        "line": 333,
+        "start": 40907,
+        "end": 41010
+      },
+      {
+        "line": 334,
+        "start": 41011,
+        "end": 41116
+      },
+      {
+        "line": 335,
+        "start": 41117,
+        "end": 41226
+      }
+    ]
+  },
+  {
+    "task_id": "P29",
+    "set": "fresh3",
+    "school": "번암중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 2,
+    "semester": 1,
+    "title": "과학 실험 수행 및 보고서 작성하기",
+    "methods_key": [
+      "실험･실습"
+    ],
+    "activity_key": "실험평가",
+    "activity_accept": [
+      "실험평가"
+    ],
+    "lines": [
+      [
+        239,
+        241
+      ],
+      [
+        363,
+        370
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "943bcced1fe574092146bc6b180a11df51081dff8fdbed148c0ce336f49a2d75",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/945dc4eeb62de21f0ae41a9f45ebb757acbb8e31fe6a94c3544bd87ce8891323.json",
+      "locator_sha256": "945dc4eeb62de21f0ae41a9f45ebb757acbb8e31fe6a94c3544bd87ce8891323"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 239,
+        "start": 32597,
+        "end": 32753
+      },
+      {
+        "line": 240,
+        "start": 32754,
+        "end": 32913
+      },
+      {
+        "line": 241,
+        "start": 32914,
+        "end": 33318
+      },
+      {
+        "line": 363,
+        "start": 43253,
+        "end": 43316
+      },
+      {
+        "line": 364,
+        "start": 43317,
+        "end": 43513
+      },
+      {
+        "line": 365,
+        "start": 43514,
+        "end": 43672
+      },
+      {
+        "line": 366,
+        "start": 43673,
+        "end": 43808
+      },
+      {
+        "line": 367,
+        "start": 43809,
+        "end": 43936
+      },
+      {
+        "line": 368,
+        "start": 43937,
+        "end": 44071
+      },
+      {
+        "line": 369,
+        "start": 44072,
+        "end": 44200
+      },
+      {
+        "line": 370,
+        "start": 44201,
+        "end": 44310
+      }
+    ]
+  },
+  {
+    "task_id": "P30",
+    "set": "fresh3",
+    "school": "번암중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 2,
+    "semester": 1,
+    "title": "과학 인포그래픽 제작 및 발표하기",
+    "methods_key": [
+      "프로젝트"
+    ],
+    "activity_key": "제작",
+    "activity_accept": [
+      "제작"
+    ],
+    "lines": [
+      [
+        239,
+        241
+      ],
+      [
+        387,
+        394
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "943bcced1fe574092146bc6b180a11df51081dff8fdbed148c0ce336f49a2d75",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/945dc4eeb62de21f0ae41a9f45ebb757acbb8e31fe6a94c3544bd87ce8891323.json",
+      "locator_sha256": "945dc4eeb62de21f0ae41a9f45ebb757acbb8e31fe6a94c3544bd87ce8891323"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 239,
+        "start": 32597,
+        "end": 32753
+      },
+      {
+        "line": 240,
+        "start": 32754,
+        "end": 32913
+      },
+      {
+        "line": 241,
+        "start": 32914,
+        "end": 33318
+      },
+      {
+        "line": 387,
+        "start": 45873,
+        "end": 45935
+      },
+      {
+        "line": 388,
+        "start": 45936,
+        "end": 46050
+      },
+      {
+        "line": 389,
+        "start": 46051,
+        "end": 46212
+      },
+      {
+        "line": 390,
+        "start": 46213,
+        "end": 46345
+      },
+      {
+        "line": 391,
+        "start": 46346,
+        "end": 46470
+      },
+      {
+        "line": 392,
+        "start": 46471,
+        "end": 46596
+      },
+      {
+        "line": 393,
+        "start": 46597,
+        "end": 46721
+      },
+      {
+        "line": 394,
+        "start": 46722,
+        "end": 46831
+      }
+    ]
+  },
+  {
+    "task_id": "P31",
+    "set": "fresh3",
+    "school": "번암중학교",
+    "round": "2026-round-1-fresh3",
+    "grade": 2,
+    "semester": 1,
+    "title": "배움 기록하기",
+    "methods_key": [
+      "포트폴리오"
+    ],
+    "activity_key": "과정평가",
+    "activity_accept": [
+      "과정평가"
+    ],
+    "lines": [
+      [
+        239,
+        241
+      ],
+      [
+        411,
+        418
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "943bcced1fe574092146bc6b180a11df51081dff8fdbed148c0ce336f49a2d75",
+      "converted_path": "data/derived/segments/2026-round-1-fresh3-conversions/945dc4eeb62de21f0ae41a9f45ebb757acbb8e31fe6a94c3544bd87ce8891323.json",
+      "locator_sha256": "945dc4eeb62de21f0ae41a9f45ebb757acbb8e31fe6a94c3544bd87ce8891323"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 239,
+        "start": 32597,
+        "end": 32753
+      },
+      {
+        "line": 240,
+        "start": 32754,
+        "end": 32913
+      },
+      {
+        "line": 241,
+        "start": 32914,
+        "end": 33318
+      },
+      {
+        "line": 411,
+        "start": 48403,
+        "end": 48454
+      },
+      {
+        "line": 412,
+        "start": 48455,
+        "end": 48579
+      },
+      {
+        "line": 413,
+        "start": 48580,
+        "end": 48705
+      },
+      {
+        "line": 414,
+        "start": 48706,
+        "end": 48805
+      },
+      {
+        "line": 415,
+        "start": 48806,
+        "end": 48905
+      },
+      {
+        "line": 416,
+        "start": 48906,
+        "end": 49009
+      },
+      {
+        "line": 417,
+        "start": 49010,
+        "end": 49115
+      },
+      {
+        "line": 418,
+        "start": 49116,
+        "end": 49225
+      }
+    ]
+  },
+  {
+    "task_id": "T01",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "자기주도학습 과정 성찰 포트폴리오 제작",
+    "methods_key": [
+      "학습과정평가",
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        461,
+        463
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "058ff84b7952ea979762de599f829334df458c1c7f6a4788674e0df065c89f3f",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0.json",
+      "locator_sha256": "6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 461,
+        "start": 73785,
+        "end": 74055
+      },
+      {
+        "line": 462,
+        "start": 74056,
+        "end": 74254
+      },
+      {
+        "line": 463,
+        "start": 74255,
+        "end": 74484
+      }
+    ]
+  },
+  {
+    "task_id": "T02",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "알짜힘이 0일 때의 운동 특징 알아보기",
+    "methods_key": [
+      "학습과정평가",
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        461,
+        461
+      ],
+      [
+        500,
+        500
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "058ff84b7952ea979762de599f829334df458c1c7f6a4788674e0df065c89f3f",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0.json",
+      "locator_sha256": "6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 461,
+        "start": 73785,
+        "end": 74055
+      },
+      {
+        "line": 500,
+        "start": 80228,
+        "end": 81476
+      }
+    ]
+  },
+  {
+    "task_id": "T03",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "알짜힘이 0이 아닐 때의 운동 사례를 조사하고 정보 그림으로 표현하기",
+    "methods_key": [
+      "학습과정평가",
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        461,
+        461
+      ],
+      [
+        500,
+        500
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "058ff84b7952ea979762de599f829334df458c1c7f6a4788674e0df065c89f3f",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0.json",
+      "locator_sha256": "6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 461,
+        "start": 73785,
+        "end": 74055
+      },
+      {
+        "line": 500,
+        "start": 80228,
+        "end": 81476
+      }
+    ]
+  },
+  {
+    "task_id": "T04",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "잠수함의 힘의 원리를 이용해 힘의 작용 탐구하기",
+    "methods_key": [
+      "학습과정평가",
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        461,
+        461
+      ],
+      [
+        500,
+        500
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "058ff84b7952ea979762de599f829334df458c1c7f6a4788674e0df065c89f3f",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0.json",
+      "locator_sha256": "6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 461,
+        "start": 73785,
+        "end": 74055
+      },
+      {
+        "line": 500,
+        "start": 80228,
+        "end": 81476
+      }
+    ]
+  },
+  {
+    "task_id": "T05",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "보일 법칙 실험 및 보고서 작성하기",
+    "methods_key": [
+      "학습과정평가",
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        462,
+        462
+      ],
+      [
+        510,
+        510
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "058ff84b7952ea979762de599f829334df458c1c7f6a4788674e0df065c89f3f",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0.json",
+      "locator_sha256": "6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 462,
+        "start": 74056,
+        "end": 74254
+      },
+      {
+        "line": 510,
+        "start": 83243,
+        "end": 83796
+      }
+    ]
+  },
+  {
+    "task_id": "T06",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "샤를 법칙 실험 및 보고서 작성하기",
+    "methods_key": [
+      "학습과정평가",
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        462,
+        462
+      ],
+      [
+        511,
+        511
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "058ff84b7952ea979762de599f829334df458c1c7f6a4788674e0df065c89f3f",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0.json",
+      "locator_sha256": "6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 462,
+        "start": 74056,
+        "end": 74254
+      },
+      {
+        "line": 511,
+        "start": 83797,
+        "end": 84597
+      }
+    ]
+  },
+  {
+    "task_id": "T07",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "생활 속 보일 법칙, 샤를 법칙과 관련된 현상 조사 및 발표하기",
+    "methods_key": [
+      "학습과정평가",
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        462,
+        462
+      ],
+      [
+        510,
+        511
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "058ff84b7952ea979762de599f829334df458c1c7f6a4788674e0df065c89f3f",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0.json",
+      "locator_sha256": "6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 462,
+        "start": 74056,
+        "end": 74254
+      },
+      {
+        "line": 510,
+        "start": 83243,
+        "end": 83796
+      },
+      {
+        "line": 511,
+        "start": 83797,
+        "end": 84597
+      }
+    ]
+  },
+  {
+    "task_id": "T08",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "태양계 행성의 특징을 조사하여 그래프로 그리고 분석하기",
+    "methods_key": [
+      "학습과정평가",
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        463,
+        463
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "058ff84b7952ea979762de599f829334df458c1c7f6a4788674e0df065c89f3f",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0.json",
+      "locator_sha256": "6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 463,
+        "start": 74255,
+        "end": 74484
+      }
+    ]
+  },
+  {
+    "task_id": "T09",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "별의 일주 운동, 태양의 연주 운동 탐구하기",
+    "methods_key": [
+      "학습과정평가",
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        463,
+        463
+      ],
+      [
+        479,
+        479
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "058ff84b7952ea979762de599f829334df458c1c7f6a4788674e0df065c89f3f",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0.json",
+      "locator_sha256": "6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 463,
+        "start": 74255,
+        "end": 74484
+      },
+      {
+        "line": 479,
+        "start": 77474,
+        "end": 78106
+      }
+    ]
+  },
+  {
+    "task_id": "T10",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "달의 위상 변화 관찰 및 보고서 작성하기",
+    "methods_key": [
+      "학습과정평가",
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        463,
+        463
+      ],
+      [
+        484,
+        484
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "058ff84b7952ea979762de599f829334df458c1c7f6a4788674e0df065c89f3f",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0.json",
+      "locator_sha256": "6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 463,
+        "start": 74255,
+        "end": 74484
+      },
+      {
+        "line": 484,
+        "start": 78325,
+        "end": 78803
+      }
+    ]
+  },
+  {
+    "task_id": "T11",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "모형으로 일식, 월식 현상 관찰하고 보고서 작성하기",
+    "methods_key": [
+      "학습과정평가",
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        463,
+        463
+      ],
+      [
+        484,
+        484
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "058ff84b7952ea979762de599f829334df458c1c7f6a4788674e0df065c89f3f",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0.json",
+      "locator_sha256": "6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 463,
+        "start": 74255,
+        "end": 74484
+      },
+      {
+        "line": 484,
+        "start": 78325,
+        "end": 78803
+      }
+    ]
+  },
+  {
+    "task_id": "T12",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "힘의 특징을 이용한 기구 설계 및 발표하기",
+    "methods_key": [
+      "과학프로젝트평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        464,
+        464
+      ],
+      [
+        503,
+        503
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "058ff84b7952ea979762de599f829334df458c1c7f6a4788674e0df065c89f3f",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0.json",
+      "locator_sha256": "6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 464,
+        "start": 74485,
+        "end": 74786
+      },
+      {
+        "line": 503,
+        "start": 81556,
+        "end": 82403
+      }
+    ]
+  },
+  {
+    "task_id": "T13",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "태양 활동이 지구에 미치는 영향을 보도하는 카드 뉴스 제작하기",
+    "methods_key": [
+      "과학프로젝트평가"
+    ],
+    "activity_key": "제작",
+    "activity_accept": [
+      "제작"
+    ],
+    "lines": [
+      [
+        465,
+        465
+      ],
+      [
+        475,
+        475
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "058ff84b7952ea979762de599f829334df458c1c7f6a4788674e0df065c89f3f",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0.json",
+      "locator_sha256": "6b5231f9f43379e33792844343a06d933fa99b116f85edaff8a5545af6b463f0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 465,
+        "start": 74787,
+        "end": 75041
+      },
+      {
+        "line": 475,
+        "start": 76526,
+        "end": 77290
+      }
+    ]
+  },
+  {
+    "task_id": "T14",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 2,
+    "semester": 2,
+    "title": "별의 물리량 데이터를 수집하여 별과 우주를 설명하기",
+    "methods_key": [
+      "구술형"
+    ],
+    "activity_key": "분석",
+    "activity_accept": [
+      "분석"
+    ],
+    "lines": [
+      [
+        646,
+        650
+      ],
+      [
+        665,
+        685
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "8430d20c9c68d3fd9966a85341a5101f0d35c471b0bbd58e53e01a2db84340be",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/5c6ae4e9875e65f3d5cd6ed50fabc294e71f226d6bc622e57ec21fde50136fb3.json",
+      "locator_sha256": "5c6ae4e9875e65f3d5cd6ed50fabc294e71f226d6bc622e57ec21fde50136fb3"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 646,
+        "start": 73015,
+        "end": 73161
+      },
+      {
+        "line": 647,
+        "start": 73162,
+        "end": 73257
+      },
+      {
+        "line": 648,
+        "start": 73258,
+        "end": 73355
+      },
+      {
+        "line": 649,
+        "start": 73356,
+        "end": 73459
+      },
+      {
+        "line": 650,
+        "start": 73460,
+        "end": 73677
+      },
+      {
+        "line": 665,
+        "start": 74186,
+        "end": 74223
+      },
+      {
+        "line": 666,
+        "start": 74224,
+        "end": 74224
+      },
+      {
+        "line": 667,
+        "start": 74225,
+        "end": 74369
+      },
+      {
+        "line": 668,
+        "start": 74370,
+        "end": 74383
+      },
+      {
+        "line": 669,
+        "start": 74384,
+        "end": 74524
+      },
+      {
+        "line": 670,
+        "start": 74525,
+        "end": 74551
+      },
+      {
+        "line": 671,
+        "start": 74552,
+        "end": 74552
+      },
+      {
+        "line": 672,
+        "start": 74553,
+        "end": 74560
+      },
+      {
+        "line": 673,
+        "start": 74561,
+        "end": 74612
+      },
+      {
+        "line": 674,
+        "start": 74613,
+        "end": 74754
+      },
+      {
+        "line": 675,
+        "start": 74755,
+        "end": 74853
+      },
+      {
+        "line": 676,
+        "start": 74854,
+        "end": 74937
+      },
+      {
+        "line": 677,
+        "start": 74938,
+        "end": 75026
+      },
+      {
+        "line": 678,
+        "start": 75027,
+        "end": 75177
+      },
+      {
+        "line": 679,
+        "start": 75178,
+        "end": 75276
+      },
+      {
+        "line": 680,
+        "start": 75277,
+        "end": 75368
+      },
+      {
+        "line": 681,
+        "start": 75369,
+        "end": 75431
+      },
+      {
+        "line": 682,
+        "start": 75432,
+        "end": 75553
+      },
+      {
+        "line": 683,
+        "start": 75554,
+        "end": 75633
+      },
+      {
+        "line": 684,
+        "start": 75634,
+        "end": 75722
+      },
+      {
+        "line": 685,
+        "start": 75723,
+        "end": 75800
+      }
+    ]
+  },
+  {
+    "task_id": "T15",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 2,
+    "semester": 2,
+    "title": "기관계의 유기적인 작용을 포함한 건강정보칼럼 쓰기",
+    "methods_key": [
+      "논술형"
+    ],
+    "activity_key": "작성",
+    "activity_accept": [
+      "작성"
+    ],
+    "lines": [
+      [
+        646,
+        650
+      ],
+      [
+        690,
+        731
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "8430d20c9c68d3fd9966a85341a5101f0d35c471b0bbd58e53e01a2db84340be",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/5c6ae4e9875e65f3d5cd6ed50fabc294e71f226d6bc622e57ec21fde50136fb3.json",
+      "locator_sha256": "5c6ae4e9875e65f3d5cd6ed50fabc294e71f226d6bc622e57ec21fde50136fb3"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 646,
+        "start": 73015,
+        "end": 73161
+      },
+      {
+        "line": 647,
+        "start": 73162,
+        "end": 73257
+      },
+      {
+        "line": 648,
+        "start": 73258,
+        "end": 73355
+      },
+      {
+        "line": 649,
+        "start": 73356,
+        "end": 73459
+      },
+      {
+        "line": 650,
+        "start": 73460,
+        "end": 73677
+      },
+      {
+        "line": 690,
+        "start": 75864,
+        "end": 75901
+      },
+      {
+        "line": 691,
+        "start": 75902,
+        "end": 75902
+      },
+      {
+        "line": 692,
+        "start": 75903,
+        "end": 75907
+      },
+      {
+        "line": 693,
+        "start": 75908,
+        "end": 75908
+      },
+      {
+        "line": 694,
+        "start": 75909,
+        "end": 75970
+      },
+      {
+        "line": 695,
+        "start": 75971,
+        "end": 75971
+      },
+      {
+        "line": 696,
+        "start": 75972,
+        "end": 76026
+      },
+      {
+        "line": 697,
+        "start": 76027,
+        "end": 76027
+      },
+      {
+        "line": 698,
+        "start": 76028,
+        "end": 76085
+      },
+      {
+        "line": 699,
+        "start": 76086,
+        "end": 76086
+      },
+      {
+        "line": 700,
+        "start": 76087,
+        "end": 76144
+      },
+      {
+        "line": 701,
+        "start": 76145,
+        "end": 76145
+      },
+      {
+        "line": 702,
+        "start": 76146,
+        "end": 76217
+      },
+      {
+        "line": 703,
+        "start": 76218,
+        "end": 76218
+      },
+      {
+        "line": 704,
+        "start": 76219,
+        "end": 76224
+      },
+      {
+        "line": 705,
+        "start": 76225,
+        "end": 76225
+      },
+      {
+        "line": 706,
+        "start": 76226,
+        "end": 76232
+      },
+      {
+        "line": 707,
+        "start": 76233,
+        "end": 76233
+      },
+      {
+        "line": 708,
+        "start": 76234,
+        "end": 76269
+      },
+      {
+        "line": 709,
+        "start": 76270,
+        "end": 76270
+      },
+      {
+        "line": 710,
+        "start": 76271,
+        "end": 76328
+      },
+      {
+        "line": 711,
+        "start": 76329,
+        "end": 76329
+      },
+      {
+        "line": 712,
+        "start": 76330,
+        "end": 76355
+      },
+      {
+        "line": 713,
+        "start": 76356,
+        "end": 76356
+      },
+      {
+        "line": 714,
+        "start": 76357,
+        "end": 76362
+      },
+      {
+        "line": 715,
+        "start": 76363,
+        "end": 76363
+      },
+      {
+        "line": 716,
+        "start": 76364,
+        "end": 76378
+      },
+      {
+        "line": 717,
+        "start": 76379,
+        "end": 76379
+      },
+      {
+        "line": 718,
+        "start": 76380,
+        "end": 76387
+      },
+      {
+        "line": 719,
+        "start": 76388,
+        "end": 76439
+      },
+      {
+        "line": 720,
+        "start": 76440,
+        "end": 76546
+      },
+      {
+        "line": 721,
+        "start": 76547,
+        "end": 76614
+      },
+      {
+        "line": 722,
+        "start": 76615,
+        "end": 76689
+      },
+      {
+        "line": 723,
+        "start": 76690,
+        "end": 76755
+      },
+      {
+        "line": 724,
+        "start": 76756,
+        "end": 76889
+      },
+      {
+        "line": 725,
+        "start": 76890,
+        "end": 76985
+      },
+      {
+        "line": 726,
+        "start": 76986,
+        "end": 77088
+      },
+      {
+        "line": 727,
+        "start": 77089,
+        "end": 77183
+      },
+      {
+        "line": 728,
+        "start": 77184,
+        "end": 77354
+      },
+      {
+        "line": 729,
+        "start": 77355,
+        "end": 77440
+      },
+      {
+        "line": 730,
+        "start": 77441,
+        "end": 77546
+      },
+      {
+        "line": 731,
+        "start": 77547,
+        "end": 77642
+      }
+    ]
+  },
+  {
+    "task_id": "T16",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "힘의합력",
+    "methods_key": [
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        796,
+        796
+      ],
+      [
+        809,
+        812
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "f403dfddceeeacafac9ce0f552229a9048c29a84ab6f1c9b1fb3f9c28d3a055b",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0.json",
+      "locator_sha256": "811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 796,
+        "start": 65431,
+        "end": 65596
+      },
+      {
+        "line": 809,
+        "start": 66999,
+        "end": 67089
+      },
+      {
+        "line": 810,
+        "start": 67090,
+        "end": 67231
+      },
+      {
+        "line": 811,
+        "start": 67232,
+        "end": 67374
+      },
+      {
+        "line": 812,
+        "start": 67375,
+        "end": 67502
+      }
+    ]
+  },
+  {
+    "task_id": "T17",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "질량과무게",
+    "methods_key": [
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        797,
+        797
+      ],
+      [
+        809,
+        812
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "f403dfddceeeacafac9ce0f552229a9048c29a84ab6f1c9b1fb3f9c28d3a055b",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0.json",
+      "locator_sha256": "811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 797,
+        "start": 65597,
+        "end": 65862
+      },
+      {
+        "line": 809,
+        "start": 66999,
+        "end": 67089
+      },
+      {
+        "line": 810,
+        "start": 67090,
+        "end": 67231
+      },
+      {
+        "line": 811,
+        "start": 67232,
+        "end": 67374
+      },
+      {
+        "line": 812,
+        "start": 67375,
+        "end": 67502
+      }
+    ]
+  },
+  {
+    "task_id": "T18",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "마찰력",
+    "methods_key": [
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        797,
+        797
+      ],
+      [
+        809,
+        812
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "f403dfddceeeacafac9ce0f552229a9048c29a84ab6f1c9b1fb3f9c28d3a055b",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0.json",
+      "locator_sha256": "811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 797,
+        "start": 65597,
+        "end": 65862
+      },
+      {
+        "line": 809,
+        "start": 66999,
+        "end": 67089
+      },
+      {
+        "line": 810,
+        "start": 67090,
+        "end": 67231
+      },
+      {
+        "line": 811,
+        "start": 67232,
+        "end": 67374
+      },
+      {
+        "line": 812,
+        "start": 67375,
+        "end": 67502
+      }
+    ]
+  },
+  {
+    "task_id": "T19",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "부력",
+    "methods_key": [
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        797,
+        797
+      ],
+      [
+        809,
+        812
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "f403dfddceeeacafac9ce0f552229a9048c29a84ab6f1c9b1fb3f9c28d3a055b",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0.json",
+      "locator_sha256": "811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 797,
+        "start": 65597,
+        "end": 65862
+      },
+      {
+        "line": 809,
+        "start": 66999,
+        "end": 67089
+      },
+      {
+        "line": 810,
+        "start": 67090,
+        "end": 67231
+      },
+      {
+        "line": 811,
+        "start": 67232,
+        "end": 67374
+      },
+      {
+        "line": 812,
+        "start": 67375,
+        "end": 67502
+      }
+    ]
+  },
+  {
+    "task_id": "T20",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "기체의 압력",
+    "methods_key": [
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        799,
+        799
+      ],
+      [
+        809,
+        812
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "f403dfddceeeacafac9ce0f552229a9048c29a84ab6f1c9b1fb3f9c28d3a055b",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0.json",
+      "locator_sha256": "811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 799,
+        "start": 65947,
+        "end": 66259
+      },
+      {
+        "line": 809,
+        "start": 66999,
+        "end": 67089
+      },
+      {
+        "line": 810,
+        "start": 67090,
+        "end": 67231
+      },
+      {
+        "line": 811,
+        "start": 67232,
+        "end": 67374
+      },
+      {
+        "line": 812,
+        "start": 67375,
+        "end": 67502
+      }
+    ]
+  },
+  {
+    "task_id": "T21",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "기체의 압력과 부피",
+    "methods_key": [
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        800,
+        800
+      ],
+      [
+        809,
+        812
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "f403dfddceeeacafac9ce0f552229a9048c29a84ab6f1c9b1fb3f9c28d3a055b",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0.json",
+      "locator_sha256": "811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 800,
+        "start": 66260,
+        "end": 66419
+      },
+      {
+        "line": 809,
+        "start": 66999,
+        "end": 67089
+      },
+      {
+        "line": 810,
+        "start": 67090,
+        "end": 67231
+      },
+      {
+        "line": 811,
+        "start": 67232,
+        "end": 67374
+      },
+      {
+        "line": 812,
+        "start": 67375,
+        "end": 67502
+      }
+    ]
+  },
+  {
+    "task_id": "T22",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "기체의 온도와 부피",
+    "methods_key": [
+      "보고서평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        801,
+        801
+      ],
+      [
+        809,
+        812
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "f403dfddceeeacafac9ce0f552229a9048c29a84ab6f1c9b1fb3f9c28d3a055b",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0.json",
+      "locator_sha256": "811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 801,
+        "start": 66420,
+        "end": 66710
+      },
+      {
+        "line": 809,
+        "start": 66999,
+        "end": 67089
+      },
+      {
+        "line": 810,
+        "start": 67090,
+        "end": 67231
+      },
+      {
+        "line": 811,
+        "start": 67232,
+        "end": 67374
+      },
+      {
+        "line": 812,
+        "start": 67375,
+        "end": 67502
+      }
+    ]
+  },
+  {
+    "task_id": "T23",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 2,
+    "semester": 2,
+    "title": "소화, 순환, 호흡, 배설과 세포호흡의 관계를 비주얼 싱킹으로 나타내기",
+    "methods_key": [
+      "포트폴리오"
+    ],
+    "activity_key": "추론·설명",
+    "activity_accept": [
+      "추론·설명"
+    ],
+    "lines": [
+      [
+        215,
+        219
+      ],
+      [
+        243,
+        261
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "f403dfddceeeacafac9ce0f552229a9048c29a84ab6f1c9b1fb3f9c28d3a055b",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0.json",
+      "locator_sha256": "811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 215,
+        "start": 17173,
+        "end": 17332
+      },
+      {
+        "line": 216,
+        "start": 17333,
+        "end": 17521
+      },
+      {
+        "line": 217,
+        "start": 17522,
+        "end": 17696
+      },
+      {
+        "line": 218,
+        "start": 17697,
+        "end": 17880
+      },
+      {
+        "line": 219,
+        "start": 17881,
+        "end": 18288
+      },
+      {
+        "line": 243,
+        "start": 19132,
+        "end": 19146
+      },
+      {
+        "line": 244,
+        "start": 19147,
+        "end": 19147
+      },
+      {
+        "line": 245,
+        "start": 19148,
+        "end": 19155
+      },
+      {
+        "line": 246,
+        "start": 19156,
+        "end": 19240
+      },
+      {
+        "line": 247,
+        "start": 19241,
+        "end": 19605
+      },
+      {
+        "line": 248,
+        "start": 19606,
+        "end": 19744
+      },
+      {
+        "line": 249,
+        "start": 19745,
+        "end": 19878
+      },
+      {
+        "line": 250,
+        "start": 19879,
+        "end": 19983
+      },
+      {
+        "line": 251,
+        "start": 19984,
+        "end": 20067
+      },
+      {
+        "line": 252,
+        "start": 20068,
+        "end": 20153
+      },
+      {
+        "line": 253,
+        "start": 20154,
+        "end": 20263
+      },
+      {
+        "line": 254,
+        "start": 20264,
+        "end": 20320
+      },
+      {
+        "line": 255,
+        "start": 20321,
+        "end": 21082
+      },
+      {
+        "line": 256,
+        "start": 21083,
+        "end": 21160
+      },
+      {
+        "line": 257,
+        "start": 21161,
+        "end": 21327
+      },
+      {
+        "line": 258,
+        "start": 21328,
+        "end": 21418
+      },
+      {
+        "line": 259,
+        "start": 21419,
+        "end": 21506
+      },
+      {
+        "line": 260,
+        "start": 21507,
+        "end": 21594
+      },
+      {
+        "line": 261,
+        "start": 21595,
+        "end": 21696
+      }
+    ]
+  },
+  {
+    "task_id": "T24",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 2,
+    "semester": 2,
+    "title": "수업밀착형 평가",
+    "methods_key": [
+      "서술·논술",
+      "구술·발표",
+      "토의·토론",
+      "프로젝트",
+      "실험·실습",
+      "포트폴리오",
+      "기타"
+    ],
+    "activity_key": "과정평가",
+    "activity_accept": [
+      "과정평가"
+    ],
+    "lines": [
+      [
+        215,
+        219
+      ],
+      [
+        264,
+        284
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "f403dfddceeeacafac9ce0f552229a9048c29a84ab6f1c9b1fb3f9c28d3a055b",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0.json",
+      "locator_sha256": "811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 215,
+        "start": 17173,
+        "end": 17332
+      },
+      {
+        "line": 216,
+        "start": 17333,
+        "end": 17521
+      },
+      {
+        "line": 217,
+        "start": 17522,
+        "end": 17696
+      },
+      {
+        "line": 218,
+        "start": 17697,
+        "end": 17880
+      },
+      {
+        "line": 219,
+        "start": 17881,
+        "end": 18288
+      },
+      {
+        "line": 264,
+        "start": 21707,
+        "end": 21725
+      },
+      {
+        "line": 265,
+        "start": 21726,
+        "end": 21726
+      },
+      {
+        "line": 266,
+        "start": 21727,
+        "end": 21734
+      },
+      {
+        "line": 267,
+        "start": 21735,
+        "end": 21836
+      },
+      {
+        "line": 268,
+        "start": 21837,
+        "end": 21933
+      },
+      {
+        "line": 269,
+        "start": 21934,
+        "end": 22029
+      },
+      {
+        "line": 270,
+        "start": 22030,
+        "end": 22085
+      },
+      {
+        "line": 271,
+        "start": 22086,
+        "end": 22141
+      },
+      {
+        "line": 272,
+        "start": 22142,
+        "end": 22197
+      },
+      {
+        "line": 273,
+        "start": 22198,
+        "end": 22249
+      },
+      {
+        "line": 274,
+        "start": 22250,
+        "end": 22395
+      },
+      {
+        "line": 275,
+        "start": 22396,
+        "end": 22495
+      },
+      {
+        "line": 276,
+        "start": 22496,
+        "end": 22601
+      },
+      {
+        "line": 277,
+        "start": 22602,
+        "end": 22719
+      },
+      {
+        "line": 278,
+        "start": 22720,
+        "end": 22797
+      },
+      {
+        "line": 279,
+        "start": 22798,
+        "end": 23011
+      },
+      {
+        "line": 280,
+        "start": 23012,
+        "end": 23069
+      },
+      {
+        "line": 281,
+        "start": 23070,
+        "end": 23163
+      },
+      {
+        "line": 282,
+        "start": 23164,
+        "end": 23339
+      },
+      {
+        "line": 283,
+        "start": 23340,
+        "end": 23397
+      },
+      {
+        "line": 284,
+        "start": 23398,
+        "end": 23456
+      }
+    ]
+  },
+  {
+    "task_id": "T25",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 2,
+    "semester": 2,
+    "title": "마찰전기와 정전기 유도 현상",
+    "methods_key": [
+      "서술·논술",
+      "실험·실습"
+    ],
+    "activity_key": "추론·설명",
+    "activity_accept": [
+      "추론·설명"
+    ],
+    "lines": [
+      [
+        215,
+        219
+      ],
+      [
+        287,
+        305
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "f403dfddceeeacafac9ce0f552229a9048c29a84ab6f1c9b1fb3f9c28d3a055b",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0.json",
+      "locator_sha256": "811b68e84df0a7802b34e1511791eae080180ae64c141c1eff40e27a578dc0b0"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 215,
+        "start": 17173,
+        "end": 17332
+      },
+      {
+        "line": 216,
+        "start": 17333,
+        "end": 17521
+      },
+      {
+        "line": 217,
+        "start": 17522,
+        "end": 17696
+      },
+      {
+        "line": 218,
+        "start": 17697,
+        "end": 17880
+      },
+      {
+        "line": 219,
+        "start": 17881,
+        "end": 18288
+      },
+      {
+        "line": 287,
+        "start": 23467,
+        "end": 23486
+      },
+      {
+        "line": 288,
+        "start": 23487,
+        "end": 23487
+      },
+      {
+        "line": 289,
+        "start": 23488,
+        "end": 23495
+      },
+      {
+        "line": 290,
+        "start": 23496,
+        "end": 23555
+      },
+      {
+        "line": 291,
+        "start": 23556,
+        "end": 23667
+      },
+      {
+        "line": 292,
+        "start": 23668,
+        "end": 23810
+      },
+      {
+        "line": 293,
+        "start": 23811,
+        "end": 23919
+      },
+      {
+        "line": 294,
+        "start": 23920,
+        "end": 24009
+      },
+      {
+        "line": 295,
+        "start": 24010,
+        "end": 24108
+      },
+      {
+        "line": 296,
+        "start": 24109,
+        "end": 24193
+      },
+      {
+        "line": 297,
+        "start": 24194,
+        "end": 24303
+      },
+      {
+        "line": 298,
+        "start": 24304,
+        "end": 24360
+      },
+      {
+        "line": 299,
+        "start": 24361,
+        "end": 24577
+      },
+      {
+        "line": 300,
+        "start": 24578,
+        "end": 24655
+      },
+      {
+        "line": 301,
+        "start": 24656,
+        "end": 24837
+      },
+      {
+        "line": 302,
+        "start": 24838,
+        "end": 24925
+      },
+      {
+        "line": 303,
+        "start": 24926,
+        "end": 25024
+      },
+      {
+        "line": 304,
+        "start": 25025,
+        "end": 25119
+      },
+      {
+        "line": 305,
+        "start": 25120,
+        "end": 25218
+      }
+    ]
+  },
+  {
+    "task_id": "T26",
+    "set": "fresh4",
+    "school": "설온중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "여러 가지 힘을 다양한 방식으로 표현하기",
+    "methods_key": [
+      "서‧논술형",
+      "포트폴리오(수행평가)",
+      "실기평가"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        663,
+        663
+      ],
+      [
+        670,
+        681
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "4a7d50fa1566af85b8c9a28ca9be4e84334e7fa91f2311c536b1a48e7a2236bb",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/7025e2ab17c5e8db82f4f92530a8697d7cdbc59963d83d6f1953801c95fd94c6.json",
+      "locator_sha256": "7025e2ab17c5e8db82f4f92530a8697d7cdbc59963d83d6f1953801c95fd94c6"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 663,
+        "start": 52936,
+        "end": 53085
+      },
+      {
+        "line": 670,
+        "start": 53302,
+        "end": 53327
+      },
+      {
+        "line": 671,
+        "start": 53328,
+        "end": 53328
+      },
+      {
+        "line": 672,
+        "start": 53329,
+        "end": 53336
+      },
+      {
+        "line": 673,
+        "start": 53337,
+        "end": 53458
+      },
+      {
+        "line": 674,
+        "start": 53459,
+        "end": 53493
+      },
+      {
+        "line": 675,
+        "start": 53494,
+        "end": 53528
+      },
+      {
+        "line": 676,
+        "start": 53529,
+        "end": 53613
+      },
+      {
+        "line": 677,
+        "start": 53614,
+        "end": 53691
+      },
+      {
+        "line": 678,
+        "start": 53692,
+        "end": 54029
+      },
+      {
+        "line": 679,
+        "start": 54030,
+        "end": 54292
+      },
+      {
+        "line": 680,
+        "start": 54293,
+        "end": 54479
+      },
+      {
+        "line": 681,
+        "start": 54480,
+        "end": 54626
+      }
+    ]
+  },
+  {
+    "task_id": "T27",
+    "set": "fresh4",
+    "school": "설온중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "기체의 압력과 온도 변화를 입자로 나타내기",
+    "methods_key": [
+      "서‧논술형",
+      "포트폴리오(수행평가)"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        664,
+        664
+      ],
+      [
+        685,
+        696
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "4a7d50fa1566af85b8c9a28ca9be4e84334e7fa91f2311c536b1a48e7a2236bb",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/7025e2ab17c5e8db82f4f92530a8697d7cdbc59963d83d6f1953801c95fd94c6.json",
+      "locator_sha256": "7025e2ab17c5e8db82f4f92530a8697d7cdbc59963d83d6f1953801c95fd94c6"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 664,
+        "start": 53086,
+        "end": 53179
+      },
+      {
+        "line": 685,
+        "start": 54732,
+        "end": 54758
+      },
+      {
+        "line": 686,
+        "start": 54759,
+        "end": 54759
+      },
+      {
+        "line": 687,
+        "start": 54760,
+        "end": 54767
+      },
+      {
+        "line": 688,
+        "start": 54768,
+        "end": 54891
+      },
+      {
+        "line": 689,
+        "start": 54892,
+        "end": 54927
+      },
+      {
+        "line": 690,
+        "start": 54928,
+        "end": 54962
+      },
+      {
+        "line": 691,
+        "start": 54963,
+        "end": 55041
+      },
+      {
+        "line": 692,
+        "start": 55042,
+        "end": 55127
+      },
+      {
+        "line": 693,
+        "start": 55128,
+        "end": 55367
+      },
+      {
+        "line": 694,
+        "start": 55368,
+        "end": 55641
+      },
+      {
+        "line": 695,
+        "start": 55642,
+        "end": 55862
+      },
+      {
+        "line": 696,
+        "start": 55863,
+        "end": 55995
+      }
+    ]
+  },
+  {
+    "task_id": "T28",
+    "set": "fresh4",
+    "school": "설온중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 1,
+    "semester": 2,
+    "title": "태양계의 행성과 별의 특징 탐구하기",
+    "methods_key": [
+      "서‧논술형",
+      "포트폴리오(수행평가)"
+    ],
+    "activity_key": "추론·설명",
+    "activity_accept": [
+      "추론·설명"
+    ],
+    "lines": [
+      [
+        665,
+        665
+      ],
+      [
+        700,
+        711
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "4a7d50fa1566af85b8c9a28ca9be4e84334e7fa91f2311c536b1a48e7a2236bb",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/7025e2ab17c5e8db82f4f92530a8697d7cdbc59963d83d6f1953801c95fd94c6.json",
+      "locator_sha256": "7025e2ab17c5e8db82f4f92530a8697d7cdbc59963d83d6f1953801c95fd94c6"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 665,
+        "start": 53180,
+        "end": 53275
+      },
+      {
+        "line": 700,
+        "start": 56101,
+        "end": 56123
+      },
+      {
+        "line": 701,
+        "start": 56124,
+        "end": 56124
+      },
+      {
+        "line": 702,
+        "start": 56125,
+        "end": 56132
+      },
+      {
+        "line": 703,
+        "start": 56133,
+        "end": 56249
+      },
+      {
+        "line": 704,
+        "start": 56250,
+        "end": 56289
+      },
+      {
+        "line": 705,
+        "start": 56290,
+        "end": 56324
+      },
+      {
+        "line": 706,
+        "start": 56325,
+        "end": 56409
+      },
+      {
+        "line": 707,
+        "start": 56410,
+        "end": 56495
+      },
+      {
+        "line": 708,
+        "start": 56496,
+        "end": 56824
+      },
+      {
+        "line": 709,
+        "start": 56825,
+        "end": 57072
+      },
+      {
+        "line": 710,
+        "start": 57073,
+        "end": 57298
+      },
+      {
+        "line": 711,
+        "start": 57299,
+        "end": 57469
+      }
+    ]
+  },
+  {
+    "task_id": "T29",
+    "set": "fresh4",
+    "school": "설온중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 2,
+    "semester": 2,
+    "title": "영양소 검출과 소화 과정 찾기",
+    "methods_key": [
+      "서술·논술"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        746,
+        751
+      ],
+      [
+        776,
+        809
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "676c41b72b154622d40d0914f48899cb71b5515c2ed136079808b606b5f3daa2",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/f024e7e5cb79270ba40cf98ed5bd7c8f714866f708beac04f7d6d1375a932798.json",
+      "locator_sha256": "f024e7e5cb79270ba40cf98ed5bd7c8f714866f708beac04f7d6d1375a932798"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 746,
+        "start": 60524,
+        "end": 60740
+      },
+      {
+        "line": 747,
+        "start": 60741,
+        "end": 60802
+      },
+      {
+        "line": 748,
+        "start": 60803,
+        "end": 60996
+      },
+      {
+        "line": 749,
+        "start": 60997,
+        "end": 61130
+      },
+      {
+        "line": 750,
+        "start": 61131,
+        "end": 61259
+      },
+      {
+        "line": 751,
+        "start": 61260,
+        "end": 61726
+      },
+      {
+        "line": 776,
+        "start": 66836,
+        "end": 66855
+      },
+      {
+        "line": 777,
+        "start": 66856,
+        "end": 66856
+      },
+      {
+        "line": 778,
+        "start": 66857,
+        "end": 66864
+      },
+      {
+        "line": 779,
+        "start": 66865,
+        "end": 66967
+      },
+      {
+        "line": 780,
+        "start": 66968,
+        "end": 67155
+      },
+      {
+        "line": 781,
+        "start": 67156,
+        "end": 67280
+      },
+      {
+        "line": 782,
+        "start": 67281,
+        "end": 67364
+      },
+      {
+        "line": 783,
+        "start": 67365,
+        "end": 67534
+      },
+      {
+        "line": 784,
+        "start": 67535,
+        "end": 67594
+      },
+      {
+        "line": 785,
+        "start": 67595,
+        "end": 67654
+      },
+      {
+        "line": 786,
+        "start": 67655,
+        "end": 67714
+      },
+      {
+        "line": 787,
+        "start": 67715,
+        "end": 67778
+      },
+      {
+        "line": 788,
+        "start": 67779,
+        "end": 67842
+      },
+      {
+        "line": 789,
+        "start": 67843,
+        "end": 67914
+      },
+      {
+        "line": 790,
+        "start": 67915,
+        "end": 68078
+      },
+      {
+        "line": 791,
+        "start": 68079,
+        "end": 68156
+      },
+      {
+        "line": 792,
+        "start": 68157,
+        "end": 68233
+      },
+      {
+        "line": 793,
+        "start": 68234,
+        "end": 68316
+      },
+      {
+        "line": 794,
+        "start": 68317,
+        "end": 68362
+      },
+      {
+        "line": 795,
+        "start": 68363,
+        "end": 68480
+      },
+      {
+        "line": 796,
+        "start": 68481,
+        "end": 68533
+      },
+      {
+        "line": 797,
+        "start": 68534,
+        "end": 68610
+      },
+      {
+        "line": 798,
+        "start": 68611,
+        "end": 68685
+      },
+      {
+        "line": 799,
+        "start": 68686,
+        "end": 68731
+      },
+      {
+        "line": 800,
+        "start": 68732,
+        "end": 68825
+      },
+      {
+        "line": 801,
+        "start": 68826,
+        "end": 68878
+      },
+      {
+        "line": 802,
+        "start": 68879,
+        "end": 68956
+      },
+      {
+        "line": 803,
+        "start": 68957,
+        "end": 69031
+      },
+      {
+        "line": 804,
+        "start": 69032,
+        "end": 69077
+      },
+      {
+        "line": 805,
+        "start": 69078,
+        "end": 69234
+      },
+      {
+        "line": 806,
+        "start": 69235,
+        "end": 69295
+      },
+      {
+        "line": 807,
+        "start": 69296,
+        "end": 69360
+      },
+      {
+        "line": 808,
+        "start": 69361,
+        "end": 69424
+      },
+      {
+        "line": 809,
+        "start": 69425,
+        "end": 69464
+      }
+    ]
+  },
+  {
+    "task_id": "T30",
+    "set": "fresh4",
+    "school": "설온중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 2,
+    "semester": 2,
+    "title": "전압, 전류, 저항의 관계",
+    "methods_key": [
+      "서술·논술"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        746,
+        751
+      ],
+      [
+        812,
+        861
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "676c41b72b154622d40d0914f48899cb71b5515c2ed136079808b606b5f3daa2",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/f024e7e5cb79270ba40cf98ed5bd7c8f714866f708beac04f7d6d1375a932798.json",
+      "locator_sha256": "f024e7e5cb79270ba40cf98ed5bd7c8f714866f708beac04f7d6d1375a932798"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 746,
+        "start": 60524,
+        "end": 60740
+      },
+      {
+        "line": 747,
+        "start": 60741,
+        "end": 60802
+      },
+      {
+        "line": 748,
+        "start": 60803,
+        "end": 60996
+      },
+      {
+        "line": 749,
+        "start": 60997,
+        "end": 61130
+      },
+      {
+        "line": 750,
+        "start": 61131,
+        "end": 61259
+      },
+      {
+        "line": 751,
+        "start": 61260,
+        "end": 61726
+      },
+      {
+        "line": 812,
+        "start": 69475,
+        "end": 69492
+      },
+      {
+        "line": 813,
+        "start": 69493,
+        "end": 69493
+      },
+      {
+        "line": 814,
+        "start": 69494,
+        "end": 69501
+      },
+      {
+        "line": 815,
+        "start": 69502,
+        "end": 69614
+      },
+      {
+        "line": 816,
+        "start": 69615,
+        "end": 69853
+      },
+      {
+        "line": 817,
+        "start": 69854,
+        "end": 69978
+      },
+      {
+        "line": 818,
+        "start": 69979,
+        "end": 70061
+      },
+      {
+        "line": 819,
+        "start": 70062,
+        "end": 70236
+      },
+      {
+        "line": 820,
+        "start": 70237,
+        "end": 70295
+      },
+      {
+        "line": 821,
+        "start": 70296,
+        "end": 70349
+      },
+      {
+        "line": 822,
+        "start": 70350,
+        "end": 70447
+      },
+      {
+        "line": 823,
+        "start": 70448,
+        "end": 70506
+      },
+      {
+        "line": 824,
+        "start": 70507,
+        "end": 70560
+      },
+      {
+        "line": 825,
+        "start": 70561,
+        "end": 70662
+      },
+      {
+        "line": 826,
+        "start": 70663,
+        "end": 70743
+      },
+      {
+        "line": 827,
+        "start": 70744,
+        "end": 70811
+      },
+      {
+        "line": 828,
+        "start": 70812,
+        "end": 70927
+      },
+      {
+        "line": 829,
+        "start": 70928,
+        "end": 70997
+      },
+      {
+        "line": 830,
+        "start": 70998,
+        "end": 71056
+      },
+      {
+        "line": 831,
+        "start": 71057,
+        "end": 71169
+      },
+      {
+        "line": 832,
+        "start": 71170,
+        "end": 71232
+      },
+      {
+        "line": 833,
+        "start": 71233,
+        "end": 71291
+      },
+      {
+        "line": 834,
+        "start": 71292,
+        "end": 71465
+      },
+      {
+        "line": 835,
+        "start": 71466,
+        "end": 71519
+      },
+      {
+        "line": 836,
+        "start": 71520,
+        "end": 71607
+      },
+      {
+        "line": 837,
+        "start": 71608,
+        "end": 71730
+      },
+      {
+        "line": 838,
+        "start": 71731,
+        "end": 71778
+      },
+      {
+        "line": 839,
+        "start": 71779,
+        "end": 71831
+      },
+      {
+        "line": 840,
+        "start": 71832,
+        "end": 71892
+      },
+      {
+        "line": 841,
+        "start": 71893,
+        "end": 72030
+      },
+      {
+        "line": 842,
+        "start": 72031,
+        "end": 72088
+      },
+      {
+        "line": 843,
+        "start": 72089,
+        "end": 72176
+      },
+      {
+        "line": 844,
+        "start": 72177,
+        "end": 72224
+      },
+      {
+        "line": 845,
+        "start": 72225,
+        "end": 72271
+      },
+      {
+        "line": 846,
+        "start": 72272,
+        "end": 72420
+      },
+      {
+        "line": 847,
+        "start": 72421,
+        "end": 72498
+      },
+      {
+        "line": 848,
+        "start": 72499,
+        "end": 72546
+      },
+      {
+        "line": 849,
+        "start": 72547,
+        "end": 72633
+      },
+      {
+        "line": 850,
+        "start": 72634,
+        "end": 72782
+      },
+      {
+        "line": 851,
+        "start": 72783,
+        "end": 72860
+      },
+      {
+        "line": 852,
+        "start": 72861,
+        "end": 72908
+      },
+      {
+        "line": 853,
+        "start": 72909,
+        "end": 72995
+      },
+      {
+        "line": 854,
+        "start": 72996,
+        "end": 73118
+      },
+      {
+        "line": 855,
+        "start": 73119,
+        "end": 73170
+      },
+      {
+        "line": 856,
+        "start": 73171,
+        "end": 73230
+      },
+      {
+        "line": 857,
+        "start": 73231,
+        "end": 73297
+      },
+      {
+        "line": 858,
+        "start": 73298,
+        "end": 73346
+      },
+      {
+        "line": 859,
+        "start": 73347,
+        "end": 73397
+      },
+      {
+        "line": 860,
+        "start": 73398,
+        "end": 73449
+      },
+      {
+        "line": 861,
+        "start": 73450,
+        "end": 73495
+      }
+    ]
+  },
+  {
+    "task_id": "T31",
+    "set": "fresh4",
+    "school": "설온중학교",
+    "round": "2026-round-3-fresh4",
+    "grade": 2,
+    "semester": 2,
+    "title": "수업 활동 평가",
+    "methods_key": [
+      "조사·발표",
+      "토의·토론",
+      "프로젝트",
+      "실험·실습",
+      "포트폴리오",
+      "학습 활동지 작성"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        746,
+        751
+      ],
+      [
+        864,
+        883
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "676c41b72b154622d40d0914f48899cb71b5515c2ed136079808b606b5f3daa2",
+      "converted_path": "data/derived/segments/2026-round-3-fresh4-conversions/f024e7e5cb79270ba40cf98ed5bd7c8f714866f708beac04f7d6d1375a932798.json",
+      "locator_sha256": "f024e7e5cb79270ba40cf98ed5bd7c8f714866f708beac04f7d6d1375a932798"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 746,
+        "start": 60524,
+        "end": 60740
+      },
+      {
+        "line": 747,
+        "start": 60741,
+        "end": 60802
+      },
+      {
+        "line": 748,
+        "start": 60803,
+        "end": 60996
+      },
+      {
+        "line": 749,
+        "start": 60997,
+        "end": 61130
+      },
+      {
+        "line": 750,
+        "start": 61131,
+        "end": 61259
+      },
+      {
+        "line": 751,
+        "start": 61260,
+        "end": 61726
+      },
+      {
+        "line": 864,
+        "start": 73506,
+        "end": 73517
+      },
+      {
+        "line": 865,
+        "start": 73518,
+        "end": 73518
+      },
+      {
+        "line": 866,
+        "start": 73519,
+        "end": 73526
+      },
+      {
+        "line": 867,
+        "start": 73527,
+        "end": 73692
+      },
+      {
+        "line": 868,
+        "start": 73693,
+        "end": 73910
+      },
+      {
+        "line": 869,
+        "start": 73911,
+        "end": 74014
+      },
+      {
+        "line": 870,
+        "start": 74015,
+        "end": 74089
+      },
+      {
+        "line": 871,
+        "start": 74090,
+        "end": 74412
+      },
+      {
+        "line": 872,
+        "start": 74413,
+        "end": 74456
+      },
+      {
+        "line": 873,
+        "start": 74457,
+        "end": 74500
+      },
+      {
+        "line": 874,
+        "start": 74501,
+        "end": 74544
+      },
+      {
+        "line": 875,
+        "start": 74545,
+        "end": 74588
+      },
+      {
+        "line": 876,
+        "start": 74589,
+        "end": 74635
+      },
+      {
+        "line": 877,
+        "start": 74636,
+        "end": 74892
+      },
+      {
+        "line": 878,
+        "start": 74893,
+        "end": 74936
+      },
+      {
+        "line": 879,
+        "start": 74937,
+        "end": 74980
+      },
+      {
+        "line": 880,
+        "start": 74981,
+        "end": 75024
+      },
+      {
+        "line": 881,
+        "start": 75025,
+        "end": 75068
+      },
+      {
+        "line": 882,
+        "start": 75069,
+        "end": 75115
+      },
+      {
+        "line": 883,
+        "start": 75116,
+        "end": 75156
+      }
+    ]
+  },
+  {
+    "task_id": "T32",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-1-fresh4",
+    "grade": 1,
+    "semester": 1,
+    "title": "생물다양성보전에 대한 글쓰기",
+    "methods_key": [
+      "논술형"
+    ],
+    "activity_key": "작성",
+    "activity_accept": [
+      "작성"
+    ],
+    "lines": [
+      [
+        792,
+        796
+      ],
+      [
+        811,
+        831
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "5b6faf02ce9ff187fb60ffa6c3d77e0e1f7abbb5d9217bdf412e49fd07951758",
+      "converted_path": "data/derived/segments/2026-round-1-fresh4-conversions/13647004e7aa4b6af5d56be6aa14132af171ee08d49bf2bb618ee1f794ce7d8d.json",
+      "locator_sha256": "13647004e7aa4b6af5d56be6aa14132af171ee08d49bf2bb618ee1f794ce7d8d"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 792,
+        "start": 89097,
+        "end": 89242
+      },
+      {
+        "line": 793,
+        "start": 89243,
+        "end": 89338
+      },
+      {
+        "line": 794,
+        "start": 89339,
+        "end": 89436
+      },
+      {
+        "line": 795,
+        "start": 89437,
+        "end": 89540
+      },
+      {
+        "line": 796,
+        "start": 89541,
+        "end": 89753
+      },
+      {
+        "line": 811,
+        "start": 90347,
+        "end": 90370
+      },
+      {
+        "line": 812,
+        "start": 90371,
+        "end": 90371
+      },
+      {
+        "line": 813,
+        "start": 90372,
+        "end": 90499
+      },
+      {
+        "line": 814,
+        "start": 90500,
+        "end": 90513
+      },
+      {
+        "line": 815,
+        "start": 90514,
+        "end": 90669
+      },
+      {
+        "line": 816,
+        "start": 90670,
+        "end": 90711
+      },
+      {
+        "line": 817,
+        "start": 90712,
+        "end": 90712
+      },
+      {
+        "line": 818,
+        "start": 90713,
+        "end": 90720
+      },
+      {
+        "line": 819,
+        "start": 90721,
+        "end": 90772
+      },
+      {
+        "line": 820,
+        "start": 90773,
+        "end": 90924
+      },
+      {
+        "line": 821,
+        "start": 90925,
+        "end": 91024
+      },
+      {
+        "line": 822,
+        "start": 91025,
+        "end": 91123
+      },
+      {
+        "line": 823,
+        "start": 91124,
+        "end": 91179
+      },
+      {
+        "line": 824,
+        "start": 91180,
+        "end": 91322
+      },
+      {
+        "line": 825,
+        "start": 91323,
+        "end": 91409
+      },
+      {
+        "line": 826,
+        "start": 91410,
+        "end": 91506
+      },
+      {
+        "line": 827,
+        "start": 91507,
+        "end": 91575
+      },
+      {
+        "line": 828,
+        "start": 91576,
+        "end": 91701
+      },
+      {
+        "line": 829,
+        "start": 91702,
+        "end": 91786
+      },
+      {
+        "line": 830,
+        "start": 91787,
+        "end": 91891
+      },
+      {
+        "line": 831,
+        "start": 91892,
+        "end": 91975
+      }
+    ]
+  },
+  {
+    "task_id": "T33",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-1-fresh4",
+    "grade": 1,
+    "semester": 1,
+    "title": "물질의 상태 변화와 열에너지 출입에 대한 과학적 사고 및 구술 프로젝트",
+    "methods_key": [
+      "구술형⁴"
+    ],
+    "activity_key": "발표·토론",
+    "activity_accept": [
+      "발표·토론"
+    ],
+    "lines": [
+      [
+        792,
+        796
+      ],
+      [
+        836,
+        853
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "5b6faf02ce9ff187fb60ffa6c3d77e0e1f7abbb5d9217bdf412e49fd07951758",
+      "converted_path": "data/derived/segments/2026-round-1-fresh4-conversions/13647004e7aa4b6af5d56be6aa14132af171ee08d49bf2bb618ee1f794ce7d8d.json",
+      "locator_sha256": "13647004e7aa4b6af5d56be6aa14132af171ee08d49bf2bb618ee1f794ce7d8d"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 792,
+        "start": 89097,
+        "end": 89242
+      },
+      {
+        "line": 793,
+        "start": 89243,
+        "end": 89338
+      },
+      {
+        "line": 794,
+        "start": 89339,
+        "end": 89436
+      },
+      {
+        "line": 795,
+        "start": 89437,
+        "end": 89540
+      },
+      {
+        "line": 796,
+        "start": 89541,
+        "end": 89753
+      },
+      {
+        "line": 836,
+        "start": 92039,
+        "end": 92091
+      },
+      {
+        "line": 837,
+        "start": 92092,
+        "end": 92092
+      },
+      {
+        "line": 838,
+        "start": 92093,
+        "end": 92231
+      },
+      {
+        "line": 839,
+        "start": 92232,
+        "end": 92245
+      },
+      {
+        "line": 840,
+        "start": 92246,
+        "end": 92471
+      },
+      {
+        "line": 841,
+        "start": 92472,
+        "end": 92513
+      },
+      {
+        "line": 842,
+        "start": 92514,
+        "end": 92514
+      },
+      {
+        "line": 843,
+        "start": 92515,
+        "end": 92522
+      },
+      {
+        "line": 844,
+        "start": 92523,
+        "end": 92574
+      },
+      {
+        "line": 845,
+        "start": 92575,
+        "end": 92691
+      },
+      {
+        "line": 846,
+        "start": 92692,
+        "end": 92762
+      },
+      {
+        "line": 847,
+        "start": 92763,
+        "end": 92840
+      },
+      {
+        "line": 848,
+        "start": 92841,
+        "end": 92912
+      },
+      {
+        "line": 849,
+        "start": 92913,
+        "end": 93037
+      },
+      {
+        "line": 850,
+        "start": 93038,
+        "end": 93112
+      },
+      {
+        "line": 851,
+        "start": 93113,
+        "end": 93194
+      },
+      {
+        "line": 852,
+        "start": 93195,
+        "end": 93270
+      },
+      {
+        "line": 853,
+        "start": 93271,
+        "end": 93386
+      }
+    ]
+  },
+  {
+    "task_id": "T34",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-1-fresh4",
+    "grade": 2,
+    "semester": 1,
+    "title": "혼합물을 순물질로 분리하는 방법 설명하기",
+    "methods_key": [
+      "구술형"
+    ],
+    "activity_key": "추론·설명",
+    "activity_accept": [
+      "추론·설명"
+    ],
+    "lines": [
+      [
+        588,
+        592
+      ],
+      [
+        607,
+        627
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "fb32723b5fb5da758ee05c3b319ba76d42ad38e104dc90b24a9cba2f8910bf05",
+      "converted_path": "data/derived/segments/2026-round-1-fresh4-conversions/978f0c2536bb3ecaafb4c8914f451c433c0a3418509535fec5950f3aee493c11.json",
+      "locator_sha256": "978f0c2536bb3ecaafb4c8914f451c433c0a3418509535fec5950f3aee493c11"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 588,
+        "start": 74182,
+        "end": 74325
+      },
+      {
+        "line": 589,
+        "start": 74326,
+        "end": 74421
+      },
+      {
+        "line": 590,
+        "start": 74422,
+        "end": 74519
+      },
+      {
+        "line": 591,
+        "start": 74520,
+        "end": 74623
+      },
+      {
+        "line": 592,
+        "start": 74624,
+        "end": 74826
+      },
+      {
+        "line": 607,
+        "start": 75342,
+        "end": 75367
+      },
+      {
+        "line": 608,
+        "start": 75368,
+        "end": 75368
+      },
+      {
+        "line": 609,
+        "start": 75369,
+        "end": 75570
+      },
+      {
+        "line": 610,
+        "start": 75571,
+        "end": 75584
+      },
+      {
+        "line": 611,
+        "start": 75585,
+        "end": 75739
+      },
+      {
+        "line": 612,
+        "start": 75740,
+        "end": 75767
+      },
+      {
+        "line": 613,
+        "start": 75768,
+        "end": 75768
+      },
+      {
+        "line": 614,
+        "start": 75769,
+        "end": 75776
+      },
+      {
+        "line": 615,
+        "start": 75777,
+        "end": 75828
+      },
+      {
+        "line": 616,
+        "start": 75829,
+        "end": 75957
+      },
+      {
+        "line": 617,
+        "start": 75958,
+        "end": 76042
+      },
+      {
+        "line": 618,
+        "start": 76043,
+        "end": 76134
+      },
+      {
+        "line": 619,
+        "start": 76135,
+        "end": 76220
+      },
+      {
+        "line": 620,
+        "start": 76221,
+        "end": 76333
+      },
+      {
+        "line": 621,
+        "start": 76334,
+        "end": 76402
+      },
+      {
+        "line": 622,
+        "start": 76403,
+        "end": 76478
+      },
+      {
+        "line": 623,
+        "start": 76479,
+        "end": 76548
+      },
+      {
+        "line": 624,
+        "start": 76549,
+        "end": 76663
+      },
+      {
+        "line": 625,
+        "start": 76664,
+        "end": 76732
+      },
+      {
+        "line": 626,
+        "start": 76733,
+        "end": 76808
+      },
+      {
+        "line": 627,
+        "start": 76809,
+        "end": 76874
+      }
+    ]
+  },
+  {
+    "task_id": "T35",
+    "set": "fresh4",
+    "school": "공산중학교",
+    "round": "2026-round-1-fresh4",
+    "grade": 2,
+    "semester": 1,
+    "title": "판의 경계를 탐구하여 지진 피해를 줄이는 방법 제안하기",
+    "methods_key": [
+      "논술형"
+    ],
+    "activity_key": "문제해결",
+    "activity_accept": [
+      "문제해결"
+    ],
+    "lines": [
+      [
+        588,
+        592
+      ],
+      [
+        632,
+        652
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "fb32723b5fb5da758ee05c3b319ba76d42ad38e104dc90b24a9cba2f8910bf05",
+      "converted_path": "data/derived/segments/2026-round-1-fresh4-conversions/978f0c2536bb3ecaafb4c8914f451c433c0a3418509535fec5950f3aee493c11.json",
+      "locator_sha256": "978f0c2536bb3ecaafb4c8914f451c433c0a3418509535fec5950f3aee493c11"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 588,
+        "start": 74182,
+        "end": 74325
+      },
+      {
+        "line": 589,
+        "start": 74326,
+        "end": 74421
+      },
+      {
+        "line": 590,
+        "start": 74422,
+        "end": 74519
+      },
+      {
+        "line": 591,
+        "start": 74520,
+        "end": 74623
+      },
+      {
+        "line": 592,
+        "start": 74624,
+        "end": 74826
+      },
+      {
+        "line": 632,
+        "start": 76938,
+        "end": 76971
+      },
+      {
+        "line": 633,
+        "start": 76972,
+        "end": 76972
+      },
+      {
+        "line": 634,
+        "start": 76973,
+        "end": 77049
+      },
+      {
+        "line": 635,
+        "start": 77050,
+        "end": 77063
+      },
+      {
+        "line": 636,
+        "start": 77064,
+        "end": 77211
+      },
+      {
+        "line": 637,
+        "start": 77212,
+        "end": 77253
+      },
+      {
+        "line": 638,
+        "start": 77254,
+        "end": 77254
+      },
+      {
+        "line": 639,
+        "start": 77255,
+        "end": 77262
+      },
+      {
+        "line": 640,
+        "start": 77263,
+        "end": 77314
+      },
+      {
+        "line": 641,
+        "start": 77315,
+        "end": 77432
+      },
+      {
+        "line": 642,
+        "start": 77433,
+        "end": 77516
+      },
+      {
+        "line": 643,
+        "start": 77517,
+        "end": 77587
+      },
+      {
+        "line": 644,
+        "start": 77588,
+        "end": 77642
+      },
+      {
+        "line": 645,
+        "start": 77643,
+        "end": 77763
+      },
+      {
+        "line": 646,
+        "start": 77764,
+        "end": 77855
+      },
+      {
+        "line": 647,
+        "start": 77856,
+        "end": 77932
+      },
+      {
+        "line": 648,
+        "start": 77933,
+        "end": 78002
+      },
+      {
+        "line": 649,
+        "start": 78003,
+        "end": 78116
+      },
+      {
+        "line": 650,
+        "start": 78117,
+        "end": 78197
+      },
+      {
+        "line": 651,
+        "start": 78198,
+        "end": 78273
+      },
+      {
+        "line": 652,
+        "start": 78274,
+        "end": 78344
+      }
+    ]
+  },
+  {
+    "task_id": "T36",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-1-fresh4",
+    "grade": 1,
+    "semester": 1,
+    "title": "탐구실험평가",
+    "methods_key": [
+      "실험·실습",
+      "기타"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        213,
+        218
+      ],
+      [
+        238,
+        258
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "e87cf0a9cffc1ea24f804b7a5ec91e0e9080b5b2121cb097c50b0ff6983fbf51",
+      "converted_path": "data/derived/segments/2026-round-1-fresh4-conversions/3ef3918b0fcad306de70f6be5a339a288c2127d6a21d9a3d1220d02dfeae0b4e.json",
+      "locator_sha256": "3ef3918b0fcad306de70f6be5a339a288c2127d6a21d9a3d1220d02dfeae0b4e"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 213,
+        "start": 19069,
+        "end": 19228
+      },
+      {
+        "line": 214,
+        "start": 19229,
+        "end": 19410
+      },
+      {
+        "line": 215,
+        "start": 19411,
+        "end": 19585
+      },
+      {
+        "line": 216,
+        "start": 19586,
+        "end": 19769
+      },
+      {
+        "line": 217,
+        "start": 19770,
+        "end": 20164
+      },
+      {
+        "line": 218,
+        "start": 20165,
+        "end": 20572
+      },
+      {
+        "line": 238,
+        "start": 21476,
+        "end": 21485
+      },
+      {
+        "line": 239,
+        "start": 21486,
+        "end": 21486
+      },
+      {
+        "line": 240,
+        "start": 21487,
+        "end": 21494
+      },
+      {
+        "line": 241,
+        "start": 21495,
+        "end": 21579
+      },
+      {
+        "line": 242,
+        "start": 21580,
+        "end": 21694
+      },
+      {
+        "line": 243,
+        "start": 21695,
+        "end": 21790
+      },
+      {
+        "line": 244,
+        "start": 21791,
+        "end": 21846
+      },
+      {
+        "line": 245,
+        "start": 21847,
+        "end": 21902
+      },
+      {
+        "line": 246,
+        "start": 21903,
+        "end": 21958
+      },
+      {
+        "line": 247,
+        "start": 21959,
+        "end": 22010
+      },
+      {
+        "line": 248,
+        "start": 22011,
+        "end": 22156
+      },
+      {
+        "line": 249,
+        "start": 22157,
+        "end": 22256
+      },
+      {
+        "line": 250,
+        "start": 22257,
+        "end": 22362
+      },
+      {
+        "line": 251,
+        "start": 22363,
+        "end": 22480
+      },
+      {
+        "line": 252,
+        "start": 22481,
+        "end": 22558
+      },
+      {
+        "line": 253,
+        "start": 22559,
+        "end": 22811
+      },
+      {
+        "line": 254,
+        "start": 22812,
+        "end": 22869
+      },
+      {
+        "line": 255,
+        "start": 22870,
+        "end": 22963
+      },
+      {
+        "line": 256,
+        "start": 22964,
+        "end": 23161
+      },
+      {
+        "line": 257,
+        "start": 23162,
+        "end": 23219
+      },
+      {
+        "line": 258,
+        "start": 23220,
+        "end": 23278
+      }
+    ]
+  },
+  {
+    "task_id": "T37",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-1-fresh4",
+    "grade": 1,
+    "semester": 1,
+    "title": "수업밀착형 평가",
+    "methods_key": [
+      "서술·논술",
+      "구술·발표",
+      "토의·토론",
+      "프로젝트",
+      "포트폴리오",
+      "기타"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        213,
+        218
+      ],
+      [
+        261,
+        281
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "e87cf0a9cffc1ea24f804b7a5ec91e0e9080b5b2121cb097c50b0ff6983fbf51",
+      "converted_path": "data/derived/segments/2026-round-1-fresh4-conversions/3ef3918b0fcad306de70f6be5a339a288c2127d6a21d9a3d1220d02dfeae0b4e.json",
+      "locator_sha256": "3ef3918b0fcad306de70f6be5a339a288c2127d6a21d9a3d1220d02dfeae0b4e"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 213,
+        "start": 19069,
+        "end": 19228
+      },
+      {
+        "line": 214,
+        "start": 19229,
+        "end": 19410
+      },
+      {
+        "line": 215,
+        "start": 19411,
+        "end": 19585
+      },
+      {
+        "line": 216,
+        "start": 19586,
+        "end": 19769
+      },
+      {
+        "line": 217,
+        "start": 19770,
+        "end": 20164
+      },
+      {
+        "line": 218,
+        "start": 20165,
+        "end": 20572
+      },
+      {
+        "line": 261,
+        "start": 23289,
+        "end": 23300
+      },
+      {
+        "line": 262,
+        "start": 23301,
+        "end": 23301
+      },
+      {
+        "line": 263,
+        "start": 23302,
+        "end": 23309
+      },
+      {
+        "line": 264,
+        "start": 23310,
+        "end": 23398
+      },
+      {
+        "line": 265,
+        "start": 23399,
+        "end": 23575
+      },
+      {
+        "line": 266,
+        "start": 23576,
+        "end": 23671
+      },
+      {
+        "line": 267,
+        "start": 23672,
+        "end": 23727
+      },
+      {
+        "line": 268,
+        "start": 23728,
+        "end": 23783
+      },
+      {
+        "line": 269,
+        "start": 23784,
+        "end": 23839
+      },
+      {
+        "line": 270,
+        "start": 23840,
+        "end": 23891
+      },
+      {
+        "line": 271,
+        "start": 23892,
+        "end": 24037
+      },
+      {
+        "line": 272,
+        "start": 24038,
+        "end": 24137
+      },
+      {
+        "line": 273,
+        "start": 24138,
+        "end": 24243
+      },
+      {
+        "line": 274,
+        "start": 24244,
+        "end": 24361
+      },
+      {
+        "line": 275,
+        "start": 24362,
+        "end": 24439
+      },
+      {
+        "line": 276,
+        "start": 24440,
+        "end": 24651
+      },
+      {
+        "line": 277,
+        "start": 24652,
+        "end": 24709
+      },
+      {
+        "line": 278,
+        "start": 24710,
+        "end": 24803
+      },
+      {
+        "line": 279,
+        "start": 24804,
+        "end": 24979
+      },
+      {
+        "line": 280,
+        "start": 24980,
+        "end": 25037
+      },
+      {
+        "line": 281,
+        "start": 25038,
+        "end": 25096
+      }
+    ]
+  },
+  {
+    "task_id": "T38",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-1-fresh4",
+    "grade": 1,
+    "semester": 1,
+    "title": "융합형 자유탐구 평가",
+    "methods_key": [
+      "서술·논술",
+      "구술·발표",
+      "프로젝트",
+      "포트폴리오"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        213,
+        218
+      ],
+      [
+        284,
+        304
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "e87cf0a9cffc1ea24f804b7a5ec91e0e9080b5b2121cb097c50b0ff6983fbf51",
+      "converted_path": "data/derived/segments/2026-round-1-fresh4-conversions/3ef3918b0fcad306de70f6be5a339a288c2127d6a21d9a3d1220d02dfeae0b4e.json",
+      "locator_sha256": "3ef3918b0fcad306de70f6be5a339a288c2127d6a21d9a3d1220d02dfeae0b4e"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 213,
+        "start": 19069,
+        "end": 19228
+      },
+      {
+        "line": 214,
+        "start": 19229,
+        "end": 19410
+      },
+      {
+        "line": 215,
+        "start": 19411,
+        "end": 19585
+      },
+      {
+        "line": 216,
+        "start": 19586,
+        "end": 19769
+      },
+      {
+        "line": 217,
+        "start": 19770,
+        "end": 20164
+      },
+      {
+        "line": 218,
+        "start": 20165,
+        "end": 20572
+      },
+      {
+        "line": 284,
+        "start": 25107,
+        "end": 25121
+      },
+      {
+        "line": 285,
+        "start": 25122,
+        "end": 25122
+      },
+      {
+        "line": 286,
+        "start": 25123,
+        "end": 25130
+      },
+      {
+        "line": 287,
+        "start": 25131,
+        "end": 25256
+      },
+      {
+        "line": 288,
+        "start": 25257,
+        "end": 25431
+      },
+      {
+        "line": 289,
+        "start": 25432,
+        "end": 25527
+      },
+      {
+        "line": 290,
+        "start": 25528,
+        "end": 25583
+      },
+      {
+        "line": 291,
+        "start": 25584,
+        "end": 25639
+      },
+      {
+        "line": 292,
+        "start": 25640,
+        "end": 25695
+      },
+      {
+        "line": 293,
+        "start": 25696,
+        "end": 25747
+      },
+      {
+        "line": 294,
+        "start": 25748,
+        "end": 25892
+      },
+      {
+        "line": 295,
+        "start": 25893,
+        "end": 25992
+      },
+      {
+        "line": 296,
+        "start": 25993,
+        "end": 26098
+      },
+      {
+        "line": 297,
+        "start": 26099,
+        "end": 26216
+      },
+      {
+        "line": 298,
+        "start": 26217,
+        "end": 26294
+      },
+      {
+        "line": 299,
+        "start": 26295,
+        "end": 26485
+      },
+      {
+        "line": 300,
+        "start": 26486,
+        "end": 26544
+      },
+      {
+        "line": 301,
+        "start": 26545,
+        "end": 26639
+      },
+      {
+        "line": 302,
+        "start": 26640,
+        "end": 26761
+      },
+      {
+        "line": 303,
+        "start": 26762,
+        "end": 26820
+      },
+      {
+        "line": 304,
+        "start": 26821,
+        "end": 26879
+      }
+    ]
+  },
+  {
+    "task_id": "T39",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-1-fresh4",
+    "grade": 2,
+    "semester": 1,
+    "title": "탐구실험평가",
+    "methods_key": [
+      "실험·실습",
+      "기타"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        213,
+        218
+      ],
+      [
+        238,
+        258
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "e87cf0a9cffc1ea24f804b7a5ec91e0e9080b5b2121cb097c50b0ff6983fbf51",
+      "converted_path": "data/derived/segments/2026-round-1-fresh4-conversions/3ef3918b0fcad306de70f6be5a339a288c2127d6a21d9a3d1220d02dfeae0b4e.json",
+      "locator_sha256": "3ef3918b0fcad306de70f6be5a339a288c2127d6a21d9a3d1220d02dfeae0b4e"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 213,
+        "start": 19069,
+        "end": 19228
+      },
+      {
+        "line": 214,
+        "start": 19229,
+        "end": 19410
+      },
+      {
+        "line": 215,
+        "start": 19411,
+        "end": 19585
+      },
+      {
+        "line": 216,
+        "start": 19586,
+        "end": 19769
+      },
+      {
+        "line": 217,
+        "start": 19770,
+        "end": 20164
+      },
+      {
+        "line": 218,
+        "start": 20165,
+        "end": 20572
+      },
+      {
+        "line": 238,
+        "start": 21476,
+        "end": 21485
+      },
+      {
+        "line": 239,
+        "start": 21486,
+        "end": 21486
+      },
+      {
+        "line": 240,
+        "start": 21487,
+        "end": 21494
+      },
+      {
+        "line": 241,
+        "start": 21495,
+        "end": 21579
+      },
+      {
+        "line": 242,
+        "start": 21580,
+        "end": 21694
+      },
+      {
+        "line": 243,
+        "start": 21695,
+        "end": 21790
+      },
+      {
+        "line": 244,
+        "start": 21791,
+        "end": 21846
+      },
+      {
+        "line": 245,
+        "start": 21847,
+        "end": 21902
+      },
+      {
+        "line": 246,
+        "start": 21903,
+        "end": 21958
+      },
+      {
+        "line": 247,
+        "start": 21959,
+        "end": 22010
+      },
+      {
+        "line": 248,
+        "start": 22011,
+        "end": 22156
+      },
+      {
+        "line": 249,
+        "start": 22157,
+        "end": 22256
+      },
+      {
+        "line": 250,
+        "start": 22257,
+        "end": 22362
+      },
+      {
+        "line": 251,
+        "start": 22363,
+        "end": 22480
+      },
+      {
+        "line": 252,
+        "start": 22481,
+        "end": 22558
+      },
+      {
+        "line": 253,
+        "start": 22559,
+        "end": 22811
+      },
+      {
+        "line": 254,
+        "start": 22812,
+        "end": 22869
+      },
+      {
+        "line": 255,
+        "start": 22870,
+        "end": 22963
+      },
+      {
+        "line": 256,
+        "start": 22964,
+        "end": 23161
+      },
+      {
+        "line": 257,
+        "start": 23162,
+        "end": 23219
+      },
+      {
+        "line": 258,
+        "start": 23220,
+        "end": 23278
+      }
+    ]
+  },
+  {
+    "task_id": "T40",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-1-fresh4",
+    "grade": 2,
+    "semester": 1,
+    "title": "수업밀착형 평가",
+    "methods_key": [
+      "서술·논술",
+      "구술·발표",
+      "토의·토론",
+      "프로젝트",
+      "포트폴리오",
+      "기타"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        213,
+        218
+      ],
+      [
+        261,
+        281
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "e87cf0a9cffc1ea24f804b7a5ec91e0e9080b5b2121cb097c50b0ff6983fbf51",
+      "converted_path": "data/derived/segments/2026-round-1-fresh4-conversions/3ef3918b0fcad306de70f6be5a339a288c2127d6a21d9a3d1220d02dfeae0b4e.json",
+      "locator_sha256": "3ef3918b0fcad306de70f6be5a339a288c2127d6a21d9a3d1220d02dfeae0b4e"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 213,
+        "start": 19069,
+        "end": 19228
+      },
+      {
+        "line": 214,
+        "start": 19229,
+        "end": 19410
+      },
+      {
+        "line": 215,
+        "start": 19411,
+        "end": 19585
+      },
+      {
+        "line": 216,
+        "start": 19586,
+        "end": 19769
+      },
+      {
+        "line": 217,
+        "start": 19770,
+        "end": 20164
+      },
+      {
+        "line": 218,
+        "start": 20165,
+        "end": 20572
+      },
+      {
+        "line": 261,
+        "start": 23289,
+        "end": 23300
+      },
+      {
+        "line": 262,
+        "start": 23301,
+        "end": 23301
+      },
+      {
+        "line": 263,
+        "start": 23302,
+        "end": 23309
+      },
+      {
+        "line": 264,
+        "start": 23310,
+        "end": 23398
+      },
+      {
+        "line": 265,
+        "start": 23399,
+        "end": 23575
+      },
+      {
+        "line": 266,
+        "start": 23576,
+        "end": 23671
+      },
+      {
+        "line": 267,
+        "start": 23672,
+        "end": 23727
+      },
+      {
+        "line": 268,
+        "start": 23728,
+        "end": 23783
+      },
+      {
+        "line": 269,
+        "start": 23784,
+        "end": 23839
+      },
+      {
+        "line": 270,
+        "start": 23840,
+        "end": 23891
+      },
+      {
+        "line": 271,
+        "start": 23892,
+        "end": 24037
+      },
+      {
+        "line": 272,
+        "start": 24038,
+        "end": 24137
+      },
+      {
+        "line": 273,
+        "start": 24138,
+        "end": 24243
+      },
+      {
+        "line": 274,
+        "start": 24244,
+        "end": 24361
+      },
+      {
+        "line": 275,
+        "start": 24362,
+        "end": 24439
+      },
+      {
+        "line": 276,
+        "start": 24440,
+        "end": 24651
+      },
+      {
+        "line": 277,
+        "start": 24652,
+        "end": 24709
+      },
+      {
+        "line": 278,
+        "start": 24710,
+        "end": 24803
+      },
+      {
+        "line": 279,
+        "start": 24804,
+        "end": 24979
+      },
+      {
+        "line": 280,
+        "start": 24980,
+        "end": 25037
+      },
+      {
+        "line": 281,
+        "start": 25038,
+        "end": 25096
+      }
+    ]
+  },
+  {
+    "task_id": "T41",
+    "set": "fresh4",
+    "school": "오수중학교",
+    "round": "2026-round-1-fresh4",
+    "grade": 2,
+    "semester": 1,
+    "title": "융합형 자유탐구 평가",
+    "methods_key": [
+      "서술·논술",
+      "구술·발표",
+      "프로젝트",
+      "포트폴리오"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        213,
+        218
+      ],
+      [
+        284,
+        304
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "e87cf0a9cffc1ea24f804b7a5ec91e0e9080b5b2121cb097c50b0ff6983fbf51",
+      "converted_path": "data/derived/segments/2026-round-1-fresh4-conversions/3ef3918b0fcad306de70f6be5a339a288c2127d6a21d9a3d1220d02dfeae0b4e.json",
+      "locator_sha256": "3ef3918b0fcad306de70f6be5a339a288c2127d6a21d9a3d1220d02dfeae0b4e"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 213,
+        "start": 19069,
+        "end": 19228
+      },
+      {
+        "line": 214,
+        "start": 19229,
+        "end": 19410
+      },
+      {
+        "line": 215,
+        "start": 19411,
+        "end": 19585
+      },
+      {
+        "line": 216,
+        "start": 19586,
+        "end": 19769
+      },
+      {
+        "line": 217,
+        "start": 19770,
+        "end": 20164
+      },
+      {
+        "line": 218,
+        "start": 20165,
+        "end": 20572
+      },
+      {
+        "line": 284,
+        "start": 25107,
+        "end": 25121
+      },
+      {
+        "line": 285,
+        "start": 25122,
+        "end": 25122
+      },
+      {
+        "line": 286,
+        "start": 25123,
+        "end": 25130
+      },
+      {
+        "line": 287,
+        "start": 25131,
+        "end": 25256
+      },
+      {
+        "line": 288,
+        "start": 25257,
+        "end": 25431
+      },
+      {
+        "line": 289,
+        "start": 25432,
+        "end": 25527
+      },
+      {
+        "line": 290,
+        "start": 25528,
+        "end": 25583
+      },
+      {
+        "line": 291,
+        "start": 25584,
+        "end": 25639
+      },
+      {
+        "line": 292,
+        "start": 25640,
+        "end": 25695
+      },
+      {
+        "line": 293,
+        "start": 25696,
+        "end": 25747
+      },
+      {
+        "line": 294,
+        "start": 25748,
+        "end": 25892
+      },
+      {
+        "line": 295,
+        "start": 25893,
+        "end": 25992
+      },
+      {
+        "line": 296,
+        "start": 25993,
+        "end": 26098
+      },
+      {
+        "line": 297,
+        "start": 26099,
+        "end": 26216
+      },
+      {
+        "line": 298,
+        "start": 26217,
+        "end": 26294
+      },
+      {
+        "line": 299,
+        "start": 26295,
+        "end": 26485
+      },
+      {
+        "line": 300,
+        "start": 26486,
+        "end": 26544
+      },
+      {
+        "line": 301,
+        "start": 26545,
+        "end": 26639
+      },
+      {
+        "line": 302,
+        "start": 26640,
+        "end": 26761
+      },
+      {
+        "line": 303,
+        "start": 26762,
+        "end": 26820
+      },
+      {
+        "line": 304,
+        "start": 26821,
+        "end": 26879
+      }
+    ]
+  },
+  {
+    "task_id": "T42",
+    "set": "fresh4",
+    "school": "설온중학교",
+    "round": "2026-round-1-fresh4",
+    "grade": 1,
+    "semester": 1,
+    "title": "과학 탐구 실험 설계",
+    "methods_key": null,
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        934,
+        939
+      ],
+      [
+        964,
+        988
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "0e20999c4c501a62593dda29e3d233439e3bc6db888e234b2d5d600206ffd201",
+      "converted_path": "data/derived/segments/2026-round-1-fresh4-conversions/5f1866a19a361012391ac1b347312f553c9749e7a8f1ec5c3fde5288d4fb80f5.json",
+      "locator_sha256": "5f1866a19a361012391ac1b347312f553c9749e7a8f1ec5c3fde5288d4fb80f5"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 934,
+        "start": 61273,
+        "end": 61462
+      },
+      {
+        "line": 935,
+        "start": 61463,
+        "end": 61524
+      },
+      {
+        "line": 936,
+        "start": 61525,
+        "end": 61678
+      },
+      {
+        "line": 937,
+        "start": 61679,
+        "end": 61794
+      },
+      {
+        "line": 938,
+        "start": 61795,
+        "end": 61897
+      },
+      {
+        "line": 939,
+        "start": 61898,
+        "end": 62205
+      },
+      {
+        "line": 964,
+        "start": 67223,
+        "end": 67237
+      },
+      {
+        "line": 965,
+        "start": 67238,
+        "end": 67238
+      },
+      {
+        "line": 966,
+        "start": 67239,
+        "end": 67246
+      },
+      {
+        "line": 967,
+        "start": 67247,
+        "end": 67299
+      },
+      {
+        "line": 968,
+        "start": 67300,
+        "end": 67397
+      },
+      {
+        "line": 969,
+        "start": 67398,
+        "end": 67483
+      },
+      {
+        "line": 970,
+        "start": 67484,
+        "end": 67554
+      },
+      {
+        "line": 971,
+        "start": 67555,
+        "end": 67687
+      },
+      {
+        "line": 972,
+        "start": 67688,
+        "end": 67758
+      },
+      {
+        "line": 973,
+        "start": 67759,
+        "end": 67849
+      },
+      {
+        "line": 974,
+        "start": 67850,
+        "end": 67912
+      },
+      {
+        "line": 975,
+        "start": 67913,
+        "end": 67980
+      },
+      {
+        "line": 976,
+        "start": 67981,
+        "end": 68083
+      },
+      {
+        "line": 977,
+        "start": 68084,
+        "end": 68166
+      },
+      {
+        "line": 978,
+        "start": 68167,
+        "end": 68239
+      },
+      {
+        "line": 979,
+        "start": 68240,
+        "end": 68329
+      },
+      {
+        "line": 980,
+        "start": 68330,
+        "end": 68390
+      },
+      {
+        "line": 981,
+        "start": 68391,
+        "end": 68482
+      },
+      {
+        "line": 982,
+        "start": 68483,
+        "end": 68535
+      },
+      {
+        "line": 983,
+        "start": 68536,
+        "end": 68605
+      },
+      {
+        "line": 984,
+        "start": 68606,
+        "end": 68692
+      },
+      {
+        "line": 985,
+        "start": 68693,
+        "end": 68750
+      },
+      {
+        "line": 986,
+        "start": 68751,
+        "end": 68808
+      },
+      {
+        "line": 987,
+        "start": 68809,
+        "end": 68865
+      },
+      {
+        "line": 988,
+        "start": 68866,
+        "end": 68931
+      }
+    ]
+  },
+  {
+    "task_id": "T43",
+    "set": "fresh4",
+    "school": "설온중학교",
+    "round": "2026-round-1-fresh4",
+    "grade": 1,
+    "semester": 1,
+    "title": "물질의 상태 변화와 입자 운동 이해하기",
+    "methods_key": null,
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        934,
+        939
+      ],
+      [
+        991,
+        1034
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "0e20999c4c501a62593dda29e3d233439e3bc6db888e234b2d5d600206ffd201",
+      "converted_path": "data/derived/segments/2026-round-1-fresh4-conversions/5f1866a19a361012391ac1b347312f553c9749e7a8f1ec5c3fde5288d4fb80f5.json",
+      "locator_sha256": "5f1866a19a361012391ac1b347312f553c9749e7a8f1ec5c3fde5288d4fb80f5"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 934,
+        "start": 61273,
+        "end": 61462
+      },
+      {
+        "line": 935,
+        "start": 61463,
+        "end": 61524
+      },
+      {
+        "line": 936,
+        "start": 61525,
+        "end": 61678
+      },
+      {
+        "line": 937,
+        "start": 61679,
+        "end": 61794
+      },
+      {
+        "line": 938,
+        "start": 61795,
+        "end": 61897
+      },
+      {
+        "line": 939,
+        "start": 61898,
+        "end": 62205
+      },
+      {
+        "line": 991,
+        "start": 68942,
+        "end": 68966
+      },
+      {
+        "line": 992,
+        "start": 68967,
+        "end": 68967
+      },
+      {
+        "line": 993,
+        "start": 68968,
+        "end": 68975
+      },
+      {
+        "line": 994,
+        "start": 68976,
+        "end": 69050
+      },
+      {
+        "line": 995,
+        "start": 69051,
+        "end": 69251
+      },
+      {
+        "line": 996,
+        "start": 69252,
+        "end": 69375
+      },
+      {
+        "line": 997,
+        "start": 69376,
+        "end": 69446
+      },
+      {
+        "line": 998,
+        "start": 69447,
+        "end": 69578
+      },
+      {
+        "line": 999,
+        "start": 69579,
+        "end": 69631
+      },
+      {
+        "line": 1000,
+        "start": 69632,
+        "end": 69683
+      },
+      {
+        "line": 1001,
+        "start": 69684,
+        "end": 69772
+      },
+      {
+        "line": 1002,
+        "start": 69773,
+        "end": 69819
+      },
+      {
+        "line": 1003,
+        "start": 69820,
+        "end": 69922
+      },
+      {
+        "line": 1004,
+        "start": 69923,
+        "end": 69982
+      },
+      {
+        "line": 1005,
+        "start": 69983,
+        "end": 70042
+      },
+      {
+        "line": 1006,
+        "start": 70043,
+        "end": 70101
+      },
+      {
+        "line": 1007,
+        "start": 70102,
+        "end": 70169
+      },
+      {
+        "line": 1008,
+        "start": 70170,
+        "end": 70291
+      },
+      {
+        "line": 1009,
+        "start": 70292,
+        "end": 70374
+      },
+      {
+        "line": 1010,
+        "start": 70375,
+        "end": 70457
+      },
+      {
+        "line": 1011,
+        "start": 70458,
+        "end": 70539
+      },
+      {
+        "line": 1012,
+        "start": 70540,
+        "end": 70621
+      },
+      {
+        "line": 1013,
+        "start": 70622,
+        "end": 70703
+      },
+      {
+        "line": 1014,
+        "start": 70704,
+        "end": 70785
+      },
+      {
+        "line": 1015,
+        "start": 70786,
+        "end": 70867
+      },
+      {
+        "line": 1016,
+        "start": 70868,
+        "end": 70948
+      },
+      {
+        "line": 1017,
+        "start": 70949,
+        "end": 71029
+      },
+      {
+        "line": 1018,
+        "start": 71030,
+        "end": 71110
+      },
+      {
+        "line": 1019,
+        "start": 71111,
+        "end": 71191
+      },
+      {
+        "line": 1020,
+        "start": 71192,
+        "end": 71243
+      },
+      {
+        "line": 1021,
+        "start": 71244,
+        "end": 71349
+      },
+      {
+        "line": 1022,
+        "start": 71350,
+        "end": 71409
+      },
+      {
+        "line": 1023,
+        "start": 71410,
+        "end": 71469
+      },
+      {
+        "line": 1024,
+        "start": 71470,
+        "end": 71532
+      },
+      {
+        "line": 1025,
+        "start": 71533,
+        "end": 71673
+      },
+      {
+        "line": 1026,
+        "start": 71674,
+        "end": 71759
+      },
+      {
+        "line": 1027,
+        "start": 71760,
+        "end": 71844
+      },
+      {
+        "line": 1028,
+        "start": 71845,
+        "end": 71929
+      },
+      {
+        "line": 1029,
+        "start": 71930,
+        "end": 72014
+      },
+      {
+        "line": 1030,
+        "start": 72015,
+        "end": 72099
+      },
+      {
+        "line": 1031,
+        "start": 72100,
+        "end": 72194
+      },
+      {
+        "line": 1032,
+        "start": 72195,
+        "end": 72308
+      },
+      {
+        "line": 1033,
+        "start": 72309,
+        "end": 72384
+      },
+      {
+        "line": 1034,
+        "start": 72385,
+        "end": 72446
+      }
+    ]
+  },
+  {
+    "task_id": "T44",
+    "set": "fresh4",
+    "school": "설온중학교",
+    "round": "2026-round-1-fresh4",
+    "grade": 2,
+    "semester": 1,
+    "title": "물질의 밀도와 혼합물의 분리",
+    "methods_key": [
+      "서술·논술"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        724,
+        729
+      ],
+      [
+        756,
+        804
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "6665e822ccc1cf0b3d8701fc8d2df744e0b0fd3674b8eda53a031c657843944f",
+      "converted_path": "data/derived/segments/2026-round-1-fresh4-conversions/6d8ae0df9401b83d79aaecb2930e31b799271fc38adad59b48e94182c6c6585f.json",
+      "locator_sha256": "6d8ae0df9401b83d79aaecb2930e31b799271fc38adad59b48e94182c6c6585f"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 724,
+        "start": 62275,
+        "end": 62489
+      },
+      {
+        "line": 725,
+        "start": 62490,
+        "end": 62551
+      },
+      {
+        "line": 726,
+        "start": 62552,
+        "end": 62745
+      },
+      {
+        "line": 727,
+        "start": 62746,
+        "end": 62879
+      },
+      {
+        "line": 728,
+        "start": 62880,
+        "end": 62993
+      },
+      {
+        "line": 729,
+        "start": 62994,
+        "end": 63536
+      },
+      {
+        "line": 756,
+        "start": 68421,
+        "end": 68439
+      },
+      {
+        "line": 757,
+        "start": 68440,
+        "end": 68440
+      },
+      {
+        "line": 758,
+        "start": 68441,
+        "end": 68448
+      },
+      {
+        "line": 759,
+        "start": 68449,
+        "end": 68512
+      },
+      {
+        "line": 760,
+        "start": 68513,
+        "end": 68700
+      },
+      {
+        "line": 761,
+        "start": 68701,
+        "end": 68825
+      },
+      {
+        "line": 762,
+        "start": 68826,
+        "end": 68896
+      },
+      {
+        "line": 763,
+        "start": 68897,
+        "end": 69034
+      },
+      {
+        "line": 764,
+        "start": 69035,
+        "end": 69092
+      },
+      {
+        "line": 765,
+        "start": 69093,
+        "end": 69159
+      },
+      {
+        "line": 766,
+        "start": 69160,
+        "end": 69248
+      },
+      {
+        "line": 767,
+        "start": 69249,
+        "end": 69302
+      },
+      {
+        "line": 768,
+        "start": 69303,
+        "end": 69362
+      },
+      {
+        "line": 769,
+        "start": 69363,
+        "end": 69448
+      },
+      {
+        "line": 770,
+        "start": 69449,
+        "end": 69513
+      },
+      {
+        "line": 771,
+        "start": 69514,
+        "end": 69602
+      },
+      {
+        "line": 772,
+        "start": 69603,
+        "end": 69666
+      },
+      {
+        "line": 773,
+        "start": 69667,
+        "end": 69757
+      },
+      {
+        "line": 774,
+        "start": 69758,
+        "end": 69810
+      },
+      {
+        "line": 775,
+        "start": 69811,
+        "end": 69871
+      },
+      {
+        "line": 776,
+        "start": 69872,
+        "end": 69970
+      },
+      {
+        "line": 777,
+        "start": 69971,
+        "end": 70041
+      },
+      {
+        "line": 778,
+        "start": 70042,
+        "end": 70110
+      },
+      {
+        "line": 779,
+        "start": 70111,
+        "end": 70193
+      },
+      {
+        "line": 780,
+        "start": 70194,
+        "end": 70251
+      },
+      {
+        "line": 781,
+        "start": 70252,
+        "end": 70340
+      },
+      {
+        "line": 782,
+        "start": 70341,
+        "end": 70396
+      },
+      {
+        "line": 783,
+        "start": 70397,
+        "end": 70449
+      },
+      {
+        "line": 784,
+        "start": 70450,
+        "end": 70553
+      },
+      {
+        "line": 785,
+        "start": 70554,
+        "end": 70616
+      },
+      {
+        "line": 786,
+        "start": 70617,
+        "end": 70682
+      },
+      {
+        "line": 787,
+        "start": 70683,
+        "end": 70767
+      },
+      {
+        "line": 788,
+        "start": 70768,
+        "end": 70822
+      },
+      {
+        "line": 789,
+        "start": 70823,
+        "end": 70877
+      },
+      {
+        "line": 790,
+        "start": 70878,
+        "end": 70935
+      },
+      {
+        "line": 791,
+        "start": 70936,
+        "end": 71017
+      },
+      {
+        "line": 792,
+        "start": 71018,
+        "end": 71072
+      },
+      {
+        "line": 793,
+        "start": 71073,
+        "end": 71168
+      },
+      {
+        "line": 794,
+        "start": 71169,
+        "end": 71226
+      },
+      {
+        "line": 795,
+        "start": 71227,
+        "end": 71284
+      },
+      {
+        "line": 796,
+        "start": 71285,
+        "end": 71342
+      },
+      {
+        "line": 797,
+        "start": 71343,
+        "end": 71404
+      },
+      {
+        "line": 798,
+        "start": 71405,
+        "end": 71500
+      },
+      {
+        "line": 799,
+        "start": 71501,
+        "end": 71566
+      },
+      {
+        "line": 800,
+        "start": 71567,
+        "end": 71654
+      },
+      {
+        "line": 801,
+        "start": 71655,
+        "end": 71713
+      },
+      {
+        "line": 802,
+        "start": 71714,
+        "end": 71814
+      },
+      {
+        "line": 803,
+        "start": 71815,
+        "end": 71875
+      },
+      {
+        "line": 804,
+        "start": 71876,
+        "end": 71947
+      }
+    ]
+  },
+  {
+    "task_id": "T45",
+    "set": "fresh4",
+    "school": "설온중학교",
+    "round": "2026-round-1-fresh4",
+    "grade": 2,
+    "semester": 1,
+    "title": "거울과 렌즈에 의한 상의 관찰",
+    "methods_key": [
+      "서술·논술"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        724,
+        729
+      ],
+      [
+        807,
+        838
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "6665e822ccc1cf0b3d8701fc8d2df744e0b0fd3674b8eda53a031c657843944f",
+      "converted_path": "data/derived/segments/2026-round-1-fresh4-conversions/6d8ae0df9401b83d79aaecb2930e31b799271fc38adad59b48e94182c6c6585f.json",
+      "locator_sha256": "6d8ae0df9401b83d79aaecb2930e31b799271fc38adad59b48e94182c6c6585f"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 724,
+        "start": 62275,
+        "end": 62489
+      },
+      {
+        "line": 725,
+        "start": 62490,
+        "end": 62551
+      },
+      {
+        "line": 726,
+        "start": 62552,
+        "end": 62745
+      },
+      {
+        "line": 727,
+        "start": 62746,
+        "end": 62879
+      },
+      {
+        "line": 728,
+        "start": 62880,
+        "end": 62993
+      },
+      {
+        "line": 729,
+        "start": 62994,
+        "end": 63536
+      },
+      {
+        "line": 807,
+        "start": 71958,
+        "end": 71977
+      },
+      {
+        "line": 808,
+        "start": 71978,
+        "end": 71978
+      },
+      {
+        "line": 809,
+        "start": 71979,
+        "end": 71986
+      },
+      {
+        "line": 810,
+        "start": 71987,
+        "end": 72039
+      },
+      {
+        "line": 811,
+        "start": 72040,
+        "end": 72250
+      },
+      {
+        "line": 812,
+        "start": 72251,
+        "end": 72375
+      },
+      {
+        "line": 813,
+        "start": 72376,
+        "end": 72458
+      },
+      {
+        "line": 814,
+        "start": 72459,
+        "end": 72626
+      },
+      {
+        "line": 815,
+        "start": 72627,
+        "end": 72671
+      },
+      {
+        "line": 816,
+        "start": 72672,
+        "end": 72760
+      },
+      {
+        "line": 817,
+        "start": 72761,
+        "end": 72805
+      },
+      {
+        "line": 818,
+        "start": 72806,
+        "end": 72883
+      },
+      {
+        "line": 819,
+        "start": 72884,
+        "end": 73013
+      },
+      {
+        "line": 820,
+        "start": 73014,
+        "end": 73058
+      },
+      {
+        "line": 821,
+        "start": 73059,
+        "end": 73147
+      },
+      {
+        "line": 822,
+        "start": 73148,
+        "end": 73192
+      },
+      {
+        "line": 823,
+        "start": 73193,
+        "end": 73270
+      },
+      {
+        "line": 824,
+        "start": 73271,
+        "end": 73400
+      },
+      {
+        "line": 825,
+        "start": 73401,
+        "end": 73445
+      },
+      {
+        "line": 826,
+        "start": 73446,
+        "end": 73534
+      },
+      {
+        "line": 827,
+        "start": 73535,
+        "end": 73579
+      },
+      {
+        "line": 828,
+        "start": 73580,
+        "end": 73657
+      },
+      {
+        "line": 829,
+        "start": 73658,
+        "end": 73787
+      },
+      {
+        "line": 830,
+        "start": 73788,
+        "end": 73832
+      },
+      {
+        "line": 831,
+        "start": 73833,
+        "end": 73921
+      },
+      {
+        "line": 832,
+        "start": 73922,
+        "end": 73966
+      },
+      {
+        "line": 833,
+        "start": 73967,
+        "end": 74044
+      },
+      {
+        "line": 834,
+        "start": 74045,
+        "end": 74174
+      },
+      {
+        "line": 835,
+        "start": 74175,
+        "end": 74219
+      },
+      {
+        "line": 836,
+        "start": 74220,
+        "end": 74309
+      },
+      {
+        "line": 837,
+        "start": 74310,
+        "end": 74354
+      },
+      {
+        "line": 838,
+        "start": 74355,
+        "end": 74432
+      }
+    ]
+  },
+  {
+    "task_id": "T46",
+    "set": "fresh4",
+    "school": "설온중학교",
+    "round": "2026-round-1-fresh4",
+    "grade": 2,
+    "semester": 1,
+    "title": "수업 활동",
+    "methods_key": [
+      "서술·논술",
+      "포트폴리오"
+    ],
+    "activity_key": null,
+    "activity_accept": [],
+    "lines": [
+      [
+        724,
+        729
+      ],
+      [
+        841,
+        857
+      ]
+    ],
+    "doc": {
+      "doc_sha256": "6665e822ccc1cf0b3d8701fc8d2df744e0b0fd3674b8eda53a031c657843944f",
+      "converted_path": "data/derived/segments/2026-round-1-fresh4-conversions/6d8ae0df9401b83d79aaecb2930e31b799271fc38adad59b48e94182c6c6585f.json",
+      "locator_sha256": "6d8ae0df9401b83d79aaecb2930e31b799271fc38adad59b48e94182c6c6585f"
+    },
+    "doc_reason": null,
+    "spans": [
+      {
+        "line": 724,
+        "start": 62275,
+        "end": 62489
+      },
+      {
+        "line": 725,
+        "start": 62490,
+        "end": 62551
+      },
+      {
+        "line": 726,
+        "start": 62552,
+        "end": 62745
+      },
+      {
+        "line": 727,
+        "start": 62746,
+        "end": 62879
+      },
+      {
+        "line": 728,
+        "start": 62880,
+        "end": 62993
+      },
+      {
+        "line": 729,
+        "start": 62994,
+        "end": 63536
+      },
+      {
+        "line": 841,
+        "start": 74443,
+        "end": 74451
+      },
+      {
+        "line": 842,
+        "start": 74452,
+        "end": 74452
+      },
+      {
+        "line": 843,
+        "start": 74453,
+        "end": 74460
+      },
+      {
+        "line": 844,
+        "start": 74461,
+        "end": 74678
+      },
+      {
+        "line": 845,
+        "start": 74679,
+        "end": 74753
+      },
+      {
+        "line": 846,
+        "start": 74754,
+        "end": 74878
+      },
+      {
+        "line": 847,
+        "start": 74879,
+        "end": 74961
+      },
+      {
+        "line": 848,
+        "start": 74962,
+        "end": 75253
+      },
+      {
+        "line": 849,
+        "start": 75254,
+        "end": 75304
+      },
+      {
+        "line": 850,
+        "start": 75305,
+        "end": 75362
+      },
+      {
+        "line": 851,
+        "start": 75363,
+        "end": 75428
+      },
+      {
+        "line": 852,
+        "start": 75429,
+        "end": 75486
+      },
+      {
+        "line": 853,
+        "start": 75487,
+        "end": 75673
+      },
+      {
+        "line": 854,
+        "start": 75674,
+        "end": 75720
+      },
+      {
+        "line": 855,
+        "start": 75721,
+        "end": 75767
+      },
+      {
+        "line": 856,
+        "start": 75768,
+        "end": 75825
+      },
+      {
+        "line": 857,
+        "start": 75826,
+        "end": 75885
+      }
+    ]
+  }
+]

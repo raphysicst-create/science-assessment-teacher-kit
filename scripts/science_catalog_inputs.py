@@ -25,6 +25,8 @@ DEFAULT_ROUNDS = (
     "2026-round-3-fresh3",
     "2026-round-1-fresh4",
     "2026-round-3-fresh4",
+    "2026-round-1-fresh5",
+    "2026-round-3-fresh5",
 )
 FORBIDDEN_PARTS = ("data/gold", "data/.gold-before-acl-fix", "docs/missions")
 

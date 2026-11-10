@@ -1,6 +1,7 @@
 """DB 카드 원문과 활동 정의로 AI 활동 축을 분류하고 규칙 축 형식으로 내보낸다.
 
 실행 .venv/Scripts/python.exe scripts/science_axes_ai.py targets --database DB
+targets --context PATH: 항목별 AI 우선 세부표 문맥으로 카드 창을 교체한다.
 이어서 run --isolated-cwd DIR [--fake-responses DIR], verify, export --axes-out DIR.
 모델 선택: run --model → MIDDLE_AI_MODEL → middle_ai_read.DEFAULT_AI_MODEL.
 검증 .venv/Scripts/python.exe -m pytest -q
@@ -72,7 +73,9 @@ def definition_sections() -> tuple[str, tuple[str, ...]]:
     return sections, names
 
 
-def load_cards(database: Path, rounds: list[str] | None = None) -> list[dict]:
+def load_cards(database: Path, rounds: list[str] | None = None,
+               context: Path | None = None) -> list[dict]:
+    contexts = ai.read_json(checked_path(context))["contexts"] if context is not None else {}
     database = checked_path(database)
     cards = check.load_cards(database)
     with closing(sqlite3.connect(database.as_uri() + "?mode=ro", uri=True)) as db:
@@ -84,6 +87,13 @@ def load_cards(database: Path, rounds: list[str] | None = None) -> list[dict]:
     for card in cards:
         card.update(metadata[card["item_id"]])
         card["window"] = card["window"][:check.WINDOW_CHARS]
+        if context is not None:
+            detail = contexts.get(card["source_item_id"])
+            card["window_basis"] = "card" if detail is None else "ai_first_detail"
+            if detail is not None:
+                if not isinstance(detail.get("text"), str) or not detail["text"].strip():
+                    raise ValueError("비어 있지 않은 문맥 글 필요")
+                card["window"] = detail["text"]
         if rounds is None or card["source_round"] in rounds:
             result.append(card)
     return result
@@ -101,16 +111,23 @@ def grouped_targets(cards: list[dict]):
         yield {**target, "target_id": digest[:16], "prompt_sha256": digest}, prompt, group
 
 
-def build_targets(database: Path, output: Path, rounds: list[str] | None = None) -> dict:
+def build_targets(database: Path, output: Path, rounds: list[str] | None = None,
+                  context: Path | None = None) -> dict:
     output = checked_path(output)
-    cards = load_cards(database, rounds)
+    context = checked_path(context) if context is not None else None
+    cards = load_cards(database, rounds, context)
     targets = []
-    for target, prompt, _ in grouped_targets(cards):
+    for target, prompt, group in grouped_targets(cards):
         ai.write_text(output / f"prompts/{target['target_id']}.md", prompt)
+        if context is not None:
+            target["cards"] = group
         targets.append(target)
     ai.write_text(output / "targets.jsonl", "".join(
         json.dumps(target, ensure_ascii=False) + "\n" for target in targets))
-    ai.save_json(output / "selection.json", {"rounds": rounds})
+    selection = {"rounds": rounds}
+    if context is not None:
+        selection["context"] = str(context)
+    ai.save_json(output / "selection.json", selection)
     return {"targets": len(targets), "cards": len(cards)}
 
 
@@ -160,14 +177,19 @@ def verify_group(group: list[dict], response: dict, target_id: str,
 
 def verify_targets(output: Path, database: Path) -> dict:
     output = checked_path(output)
-    rounds = ai.read_json(output / "selection.json")["rounds"]
-    cards = load_cards(database, rounds)
-    current = {target["target_id"]: (target, group)
+    selection = ai.read_json(output / "selection.json")
+    targets = ai.load_targets(output)
+    saved = selection.get("context") is not None
+    if saved:
+        cards = [card for target in targets for card in target.get("cards", [])]
+    else:
+        cards = load_cards(database, selection["rounds"])
+    current = {target["target_id"]: ({**target, **({"cards": group} if saved else {})}, group)
                for target, _, group in grouped_targets(cards)}
     _, names = definition_sections()
     verdicts, discarded, uncertain = [], [], []
     valid = 0
-    for target in ai.load_targets(output):
+    for target in targets:
         identity = target["target_id"]
         if identity not in current or current[identity][0] != target:
             discarded.append({"target_id": identity, "reason": "discarded_target_mismatch"})
@@ -260,6 +282,7 @@ def main(argv: list[str] | None = None) -> int:
             command.add_argument("--database", type=Path, default=DEFAULT_DATABASE)
         if name == "targets":
             command.add_argument("--rounds", nargs="+")
+            command.add_argument("--context", type=Path)
         elif name == "run":
             command.add_argument("--isolated-cwd", type=Path, required=True)
             command.add_argument("--workers", type=int, default=DEFAULT_WORKERS)
@@ -271,7 +294,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         output = checked_path(args.out_dir)
         if args.command == "targets":
-            result = build_targets(args.database, output, args.rounds)
+            result = build_targets(args.database, output, args.rounds, args.context)
         elif args.command == "run":
             fake = checked_path(args.fake_responses) if args.fake_responses is not None else None
             result = ai.run_targets(ROOT, None, args.isolated_cwd, workers=args.workers,

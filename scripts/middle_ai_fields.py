@@ -26,6 +26,7 @@ ASK_FIELDS = ("task_text", "method", "timing", "standards", "score", "weight",
               "sub_scores", "rubric", "assessment_area")
 SHADOW_SEED = 6173
 ALIGNMENT_FAILURE = "AI 항목 읽기: 표 위치로 소속 확인 불가"
+STRICT_ALIGNMENTS = {"same_column", "same_row", "own_table", "own_block"}
 NO_ANSWER = "AI 항목 읽기: 답 없음"
 
 
@@ -240,6 +241,15 @@ def make_targets(root, round_key, windows, selected, known, *, shadow=False):
     return summary
 
 
+def source_windows(root, round_key):
+    """AI 읽기 창: 갭 방식(`ai_read/<회차>/targets.jsonl`)과 AI 우선 방식(`first/targets.jsonl`)."""
+    windows = []
+    for folder in (ai.round_dir(root, round_key), ai.round_dir(root, round_key) / "first"):
+        if (folder / "targets.jsonl").exists():
+            windows.extend(ai.load_targets(folder))
+    return windows
+
+
 def fields_targets(root, round_key):
     stage = ai.read_json(directory(root, round_key) / "rule.json")
     report = ai.read_json(input_path(root, round_key))
@@ -247,7 +257,7 @@ def fields_targets(root, round_key):
         raise ValueError("items_ai 변경됨. fields-rule부터 다시 실행해야 함")
     selected = {i["item_id"]: i for i in stage["items"]}
     windows, cache = [], {}
-    for window in ai.load_targets(ai.round_dir(root, round_key)):
+    for window in source_windows(root, round_key):
         members = [i for i in selected.values() if window["target_id"] in i.get("target_ids", [])
                    and window["document_id"] == i["document_id"]]
         if not members:
@@ -602,6 +612,7 @@ def verify_field(item, name, answer, target, conversion, tables, structures, kno
     text = conversion["text"]
     _, starts = ai.line_index(text)
     observations, cells, source_observations, source_cells = [], [], [], []
+    cell_aligns = []
     for citation in citations:
         if not isinstance(citation, dict):
             raise ValueError("AI 항목 읽기: 인용 형식 오류")
@@ -649,6 +660,7 @@ def verify_field(item, name, answer, target, conversion, tables, structures, kno
                              "line_end": citation["line_end"]})
         if cell and cell not in source_cells:
             source_cells.append(cell)
+            cell_aligns.append(align)
             table = next(t for t in tables if t["table"] == cell["table"])
             header = field_header(table, cell, name)
             obs = items.evidence(cell, conversion, header)
@@ -659,6 +671,14 @@ def verify_field(item, name, answer, target, conversion, tables, structures, kno
             source_observations.append(obs)
         elif cell is None:
             source_observations.append({**observations[-1], "text": items.visible(quote)})
+    if set(cell_aligns) & STRICT_ALIGNMENTS and "shared_span" in cell_aligns:
+        # S20: 자기 열·행·표 칸이 있으면 같은 필드의 공유 범위(병합·이웃 열) 칸은 버린다.
+        source_cells = [c for c, a in zip(source_cells, cell_aligns, strict=True)
+                        if a != "shared_span"]
+        observations = [o for o in observations if o["ai_alignment"] != "shared_span"]
+        source_observations = [o for o in source_observations
+                               if o.get("ai_alignment") != "shared_span"]
+        cells = [c for c in cells if c[3] != "shared_span"]
     extraction_cells = source_cells
     if name == "task_text":
         # Citation boundaries preserve separate tasks and partial-cell quotes.
