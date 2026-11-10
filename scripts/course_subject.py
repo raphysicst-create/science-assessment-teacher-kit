@@ -95,15 +95,17 @@ def course_name_before(lines: list[str], line_no: int) -> dict | None:
 def is_non_science_course(name: str) -> bool:
     """True when the course name is not science (rule ②), in this order:
 
-    science word or science topic word -> science; another subject/IT/career/arts word ->
-    not science; a value that is not a course name (cover label such as "2회 정기시험",
-    "주제선택활동", a task sentence ending in -하기/관찰, a grade value "1학년") -> no
-    decision (keep); any other named elective ("쓸모의 재발견") -> not science.
+    science word -> science; another subject/IT/career/arts word -> not science;
+    science topic word -> science; a value that is not a course name (cover label
+    "2회 정기시험", "주제선택활동", a task sentence ending in -하기/관찰, a grade value
+    "1학년") -> no decision (keep); any other named elective ("쓸모의 재발견") -> not science.
     """
     name = re.sub(r"\s+", "", name)
     if (not name or name in NON_SUBJECT_NAMES or NOT_COURSE_VALUE_RE.fullmatch(name)
-            or SCIENCE_NAME_RE.search(name) or SCIENCE_TOPIC_RE.search(name)):
+            or SCIENCE_NAME_RE.search(name)):
         return False
     if OTHER_COURSE_RE.search(name):
         return True
-    return not NOT_COURSE_NAME_RE.search(name) and len(name) <= MAX_COURSE_NAME_CHARS
+    if SCIENCE_TOPIC_RE.search(name) or NOT_COURSE_NAME_RE.search(name):
+        return False
+    return len(name) <= MAX_COURSE_NAME_CHARS
