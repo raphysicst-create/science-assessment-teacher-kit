@@ -43,6 +43,7 @@ MIN_ACTIVITY_CHARS = 8
 HEADER_ROWS = 2
 NAME_MIN_CHARS = 5
 NAME_MAX_CHARS = 40
+UNIT_START = re.compile(r"^[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]")
 SCORE_HEADER = re.compile(r"비율|만점|배점|점수")
 ROW_RE = re.compile(r"<tr>(.*?)</tr>", re.S)
 CELL_RE = re.compile(r"<(t[hd])([^>]*)>(.*?)</t[hd]>", re.S)
@@ -136,6 +137,22 @@ def classify(grid, r: int, c: int) -> str:
     return "task_column"
 
 
+def row_unit(grid, header_row: int, r: int) -> tuple[str, str]:
+    """Unit of the row: the cell under a '단원' header, else a cell starting with a Roman numeral.
+    Also returns the science standard codes written in the row."""
+    header = grid[header_row]
+    unit = ""
+    for c, cell in enumerate(grid[r]):
+        if cell is None or c >= len(header) or header[c] is None:
+            continue
+        text = " ".join(cell_lines(cell["raw"]))
+        if "단원" in " ".join(cell_lines(header[c]["raw"])) or (not unit and UNIT_START.match(text)):
+            unit = text
+    row_text = " ".join(" ".join(cell_lines(cell["raw"])) for cell in grid[r] if cell is not None)
+    codes = " ".join(dict.fromkeys(re.findall(r"\[9과\d{2}-\d{2}\]", row_text)))
+    return unit or f"(단원 칸 없음) {codes}", codes
+
+
 def scan_section(text: str, start: int, end: int):
     body = text[start:end]
     for tm in re.finditer(r"<table>(.*?)</table>", body, re.S):
@@ -160,7 +177,9 @@ def scan_section(text: str, start: int, end: int):
                     continue
                 if not all(is_activity(ln) for ln in lines):
                     continue
+                unit, codes = row_unit(grid, header_row, r)
                 yield {
+                    "unit": unit, "standards": codes,
                     "header": columns[c], "lines": lines, "cell_start": cell["start"],
                     "kind": classify(grid, r, c),
                     "step_marked": sum(bool(STEP_MARK.match(ln)) for ln in lines),
@@ -220,7 +239,8 @@ def main() -> int:
                             and any(a <= line_no <= b for a, b in k["lines"])]
                 cases.append({
                     "set": "dev" if in_dev else "bundle1", "round": rnd, "school": sec["school"],
-                    "grade": sec["grade"], "semester": sec["semester"], "converted_sha": sha, "line": line_no,
+                    "grade": sec["grade"], "semester": sec["semester"], "unit": case["unit"], "standards": case["standards"],
+                    "converted_sha": sha, "line": line_no,
                     "cell_start": case["cell_start"], "header": case["header"], "kind": case["kind"],
                     "n_lines": len(case["lines"]), "step_marked": case["step_marked"],
                     "table_has_score": case["table_has_score"],
@@ -231,7 +251,7 @@ def main() -> int:
     cases.sort(key=lambda x: (x["set"], x["school"], x["grade"], x["semester"], x["line"]))
     for i, case in enumerate(cases, 1):
         case["case_id"] = f"C{i:03d}"
-    fields = ["case_id", "set", "round", "school", "grade", "semester", "converted_sha", "line", "cell_start",
+    fields = ["case_id", "set", "round", "school", "grade", "semester", "unit", "standards", "converted_sha", "line", "cell_start",
               "header", "kind", "n_lines", "step_marked", "table_has_score", "public_cards", "merged_cards",
               "key_tasks", "lines"]
     with open(OUT_DIR / "cases.csv", "w", encoding="utf-8-sig", newline="") as fh:
