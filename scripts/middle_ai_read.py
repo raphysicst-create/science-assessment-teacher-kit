@@ -3,6 +3,7 @@
 No existing extraction output is mutated. All offsets address the unmodified
 S4 Unicode text and use an exclusive end. Importing this module never runs Codex.
 Codex 실행 파일은 `CODEX_EXE` 환경 변수 또는 `bin/*/codex.exe` 글롭으로 찾는다.
+모델 선택: --model → MIDDLE_AI_MODEL 환경 변수 → DEFAULT_AI_MODEL 순서.
 모든 호출이 실패하면 종료 코드 3.
 실행 .venv/Scripts/python.exe scripts/middle_ai_read.py --help
 검증 .venv/Scripts/python.exe -m pytest -q
@@ -23,6 +24,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 import tomllib
 import unicodedata
 from collections import Counter
@@ -42,6 +44,8 @@ else:
 ROOT = Path(__file__).resolve().parents[1]
 CODEX_GLOB = "C:/Users/USER/AppData/Local/OpenAI/Codex/bin/*/codex.exe"
 CODEX_EXE_ENV = "CODEX_EXE"
+AI_MODEL_ENV = "MIDDLE_AI_MODEL"
+DEFAULT_AI_MODEL = "gpt-6.1-terra"  # S19 모델 비교(docs/dev/2026-11-10-s19-model-compare.md)로 채택
 VERSION = "middle-ai-read-v2"
 MAX_CHARS = 60_000
 OVERLAP = 3_000
@@ -559,7 +563,7 @@ def isolated_directory(path: Path) -> Path:
 
 
 def default_model_guard():
-    """Keep the configured default, refusing excluded defaults/profiles."""
+    """Legacy config check; pipeline calls use resolve_ai_model instead."""
     import os
 
     codex_home = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
@@ -574,6 +578,13 @@ def default_model_guard():
         raise ValueError("기본 모델이 gpt-6-astra임. 총괄이 기본 모델을 변경해야 함")
 
 
+def resolve_ai_model(model: str | None = None) -> str:
+    model = model or os.environ.get(AI_MODEL_ENV) or DEFAULT_AI_MODEL
+    if model.lower().startswith("gpt-6-astra"):
+        raise ValueError("gpt-6-astra는 독립 검수 전용 모델임")
+    return model
+
+
 def find_codex(pattern: str | None = None, env: Mapping[str, str] | None = None) -> str:
     env = os.environ if env is None else env
     override = env.get(CODEX_EXE_ENV)
@@ -586,12 +597,14 @@ def find_codex(pattern: str | None = None, env: Mapping[str, str] | None = None)
     return max(candidates, key=os.path.getmtime)
 
 
-def codex_command(cwd: Path, answer: Path, codex: str | None = None) -> list[str]:
+def codex_command(cwd: Path, answer: Path, codex: str | None = None,
+                  model: str | None = None) -> list[str]:
+    model = resolve_ai_model(model)
     return [codex or find_codex(), "exec", "--strict-config", "--skip-git-repo-check",
-            "-s", "read-only", "-C", str(cwd), "--json", "-o", str(answer), "-"]
+            "-m", model, "-s", "read-only", "-C", str(cwd), "--json", "-o", str(answer), "-"]
 
 
-def valid_run(output: Path, target: dict) -> tuple[bool, dict]:
+def valid_run(output: Path, target: dict, model: str | None = None) -> tuple[bool, dict]:
     identity = target["target_id"]
     status_path = output / f"responses/{identity}.status.json"
     answer = output / f"responses/{identity}.json"
@@ -601,6 +614,7 @@ def valid_run(output: Path, target: dict) -> tuple[bool, dict]:
         audit = audit_events(events)
         parse_response(answer)
         valid = (status["valid"] and audit["valid"]
+                 and (model is None or status.get("model", "gpt-6.1-sol") == model)
                  and status["prompt_sha256"] == target["prompt_sha256"]
                  and sha(read_text(output / f"prompts/{identity}.md")) == target["prompt_sha256"]
                  and status["answer_sha256"] == sha(read_text(answer))
@@ -612,7 +626,8 @@ def valid_run(output: Path, target: dict) -> tuple[bool, dict]:
 
 def run_targets(root: Path, round_key: str | None, isolated_cwd: Path, *, workers: int = 4,
                 fake_responses: Path | None = None, dry_run: bool = False,
-                output_dir: Path | None = None) -> dict:
+                output_dir: Path | None = None, model: str | None = None) -> dict:
+    model = resolve_ai_model(model)
     cwd = isolated_directory(isolated_cwd)
     if workers < 1:
         raise ValueError("--workers는 1 이상이어야 함")
@@ -628,8 +643,6 @@ def run_targets(root: Path, round_key: str | None, isolated_cwd: Path, *, worker
             raise ValueError("실행 산출물은 해당 회차 아래여야 함")
         output = output_dir
     targets = load_targets(output)
-    if not fake_responses and not dry_run:
-        default_model_guard()
 
     def one(target):
         identity = target["target_id"]
@@ -639,15 +652,16 @@ def run_targets(root: Path, round_key: str | None, isolated_cwd: Path, *, worker
         if sha(prompt) != target["prompt_sha256"]:
             raise ValueError("지시문 해시 불일치. targets부터 다시 생성해야 함")
         if dry_run:
-            command = codex_command(cwd, answer)
+            command = codex_command(cwd, answer, model=model)
             return {"target_id": identity, "command": subprocess.list2cmdline(command),
                     "stdin": str(output / f"prompts/{identity}.md")}
-        if valid_run(output, target)[0]:
+        if valid_run(output, target, model=model)[0]:
             return {"target_id": identity, "skipped": True, "valid": True}
         answer.parent.mkdir(parents=True, exist_ok=True)
         # Never let an old answer survive a failed retry.
         write_text(answer, "")
         failure = None
+        started = time.perf_counter()
         if fake_responses:
             try:
                 write_text(answer, read_text(fake_responses / f"{identity}.json"))
@@ -657,7 +671,7 @@ def run_targets(root: Path, round_key: str | None, isolated_cwd: Path, *, worker
                 failure = "가짜 응답 또는 이벤트 없음"
                 write_text(events, "")
         else:
-            command = codex_command(cwd, answer)
+            command = codex_command(cwd, answer, model=model)
             # The prompt travels only on stdin. The child cwd contains no source files.
             with events.open("w", encoding="utf-8", newline="\n") as event_stream:
                 try:
@@ -669,12 +683,14 @@ def run_targets(root: Path, round_key: str | None, isolated_cwd: Path, *, worker
                     write_text(output / f"responses/{identity}.stderr.txt", result.stderr)
                 except (subprocess.TimeoutExpired, OSError, UnicodeError) as error:
                     failure = f"호출 실패 {type(error).__name__}"
+        elapsed_seconds = round(time.perf_counter() - started, 1)
         audit = audit_events(events)
         try:
             parse_response(answer)
         except (OSError, ValueError):
             failure = failure or "답 JSON 형식 오류"
         status = {"target_id": identity, "prompt_sha256": target["prompt_sha256"],
+                  "model": model, "elapsed_seconds": elapsed_seconds,
                   "answer_sha256": sha(read_text(answer)),
                   "events_sha256": sha(read_text(events)),
                   "valid": audit["valid"] and failure is None, "audit": audit,
@@ -685,7 +701,10 @@ def run_targets(root: Path, round_key: str | None, isolated_cwd: Path, *, worker
     with ThreadPoolExecutor(max_workers=workers) as pool:
         results = list(pool.map(one, targets))
     valid = sum(r.get("valid", False) for r in results)
+    elapsed = [r["elapsed_seconds"] for r in results if "elapsed_seconds" in r]
     report = {"round": round_key, "dry_run": dry_run, "results": results,
+              "model": model, "called": len(elapsed),
+              "mean_elapsed_seconds": round(sum(elapsed) / len(elapsed), 1) if elapsed else None,
               "valid": valid, "all_failed": not dry_run and len(results) > 0 and valid == 0,
               "skipped": sum(r.get("skipped", False) for r in results),
               "unknown_events": sum(r.get("audit", {}).get("unknown_count", 0) for r in results)}
@@ -1026,7 +1045,7 @@ def merge_report(rules: dict, verified: dict) -> dict:
             by_rule[item["item_id"]].append(task["ai_task_id"])
     relations = {"agrees": [], "agrees_by_title": [], "agrees_by_evidence": [],
                  "overview_only_held": [], "ai_split_suggested": [],
-                 "conflict": [], "new": []}
+                 "conflict": [], "new": [], "replaces_unbounded": []}
     for item in performance:
         ids = by_rule[item["item_id"]]
         if len(ids) > 1:
@@ -1036,6 +1055,7 @@ def merge_report(rules: dict, verified: dict) -> dict:
             # keyed by item ID in ai_relations, rather than rewriting the item.
     for task in tasks:
         matches = by_task[task["ai_task_id"]]
+        replacement = None
         if len(matches) > 1:
             relations["conflict"].append({"ai_task_ids": [task["ai_task_id"]],
                                           "rule_item_ids": [i["item_id"] for i in matches],
@@ -1044,10 +1064,14 @@ def merge_report(rules: dict, verified: dict) -> dict:
         if matches:
             item = matches[0]
             if len(by_rule[item["item_id"]]) == 1:
-                relations["agrees"].append({"ai_task_id": task["ai_task_id"],
-                                            "rule_item_id": item["item_id"],
-                                            "bounded": item["extraction_status"] == "bounded"})
-                continue
+                if item["extraction_status"] == "bounded" or any(
+                    "변환 손실" in reason for reason in item.get("review_reasons", [])
+                ):
+                    relations["agrees"].append({"ai_task_id": task["ai_task_id"],
+                                                "rule_item_id": item["item_id"],
+                                                "bounded": item["extraction_status"] == "bounded"})
+                    continue
+                replacement = item
             if item["extraction_status"] == "bounded":
                 continue
         title_matches = same_cell_title_matches(performance, task)
@@ -1057,7 +1081,7 @@ def merge_report(rules: dict, verified: dict) -> dict:
                 "rule_item_ids": [item["item_id"] for item in title_matches],
                 "bounded": True, "basis": "same_cell_title_key"})
             continue
-        if not matches:
+        if not matches or replacement is not None:
             # Any single evidence span that touches exactly one confirmed rule
             # item means the rules already hold this task (e.g. AI titled it by
             # area in an overview, the rule item sits on the detail table).
@@ -1080,7 +1104,7 @@ def merge_report(rules: dict, verified: dict) -> dict:
             # the school already has another candidate for this grade and
             # semester (a rule item, or an AI read of a detail table), adding it
             # risks a duplicate under another title, so it is held, not added.
-            if task["seen_in"] == "overview":
+            if not matches and task["seen_in"] == "overview":
                 same_cell = [item["item_id"] for item in performance if (
                     task.get("school_code") is not None
                     and item.get("school_code") == task.get("school_code")
@@ -1097,7 +1121,7 @@ def merge_report(rules: dict, verified: dict) -> dict:
             # A rule item elsewhere (another table or document of the same
             # school) may already hold this task: same scope and same title.
             same_title = [item for item in performance if (
-                task.get("school_code") is not None
+                item is not replacement and task.get("school_code") is not None
                 and item.get("school_code") == task.get("school_code")
                 and all(item.get(key) in (None, task[key]) for key in ("grade", "semester"))
                 and normalize(rule_title(item)) == normalize(task["title"]))]
@@ -1110,7 +1134,11 @@ def merge_report(rules: dict, verified: dict) -> dict:
         result["items"].append(ai_item(task))
         relations["new"].append({"ai_task_id": task["ai_task_id"],
                                   "item_id": task["ai_task_id"],
-                                  "reason": "덩어리 분할" if matches else "규칙 겹침 없음"})
+                                  "reason": "규칙 미확정 항목을 AI가 경계 확정" if replacement
+                                  else "덩어리 분할" if matches else "규칙 겹침 없음"})
+        if replacement is not None:
+            relations["replaces_unbounded"].append({"ai_task_id": task["ai_task_id"],
+                                                    "rule_item_id": replacement["item_id"]})
     for entries in relations.values():
         for relation in entries:
             rule_ids = relation.get("rule_item_ids", [relation.get("rule_item_id")])
@@ -1592,6 +1620,7 @@ def main(argv: list[str] | None = None):
             command.add_argument("--isolated-cwd", type=Path, required=True)
             command.add_argument("--workers", type=int, default=4)
             command.add_argument("--fake-responses", type=Path)
+            command.add_argument("--model")
             command.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
     if hasattr(sys.stdout, "reconfigure"):
@@ -1606,7 +1635,8 @@ def main(argv: list[str] | None = None):
                              ensure_ascii=False))
         elif args.command == "run":
             result = run_targets(ROOT, args.round_key, args.isolated_cwd, workers=args.workers,
-                                 fake_responses=args.fake_responses, dry_run=args.dry_run)
+                                 fake_responses=args.fake_responses, dry_run=args.dry_run,
+                                 model=args.model)
             if args.dry_run:
                 for entry in result["results"]:
                     print(entry["command"])

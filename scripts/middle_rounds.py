@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import re
 from pathlib import Path
 
 
@@ -11,10 +12,11 @@ def roster_path(root: Path, round_key: str, roster: Path | None = None) -> Path:
         raise ValueError("round key must contain only letters, digits and hyphens")
     if roster is not None:
         return roster if roster.is_absolute() else root / roster
+    fresh = re.search(r"-fresh(\d+)$", round_key)
     name = (
         "middle-dev2-20.csv" if round_key.endswith("-dev2") else
         "middle-gold2-5.csv" if round_key.endswith("-gold2") else
-        "middle-fresh3.csv" if round_key.endswith("-fresh3") else
+        f"middle-fresh{fresh[1]}.csv" if fresh else
         "middle-gold10.csv" if round_key.endswith("-gold") else "middle-dev12.csv"
     )
     return root / "data/rosters" / name

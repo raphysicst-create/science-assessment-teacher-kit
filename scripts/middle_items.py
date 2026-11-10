@@ -48,10 +48,12 @@ else:
 
 RULE_VERSION = "middle-items-v15"
 IDENTITY_VERSION = "middle-items-v2"  # Field-only changes retain source identities.
-SCORER_TERMS = frozenset({
-    "교사관찰및기록", "교사관찰", "교사평가", "교사관찰평가", "관찰및기록",
-    "자기평가", "동료평가", "상호평가", "개별", "개인별", "모둠별", "모둠수행",
-})
+SCORER_RE = re.compile(
+    r"(?:교사|자기|동료|상호)\s*(?:관찰\s*및\s*기록|관찰\s*평가|관찰|평가)"
+    r"|관찰(?:\s*및\s*|\s*[·⋅･ㆍ・‧•]\s*|\s+)기록"
+    r"|(?:개별|개인별|개인|모둠별|모둠|조별)\s*(?:수행|평가)?"
+)
+METHOD_SEPARATOR_RE = re.compile(r"(\s*[,，/、]\s*)")
 FIELDS = (
     "title",
     "assessment_area",
@@ -426,11 +428,25 @@ def evidence(cell: dict, conversion: dict, header: dict | None = None) -> dict:
 
 
 def scorer_text(text: str, kind: str = "method") -> bool:
-    """Recognize whole evaluator/organization labels, including comma lists."""
-    text = re.sub(r"[ㆍ･・‧⋅•]", "·", re.sub(r"\s+", "", text))
-    return kind in {"evaluator", "organization"} or all(
-        part in SCORER_TERMS for part in re.split(r"[,，]", text)
-    )
+    """Recognize a whole evaluator/organization value using the shared splitter."""
+    method, scorers = split_method_text(text, kind)
+    return not method and bool(scorers)
+
+
+def split_method_text(text: str, kind: str = "method") -> tuple[str, list[str]]:
+    """Remove only whole scorer/form pieces, preserving retained source spelling."""
+    parts = METHOD_SEPARATOR_RE.split(text.strip())
+    retained, scorers = [], []
+    for index in range(0, len(parts), 2):
+        part = parts[index].strip()
+        if not part:
+            continue
+        if kind in {"evaluator", "organization"} or SCORER_RE.fullmatch(part):
+            scorers.append(part)
+        else:
+            separator = parts[index - 1] if retained and index else ""
+            retained.extend((separator, part))
+    return "".join(retained), scorers
 
 
 def method_options(obs: dict) -> list[dict]:
@@ -481,11 +497,15 @@ def method_selections(options: list[dict]) -> tuple[list[str], list[str]]:
         if option["state"] != "checked":
             continue
         text = re.sub(r"\s+", " ", option["option_text"]).strip(" ,，/|:：")
-        if scorer_text(text, option["kind"]):
-            scorers.append(text)
-        elif option["other_content"] is not None:
+        text, excluded = split_method_text(text, option["kind"])
+        scorers.extend(excluded)
+        if not text:
+            continue
+        if option["other_content"] is not None:
             selected.append("기타")
             content = re.sub(r"\s+", " ", option["other_content"]).strip()
+            content, excluded = split_method_text(content)
+            scorers.extend(excluded)
             if content:
                 selected.append(content)
         elif text:
@@ -498,11 +518,13 @@ def method_observations(observations: list[dict]) -> tuple[list, list, list]:
     for obs in observations:
         if METHOD_BOX_RE.search(obs["raw"]):
             options.extend(method_options(obs))
-        elif scorer_text(obs["text"], obs.get("method_kind", "method")):
-            plain_scorers.append(obs["text"])
+            continue
+        text, excluded = split_method_text(obs["text"], obs.get("method_kind", "method"))
+        plain_scorers.extend(excluded)
+        if not text and excluded:
             obs["excluded_reason"] = "평가 주체·수행 형태"
-        elif method_literal(obs["text"]):
-            plain.append(obs)
+        elif method_literal(text):
+            plain.append({**obs, "text": text})
         elif obs["text"]:
             obs["excluded_reason"] = (
                 "방법 칸의 과제명·비방법 값" if obs.get("is_task_name") or re.search(
@@ -523,11 +545,11 @@ def method_values(observations: list[dict], *, conversion_loss: bool = False) ->
         state, reason, selected = "unknown", "체크 상태 불명", []
     elif selected:
         state, reason = "checked", ""
-    elif options:
-        state, reason = "all_unselected", "평가 방법 미선택" if scorers else "모두 미선택"
-    elif plain:
+    elif plain and all(scorer_text(o["option_text"], o["kind"]) for o in options):
         state, reason = "plain", ""
         selected = [p["text"] for p in plain]
+    elif options:
+        state, reason = "all_unselected", "평가 방법 미선택" if scorers else "모두 미선택"
     else:
         state, reason = "no_check", "체크 없음"
     return {

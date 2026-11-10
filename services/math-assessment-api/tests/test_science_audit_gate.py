@@ -111,6 +111,7 @@ def invoke(tmp_path, db, script=GATE, extra=()):
 @pytest.mark.parametrize("script", [GATE, "audit_math_assessment_subject_alignment.py"])
 def test_five_other_subject_items_fail_and_all_enter_risk_queue(tmp_path, script):
     result, report, rows = invoke(tmp_path, database(tmp_path, negative=True), script)
+    rows = [row for row in rows if row["severity"] != "warning"]
     assert result.returncode == 1, result.stderr
     assert report["blocking_public_items"] == 5
     assert {row["item_id"] for row in rows} == {f"test-{i}" for i in range(5)}
@@ -146,7 +147,7 @@ def test_five_chemistry_items_pass_without_blocking_rows(tmp_path, script):
         ("title_code_only", "B1"),
     ],
 )
-def test_single_mutation_fails_and_only_that_item_is_queued(tmp_path, mutation, expected):
+def test_single_mutation_blocks_or_warns_and_only_that_item_is_queued(tmp_path, mutation, expected):
     db = database(tmp_path)
     with sqlite3.connect(db) as connection:
         if mutation == "locator":
@@ -176,10 +177,13 @@ def test_single_mutation_fails_and_only_that_item_is_queued(tmp_path, mutation, 
                 (zlib.compress(source.encode("utf-8")),),
             )
     result, report, rows = invoke(tmp_path, db)
-    assert result.returncode == 1, result.stderr
-    assert report["blocking_public_items"] == 1
+    assert result.returncode == int(expected != "B3"), result.stderr
+    assert report["blocking_public_items"] == int(expected != "B3")
+    if expected != "B3":
+        rows = [row for row in rows if row["severity"] != "warning"]
     assert len(rows) == 1 and rows[0]["item_id"] == "test-2"
     assert expected in rows[0]["blocking_codes"].split("|")
+    assert rows[0]["severity"] == ("warning" if expected == "B3" else "blocking")
 
 
 def test_nonpublic_items_do_not_block(tmp_path):
@@ -269,6 +273,7 @@ def test_no_processing_or_waiver_file_can_exempt_an_item(tmp_path):
             "INSERT INTO manual_approvals VALUES (?)", [(f"test-{i}",) for i in range(5)]
         )
     result, _, rows = invoke(tmp_path, db)
+    rows = [row for row in rows if row["severity"] != "warning"]
     assert result.returncode == 1 and len(rows) == 5
 
 
@@ -353,8 +358,8 @@ def test_invalid_standards_json_retains_b1_reason(tmp_path, raw):
         ("물질의 성질", "heading", "review"),
         ("물질의 성질", "context", "review"),
         ("물질의 성질 탐구", "unverified", "review"),
-        ("평가 결과 분석 및 활용", "heading", "blocking"),
-        ("탐구 과정이 적절한가?", "table", "blocking"),
+        ("평가 결과 분석 및 활용", "heading", "warning"),
+        ("탐구 과정이 적절한가?", "table", "warning"),
     ],
 )
 def test_legacy_title_queue_inputs_keep_their_severity(tmp_path, title, basis, severity):
@@ -370,7 +375,7 @@ def test_legacy_title_queue_inputs_keep_their_severity(tmp_path, title, basis, s
     assert result.returncode == int(severity == "blocking"), result.stderr
     assert report["blocking_public_items"] == int(severity == "blocking")
     assert len(rows) == 1 and rows[0]["severity"] == severity
-    assert "no_task_signal" in rows[0]["reasons"] or severity == "blocking" or basis == "unverified"
+    assert "no_task_signal" in rows[0]["reasons"] or severity == "warning" or basis == "unverified"
 
 
 def promotion_inputs(tmp_path, db, gate_path):

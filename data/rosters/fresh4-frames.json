@@ -1,0 +1,141 @@
+[
+ {
+  "sido": "대구광역시",
+  "stratum": "city",
+  "sgg": "동구",
+  "private_only": true,
+  "queried_at": "2026-11-10",
+  "schools": [
+   {
+    "name": "공산중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "동촌중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "불로중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "아양중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "신암중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "신기중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "안심중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "영신중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "입석중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "청구중학교",
+    "founding": "사립"
+   },
+   {
+    "name": "강동중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "율원중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "새론중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "신아중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "대구팔공중학교",
+    "founding": "공립"
+   }
+  ]
+ },
+ {
+  "sido": "전북특별자치도",
+  "stratum": "gun",
+  "sgg": "임실군",
+  "private_only": false,
+  "queried_at": "2026-11-10",
+  "schools": [
+   {
+    "name": "관촌중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "삼계중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "섬진중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "성수중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "오수중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "운암중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "임실동중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "지사중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "청웅중학교",
+    "founding": "공립"
+   }
+  ]
+ },
+ {
+  "sido": "강원특별자치도",
+  "stratum": "city",
+  "sgg": "속초시",
+  "private_only": false,
+  "queried_at": "2026-11-10",
+  "schools": [
+   {
+    "name": "설온중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "설악중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "속초해랑중학교",
+    "founding": "공립"
+   },
+   {
+    "name": "속초중학교",
+    "founding": "공립"
+   }
+  ]
+ }
+]

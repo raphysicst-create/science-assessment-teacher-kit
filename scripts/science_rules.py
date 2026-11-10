@@ -11,13 +11,15 @@ heading/rubric/policy/fragment rules remain, even for explicit source labels.
 (B1) 항목의 원문 HTML·제목·성취기준 칸에 있는 성취기준 코드 접두가 과학(`[9과`) 외 교과이거나
 과학과 다른 교과가 섞임,
 (B2) 제목에 과학 외 교과 이름이 있고 항목에 `[9과` 코드가 없음,
-(B3) 제목이 과학판 제목 게이트에 걸림(원문 HTML의 보이는 글자에서 제목을 찾을 수 없음,
-구조 머리글, 방법어만, 운영문, 성취수준 문장),
 (B4) 제목·근거의 원문 위치(locator)나 원문 조각 해시가 없음,
-(B5) 표 구조 차단 플래그.
+(B5) 표 구조 차단 플래그,
+(B6) 원문 HTML·채점표 HTML·제목·방법 칸의 고위험 개인정보 패턴.
+B3 제목 규칙은 이유를 유지한 warning이며 공개를 차단하지 않는다.
+카드 AI 판정은 선택 감사에서 AI0 미확인·AI1 비과제·AI2 중복·AI3 합침을 차단한다.
 처리 기록·면제 목록·수동 승인 파일로 차단 오류를 통과시키지 않는다.
 차단 오류가 있는 항목은 위험 큐 CSV에
-`item_id, case_id, school_name, title, blocking_codes, reasons`로 한 줄씩 들어간다.
+`item_id, case_id, school_name, title, blocking_codes, reasons, severity`로 들어간다.
+B3는 개별 감사 큐의 별도 warning 행이며 합친 차단 큐에는 들어가지 않는다.
 """
 
 from __future__ import annotations
@@ -34,6 +36,7 @@ from scripts.math_assessment_detail_parser import _exact_fields
 from scripts.middle_fields import reference_codes
 from scripts.middle_items import CODE_RE
 from scripts.middle_subjects import code_evidence as code_evidence
+from scripts.package_math_assessment_vercel_data import HIGH_RISK_PERSONAL_DATA_PATTERNS
 from scripts.science_title_rules import (
     ACTIVITY_RE as ACTIVITY_RE,
 )
@@ -129,7 +132,9 @@ def standard_code_prefixes(text: str) -> list[str]:
     prefixes = set()
     for token in STANDARD_TOKEN_RE.findall(text):
         normalized = re.sub(r"\s+", "", token)
-        if TARGET_CODE_RE.fullmatch(normalized):
+        # Remove exactly one extra leading zero in an area number, then recheck the allowlist.
+        candidate = re.sub(r"^\[9과0(?=\d{2}-)", "[9과", normalized, count=1)
+        if TARGET_CODE_RE.fullmatch(candidate):
             prefixes.add(TARGET_PREFIX)
             continue
         match = STANDARD_PREFIX_RE.match(normalized)
@@ -268,15 +273,26 @@ def blocking_errors(item: dict) -> list[str]:
     if item.get("extraction_status") != "bounded":
         return []
     errors = subject_errors(item)
-    if title_rejection(str(item.get("title") or ""), decoded_html(item)):
-        errors.append("B3")
     if not valid_locator(item.get("locator")) or any(
         not valid_locator(value) for value in item.get("evidence_locators", [])
     ):
         errors.append("B4")
     if table_flags(item) & BLOCKING_TABLE_FLAGS:
         errors.append("B5")
+    if personal_data_patterns(item):
+        errors.append("B6")
     return errors
+
+
+def personal_data_patterns(item: dict) -> list[str]:
+    """Return pattern names so diagnostic reasons do not repeat matched personal data."""
+    fields = (
+        decoded_html(item), decoded_html(item, "rubric_html_zlib"),
+        str(item.get("title") or ""), str(item.get("method") or ""),
+    )
+    texts = (*fields, *(visible_text(value) for value in fields))
+    return [name for name, pattern in HIGH_RISK_PERSONAL_DATA_PATTERNS.items()
+            if any(pattern.search(text) for text in texts)]
 
 
 def public_items(database: Path) -> list[dict]:
@@ -315,6 +331,7 @@ def risk_record(
         "B3": title_rejection(str(item.get("title") or ""), decoded_html(item)) or "",
         "B4": "missing_locator_or_source_hash",
         "B5": "|".join(sorted(table_flags(item) & BLOCKING_TABLE_FLAGS)) if "B5" in codes else "",
+        "B6": "|".join(personal_data_patterns(item)) if "B6" in codes else "",
     }
     return {
         **{key: item.get(key, "") for key in QUEUE_FIELDS[:4]},

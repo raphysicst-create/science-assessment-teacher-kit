@@ -1,4 +1,7 @@
-"""Offline S6e-3 field enrichment with conservative source-cell ownership."""
+"""Offline S6e-3 field enrichment with conservative source-cell ownership.
+
+모델 선택: fields-run --model → MIDDLE_AI_MODEL → middle_ai_read.DEFAULT_AI_MODEL.
+"""
 
 from __future__ import annotations
 
@@ -554,6 +557,8 @@ def check_value(name, value, quotes):
     if name == "rubric":
         return
     strings = [ai.normalize(q) for q in quotes]
+    if name == "method":
+        strings.extend(ai.normalize(items.split_method_text(items.visible(q))[0]) for q in quotes)
 
     def contains(part):
         return isinstance(part, str) and bool(ai.normalize(part)) and any(
@@ -564,7 +569,8 @@ def check_value(name, value, quotes):
     elif name in {"method", "standards", "task_text"}:
         valid = isinstance(value, list) and bool(value) and all(contains(v) for v in value)
         if valid and name == "method":
-            valid = all(rules.method_literal(v) for v in value)
+            valid = all(rules.method_literal(v) and items.split_method_text(v) == (v, [])
+                        for v in value)
         if valid and name == "standards":
             valid = all(re.fullmatch(r"\[9과\d{2}-\d{2}\]", v)
                         and v in rules.reference_codes() and any(v in q for q in quotes)
@@ -668,6 +674,8 @@ def verify_field(item, name, answer, target, conversion, tables, structures, kno
         extraction_cells = [*source_cells, *headers]
     value = value_from_cells(name, source_observations, extraction_cells, conversion)
     code_value = value not in (None, "", [])
+    if name == "method" and not code_value:
+        return empty_field(item, name, "방법 값 판독·용어 확인 필요"), cells
     if not code_value:
         try:
             check_value(name, answer.get("value"), [e["raw"] for e in observations])
@@ -1261,6 +1269,7 @@ def add_commands(commands):
             command.add_argument("--isolated-cwd", type=Path, required=True)
             command.add_argument("--workers", type=int, default=4)
             command.add_argument("--fake-responses", type=Path)
+            command.add_argument("--model")
             command.add_argument("--dry-run", action="store_true")
         if name == "fields-shadow":
             command.add_argument("--sample", type=int, default=36)
@@ -1272,7 +1281,8 @@ def dispatch(root, args):
     if args.command == "fields-run":
         return ai.run_targets(root, args.round_key, args.isolated_cwd, workers=args.workers,
                               fake_responses=args.fake_responses, dry_run=args.dry_run,
-                              output_dir=directory(root, args.round_key, args.shadow))
+                              output_dir=directory(root, args.round_key, args.shadow),
+                              model=getattr(args, "model", None))
     if args.command == "fields-verify":
         return fields_verify(root, args.round_key, shadow=args.shadow)
     if args.command == "fields-shadow":

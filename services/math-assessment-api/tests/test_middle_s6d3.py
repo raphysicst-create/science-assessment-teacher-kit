@@ -70,7 +70,7 @@ def test_explicit_number_only_form_requires_plan_metadata():
 
 
 @pytest.mark.parametrize("method,expected", [
-    ("실험, 보고서, 모둠, 개별", ["실험, 보고서, 모둠, 개별"]),
+    ("실험, 보고서, 모둠, 개별", ["실험, 보고서"]),
     ("☑ 실험 □ 보고서 ☑ 관찰평가", ["실험", "관찰평가"]),
     ("온도 측정하기", []), ("-", []), ("□ 실험 □ 보고서", []),
 ])

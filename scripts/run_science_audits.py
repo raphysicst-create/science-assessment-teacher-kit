@@ -1,6 +1,9 @@
-"""Run science validation, search, and publication audits; retain every exit code.
+"""Run science audits with B3 title warnings and B1/B2/B4/B5/B6 publication blockers.
 
 Run: .venv/Scripts/python.exe scripts/run_science_audits.py --database DB --out-dir DIR
+     [--card-verified card_check/verified.json]
+The optional AI gate blocks AI0 unchecked, AI1 non-task, AI2 duplicate and AI3 merged
+cards. The combined risk queue contains blocking rows only; retain every exit code.
 Verify: --help and tests/test_science_audit_gate.py in the API test directory.
 390px 검사는 공개 전 점검(S17)에서 따로.
 """
@@ -33,11 +36,15 @@ AUDITS = (
 )
 
 
-def run(database: Path, out_dir: Path, axes_json: list[Path] | None = None) -> dict:
+def run(database: Path, out_dir: Path, axes_json: list[Path] | None = None,
+        card_verified: Path | None = None) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
     results, risks = [], {}
     environment = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONDONTWRITEBYTECODE="1")
-    for name, script, output_flag in AUDITS:
+    audits = list(AUDITS)
+    if card_verified is not None:
+        audits.append(("ai", "audit_science_ai_gate.py", "--output"))
+    for name, script, output_flag in audits:
         output = out_dir / f"{name}.json"
         queue = out_dir / f"{name}-risk.csv"
         # Do not report a previous run's counts after a child crashes before writing.
@@ -58,6 +65,8 @@ def run(database: Path, out_dir: Path, axes_json: list[Path] | None = None) -> d
                 command += ["--axes-json", *map(str, axes_json)]
         else:
             command += ["--queue", str(queue)]
+        if name == "ai":
+            command += ["--verified", str(card_verified.resolve())]
         # A failed child must not prevent later audits from reporting their blockers.
         result = subprocess.run(
             command,
@@ -81,10 +90,14 @@ def run(database: Path, out_dir: Path, axes_json: list[Path] | None = None) -> d
             with queue.open(encoding="utf-8-sig", newline="") as handle:
                 for row in csv.DictReader(handle):
                     if row.get("severity") == "blocking":
-                        risks.setdefault(row["item_id"], row)
-                        # The publication audit supplies all B1-B5 reasons for an item.
+                        previous = risks.setdefault(row["item_id"], row)
+                        # Publication supplies all deterministic blocking reasons.
                         if name == "publication":
                             risks[row["item_id"]] = row
+                        elif name == "ai" and previous is not row:
+                            for field, separator in (("blocking_codes", "|"), ("reasons", ";")):
+                                previous[field] = separator.join(dict.fromkeys(
+                                    (previous[field] + separator + row[field]).split(separator)))
         results.append(
             {
                 "name": name,
@@ -120,8 +133,10 @@ def main() -> int:
     parser.add_argument(
         "--axes-json", type=Path, nargs="+", help="Independent search expectation files (optional)"
     )
+    parser.add_argument("--card-verified", type=Path, help="Verified AI card judgments (optional)")
     args = parser.parse_args()
-    return int(not run(args.database, args.out_dir.resolve(), args.axes_json)["passed"])
+    return int(not run(args.database, args.out_dir.resolve(), args.axes_json,
+                       args.card_verified)["passed"])
 
 
 if __name__ == "__main__":

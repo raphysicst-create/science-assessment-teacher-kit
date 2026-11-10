@@ -44,7 +44,9 @@ def replay(case):
 
 @pytest.mark.parametrize("case", CASES, ids=lambda case: case["case_id"])
 def test_stored_t1_method_values(case):
-    assert value_keys(replay(case)["value"]) == value_keys(case["expected"])
+    # Stored S18 expectations predate S19's observation/recording exclusion.
+    expected = [value for value in case["expected"] if value != "관찰⋅기록"]
+    assert value_keys(replay(case)["value"]) == value_keys(expected)
 
 
 @pytest.mark.parametrize("case", CASES, ids=lambda case: case["case_id"])

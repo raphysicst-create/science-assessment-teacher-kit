@@ -359,7 +359,11 @@ def title_rejection(title: str, source_text: str | None = None) -> str | None:
         hard.add("generic_policy_or_sentence_title")
     if hard:
         return "|".join(sorted(hard))
-    if not title_gate(title)["accepted"] or method_only(title):
+    if (
+        title.lstrip().startswith(("·", "Ÿ", "▸"))
+        or not title_gate(title)["accepted"]
+        or method_only(title)
+    ):
         return "science_title_gate"
     if (
         len(title) < 3

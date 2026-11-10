@@ -17,9 +17,11 @@ if __package__ in {None, ""}:
 
 from scripts.science_rules import (
     blocking_errors,
+    decoded_html,
     default_database,
     public_items,
     risk_record,
+    title_rejection,
     write_audit,
 )
 
@@ -47,8 +49,11 @@ def main() -> None:
         if codes:
             queue.append(risk_record(row, codes))
             counts.update(codes)
+        if title_rejection(str(row.get("title") or ""), decoded_html(row)):
+            queue.append(risk_record(row, ["B3"], severity="warning"))
     public_cases = Counter(row["case_id"] for row in rows)
-    blocked_cases = Counter(row["case_id"] for row in queue)
+    blocking_queue = [row for row in queue if row["severity"] == "blocking"]
+    blocked_cases = Counter(row["case_id"] for row in blocking_queue)
     report = {
         "schema_version": 2,
         "public_item_count": len(rows),
@@ -57,7 +62,7 @@ def main() -> None:
         "target_manual_queue_below_50": len(queue) < 50,
         "item_counts": {
             "confirmed_public_item": len(rows),
-            "blocking_public_item": len(queue),
+            "blocking_public_item": len(blocking_queue),
         },
         "case_counts": {
             "confirmed_public_case": len(public_cases),

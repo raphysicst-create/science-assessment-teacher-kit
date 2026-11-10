@@ -280,7 +280,7 @@ def fake_run(output, target, response, fake=False):
     ai.write_text(events, '{"type":"turn.completed"}\n')
     status = {"valid": True, "fake": fake, "prompt_sha256": target["prompt_sha256"],
               "answer_sha256": ai.sha(ai.read_text(answer_path)),
-              "events_sha256": ai.sha(ai.read_text(events))}
+              "events_sha256": ai.sha(ai.read_text(events)), "model": ai.resolve_ai_model()}
     ai.save_json(output / f"responses/{identity}.status.json", status)
 
 

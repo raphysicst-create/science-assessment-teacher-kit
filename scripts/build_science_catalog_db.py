@@ -129,7 +129,7 @@ def item_row(record: dict, order: int) -> dict:
         "item_id": digest(item["item_id"], 28),
         "case_id": case_id(record),
         "item_order": order,
-        "title": title(record),
+        "title": re.sub(r"^[\s·•Ÿ▸▶►▷◦○●■□◆◇※*–—-]+", "", title(record)) or title(record),
         "title_raw": title(record),
         "title_basis": "table" if item["fields"].get("title", {}).get("evidence") else "section",
         "extraction_status": "bounded",

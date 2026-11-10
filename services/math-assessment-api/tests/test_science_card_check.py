@@ -63,6 +63,7 @@ def response():
               "duplicate_of": None, "merged": False, "quote": ""} for identity in SOURCES]
     tasks[0].update(duplicate_of="summary", quote="온도 측정하기")
     tasks[1]["quote"] = "생태 지도 만들기"
+    tasks[2]["quote"] = "온도 측정하기"
     tasks[3].update(is_task=False, not_task_kind="지필", quote="지필평가 정기시험 계획")
     return {"tasks": tasks, "uncertain": []}
 
@@ -130,7 +131,7 @@ def test_bad_quotes_are_discarded_per_negative_decision(workspace):
     other = next(card for card in report["cards"] if card["item_id"] == "other")
     assert other["is_task"] and not other["merged"] and other["duplicate_of"] is None
     check.write_exclusions(workspace["output"], workspace["database"], workspace["csv"])
-    assert "other" not in read_queue(workspace["csv"])
+    assert read_queue(workspace["csv"])["other"]["blocking_codes"] == "AI0:unchecked"
 
 
 def test_tool_events_invalidate_run_and_cached_audit(workspace):
@@ -242,7 +243,9 @@ def test_missing_fake_response_is_failure(workspace):
     assert check.main(["run", "--out-dir", str(workspace["output"]), "--isolated-cwd",
                        str(workspace["isolated"]), "--fake-responses", str(workspace["fake"])]) == 3
     check.write_exclusions(workspace["output"], workspace["database"], workspace["csv"])
-    assert read_queue(workspace["csv"]) == {}
+    queue = read_queue(workspace["csv"])
+    assert set(queue) == set(SOURCES)
+    assert all(row["blocking_codes"] == "AI0:unchecked" for row in queue.values())
 
 
 def test_duplicate_chain_keeps_one_and_rejects_repeated_answers(workspace):

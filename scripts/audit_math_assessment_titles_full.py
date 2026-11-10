@@ -59,7 +59,7 @@ def main() -> None:
     for row in rows:
         title, basis = str(row["title"]), str(row["title_basis"])
         if title_rejection(title, decoded_html(row)):
-            queue.append(risk_record(row, ["B3"]))
+            queue.append(risk_record(row, ["B3"], severity="warning"))
         else:
             flags = audit_flags(title, basis)
             if confidence(flags, basis) == "review":

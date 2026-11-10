@@ -2,6 +2,7 @@
 
 실행 .venv/Scripts/python.exe scripts/science_card_check.py targets --database DB
 이어서 run --isolated-cwd DIR, verify --database DB, exclusions --database DB --out CSV.
+모델 선택: run --model → MIDDLE_AI_MODEL → middle_ai_read.DEFAULT_AI_MODEL.
 검증 .venv/Scripts/python.exe -m pytest -q
      services/math-assessment-api/tests/test_science_card_check.py
 검증 .venv/Scripts/python.exe -m ruff check scripts/science_card_check.py
@@ -275,13 +276,17 @@ def verify_targets(output: Path, database: Path) -> dict:
     return report
 
 
-def blocking_codes(verdict: dict) -> list[str]:
+def blocking_codes(verdict: dict | None) -> list[str]:
     codes = []
-    if not verdict["is_task"]:
+    if not verdict or verdict.get("checked") is not True or verdict.get("quote") is None:
+        codes.append("AI0:unchecked")
+    if not verdict:
+        return codes
+    if verdict.get("is_task") is False:
         codes.append(f"AI1:not_task:{verdict['not_task_kind']}")
-    if verdict["duplicate_of"]:
+    if verdict.get("duplicate_of"):
         codes.append(f"AI2:duplicate_of:{verdict['duplicate_of']}")
-    if verdict["merged"]:
+    if verdict.get("merged"):
         codes.append("AI3:merged")
     return codes
 
@@ -294,7 +299,7 @@ def write_exclusions(output: Path, database: Path, destination: Path,
     rows = []
     for card in load_cards(database):
         verdict = verdicts.get(card["item_id"])
-        codes = blocking_codes(verdict) if verdict else []
+        codes = blocking_codes(verdict)
         reasons = list(dict.fromkeys(e["quote"] for e in verdict["evidence"])) if verdict else []
         if card["source_sha256"] in drm:
             codes.append("T4:unsupported_format")
@@ -326,6 +331,7 @@ def main(argv: list[str] | None = None) -> int:
             command.add_argument("--isolated-cwd", type=Path, required=True)
             command.add_argument("--workers", type=int, default=4)
             command.add_argument("--fake-responses", type=Path)
+            command.add_argument("--model")
         elif name == "exclusions":
             command.add_argument("--out", type=Path, required=True)
             command.add_argument("--drm-documents", type=Path)
@@ -335,7 +341,8 @@ def main(argv: list[str] | None = None) -> int:
             result = build_targets(args.database, args.out_dir, args.cases)
         elif args.command == "run":
             result = ai.run_targets(ROOT, None, args.isolated_cwd, workers=args.workers,
-                                    fake_responses=args.fake_responses, output_dir=args.out_dir)
+                                    fake_responses=args.fake_responses, output_dir=args.out_dir,
+                                    model=args.model)
         elif args.command == "verify":
             result = verify_targets(args.out_dir, args.database)["summary"]
         else:

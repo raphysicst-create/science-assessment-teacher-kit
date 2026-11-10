@@ -2,6 +2,7 @@
 
 실행 .venv/Scripts/python.exe scripts/science_axes_ai.py targets --database DB
 이어서 run --isolated-cwd DIR [--fake-responses DIR], verify, export --axes-out DIR.
+모델 선택: run --model → MIDDLE_AI_MODEL → middle_ai_read.DEFAULT_AI_MODEL.
 검증 .venv/Scripts/python.exe -m pytest -q
      services/math-assessment-api/tests/test_science_axes_ai.py
 검증 .venv/Scripts/python.exe -m ruff check scripts/science_axes_ai.py
@@ -263,6 +264,7 @@ def main(argv: list[str] | None = None) -> int:
             command.add_argument("--isolated-cwd", type=Path, required=True)
             command.add_argument("--workers", type=int, default=DEFAULT_WORKERS)
             command.add_argument("--fake-responses", type=Path)
+            command.add_argument("--model")
         elif name == "export":
             command.add_argument("--axes-out", type=Path, default=DEFAULT_AXES_OUT)
     args = parser.parse_args(argv)
@@ -273,7 +275,7 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "run":
             fake = checked_path(args.fake_responses) if args.fake_responses is not None else None
             result = ai.run_targets(ROOT, None, args.isolated_cwd, workers=args.workers,
-                                    fake_responses=fake, output_dir=output)
+                                    fake_responses=fake, output_dir=output, model=args.model)
         elif args.command == "verify":
             result = verify_targets(output, args.database)["summary"]
         else:
