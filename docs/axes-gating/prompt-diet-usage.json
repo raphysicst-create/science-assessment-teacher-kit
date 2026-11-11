@@ -1,0 +1,208 @@
+{
+ "by_stage_bundle": {
+  "ax-run|nw1": {
+   "calls": 685,
+   "mean": {
+    "input_tokens": 35443.6,
+    "cached_input_tokens": 19095.7,
+    "output_tokens": 245.0,
+    "reasoning_output_tokens": 171.0,
+    "prompt_bytes": 52327.2
+   },
+   "total": {
+    "input_tokens": 24278837,
+    "cached_input_tokens": 13080576,
+    "output_tokens": 167795,
+    "reasoning_output_tokens": 117121,
+    "prompt_bytes": 35844128
+   },
+   "uncached_input_total": 11198261
+  },
+  "ax-run|nw2": {
+   "calls": 1331,
+   "mean": {
+    "input_tokens": 35564.6,
+    "cached_input_tokens": 18968.3,
+    "output_tokens": 248.2,
+    "reasoning_output_tokens": 171.6,
+    "prompt_bytes": 52877.0
+   },
+   "total": {
+    "input_tokens": 47336527,
+    "cached_input_tokens": 25246848,
+    "output_tokens": 330347,
+    "reasoning_output_tokens": 228393,
+    "prompt_bytes": 70379337
+   },
+   "uncached_input_total": 22089679
+  },
+  "ax-run|nw3": {
+   "calls": 2116,
+   "mean": {
+    "input_tokens": 35969.3,
+    "cached_input_tokens": 20578.2,
+    "output_tokens": 283.7,
+    "reasoning_output_tokens": 204.6,
+    "prompt_bytes": 53115.4
+   },
+   "total": {
+    "input_tokens": 76111022,
+    "cached_input_tokens": 43543424,
+    "output_tokens": 600228,
+    "reasoning_output_tokens": 432960,
+    "prompt_bytes": 112392207
+   },
+   "uncached_input_total": 32567598
+  },
+  "cc-run|nw1": {
+   "calls": 274,
+   "mean": {
+    "input_tokens": 21560.3,
+    "cached_input_tokens": 18524.5,
+    "output_tokens": 198.2,
+    "reasoning_output_tokens": 31.2,
+    "prompt_bytes": 6655.5
+   },
+   "total": {
+    "input_tokens": 5907515,
+    "cached_input_tokens": 5075712,
+    "output_tokens": 54320,
+    "reasoning_output_tokens": 8537,
+    "prompt_bytes": 1823600
+   },
+   "uncached_input_total": 831803
+  },
+  "cc-run|nw2": {
+   "calls": 600,
+   "mean": {
+    "input_tokens": 21689.4,
+    "cached_input_tokens": 18708.7,
+    "output_tokens": 174.1,
+    "reasoning_output_tokens": 30.0,
+    "prompt_bytes": 6704.4
+   },
+   "total": {
+    "input_tokens": 13013660,
+    "cached_input_tokens": 11225216,
+    "output_tokens": 104438,
+    "reasoning_output_tokens": 17994,
+    "prompt_bytes": 4022656
+   },
+   "uncached_input_total": 1788444
+  },
+  "fields-run|nw1": {
+   "calls": 56,
+   "mean": {
+    "input_tokens": 39524.4,
+    "cached_input_tokens": 18667.4,
+    "output_tokens": 1799.9,
+    "reasoning_output_tokens": 318.8,
+    "prompt_bytes": 64527.2
+   },
+   "total": {
+    "input_tokens": 2213369,
+    "cached_input_tokens": 1045376,
+    "output_tokens": 100797,
+    "reasoning_output_tokens": 17853,
+    "prompt_bytes": 3613522
+   },
+   "uncached_input_total": 1167993
+  },
+  "fields-run|nw2": {
+   "calls": 100,
+   "mean": {
+    "input_tokens": 45472.4,
+    "cached_input_tokens": 18912.0,
+    "output_tokens": 2052.2,
+    "reasoning_output_tokens": 335.3,
+    "prompt_bytes": 83201.2
+   },
+   "total": {
+    "input_tokens": 4547245,
+    "cached_input_tokens": 1891200,
+    "output_tokens": 205224,
+    "reasoning_output_tokens": 33530,
+    "prompt_bytes": 8320122
+   },
+   "uncached_input_total": 2656045
+  },
+  "fields-run|nw3": {
+   "calls": 703,
+   "mean": {
+    "input_tokens": 45244.5,
+    "cached_input_tokens": 18657.2,
+    "output_tokens": 2301.9,
+    "reasoning_output_tokens": 337.3,
+    "prompt_bytes": 82098.7
+   },
+   "total": {
+    "input_tokens": 31806907,
+    "cached_input_tokens": 13116032,
+    "output_tokens": 1618222,
+    "reasoning_output_tokens": 237105,
+    "prompt_bytes": 57715377
+   },
+   "uncached_input_total": 18690875
+  },
+  "first-run|nw1": {
+   "calls": 374,
+   "mean": {
+    "input_tokens": 40399.0,
+    "cached_input_tokens": 18562.1,
+    "output_tokens": 579.2,
+    "reasoning_output_tokens": 169.3,
+    "prompt_bytes": 67524.0
+   },
+   "total": {
+    "input_tokens": 15109236,
+    "cached_input_tokens": 6942208,
+    "output_tokens": 216633,
+    "reasoning_output_tokens": 63317,
+    "prompt_bytes": 25253980
+   },
+   "uncached_input_total": 8167028
+  },
+  "first-run|nw2": {
+   "calls": 562,
+   "mean": {
+    "input_tokens": 41913.6,
+    "cached_input_tokens": 18496.2,
+    "output_tokens": 835.0,
+    "reasoning_output_tokens": 202.1,
+    "prompt_bytes": 74672.0
+   },
+   "total": {
+    "input_tokens": 23555468,
+    "cached_input_tokens": 10394880,
+    "output_tokens": 469260,
+    "reasoning_output_tokens": 113557,
+    "prompt_bytes": 41965639
+   },
+   "uncached_input_total": 13160588
+  },
+  "first-run|nw3": {
+   "calls": 2834,
+   "mean": {
+    "input_tokens": 39825.3,
+    "cached_input_tokens": 18467.0,
+    "output_tokens": 921.2,
+    "reasoning_output_tokens": 200.0,
+    "prompt_bytes": 68080.3
+   },
+   "total": {
+    "input_tokens": 112864778,
+    "cached_input_tokens": 52335488,
+    "output_tokens": 2610750,
+    "reasoning_output_tokens": 566829,
+    "prompt_bytes": 192939525
+   },
+   "uncached_input_total": 60529290
+  }
+ },
+ "cc_pending_targets_by_bundle": {},
+ "fit_all_stages": {
+  "n": 9635,
+  "intercept_tokens": 19687,
+  "tokens_per_kb": 301.4
+ }
+}

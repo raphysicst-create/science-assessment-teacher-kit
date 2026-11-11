@@ -5,6 +5,8 @@ targets --context PATH: 항목별 AI 우선 세부표 문맥으로 카드 창을
 targets --per-card: 카드마다 독립 지시문을 만들고 다른 카드 구성과 무관한 해시를 유지한다.
 targets --skip-rule-confident(--per-card와 함께): 규칙이 확실하고 응답이 아직 없는 카드는 목표에서
   빼고 rule_skipped.json에 적는다. export가 회차 파일 rule_skipped에 넣고 hybrid가 규칙으로 채운다.
+targets --definitions lean: 지시문 앞 정의에서 사례 출처 표기를 뺀 판을 쓴다(기본 full). 같은 카드의
+  full 지시문 유효 응답이 출력 폴더에 있으면 그 full 목표를 그대로 써서 다시 부르지 않는다.
 이어서 run --isolated-cwd DIR [--fake-responses DIR], verify, export --axes-out DIR.
 모델 선택: run --model → MIDDLE_AI_MODEL → middle_ai_read.DEFAULT_AI_MODEL.
 검증 .venv/Scripts/python.exe -m pytest -q
@@ -36,6 +38,19 @@ DEFAULT_DATABASE = check.DEFAULT_DATABASE
 DEFAULT_OUT_DIR = ROOT / "data/derived/axes_ai_run"
 DEFAULT_AXES_OUT = ROOT / "data/derived/axes_ai"
 DEFINITIONS = ROOT / "docs/science_activity_definitions.md"
+# M3(2026-11-11): 지시문 앞부분 정의 판. full = 원문 2·3절(약 49KB).
+# lean = 같은 원문에서 사례 줄의 학교·학년·학기, (개발 표본·항목) 표기, 원문 인용과
+# '쓸 수 있는 근거 유형' 줄만 코드로 지운 것(약 34KB). 규칙·사전·사례의 판정 문장은 그대로다.
+# lean 목표를 만들 때 같은 카드의 full 지시문 응답이 유효하게 저장돼 있으면 full 목표를 그대로
+# 쓴다(묶음 1~3 응답을 다시 부르지 않음). selection.json에 정의 판이 없으면 full.
+DEFINITION_CHOICES = ("full", "lean")
+LEGACY_DEFINITIONS = "full"
+LEAN_DROP_LINE = re.compile(r"^- 쓸 수 있는 근거 유형: .*\n", re.M)
+LEAN_STRIPS = (  # 사례 줄(개발 표본 표기가 있는 줄)에서만 지운다
+    re.compile(r"(?<=^- )\S+ \d학년 \d학기 "),
+    re.compile(r"\(개발 표본 `[^`]+`, 항목 `[^`]+`\)"),
+    re.compile(r"원문 “[^”]*”\.?\s*"),
+)
 RULE_AXES_DIR = ROOT / "data/derived/axes"
 VERSION = "science-axes-ai-v1"
 RULE_SKIPPED = "rule_skipped.json"  # 규칙이 확실해 AI를 부르지 않은 카드(DB item_id → 회차·원 항목)
@@ -67,15 +82,43 @@ def checked_path(path: Path) -> Path:
     return ai.guard_path(path)
 
 
-def definition_sections() -> tuple[str, tuple[str, ...]]:
-    text = ai.read_text(DEFINITIONS)
+def definition_sections(definitions: str = LEGACY_DEFINITIONS) -> tuple[str, tuple[str, ...]]:
+    """정의 문서의 2절부터 4절 앞(4절이 없으면 끝)까지와 활동 이름 10개."""
+    if definitions not in DEFINITION_CHOICES:
+        raise ValueError(f"정의 판은 {DEFINITION_CHOICES} 중 하나")
+    text = ai.read_text(DEFINITIONS)  # 모듈 전역을 부를 때 읽는다(테스트가 경로를 바꿔 끼운다).
     headings = list(re.finditer(r"^## (\d+)\. .*$", text, re.M))
     bounds = {int(match[1]): match.start() for match in headings}
     sections = text[bounds[2]:bounds[4]]
+    if definitions == "lean":
+        sections = lean_sections(sections)
     names = tuple(re.findall(r"^### 3\.\d+ (.*?) \(`[^`]+`\)", sections, re.M))
     if len(names) != ACTIVITY_COUNT or len(set(names)) != ACTIVITY_COUNT:
         raise ValueError("활동 정의 10개 필요")
     return sections, names
+
+
+def lean_sections(sections: str) -> str:
+    """사례 줄의 출처 표기(학교·학년·학기, 표본·항목, 원문 인용)와 근거 유형 줄만 지운다."""
+    lines = []
+    for line in LEAN_DROP_LINE.sub("", sections).splitlines(keepends=True):
+        if "(개발 표본 `" in line:
+            for pattern in LEAN_STRIPS:
+                line = pattern.sub("", line)
+        lines.append(line)
+    return "".join(lines)
+
+
+def saved_valid(output: Path | None, prompt_sha256: str) -> bool:
+    """이 지시문으로 받은 유효한 응답 상태가 저장돼 있는가(run이 valid_run으로 다시 검증한다)."""
+    if output is None:
+        return False
+    status_path = output / f"responses/{prompt_sha256[:16]}.status.json"
+    try:
+        status = ai.read_json(status_path)
+    except (OSError, ValueError):
+        return False
+    return bool(status.get("valid")) and status.get("prompt_sha256") == prompt_sha256
 
 
 def load_cards(database: Path, rounds: list[str] | None = None,
@@ -104,16 +147,23 @@ def load_cards(database: Path, rounds: list[str] | None = None,
     return result
 
 
-def grouped_targets(cards: list[dict], per_card: bool = False):
-    sections, _ = definition_sections()
+def grouped_targets(cards: list[dict], per_card: bool = False,
+                    definitions: str = LEGACY_DEFINITIONS, reuse_dir: Path | None = None):
+    """지시문 = 정의 + 지시 + 카드 JSON. reuse_dir에 같은 카드의 full 지시문 유효 응답이 있으면
+    (definitions가 full이 아닐 때) 그 full 목표를 낸다."""
+    sections, _ = definition_sections(definitions)
+    legacy = (definition_sections(LEGACY_DEFINITIONS)[0]
+              if definitions != LEGACY_DEFINITIONS and reuse_dir is not None else None)
     groups = ([card] for card in cards) if per_card else (
         group for _, _, group in check.grouped_targets(cards))
     for group in groups:
         scope = {key: group[0][key] for key in ("case_id", "grade", "semester")}
         content = dict(scope)
         content["cards"] = [{name: card[name] for name in CARD_FIELDS} for card in group]
-        prompt = sections + INSTRUCTIONS + "\n" + json.dumps(
-            content, ensure_ascii=False, indent=2) + "\n"
+        body = INSTRUCTIONS + "\n" + json.dumps(content, ensure_ascii=False, indent=2) + "\n"
+        prompt = sections + body
+        if legacy is not None and saved_valid(reuse_dir, ai.sha(legacy + body)):
+            prompt = legacy + body
         digest = ai.sha(prompt)
         target = {**scope, "card_ids": [card["item_id"] for card in group]}
         yield {**target, "target_id": digest[:16], "prompt_sha256": digest}, prompt, group
@@ -141,14 +191,15 @@ def skip_by_rule(output: Path, target: dict, group: list[dict], cache: dict) -> 
 
 def build_targets(database: Path, output: Path, rounds: list[str] | None = None,
                   context: Path | None = None, per_card: bool = False,
-                  skip_rule_confident: bool = False) -> dict:
+                  skip_rule_confident: bool = False,
+                  definitions: str = LEGACY_DEFINITIONS) -> dict:
     if skip_rule_confident and not per_card:
         raise ValueError("--skip-rule-confident는 --per-card와 함께만 쓴다")
     output = checked_path(output)
     context = checked_path(context) if context is not None else None
     cards = load_cards(database, rounds, context)
     targets, skipped, cache = [], {}, {}
-    for target, prompt, group in grouped_targets(cards, per_card):
+    for target, prompt, group in grouped_targets(cards, per_card, definitions, output):
         if skip_rule_confident and skip_by_rule(output, target, group, cache):
             card = group[0]
             skipped[card["item_id"]] = {"source_round": card["source_round"],
@@ -167,6 +218,8 @@ def build_targets(database: Path, output: Path, rounds: list[str] | None = None,
         selection["per_card"] = True
     if skip_rule_confident:
         selection["skip_rule_confident"] = True
+    if definitions != LEGACY_DEFINITIONS:
+        selection["definitions"] = definitions
     if context is not None:
         selection["context"] = str(context)
     ai.save_json(output / "selection.json", selection)
@@ -226,9 +279,11 @@ def verify_targets(output: Path, database: Path) -> dict:
         cards = [card for target in targets for card in target.get("cards", [])]
     else:
         cards = load_cards(database, selection["rounds"])
+    definitions = selection.get("definitions", LEGACY_DEFINITIONS)
     current = {target["target_id"]: ({**target, **({"cards": group} if saved else {})}, group)
-               for target, _, group in grouped_targets(cards, selection.get("per_card", False))}
-    _, names = definition_sections()
+               for target, _, group in grouped_targets(cards, selection.get("per_card", False),
+                                                       definitions, output)}
+    _, names = definition_sections(definitions)
     verdicts, discarded, uncertain = [], [], []
     valid = 0
     for target in targets:
@@ -339,6 +394,9 @@ def main(argv: list[str] | None = None) -> int:
             command.add_argument("--per-card", action="store_true")
             command.add_argument("--skip-rule-confident", action="store_true",
                                  help="규칙이 확실한 카드는 AI 목표에서 뺀다(science_axes_gate)")
+            command.add_argument("--definitions", choices=DEFINITION_CHOICES,
+                                 default=LEGACY_DEFINITIONS,
+                                 help="지시문 정의 판(lean은 full 유효 응답이 있으면 그것을 씀)")
         elif name == "run":
             command.add_argument("--isolated-cwd", type=Path, required=True)
             command.add_argument("--workers", type=int, default=DEFAULT_WORKERS)
@@ -351,7 +409,7 @@ def main(argv: list[str] | None = None) -> int:
         output = checked_path(args.out_dir)
         if args.command == "targets":
             result = build_targets(args.database, output, args.rounds, args.context,
-                                   args.per_card, args.skip_rule_confident)
+                                   args.per_card, args.skip_rule_confident, args.definitions)
         elif args.command == "run":
             fake = checked_path(args.fake_responses) if args.fake_responses is not None else None
             result = ai.run_targets(ROOT, None, args.isolated_cwd, workers=args.workers,

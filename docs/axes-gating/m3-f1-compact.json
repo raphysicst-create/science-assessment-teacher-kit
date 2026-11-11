@@ -1,0 +1,248 @@
+{
+ "variant": "compact",
+ "public_hybrid_full_now": {
+  "labels": 258,
+  "paired": {
+   "numerator": 255,
+   "denominator": 258,
+   "fraction": "255/258",
+   "rate": 0.9883720930232558
+  },
+  "macro_f1_paired": {
+   "numerator": 602238328189,
+   "denominator": 660703534260,
+   "fraction": "602238328189/660703534260",
+   "rate": 0.9115106806012744,
+   "count": 10,
+   "activities": [
+    "탐구",
+    "실험평가",
+    "작성",
+    "제작",
+    "분석",
+    "추론·설명",
+    "발표·토론",
+    "계산·측정",
+    "과정평가",
+    "문제해결"
+   ]
+  },
+  "macro_f1_all_labels": {
+   "numerator": 848534924612,
+   "denominator": 936760316085,
+   "fraction": "848534924612/936760316085",
+   "rate": 0.9058186070032085,
+   "count": 10,
+   "activities": [
+    "탐구",
+    "실험평가",
+    "작성",
+    "제작",
+    "분석",
+    "추론·설명",
+    "발표·토론",
+    "계산·측정",
+    "과정평가",
+    "문제해결"
+   ]
+  },
+  "primary_accuracy_all": {
+   "numerator": 232,
+   "denominator": 255,
+   "fraction": "232/255",
+   "rate": 0.9098039215686274
+  },
+  "classifier_abstain": {
+   "numerator": 5,
+   "denominator": 255,
+   "fraction": "5/255",
+   "rate": 0.0196078431372549
+  }
+ },
+ "full_same_cards_ai_abstained": 22,
+ "run1": {
+  "export": {
+   "saved_round1_outputs": true
+  },
+  "verified": {
+   "valid_targets": 266,
+   "cards": 266,
+   "checked": 266,
+   "abstained": 33
+  },
+  "f1": {
+   "labels": 258,
+   "paired": {
+    "numerator": 255,
+    "denominator": 258,
+    "fraction": "255/258",
+    "rate": 0.9883720930232558
+   },
+   "macro_f1_paired": {
+    "numerator": 2977674701,
+    "denominator": 3359941200,
+    "fraction": "2977674701/3359941200",
+    "rate": 0.8862282176247608,
+    "count": 10,
+    "activities": [
+     "탐구",
+     "실험평가",
+     "작성",
+     "제작",
+     "분석",
+     "추론·설명",
+     "발표·토론",
+     "계산·측정",
+     "과정평가",
+     "문제해결"
+    ]
+   },
+   "macro_f1_all_labels": {
+    "numerator": 12488342389,
+    "denominator": 14180928300,
+    "fraction": "12488342389/14180928300",
+    "rate": 0.88064350406454,
+    "count": 10,
+    "activities": [
+     "탐구",
+     "실험평가",
+     "작성",
+     "제작",
+     "분석",
+     "추론·설명",
+     "발표·토론",
+     "계산·측정",
+     "과정평가",
+     "문제해결"
+    ]
+   },
+   "primary_accuracy_all": {
+    "numerator": 227,
+    "denominator": 255,
+    "fraction": "227/255",
+    "rate": 0.8901960784313725
+   },
+   "classifier_abstain": {
+    "numerator": 5,
+    "denominator": 255,
+    "fraction": "5/255",
+    "rate": 0.0196078431372549
+   }
+  },
+  "tokens": {
+   "pairs": 266,
+   "mean": {
+    "full": {
+     "input_tokens": 35200.8,
+     "cached_input_tokens": 18035.5,
+     "output_tokens": 221.0,
+     "reasoning_output_tokens": 144.3,
+     "prompt_bytes": 53442.2,
+     "uncached_input": 17165.3
+    },
+    "compact": {
+     "input_tokens": 27303.0,
+     "cached_input_tokens": 18751.0,
+     "output_tokens": 210.1,
+     "reasoning_output_tokens": 133.3,
+     "prompt_bytes": 25621.2,
+     "uncached_input": 8552.0
+    }
+   }
+  },
+  "passes": false
+ },
+ "run2": {
+  "export": {
+   "saved_round1_outputs": true
+  },
+  "verified": {
+   "valid_targets": 266,
+   "cards": 266,
+   "checked": 266,
+   "abstained": 33
+  },
+  "f1": {
+   "labels": 258,
+   "paired": {
+    "numerator": 255,
+    "denominator": 258,
+    "fraction": "255/258",
+    "rate": 0.9883720930232558
+   },
+   "macro_f1_paired": {
+    "numerator": 2071273507,
+    "denominator": 2267573220,
+    "fraction": "2071273507/2267573220",
+    "rate": 0.9134318083894111,
+    "count": 10,
+    "activities": [
+     "탐구",
+     "실험평가",
+     "작성",
+     "제작",
+     "분석",
+     "추론·설명",
+     "발표·토론",
+     "계산·측정",
+     "과정평가",
+     "문제해결"
+    ]
+   },
+   "macro_f1_all_labels": {
+    "numerator": 47559277,
+    "denominator": 52386180,
+    "fraction": "47559277/52386180",
+    "rate": 0.907859229285281,
+    "count": 10,
+    "activities": [
+     "탐구",
+     "실험평가",
+     "작성",
+     "제작",
+     "분석",
+     "추론·설명",
+     "발표·토론",
+     "계산·측정",
+     "과정평가",
+     "문제해결"
+    ]
+   },
+   "primary_accuracy_all": {
+    "numerator": 230,
+    "denominator": 255,
+    "fraction": "230/255",
+    "rate": 0.9019607843137255
+   },
+   "classifier_abstain": {
+    "numerator": 5,
+    "denominator": 255,
+    "fraction": "5/255",
+    "rate": 0.0196078431372549
+   }
+  },
+  "tokens": {
+   "pairs": 266,
+   "mean": {
+    "full": {
+     "input_tokens": 35200.8,
+     "cached_input_tokens": 18035.5,
+     "output_tokens": 221.0,
+     "reasoning_output_tokens": 144.3,
+     "prompt_bytes": 53442.2,
+     "uncached_input": 17165.3
+    },
+    "compact": {
+     "input_tokens": 26915.2,
+     "cached_input_tokens": 18245.8,
+     "output_tokens": 213.8,
+     "reasoning_output_tokens": 136.9,
+     "prompt_bytes": 25621.2,
+     "uncached_input": 8669.4
+    }
+   }
+  },
+  "passes": true
+ },
+ "all_pass": false
+}

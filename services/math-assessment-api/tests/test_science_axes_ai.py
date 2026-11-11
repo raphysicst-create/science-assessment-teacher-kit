@@ -444,3 +444,68 @@ def test_saved_responses_are_kept_even_when_rule_is_confident(workspace):
 def test_rule_gate_needs_per_card(workspace):
     with pytest.raises(ValueError):
         axes.build_targets(workspace["database"], workspace["output"], skip_rule_confident=True)
+
+
+def add_card(database, like_item_id, new_id):
+    with sqlite3.connect(database) as db:
+        db.row_factory = sqlite3.Row
+        row = dict(db.execute("SELECT * FROM assessment_items WHERE item_id=?",
+                              (like_item_id,)).fetchone())
+        row.update(item_id=new_id, source_item_id=new_id + "-source", item_order=100)
+        db.execute(f"INSERT INTO assessment_items ({','.join(row)}) "
+                   f"VALUES ({','.join('?' for _ in row)})", list(row.values()))
+
+
+def test_lean_definitions_reuse_saved_full_responses_and_call_only_new_cards(workspace):
+    """M3: 정의 판을 lean으로 바꿔도 묶음 1~3처럼 full 응답이 저장된 카드는 다시 부르지 않는다."""
+    database, output = workspace["database"], workspace["output"]
+    axes.build_targets(database, output, per_card=True)
+    full = ai.load_targets(output)
+    fake_answers(workspace)
+    assert axes.main(run_args(workspace)) == 0
+    add_card(database, full[0]["card_ids"][0], "added-card")
+    common = ["--database", str(database), "--out-dir", str(output), "--per-card"]
+    assert axes.main(["targets", *common, "--definitions", "lean"]) == 0
+    after = ai.load_targets(output)
+    assert all(t in after for t in full)  # 저장 응답이 있는 카드는 full 목표 그대로
+    new = [t for t in after if t not in full]
+    assert [t["card_ids"] for t in new] == [["added-card"]]
+    lean_prompt = (output / f"prompts/{new[0]['target_id']}.md").read_text(encoding="utf-8")
+    assert lean_prompt.startswith(axes.definition_sections("lean")[0])
+    assert ai.read_json(output / "selection.json")["definitions"] == "lean"
+    fake_answers(workspace)
+    assert axes.main(run_args(workspace)) == 0
+    run = ai.read_json(output / "run.json")
+    assert run["skipped"] == len(full) and run["called"] == 1  # 새 카드 하나만 호출
+    summary = axes.verify_targets(output, database)["summary"]
+    assert summary["cards"] == len(full) + 1 and "discarded_target_mismatch" not in summary
+    # 같은 명령을 다시 불러도 목표가 그대로다(lean 응답도 재사용).
+    assert axes.main(["targets", *common, "--definitions", "lean"]) == 0
+    assert ai.load_targets(output) == after
+    assert axes.main(run_args(workspace)) == 0
+    assert ai.read_json(output / "run.json")["called"] == 0
+
+
+def test_lean_definitions_without_saved_responses_and_invalid_full_status(workspace):
+    database, output = workspace["database"], workspace["output"]
+    axes.build_targets(database, output, per_card=True, definitions="lean")
+    lean = ai.load_targets(output)
+    axes.build_targets(database, workspace["output"].parent / "full", per_card=True)
+    full_ids = {t["target_id"] for t in ai.load_targets(workspace["output"].parent / "full")}
+    assert full_ids.isdisjoint(t["target_id"] for t in lean)
+    # full 응답 상태가 무효면 재사용하지 않는다.
+    target = next(iter(full_ids))
+    save(output / f"responses/{target}.status.json", {"valid": False, "prompt_sha256": "x"})
+    axes.build_targets(database, output, per_card=True, definitions="lean")
+    assert ai.load_targets(output) == lean
+    with pytest.raises(ValueError):
+        axes.definition_sections("other")
+
+
+def test_full_definitions_are_unchanged_by_default(workspace):
+    database, output = workspace["database"], workspace["output"]
+    axes.build_targets(database, output, per_card=True)
+    prompt = next((output / "prompts").glob("*.md")).read_text(encoding="utf-8")
+    assert prompt.startswith(axes.definition_sections("full")[0])
+    assert "definitions" not in ai.read_json(output / "selection.json")
+    assert axes.definition_sections("full")[1] == axes.definition_sections("lean")[1]

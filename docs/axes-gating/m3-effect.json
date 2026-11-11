@@ -1,0 +1,72 @@
+{
+ "calls_bundle": {
+  "first-run": 2834,
+  "fields-run": 703,
+  "ax-run": 6915,
+  "cc-run": 3117
+ },
+ "ax_per_call_ratio": {
+  "lean": {
+   "all": 0.8722,
+   "uncached": 0.7115
+  },
+  "compact": {
+   "all": 0.7713,
+   "uncached": 0.5074
+  }
+ },
+ "metrics": {
+  "all": {
+   "stage_tokens_before_millions": {
+    "first-run": 115.5,
+    "fields-run": 33.4,
+    "ax-run": 250.7,
+    "cc-run": 68.1
+   },
+   "stage_share_before": {
+    "first-run": 0.247,
+    "fields-run": 0.071,
+    "ax-run": 0.536,
+    "cc-run": 0.146
+   },
+   "total_before_millions": 467.7,
+   "cut_m2": 0.064,
+   "lean": {
+    "total_millions": 409.5,
+    "cut_m2_plus_m3": 0.125,
+    "cut_m3_vs_m2": 0.064
+   },
+   "compact": {
+    "total_millions": 387.2,
+    "cut_m2_plus_m3": 0.172,
+    "cut_m3_vs_m2": 0.115
+   }
+  },
+  "uncached": {
+   "stage_tokens_before_millions": {
+    "first-run": 63.1,
+    "fields-run": 20.3,
+    "ax-run": 108.4,
+    "cc-run": 9.8
+   },
+   "stage_share_before": {
+    "first-run": 0.313,
+    "fields-run": 0.101,
+    "ax-run": 0.537,
+    "cc-run": 0.049
+   },
+   "total_before_millions": 201.7,
+   "cut_m2": 0.064,
+   "lean": {
+    "total_millions": 161.1,
+    "cut_m2_plus_m3": 0.201,
+    "cut_m3_vs_m2": 0.146
+   },
+   "compact": {
+    "total_millions": 141.7,
+    "cut_m2_plus_m3": 0.297,
+    "cut_m3_vs_m2": 0.249
+   }
+  }
+ }
+}
