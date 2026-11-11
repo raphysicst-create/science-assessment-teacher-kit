@@ -287,8 +287,11 @@ def build_catalog(output: Path, rounds=DEFAULT_ROUNDS, replace: bool = False,
     if output.exists() and not replace:
         raise ValueError(f"output already exists: {output}")
     activity_summary = {"overridden_items": 0, "missing_rounds": 0, "missing_items": 0}
-    records = (load_science_records(rounds) if activity_axes_dir is None else load_science_records(
-        rounds, activity_axes_dir=activity_axes_dir, activity_axes_summary=activity_summary))
+    duplicates = {}
+    records = load_science_records(
+        rounds, activity_axes_dir=activity_axes_dir,
+        activity_axes_summary=activity_summary if activity_axes_dir is not None else None,
+        duplicate_summary=duplicates)
     reference = read_json(ROOT / "data/reference/science_axes.json")
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=output.parent) as temporary:
@@ -301,6 +304,7 @@ def build_catalog(output: Path, rounds=DEFAULT_ROUNDS, replace: bool = False,
         os.replace(database, output)
     if activity_axes_dir is not None:
         result["activity_axes"] = activity_summary
+    result["repeated_documents"] = duplicates
     return result
 
 

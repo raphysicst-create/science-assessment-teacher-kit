@@ -18,7 +18,7 @@ import re
 import sqlite3
 import sys
 import zlib
-from collections import Counter, defaultdict
+from collections import Counter
 from contextlib import closing
 from pathlib import Path
 
@@ -243,9 +243,11 @@ def export_axes(output: Path, database: Path, axes_out: Path) -> dict:
     report = verify_targets(output, database)
     verdicts = {card["item_id"]: card for card in report["cards"]}
     rounds = ai.read_json(output / "selection.json")["rounds"]
-    groups = defaultdict(list)
+    # Every selected round gets a file, even one left without cards after repeated
+    # documents were dropped, because science_axes_hybrid reads each selected round.
+    groups = {source_round: [] for source_round in rounds or ()}
     for card in load_cards(database, rounds):
-        groups[card["source_round"]].append(card)
+        groups.setdefault(card["source_round"], []).append(card)
     exported = missing = missing_rounds = unverified = 0
     for source_round, cards in groups.items():
         filename = round_filename(source_round)

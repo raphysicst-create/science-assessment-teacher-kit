@@ -370,3 +370,16 @@ def test_peer_card_changes_preserve_only_per_card_hashes_and_saved_runs(workspac
     assert axes.main(run_args(workspace)) == 0
     assert ai.read_json(output / "run.json")["skipped"] == len(before) - int(not per_card)
     assert axes.verify_targets(output, database)["summary"]["cards"] == 6
+
+
+def test_export_writes_a_selected_round_left_without_cards(workspace):
+    # A round whose documents were all dropped as repeats still needs a file for hybrid.
+    empty_round = "synthetic_emptied"
+    rules = ai.read_json(workspace["rules"] / f"{ROUNDS[0]}.json")
+    save(workspace["rules"] / f"{empty_round}.json", {**rules, "items": []})
+    axes.build_targets(workspace["database"], workspace["output"], [*ROUNDS, empty_round])
+    fake_answers(workspace)
+    assert axes.main(run_args(workspace)) == 0
+    result = axes.export_axes(workspace["output"], workspace["database"], workspace["axes_out"])
+    assert result["rounds"] == 3
+    assert ai.read_json(workspace["axes_out"] / f"{empty_round}.json")["items"] == []
