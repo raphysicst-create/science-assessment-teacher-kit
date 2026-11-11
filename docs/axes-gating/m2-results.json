@@ -1,0 +1,350 @@
+{
+ "snapshot_sha256": "37a0aab70c9b5d32d490dae6dc55e7e3bff2a773e04212301a3f616e54235b62",
+ "split": {
+  "usable_cards": 3189,
+  "train_cards": 2239,
+  "test_cards": 950,
+  "train_schools": 468,
+  "test_schools": 197,
+  "schools_in_both": 0,
+  "train_agreement_all": 0.833,
+  "test_agreement_all": 0.8442
+ },
+ "rule_candidates": {
+  "E>=3": {
+   "train": {
+    "n": 276,
+    "agree": 271,
+    "rate": 0.9819,
+    "wilson95_lower": 0.9583,
+    "coverage": 0.1233
+   },
+   "test": {
+    "n": 121,
+    "agree": 120,
+    "rate": 0.9917,
+    "wilson95_lower": 0.9547,
+    "coverage": 0.1274
+   },
+   "train_selectable": false
+  },
+  "E>=3 | E>=2&보조0": {
+   "train": {
+    "n": 327,
+    "agree": 321,
+    "rate": 0.9817,
+    "wilson95_lower": 0.9606,
+    "coverage": 0.146
+   },
+   "test": {
+    "n": 154,
+    "agree": 153,
+    "rate": 0.9935,
+    "wilson95_lower": 0.9641,
+    "coverage": 0.1621
+   },
+   "train_selectable": true
+  },
+  "E>=3 | E>=2&보조<=1": {
+   "train": {
+    "n": 421,
+    "agree": 405,
+    "rate": 0.962,
+    "wilson95_lower": 0.9392,
+    "coverage": 0.188
+   },
+   "test": {
+    "n": 200,
+    "agree": 198,
+    "rate": 0.99,
+    "wilson95_lower": 0.9643,
+    "coverage": 0.2105
+   },
+   "train_selectable": false
+  },
+  "E>=3 | E>=2&S>=2": {
+   "train": {
+    "n": 285,
+    "agree": 279,
+    "rate": 0.9789,
+    "wilson95_lower": 0.9548,
+    "coverage": 0.1273
+   },
+   "test": {
+    "n": 127,
+    "agree": 125,
+    "rate": 0.9843,
+    "wilson95_lower": 0.9444,
+    "coverage": 0.1337
+   },
+   "train_selectable": false
+  },
+  "E>=2&S>=1": {
+   "train": {
+    "n": 129,
+    "agree": 122,
+    "rate": 0.9457,
+    "wilson95_lower": 0.8922,
+    "coverage": 0.0576
+   },
+   "test": {
+    "n": 75,
+    "agree": 74,
+    "rate": 0.9867,
+    "wilson95_lower": 0.9283,
+    "coverage": 0.0789
+   },
+   "train_selectable": false
+  },
+  "보조0&E>=1": {
+   "train": {
+    "n": 423,
+    "agree": 402,
+    "rate": 0.9504,
+    "wilson95_lower": 0.9253,
+    "coverage": 0.1889
+   },
+   "test": {
+    "n": 159,
+    "agree": 146,
+    "rate": 0.9182,
+    "wilson95_lower": 0.8651,
+    "coverage": 0.1674
+   },
+   "train_selectable": false
+  },
+  "E>=3 | 보조0&E>=1&S>=1": {
+   "train": {
+    "n": 303,
+    "agree": 297,
+    "rate": 0.9802,
+    "wilson95_lower": 0.9575,
+    "coverage": 0.1353
+   },
+   "test": {
+    "n": 144,
+    "agree": 143,
+    "rate": 0.9931,
+    "wilson95_lower": 0.9617,
+    "coverage": 0.1516
+   },
+   "train_selectable": false
+  },
+  "E>=3 | E>=2&보조0 | 보조0&E>=1&S>=1": {
+   "train": {
+    "n": 350,
+    "agree": 343,
+    "rate": 0.98,
+    "wilson95_lower": 0.9593,
+    "coverage": 0.1563
+   },
+   "test": {
+    "n": 167,
+    "agree": 166,
+    "rate": 0.994,
+    "wilson95_lower": 0.9669,
+    "coverage": 0.1758
+   },
+   "train_selectable": false
+  }
+ },
+ "chosen_rule": "E>=3 | E>=2&보조0",
+ "gate_equals_chosen_rule": true,
+ "compare": {
+  "M1 E>=3 (기준선)": {
+   "train": {
+    "n": 276,
+    "agree": 271,
+    "rate": 0.9819,
+    "wilson95_lower": 0.9583,
+    "coverage": 0.1233
+   },
+   "test": {
+    "n": 121,
+    "agree": 120,
+    "rate": 0.9917,
+    "wilson95_lower": 0.9547,
+    "coverage": 0.1274
+   },
+   "passes_test": false,
+   "nationwide": {
+    "cards": 8931,
+    "skipped": 877,
+    "share": 0.0982,
+    "by_round": {
+     "2026-round-1-nw1": 0.087,
+     "2026-round-1-nw2": 0.1108,
+     "2026-round-1-nw3": 0.1138,
+     "2026-round-3-nw1": 0.0536,
+     "2026-round-3-nw2": 0.0739,
+     "2026-round-3-nw3": 0.09
+    }
+   }
+  },
+  "채택 게이트 science_axes_gate": {
+   "train": {
+    "n": 327,
+    "agree": 321,
+    "rate": 0.9817,
+    "wilson95_lower": 0.9606,
+    "coverage": 0.146
+   },
+   "test": {
+    "n": 154,
+    "agree": 153,
+    "rate": 0.9935,
+    "wilson95_lower": 0.9641,
+    "coverage": 0.1621
+   },
+   "passes_test": true,
+   "nationwide": {
+    "cards": 8931,
+    "skipped": 1069,
+    "share": 0.1197,
+    "by_round": {
+     "2026-round-1-nw1": 0.1386,
+     "2026-round-1-nw2": 0.141,
+     "2026-round-1-nw3": 0.1341,
+     "2026-round-3-nw1": 0.0694,
+     "2026-round-3-nw2": 0.0865,
+     "2026-round-3-nw3": 0.1098
+    }
+   }
+  },
+  "로지스틱 회귀(학습 OOF 문턱)": {
+   "train": {
+    "n": 0,
+    "agree": 0,
+    "rate": null,
+    "wilson95_lower": null,
+    "coverage": 0.0
+   },
+   "test": {
+    "n": 0,
+    "agree": 0,
+    "rate": null,
+    "wilson95_lower": null,
+    "coverage": 0.0
+   },
+   "passes_test": false,
+   "nationwide": {
+    "cards": 8931,
+    "skipped": 0,
+    "share": 0.0,
+    "by_round": {
+     "2026-round-1-nw1": 0.0,
+     "2026-round-1-nw2": 0.0,
+     "2026-round-1-nw3": 0.0,
+     "2026-round-3-nw1": 0.0,
+     "2026-round-3-nw2": 0.0,
+     "2026-round-3-nw3": 0.0
+    }
+   },
+   "threshold": null
+  }
+ },
+ "gate_school_folds_all_usable": {
+  "0": {
+   "n": 107,
+   "agree": 106,
+   "rate": 0.9907,
+   "wilson95_lower": 0.9489,
+   "coverage": 0.1421
+  },
+  "1": {
+   "n": 110,
+   "agree": 107,
+   "rate": 0.9727,
+   "wilson95_lower": 0.9229,
+   "coverage": 0.1752
+  },
+  "2": {
+   "n": 80,
+   "agree": 79,
+   "rate": 0.9875,
+   "wilson95_lower": 0.9325,
+   "coverage": 0.1391
+  },
+  "3": {
+   "n": 98,
+   "agree": 97,
+   "rate": 0.9898,
+   "wilson95_lower": 0.9444,
+   "coverage": 0.1543
+  },
+  "4": {
+   "n": 86,
+   "agree": 85,
+   "rate": 0.9884,
+   "wilson95_lower": 0.937,
+   "coverage": 0.1438
+  }
+ },
+ "gate_output_changed": {
+  "skipped": 493,
+  "changed": 7,
+  "rate": 0.0142
+ },
+ "lr_top_weights": [
+  [
+   "ns=0",
+   0.905
+  ],
+  [
+   "tw=탐구",
+   0.621
+  ],
+  [
+   "me=4",
+   0.591
+  ],
+  [
+   "me_ms=3|0",
+   0.57
+  ],
+  [
+   "me=3",
+   0.541
+  ],
+  [
+   "p=제작",
+   0.486
+  ],
+  [
+   "m=포트폴리오",
+   0.471
+  ],
+  [
+   "me=0",
+   -0.465
+  ],
+  [
+   "me=2",
+   0.452
+  ],
+  [
+   "ev=assessment_area",
+   -0.432
+  ],
+  [
+   "me_ms=-1|-1",
+   -0.417
+  ],
+  [
+   "ra=R5-③",
+   -0.412
+  ],
+  [
+   "ns=3",
+   -0.402
+  ],
+  [
+   "ev=rubric_e",
+   0.397
+  ],
+  [
+   "me=-2",
+   -0.365
+  ]
+ ]
+}

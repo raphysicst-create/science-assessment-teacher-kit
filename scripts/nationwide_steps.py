@@ -13,7 +13,8 @@ from pathlib import Path
 
 from scripts.science_catalog_inputs import DEFAULT_ROUNDS
 
-AXES_TARGET_EXTRA = ("--per-card",)
+# M2(2026-11-11): 규칙이 확실한 카드는 활동 AI를 부르지 않는다. 비우면 예전 동작(카드마다 AI).
+AXES_TARGET_EXTRA = ("--per-card", "--skip-rule-confident")
 OUTPUT = Path("data/derived/nationwide")
 DATABASE = "data/publish/science/math_assessment_catalog_detail.sqlite"
 PUBLIC_DATABASE = "data/publish/science/math_assessment_catalog_detail.public.sqlite"

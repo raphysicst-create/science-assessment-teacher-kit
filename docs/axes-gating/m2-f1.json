@@ -1,0 +1,193 @@
+{
+ "gate_skipped_by_round": {
+  "2026-round-3": {
+   "skipped": 12,
+   "ai_primary_differs": 0
+  },
+  "2026-round-3-dev2": {
+   "skipped": 19,
+   "ai_primary_differs": 0
+  },
+  "2026-round-1-dev2": {
+   "skipped": 11,
+   "ai_primary_differs": 0
+  }
+ },
+ "public_hybrid_now": {
+  "labels": 258,
+  "paired": {
+   "numerator": 255,
+   "denominator": 258,
+   "fraction": "255/258",
+   "rate": 0.9883720930232558
+  },
+  "macro_f1_paired": {
+   "numerator": 602238328189,
+   "denominator": 660703534260,
+   "fraction": "602238328189/660703534260",
+   "rate": 0.9115106806012744,
+   "count": 10,
+   "activities": [
+    "탐구",
+    "실험평가",
+    "작성",
+    "제작",
+    "분석",
+    "추론·설명",
+    "발표·토론",
+    "계산·측정",
+    "과정평가",
+    "문제해결"
+   ]
+  },
+  "macro_f1_all_labels": {
+   "numerator": 848534924612,
+   "denominator": 936760316085,
+   "fraction": "848534924612/936760316085",
+   "rate": 0.9058186070032085,
+   "count": 10,
+   "activities": [
+    "탐구",
+    "실험평가",
+    "작성",
+    "제작",
+    "분석",
+    "추론·설명",
+    "발표·토론",
+    "계산·측정",
+    "과정평가",
+    "문제해결"
+   ]
+  },
+  "primary_accuracy_all": {
+   "numerator": 232,
+   "denominator": 255,
+   "fraction": "232/255",
+   "rate": 0.9098039215686274
+  },
+  "classifier_abstain": {
+   "numerator": 5,
+   "denominator": 255,
+   "fraction": "5/255",
+   "rate": 0.0196078431372549
+  }
+ },
+ "off": {
+  "labels": 258,
+  "paired": {
+   "numerator": 255,
+   "denominator": 258,
+   "fraction": "255/258",
+   "rate": 0.9883720930232558
+  },
+  "macro_f1_paired": {
+   "numerator": 602238328189,
+   "denominator": 660703534260,
+   "fraction": "602238328189/660703534260",
+   "rate": 0.9115106806012744,
+   "count": 10,
+   "activities": [
+    "탐구",
+    "실험평가",
+    "작성",
+    "제작",
+    "분석",
+    "추론·설명",
+    "발표·토론",
+    "계산·측정",
+    "과정평가",
+    "문제해결"
+   ]
+  },
+  "macro_f1_all_labels": {
+   "numerator": 848534924612,
+   "denominator": 936760316085,
+   "fraction": "848534924612/936760316085",
+   "rate": 0.9058186070032085,
+   "count": 10,
+   "activities": [
+    "탐구",
+    "실험평가",
+    "작성",
+    "제작",
+    "분석",
+    "추론·설명",
+    "발표·토론",
+    "계산·측정",
+    "과정평가",
+    "문제해결"
+   ]
+  },
+  "primary_accuracy_all": {
+   "numerator": 232,
+   "denominator": 255,
+   "fraction": "232/255",
+   "rate": 0.9098039215686274
+  },
+  "classifier_abstain": {
+   "numerator": 5,
+   "denominator": 255,
+   "fraction": "5/255",
+   "rate": 0.0196078431372549
+  }
+ },
+ "on": {
+  "labels": 258,
+  "paired": {
+   "numerator": 255,
+   "denominator": 258,
+   "fraction": "255/258",
+   "rate": 0.9883720930232558
+  },
+  "macro_f1_paired": {
+   "numerator": 602238328189,
+   "denominator": 660703534260,
+   "fraction": "602238328189/660703534260",
+   "rate": 0.9115106806012744,
+   "count": 10,
+   "activities": [
+    "탐구",
+    "실험평가",
+    "작성",
+    "제작",
+    "분석",
+    "추론·설명",
+    "발표·토론",
+    "계산·측정",
+    "과정평가",
+    "문제해결"
+   ]
+  },
+  "macro_f1_all_labels": {
+   "numerator": 848534924612,
+   "denominator": 936760316085,
+   "fraction": "848534924612/936760316085",
+   "rate": 0.9058186070032085,
+   "count": 10,
+   "activities": [
+    "탐구",
+    "실험평가",
+    "작성",
+    "제작",
+    "분석",
+    "추론·설명",
+    "발표·토론",
+    "계산·측정",
+    "과정평가",
+    "문제해결"
+   ]
+  },
+  "primary_accuracy_all": {
+   "numerator": 232,
+   "denominator": 255,
+   "fraction": "232/255",
+   "rate": 0.9098039215686274
+  },
+  "classifier_abstain": {
+   "numerator": 5,
+   "denominator": 255,
+   "fraction": "5/255",
+   "rate": 0.0196078431372549
+  }
+ }
+}

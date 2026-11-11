@@ -18,6 +18,7 @@ import pytest
 from scripts import build_science_catalog_db as builder
 from scripts import middle_ai_read as ai
 from scripts import science_axes_ai as axes
+from scripts import science_axes_hybrid as hybrid
 from scripts import science_catalog_inputs as inputs
 from scripts.build_math_assessment_demo import demo_records
 from scripts.dev_activity_score import load_axes
@@ -322,7 +323,8 @@ def test_source_round_names_in_db_and_missing_rule_round(workspace):
     (workspace["rules"] / f"{ROUNDS[1]}.json").unlink()
     result = axes.export_axes(workspace["output"], workspace["database"], workspace["axes_out"])
     assert result == {"rounds": 2, "exported": 2, "missing_rule_items": 3,
-                      "missing_rule_rounds": 1, "unverified_items": 0}
+                      "missing_rule_rounds": 1, "unverified_items": 0,
+                      "rule_skipped_items": 0}
     assert (workspace["axes_out"] / f"{source_round}.json").is_file()
     assert not (workspace["axes_out"] / f"{ROUNDS[1]}.json").exists()
 
@@ -383,3 +385,62 @@ def test_export_writes_a_selected_round_left_without_cards(workspace):
     result = axes.export_axes(workspace["output"], workspace["database"], workspace["axes_out"])
     assert result["rounds"] == 3
     assert ai.read_json(workspace["axes_out"] / f"{empty_round}.json")["items"] == []
+
+
+def confident(workspace, source_item_id):
+    """Make one rule item clear enough for science_axes_gate to skip the AI call."""
+    path = workspace["rules"] / f"{ROUNDS[0]}.json"
+    rules = ai.read_json(path)
+    for item in rules["items"]:
+        if item["item_id"] == source_item_id:
+            item["activity"] = {**item["activity"], "primary": "탐구", "secondary": [],
+                                "votes_e": {"탐구": 3, "분석": 1}, "rule_applied": "R5"}
+    save(path, rules)
+
+
+def test_rule_confident_cards_skip_ai_but_stay_in_hybrid(workspace):
+    database, output = workspace["database"], workspace["output"]
+    axes.build_targets(database, output, per_card=True)
+    plain = {t["target_id"] for t in ai.load_targets(output)}
+    confident(workspace, "demo-item-1")
+    result = axes.build_targets(database, output, per_card=True, skip_rule_confident=True)
+    targets = ai.load_targets(output)
+    assert result["rule_skipped"] == 1 and len(targets) == len(plain) - 1
+    assert {t["target_id"] for t in targets} < plain  # Other prompt hashes are unchanged.
+    skipped = ai.read_json(output / axes.RULE_SKIPPED)
+    assert [v["source_item_id"] for v in skipped.values()] == ["demo-item-1"]
+    assert ai.read_json(output / "selection.json")["skip_rule_confident"] is True
+    fake_answers(workspace)
+    assert axes.main(run_args(workspace)) == 0
+    report = axes.export_axes(output, database, workspace["axes_out"])
+    assert report["rule_skipped_items"] == 1 and report["unverified_items"] == 0
+    exported = ai.read_json(workspace["axes_out"] / f"{ROUNDS[0]}.json")
+    assert exported["rule_skipped"] == ["demo-item-1"]
+    assert "demo-item-1" not in {item["item_id"] for item in exported["items"]}
+    combined = hybrid.combine(exported, ai.read_json(workspace["rules"] / f"{ROUNDS[0]}.json"))
+    by_id = {item["item_id"]: item["activity"] for item in combined["items"]}
+    assert by_id["demo-item-1"]["primary"] == "탐구"
+    assert by_id["demo-item-1"]["rule_applied"] == hybrid.SKIPPED_LABEL
+    assert combined["summary"]["rule_skipped_filled"] == 1
+    # A later build without the gate clears the skip list and asks AI for that card again.
+    axes.build_targets(database, output, per_card=True)
+    assert ai.read_json(output / axes.RULE_SKIPPED) == {}
+    assert {t["target_id"] for t in ai.load_targets(output)} == plain
+
+
+def test_saved_responses_are_kept_even_when_rule_is_confident(workspace):
+    database, output = workspace["database"], workspace["output"]
+    axes.build_targets(database, output, per_card=True)
+    fake_answers(workspace)
+    assert axes.main(run_args(workspace)) == 0
+    before = ai.load_targets(output)
+    confident(workspace, "demo-item-1")
+    result = axes.build_targets(database, output, per_card=True, skip_rule_confident=True)
+    assert result["rule_skipped"] == 0 and ai.load_targets(output) == before
+    assert axes.main(run_args(workspace)) == 0
+    assert ai.read_json(output / "run.json")["skipped"] == len(before)  # All cache hits.
+
+
+def test_rule_gate_needs_per_card(workspace):
+    with pytest.raises(ValueError):
+        axes.build_targets(workspace["database"], workspace["output"], skip_rule_confident=True)

@@ -137,6 +137,7 @@ def test_step_contracts_and_gold_environment(setup, monkeypatch):
         if step.kind == "ai":
             assert step.ok_codes == (0, 3)
     assert "--per-card" in next(s for s in all_steps if s.name == "ax-targets").argv
+    assert "--skip-rule-confident" in next(s for s in all_steps if s.name == "ax-targets").argv
     with pytest.raises(ValueError):
         round_steps(cfg, 1, 3, key="2026-round-3-gold")
 

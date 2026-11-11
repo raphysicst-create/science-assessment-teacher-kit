@@ -25,3 +25,20 @@ def test_only_ai_abstentions_take_rule_activity():
     assert primaries == {"a": "탐구", "b": "실험평가", "c": None}
     assert result["summary"]["rule_fallback_filled"] == 1
     assert result["rule_version"] == hybrid.VERSION
+
+
+def test_rule_skipped_cards_stay_with_rule_activity_and_mark():
+    ai = {**axes(("a", "탐구")), "rule_skipped": ["b"]}
+    rule = axes(("a", "작성"), ("b", "실험평가"), ("c", "분석"))
+    result = hybrid.combine(ai, rule)
+    by_id = {i["item_id"]: i["activity"] for i in result["items"]}
+    assert set(by_id) == {"a", "b"}
+    assert by_id["b"] == {"primary": "실험평가", "rule_applied": hybrid.SKIPPED_LABEL}
+    assert result["summary"]["rule_skipped_filled"] == 1
+
+
+def test_files_without_rule_skipped_are_unchanged():
+    ai = axes(("a", "탐구"))
+    result = hybrid.combine(ai, axes(("a", "작성"), ("b", "분석")))
+    assert [i["item_id"] for i in result["items"]] == ["a"]
+    assert result["summary"]["rule_skipped_filled"] == 0

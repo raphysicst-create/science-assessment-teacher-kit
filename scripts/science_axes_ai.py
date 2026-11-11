@@ -3,6 +3,8 @@
 실행 .venv/Scripts/python.exe scripts/science_axes_ai.py targets --database DB
 targets --context PATH: 항목별 AI 우선 세부표 문맥으로 카드 창을 교체한다.
 targets --per-card: 카드마다 독립 지시문을 만들고 다른 카드 구성과 무관한 해시를 유지한다.
+targets --skip-rule-confident(--per-card와 함께): 규칙이 확실하고 응답이 아직 없는 카드는 목표에서
+  빼고 rule_skipped.json에 적는다. export가 회차 파일 rule_skipped에 넣고 hybrid가 규칙으로 채운다.
 이어서 run --isolated-cwd DIR [--fake-responses DIR], verify, export --axes-out DIR.
 모델 선택: run --model → MIDDLE_AI_MODEL → middle_ai_read.DEFAULT_AI_MODEL.
 검증 .venv/Scripts/python.exe -m pytest -q
@@ -26,6 +28,7 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts import middle_ai_read as ai
+from scripts import science_axes_gate as gate
 from scripts import science_card_check as check
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,6 +38,7 @@ DEFAULT_AXES_OUT = ROOT / "data/derived/axes_ai"
 DEFINITIONS = ROOT / "docs/science_activity_definitions.md"
 RULE_AXES_DIR = ROOT / "data/derived/axes"
 VERSION = "science-axes-ai-v1"
+RULE_SKIPPED = "rule_skipped.json"  # 규칙이 확실해 AI를 부르지 않은 카드(DB item_id → 회차·원 항목)
 DEFAULT_WORKERS = 6
 ACTIVITY_COUNT = 10
 CARD_FIELDS = ("item_id", "title", "method", "overview", "window")
@@ -115,26 +119,58 @@ def grouped_targets(cards: list[dict], per_card: bool = False):
         yield {**target, "target_id": digest[:16], "prompt_sha256": digest}, prompt, group
 
 
+def rule_activity(card: dict, cache: dict) -> dict | None:
+    """규칙 축의 activity. 정답 세트 회차(-gold)는 열지 않고 None."""
+    source_round = card["source_round"]
+    if "gold" in source_round.casefold():
+        return None
+    if source_round not in cache:
+        path = RULE_AXES_DIR / round_filename(source_round)
+        items = ai.read_json(path).get("items", []) if path.exists() else []
+        cache[source_round] = {item["item_id"]: item["activity"] for item in items}
+    return cache[source_round].get(card["source_item_id"])
+
+
+def skip_by_rule(output: Path, target: dict, group: list[dict], cache: dict) -> bool:
+    """규칙이 확실하고 아직 응답이 없는 카드 하나짜리 목표만 건너뛴다(저장된 응답은 그대로 쓴다)."""
+    if len(group) != 1 or (output / f"responses/{target['target_id']}.json").exists():
+        return False
+    activity = rule_activity(group[0], cache)
+    return activity is not None and gate.should_skip(activity)
+
+
 def build_targets(database: Path, output: Path, rounds: list[str] | None = None,
-                  context: Path | None = None, per_card: bool = False) -> dict:
+                  context: Path | None = None, per_card: bool = False,
+                  skip_rule_confident: bool = False) -> dict:
+    if skip_rule_confident and not per_card:
+        raise ValueError("--skip-rule-confident는 --per-card와 함께만 쓴다")
     output = checked_path(output)
     context = checked_path(context) if context is not None else None
     cards = load_cards(database, rounds, context)
-    targets = []
+    targets, skipped, cache = [], {}, {}
     for target, prompt, group in grouped_targets(cards, per_card):
+        if skip_rule_confident and skip_by_rule(output, target, group, cache):
+            card = group[0]
+            skipped[card["item_id"]] = {"source_round": card["source_round"],
+                                        "source_item_id": card["source_item_id"]}
+            continue
         ai.write_text(output / f"prompts/{target['target_id']}.md", prompt)
         if context is not None:
             target["cards"] = group
         targets.append(target)
     ai.write_text(output / "targets.jsonl", "".join(
         json.dumps(target, ensure_ascii=False) + "\n" for target in targets))
+    # Always rewrite, so a later build without the gate never inherits stale skips.
+    ai.save_json(output / RULE_SKIPPED, skipped)
     selection = {"rounds": rounds}
     if per_card:
         selection["per_card"] = True
+    if skip_rule_confident:
+        selection["skip_rule_confident"] = True
     if context is not None:
         selection["context"] = str(context)
     ai.save_json(output / "selection.json", selection)
-    return {"targets": len(targets), "cards": len(cards)}
+    return {"targets": len(targets), "cards": len(cards), "rule_skipped": len(skipped)}
 
 
 def abstention(card: dict, target_id: str) -> dict:
@@ -248,7 +284,9 @@ def export_axes(output: Path, database: Path, axes_out: Path) -> dict:
     groups = {source_round: [] for source_round in rounds or ()}
     for card in load_cards(database, rounds):
         groups.setdefault(card["source_round"], []).append(card)
-    exported = missing = missing_rounds = unverified = 0
+    skipped_path = output / RULE_SKIPPED
+    skipped = ai.read_json(skipped_path) if skipped_path.exists() else {}
+    exported = missing = missing_rounds = unverified = rule_skipped = 0
     for source_round, cards in groups.items():
         filename = round_filename(source_round)
         # This is the sole permitted gold-round file input: copy rule-axis keys only.
@@ -259,25 +297,32 @@ def export_axes(output: Path, database: Path, axes_out: Path) -> dict:
             continue
         rules = json.loads(rule_path.read_text(encoding="utf-8"))
         by_id = {item["item_id"]: item for item in rules.get("items", [])}
-        items = []
+        items, skipped_ids = [], []
         for card in cards:
             if card["source_item_id"] not in by_id:
                 missing += 1
                 continue
             if card["item_id"] not in verdicts:
-                unverified += 1
+                if card["item_id"] in skipped:
+                    skipped_ids.append(card["source_item_id"])
+                else:
+                    unverified += 1
                 continue
             items.append({**by_id[card["source_item_id"]],
                           "activity": activity_for(verdicts[card["item_id"]])})
+        rule_skipped += len(skipped_ids)
+        # science_axes_hybrid fills these item_ids from the rule axes (AI was not called).
         document = {"rule_version": VERSION, "definition_version": rules["definition_version"],
-                    "round": source_round, "items": items, "summary": axes_summary(items)}
+                    "round": source_round, "items": items, "rule_skipped": skipped_ids,
+                    "summary": axes_summary(items)}
         axes_out.mkdir(parents=True, exist_ok=True)
         # Round names may include -gold; do not relax middle_ai_read's global guard.
         (axes_out / filename).write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n",
                                          encoding="utf-8")
         exported += len(items)
     return {"rounds": len(groups), "exported": exported, "missing_rule_items": missing,
-            "missing_rule_rounds": missing_rounds, "unverified_items": unverified}
+            "missing_rule_rounds": missing_rounds, "unverified_items": unverified,
+            "rule_skipped_items": rule_skipped}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -292,6 +337,8 @@ def main(argv: list[str] | None = None) -> int:
             command.add_argument("--rounds", nargs="+")
             command.add_argument("--context", type=Path)
             command.add_argument("--per-card", action="store_true")
+            command.add_argument("--skip-rule-confident", action="store_true",
+                                 help="규칙이 확실한 카드는 AI 목표에서 뺀다(science_axes_gate)")
         elif name == "run":
             command.add_argument("--isolated-cwd", type=Path, required=True)
             command.add_argument("--workers", type=int, default=DEFAULT_WORKERS)
@@ -303,7 +350,8 @@ def main(argv: list[str] | None = None) -> int:
     try:
         output = checked_path(args.out_dir)
         if args.command == "targets":
-            result = build_targets(args.database, output, args.rounds, args.context, args.per_card)
+            result = build_targets(args.database, output, args.rounds, args.context,
+                                   args.per_card, args.skip_rule_confident)
         elif args.command == "run":
             fake = checked_path(args.fake_responses) if args.fake_responses is not None else None
             result = ai.run_targets(ROOT, None, args.isolated_cwd, workers=args.workers,
