@@ -14,7 +14,8 @@ from pathlib import Path
 from scripts.science_catalog_inputs import DEFAULT_ROUNDS
 
 # M2(2026-11-11): 규칙이 확실한 카드는 활동 AI를 부르지 않는다. 비우면 예전 동작(카드마다 AI).
-AXES_TARGET_EXTRA = ("--per-card", "--skip-rule-confident")
+# 사용자 결정(2026-11-11): 묶음 4~6은 lean 정의(M3). 저장된 full 응답은 다시 부르지 않는다.
+AXES_TARGET_EXTRA = ("--per-card", "--skip-rule-confident", "--definitions", "lean")
 OUTPUT = Path("data/derived/nationwide")
 DATABASE = "data/publish/science/math_assessment_catalog_detail.sqlite"
 PUBLIC_DATABASE = "data/publish/science/math_assessment_catalog_detail.public.sqlite"
