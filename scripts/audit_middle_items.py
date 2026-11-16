@@ -44,6 +44,26 @@ def science_course_items(items: list[dict], text: str, document: dict, excluded:
     return kept
 
 
+def load_method_checks(folder: Path, round_key: str) -> dict:
+    """Read method checks from the small side file when it is current, else the full report.
+
+    The full conversion report can be several GB; loading it took ~5x its size (11-16).
+    The side file counts only when written at or after the full report it summarizes.
+    """
+    full = folder / f"{round_key}.json"
+    side = folder / f"{round_key}.method_checks.json"
+    if side.exists() and (not full.exists() or side.stat().st_mtime >= full.stat().st_mtime):
+        return json.loads(side.read_text(encoding="utf-8"))["method_checks"]
+    if not full.exists():
+        return {}
+    report = json.loads(full.read_text(encoding="utf-8"))
+    return {
+        d["sha256"]: d["method_check_comparison"]
+        for d in report["documents"]
+        if "method_check_comparison" in d
+    }
+
+
 def audit(input_path: Path, roster: Path | None = None) -> dict:
     subjects = json.loads(input_path.read_text(encoding="utf-8"))
     schools = roster_codes(roster) if roster else None
@@ -51,17 +71,7 @@ def audit(input_path: Path, roster: Path | None = None) -> dict:
     s4 = json.loads((ROOT / f"data/derived/segments/{round_key}.json").read_text(encoding="utf-8"))
     parents = {s["segment_id"]: s for d in s4["documents"] for s in d["segments"]}
     source_documents = {d["converted_path"]: d for d in s4["documents"]}
-    comparison_path = ROOT / f"data/derived/conversion_audit/{round_key}.json"
-    comparison_report = (
-        json.loads(comparison_path.read_text(encoding="utf-8"))
-        if comparison_path.exists()
-        else {"documents": []}
-    )
-    method_checks = {
-        d["sha256"]: d["method_check_comparison"]
-        for d in comparison_report["documents"]
-        if "method_check_comparison" in d
-    }
+    method_checks = load_method_checks(ROOT / "data/derived/conversion_audit", round_key)
     matched_comparison_documents = 0
     items, documents, excluded, sections = [], [], [], []
     trace_errors = []

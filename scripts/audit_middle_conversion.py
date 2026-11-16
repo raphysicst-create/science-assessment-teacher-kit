@@ -97,6 +97,20 @@ def audit_zip(path: Path, kordoc: Path, root: Path, source: dict) -> dict:
     }
 
 
+METHOD_CHECKS_SUFFIX = ".method_checks.json"
+
+
+def method_checks_file(round_key: str, documents: list[dict]) -> dict:
+    """The only part of the report audit_middle_items reads, keyed like it reads it."""
+    return {
+        "schema_version": 1, "round": round_key,
+        "method_checks": {
+            d["sha256"]: d["method_check_comparison"]
+            for d in documents if "method_check_comparison" in d
+        },
+    }
+
+
 def audit_entries(documents: list[dict]):
     """Visit originals and their children for reporting and completion checks."""
     for document in documents:
@@ -359,6 +373,9 @@ def main() -> None:
     output = ROOT / "data/derived/conversion_audit"
     output.mkdir(parents=True, exist_ok=True)
     atomic_json(output / f"{args.round_key}.json", report)
+    # Small side file for audit_middle_items: the full report is several GB (nw5 11-16).
+    atomic_json(output / f"{args.round_key}{METHOD_CHECKS_SUFFIX}",
+                method_checks_file(args.round_key, documents))
     atomic_bytes(output / f"{args.round_key}.md", markdown_report(report).encode("utf-8"))
     print(json.dumps(report["summary"], ensure_ascii=False), flush=True)
 
