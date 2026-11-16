@@ -35,7 +35,10 @@ def atomic_json(path: Path, value: object) -> None:
     fd, name = tempfile.mkstemp(prefix=path.stem + "_", suffix=".partial", dir=path.parent)
     os.close(fd)
     temp = Path(name)
-    temp.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    # Stream to disk: building one string for a multi-GB report ran out of memory (nw5 11-16).
+    with temp.open("w", encoding="utf-8", newline="\n") as handle:
+        json.dump(value, handle, ensure_ascii=False, indent=2)
+        handle.write("\n")
     os.replace(temp, path)
 
 
