@@ -1,7 +1,9 @@
 """atomic_json writes the same bytes as before while streaming to disk.
 
-Run: .venv/Scripts/python.exe -m pytest -q services/math-assessment-api/tests/test_atomic_json_stream.py
-Why: nw5 conversion reports (several GB) hit MemoryError when the whole JSON was built as one string.
+Run: .venv/Scripts/python.exe -m pytest -q \
+    services/math-assessment-api/tests/test_atomic_json_stream.py
+Why: nw5 conversion reports (several GB) hit MemoryError when the whole JSON
+was built as one string.
 """
 
 import json
