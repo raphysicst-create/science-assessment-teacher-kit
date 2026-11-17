@@ -250,6 +250,20 @@ def deduplicate_verified(tasks, conversions):
     return result
 
 
+def unique_task_ids(tasks):
+    """Give twin tasks under one title cell distinct ids; first keeps its id.
+
+    The id hashes the title locator, so two tasks the AI read from one rowspan title
+    (nw6 숙명여중 "여러 가지 힘": 서·논술형 and 실험평가) collided and fields-merge stopped.
+    """
+    seen = set()
+    for task in tasks:
+        if task["ai_task_id"] in seen:
+            task["ai_task_id"] = digest_id("aitask_", task["ai_task_id"], task["locators"])
+        seen.add(task["ai_task_id"])
+    return tasks
+
+
 def detail_contains_other_title(task, tasks):
     detail = task["detail_locator"]
     keys = ("document_id", "child_id", "grade", "semester")
@@ -334,9 +348,10 @@ def verify_targets(root, round_key):
             raise ValueError("조각 간 원문 해시 충돌")
         verify_response(target, output, cache[path], kept, discarded, outside, uncertain)
     report = {"schema_version": 1, "rule_version": VERSION, "round": round_key,
-              "kept": finalize_details(deduplicate_verified(kept, cache), cache),
+              "kept": finalize_details(unique_task_ids(deduplicate_verified(kept, cache)), cache),
               "discarded": discarded,
-              "out_of_scope": deduplicate_verified(outside, cache), "uncertain": uncertain,
+              "out_of_scope": unique_task_ids(deduplicate_verified(outside, cache)),
+              "uncertain": uncertain,
               "targets_sha256": ai.sha(ai.read_text(output / "targets.jsonl")),
               "run_bindings": bindings, "simulated": any(b["fake"] for b in bindings.values())}
     report["summary"] = {k: len(report[k]) for k in

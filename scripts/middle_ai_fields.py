@@ -939,12 +939,16 @@ def merge_text(raw, enriched):
     expected = {i["item_id"] for i in before["items"] if is_ai(i)}
     if set(replacements) != expected or len(enriched) != len(expected):
         raise ValueError("AI 항목 집합 변경됨")
-    for item, start, end in reversed(item_slices(raw)):
+    pieces, cursor = [], 0  # join once; per-item re-slicing is quadratic in file size
+    for item, start, end in item_slices(raw):
         if is_ai(item):
             replacement = replacements[item["item_id"]]
             if not is_ai(replacement) or replacement.get("public_eligible") is not False:
                 raise ValueError("AI 항목 분류 또는 공개 상태 변경됨")
-            raw = raw[:start] + json.dumps(replacement, ensure_ascii=False, indent=2) + raw[end:]
+            pieces += [raw[cursor:start], json.dumps(replacement, ensure_ascii=False, indent=2)]
+            cursor = end
+    pieces.append(raw[cursor:])
+    raw = "".join(pieces)
     after = json.loads(raw)
     if ([i["item_id"] for i in before["items"]] != [i["item_id"] for i in after["items"]]
             or before.get("ai_relations") != after.get("ai_relations")):

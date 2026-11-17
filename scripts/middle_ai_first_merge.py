@@ -131,9 +131,13 @@ def render_merge(raw, result):
     rendered = json.dumps(result, ensure_ascii=False, indent=2) + "\n"
     originals = [raw[start:end] for _, start, end in item_slices(raw)]
     spans = item_slices(rendered)[:len(originals)]
-    for original, (_, start, end) in reversed(list(zip(originals, spans, strict=True))):
-        rendered = rendered[:start] + original + rendered[end:]
-    return rendered
+    # Join pieces once: re-slicing the whole string per item took 8 h on nw6 (11-18).
+    pieces, cursor = [], 0
+    for original, (_, start, end) in zip(originals, spans, strict=True):
+        pieces += [rendered[cursor:start], original]
+        cursor = end
+    pieces.append(rendered[cursor:])
+    return "".join(pieces)
 
 
 def merge_targets(root, round_key):
@@ -230,7 +234,8 @@ def fill_methods(root, round_key):
     details = detail_methods(root, report["items"])
     counts = {"changed_methods": 0, "changed_standards": 0,
               "changed_methods_detail_checked": 0}
-    for item, start, end in reversed(item_slices(raw)):
+    pieces, cursor = [], 0
+    for item, start, end in item_slices(raw):
         fields = entries.get(item["item_id"], {})
         replacements = {
             "method": (details.get(item["item_id"])
@@ -245,8 +250,10 @@ def fill_methods(root, round_key):
                 if name == "method" and item["item_id"] in details:
                     counts["changed_methods_detail_checked"] += 1
         if item_raw != raw[start:end]:
-            raw = raw[:start] + item_raw + raw[end:]
+            pieces += [raw[cursor:start], item_raw]
+            cursor = end
             changed += 1
     if changed:
-        ai.write_text(path, raw)
+        pieces.append(raw[cursor:])
+        ai.write_text(path, "".join(pieces))
     return {"round": round_key, "changed_items": changed, **counts}
