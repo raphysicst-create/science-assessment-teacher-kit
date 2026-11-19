@@ -151,8 +151,10 @@ def test_non_summary_is_unchanged(tmp_path, install, role):
     {"state": "ai_first_literal", "value": []},
     {"state": "plain", "value": ["서술형"], "fill_method": "ai_first"},
 ])
-def test_ai_filled_methods_are_unchanged(tmp_path, install, method):
+def test_detail_checks_win_over_ai_filled_methods(tmp_path, install, method):
+    # N2 재검수 ③: AI가 채운 요약표 값도 그 과제 세부표 체크값에 진다. 다시 돌려도 그대로.
     path, _, _ = install(detail(), method=method)
+    assert merge.fill_methods(tmp_path, ROUND)["changed_items"] == 1
     before = path.read_bytes()
     assert merge.fill_methods(tmp_path, ROUND)["changed_items"] == 0
     assert path.read_bytes() == before

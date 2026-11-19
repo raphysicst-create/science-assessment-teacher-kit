@@ -66,6 +66,11 @@ def test_course_name_in_plan_title(phrase):
     ("2회 정기시험", False), ("주제선택활동", False),
     ("모형을 이용하여 달의 위상 변화 관찰하기", False),
     ("진로탐색활동", True), ("쓸모의 재발견", True), ("즐거운수학", True),
+    # N3: 15자 넘는 강좌명도 반·교실·동아리로 끝나면 막고, 과학·주제 낱말이 있으면 둔다.
+    ("세계문학작품을함께읽고감상을나누는독서교실", True), ("함께 읽고 생각을 나누는 깊이 있는 토론반", True),
+    ("우리 동네 생태 환경을 탐사하는 탐구 동아리", False),
+    ("생활 속 신기한 원리를 찾아 보는 과학 교실", False),
+    ("학교 주변 하천의 수질을 직접 조사해 보는 활동", False),
 ])
 def test_non_science_course_names(name, blocked):
     assert is_non_science_course(name) is blocked

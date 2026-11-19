@@ -26,6 +26,9 @@ SCIENCE_TOPIC_RE = re.compile(
 )
 NOT_COURSE_VALUE_RE = re.compile(r"\d+(?:학년|학기|반)(?:\S*)")
 MAX_COURSE_NAME_CHARS = 15
+# A longer value is often prose in the course cell, so it is blocked only when it ends like a
+# class/club name (N2 review: '세계문학작품을함께읽고감상을나누는독서교실' passed as science).
+CLASS_NAME_END_RE = re.compile(r"(?:반|교실|동아리|클럽|아카데미|스쿨)$")
 NOT_COURSE_NAME_RE = re.compile(r"시험|평가|주제선택|수행|과제|계획|하기$|관찰|작성|제출")
 OTHER_COURSE_RE = re.compile(
     r"국어|도덕|사회|역사|수학|기술|가정|정보|체육|음악|미술|영어|한문|진로|중국어|일본어|"
@@ -108,4 +111,4 @@ def is_non_science_course(name: str) -> bool:
         return True
     if SCIENCE_TOPIC_RE.search(name) or NOT_COURSE_NAME_RE.search(name):
         return False
-    return len(name) <= MAX_COURSE_NAME_CHARS
+    return len(name) <= MAX_COURSE_NAME_CHARS or bool(CLASS_NAME_END_RE.search(name))

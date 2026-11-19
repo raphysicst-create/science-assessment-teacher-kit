@@ -355,3 +355,30 @@ def test_summary_column_card_numeric_row_does_not_block(workspace):
     card = next(c for c in report["cards"] if c["item_id"] == "detail")
     assert check.blocking_codes(card) == []
     assert [e["reason"] for e in card["discarded"]] == ["discarded_merged_summary_column"]
+
+
+@pytest.mark.parametrize("quote,discarded", [
+    ("만점 | 100 | 100", True), ("비율 | 20% | (30%)", True), ("배점 | 40점 | 60점", True),
+    ("만점 | 100", False), ("온도 측정 | 생태 지도 | 100", False),
+])
+def test_merged_score_only_row_does_not_block(workspace, quote, discarded):
+    # N3(N2 재검수 ①): 요약표 → 과제별 요약표 → 세부표 순서라 창 첫 줄이 이웃 제목 머리 행이
+    # 아니어도, 과제 이름 없이 점수만 있는 줄은 합친 근거가 아니다.
+    window = "\n".join(["## 가. 온도 측정하기", quote, "채점 기준 | 상 | 중"])
+    with sqlite3.connect(workspace["database"]) as db:
+        db.execute("UPDATE assessment_items SET source_html_zlib=? WHERE item_id='detail'",
+                   (zlib.compress(window.encode()),))
+    answer = response()
+    answer["tasks"][0].update(duplicate_of=None, merged=True, quote=quote)
+    assert fake_run(workspace, answer) == 0
+    report = check.verify_targets(workspace["output"], workspace["database"])
+    card = next(c for c in report["cards"] if c["item_id"] == "detail")
+    assert check.blocking_codes(card) == ([] if discarded else ["AI3:merged"])
+    assert [e["reason"] for e in card["discarded"]] == (
+        ["discarded_merged_score_row"] if discarded else [])
+
+
+def test_score_only_row_shapes():
+    assert check.score_only_row("| 비율 | 20% | (30%) |")
+    assert not check.score_only_row("만점 100 100")  # not a table row
+    assert not check.score_only_row("온도 측정 100점 + 기체 탐구 100점 | 별도 만점")

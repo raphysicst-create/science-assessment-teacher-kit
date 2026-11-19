@@ -181,6 +181,21 @@ def merged_sibling_row(quote: str, sibling_titles: tuple[str, ...]) -> bool:
     return False
 
 
+SCORE_CELL_RE = re.compile(r"\(?\d+(?:\.\d+)?\s*(?:점|%)?\)?")
+
+
+def score_only_row(quote: str) -> bool:
+    """A table row of a label and scores only ("만점 | 100 | 100"): it names no task.
+
+    N2 review: a summary score row quoted from a summary -> per-task summary -> detail
+    layout was blocked as merged (AI3). Merging needs two tasks named in the quote.
+    """
+    cells = [cell.strip(" *_") for cell in quote.strip().strip("|").split("|")]
+    values = [cell for cell in cells[1:] if cell]
+    return ("|" in quote and len(values) >= 2
+            and all(SCORE_CELL_RE.fullmatch(value) for value in values))
+
+
 def summary_column_card(window: str, sibling_titles: tuple[str, ...]) -> bool:
     """True when the window's first line is a summary header row naming a sibling card."""
     first = next((line for line in window.splitlines() if line.strip()), "")
@@ -209,6 +224,8 @@ def check_task(task: dict, card: dict, ids: set[str], verdict: dict, discarded: 
             # Rule ①: a summary-column card has no own detail table in its window,
             # so no merged evidence can lie inside its detail table.
             reason = "discarded_merged_summary_column"
+        elif kind == "merged" and score_only_row(quote):
+            reason = "discarded_merged_score_row"
         if reason:
             entry = {**evidence, "reason": reason}
             discarded.append(entry)
