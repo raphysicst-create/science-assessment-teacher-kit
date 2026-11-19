@@ -1,0 +1,829 @@
+{
+  "database_sha256_16": "cd050506ce2f2fb2",
+  "rounds": [
+    "2026-round-1-nw1",
+    "2026-round-3-nw1"
+  ],
+  "recall": {
+    "fresh3": {
+      "numerator": 0,
+      "denominator": 0,
+      "rate": null
+    },
+    "fresh4": {
+      "numerator": 0,
+      "denominator": 0,
+      "rate": null
+    },
+    "fresh6": {
+      "numerator": 28,
+      "denominator": 28,
+      "rate": 1.0
+    },
+    "total": {
+      "numerator": 28,
+      "denominator": 28,
+      "rate": 1.0
+    }
+  },
+  "unmatched_tasks": [],
+  "unmatched_cards": [],
+  "duplicate_cards": [],
+  "combined_cards": [],
+  "card_verdicts": [
+    {
+      "item_id": "31c73158f37db3c3ae9a9dfbb65d",
+      "school": "남원중학교",
+      "round": "2026-round-1-nw1",
+      "grade": 1,
+      "semester": 1,
+      "title": "생물다양성보전 홍보하기",
+      "method": "프로젝트",
+      "locator": "{\"start\":108524,\"end\":109565,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"3dd2a927213a37771506f2d4a561158b9bec569b7b96d103b86f34ce22bf920b\",\"segment_id\":\"subj_643fe1f678493b506cd67a6a592897359a58f2b5723648d9e128a872ba025fb8\"}",
+      "activity": "제작",
+      "card": "E01",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-16"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['프로젝트'], 카드='프로젝트'",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "bf3ddbf264a67ad40227d054858c",
+      "school": "남원중학교",
+      "round": "2026-round-1-nw1",
+      "grade": 1,
+      "semester": 1,
+      "title": "힘의 작용 탐구하기",
+      "method": "실험 실습, 프로젝트",
+      "locator": "{\"start\":106979,\"end\":108496,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"3dd2a927213a37771506f2d4a561158b9bec569b7b96d103b86f34ce22bf920b\",\"segment_id\":\"subj_643fe1f678493b506cd67a6a592897359a58f2b5723648d9e128a872ba025fb8\"}",
+      "activity": "추론·설명",
+      "card": "E02",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-15"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['실험 실습', '프로젝트'], 카드='실험 실습, 프로젝트'",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "94a1a82f50468d1a10c14780cf99",
+      "school": "남원중학교",
+      "round": "2026-round-1-nw1",
+      "grade": 2,
+      "semester": 1,
+      "title": "물질의 구성입자 탐구하기 (100점/20%)[서술형 60점/12%]",
+      "method": "",
+      "locator": "{\"start\":91361,\"end\":94218,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"fe3073637da703f44b3d7be36c6542c6eea2f36696fd6c02e0c38f558c657198\",\"segment_id\":\"subj_2aa810c07e44fe3ca8a688c33cd88a43b151e257df13e492482b45e779656e30\"}",
+      "activity": "추론·설명",
+      "card": "E03",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-18"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "빈칸"
+      },
+      "notes": "방법 키=['자료 해석', '서술형'], 카드=''",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "8ad59d4e659c4137daa8cd3ffdc2",
+      "school": "남원중학교",
+      "round": "2026-round-1-nw1",
+      "grade": 2,
+      "semester": 1,
+      "title": "혼합물 분리하기 (100점/20%)[서술형 80점/16%]",
+      "method": "탐구 실험, 서술형",
+      "locator": "{\"start\":88914,\"end\":91333,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"fe3073637da703f44b3d7be36c6542c6eea2f36696fd6c02e0c38f558c657198\",\"segment_id\":\"subj_2aa810c07e44fe3ca8a688c33cd88a43b151e257df13e492482b45e779656e30\"}",
+      "activity": "계산·측정",
+      "card": "E04",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-17"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['탐구 실험', '서술형'], 카드='탐구 실험, 서술형'",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "a5f9b5d5227cc0c191432eaee5ba",
+      "school": "남원중학교",
+      "round": "2026-round-3-nw1",
+      "grade": 1,
+      "semester": 2,
+      "title": "비열과 열팽창 탐구하기 (100점/20%)[서술형 60점/12%]",
+      "method": "실험실습, 서술형",
+      "locator": "{\"start\":106460,\"end\":107832,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"71b42a3f964169689619b1e78b856a9eab33ce2b8fab699689b9d3a333205e1e\",\"segment_id\":\"subj_3a58b21c9df55939b69484c0e2deae61dcb5bc308fe8911c3d982e444c36547c\"}",
+      "activity": "분석",
+      "card": "E05",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-01"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['실험실습', '서술형'], 카드='실험실습, 서술형'",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "bcc38d760fe18b7ef5bc59833204",
+      "school": "남원중학교",
+      "round": "2026-round-3-nw1",
+      "grade": 1,
+      "semester": 2,
+      "title": "지구와 달의 운동 탐구하기 (100점/15%) [서술형 80점/12%]",
+      "method": "보고서, 서술형",
+      "locator": "{\"start\":109761,\"end\":111757,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"71b42a3f964169689619b1e78b856a9eab33ce2b8fab699689b9d3a333205e1e\",\"segment_id\":\"subj_3a58b21c9df55939b69484c0e2deae61dcb5bc308fe8911c3d982e444c36547c\"}",
+      "activity": "추론·설명",
+      "card": "E06",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-03"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['보고서', '서술형'], 카드='보고서, 서술형'",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "3079b2f9b40c2a9e564d9a9a6635",
+      "school": "남원중학교",
+      "round": "2026-round-3-nw1",
+      "grade": 1,
+      "semester": 2,
+      "title": "태양과 태양계 탐구하기 (100점/15%) [서술형 80점/12%]",
+      "method": "",
+      "locator": "{\"start\":107860,\"end\":109733,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"71b42a3f964169689619b1e78b856a9eab33ce2b8fab699689b9d3a333205e1e\",\"segment_id\":\"subj_3a58b21c9df55939b69484c0e2deae61dcb5bc308fe8911c3d982e444c36547c\"}",
+      "activity": "추론·설명",
+      "card": "E07",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-02"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "빈칸"
+      },
+      "notes": "방법 키=['보고서', '산출물', '서술형'], 카드=''",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "d27fd9dc7f7987f27acc4a0bce2f",
+      "school": "남원중학교",
+      "round": "2026-round-3-nw1",
+      "grade": 2,
+      "semester": 2,
+      "title": "소화 작용 탐구하기 (100점/20%)[서술형 90점/18%]",
+      "method": "실험실습, 서술형",
+      "locator": "{\"start\":80550,\"end\":82122,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"db5e0fdef667fb10b6e189d2187e099a08b545bad9e6dfc2835a370775649522\",\"segment_id\":\"subj_9fa3bb7dc71a5128d3ab5292c9b8cf76618cfd74ef389486df85e20f235ae78e\"}",
+      "activity": "분석",
+      "card": "E08",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-05"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['실험실습', '서술형'], 카드='실험실습, 서술형'",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "ebabc23ecd480c55037c77b9f713",
+      "school": "남원중학교",
+      "round": "2026-round-3-nw1",
+      "grade": 2,
+      "semester": 2,
+      "title": "식물의 호흡과 광합성 탐구하기 (100점/20%)[서술형 60점/12%]",
+      "method": "실험실습, 서술형",
+      "locator": "{\"start\":78855,\"end\":80522,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"db5e0fdef667fb10b6e189d2187e099a08b545bad9e6dfc2835a370775649522\",\"segment_id\":\"subj_9fa3bb7dc71a5128d3ab5292c9b8cf76618cfd74ef389486df85e20f235ae78e\"}",
+      "activity": "분석",
+      "card": "E09",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-04"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['실험실습', '서술형'], 카드='실험실습, 서술형'",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "7769917cb8d0ff890c8b0ebee8f7",
+      "school": "조천중학교",
+      "round": "2026-round-1-nw1",
+      "grade": 1,
+      "semester": 1,
+      "title": "가상생물 창작하고 분류하기",
+      "method": "산출물 평가",
+      "locator": "{\"start\":133108,\"end\":133989,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"0211f88825c9cb3ae0895f47a07d8a622412aaf75def8e33204570db164354a2\",\"segment_id\":\"subj_0f00d97ab5d54691df44d1f2d33713e46172877b296fd7bbf522bdad3deee04c\"}",
+      "activity": "분석",
+      "card": "E10",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-19"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['산출물 평가'], 카드='산출물 평가'",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "938eeb29ef03ba73773e1825cae2",
+      "school": "조천중학교",
+      "round": "2026-round-1-nw1",
+      "grade": 1,
+      "semester": 1,
+      "title": "과학 신문 만들기",
+      "method": "",
+      "locator": "{\"start\":306666,\"end\":306675,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"text_field\":\"text\",\"sha256\":\"0211f88825c9cb3ae0895f47a07d8a622412aaf75def8e33204570db164354a2\",\"segment_id\":\"aiseg_125812cd06ae18b1f873d4f9\"}",
+      "activity": "제작",
+      "card": "E11",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-22"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "빈칸"
+      },
+      "notes": "방법 키=['산출물 평가', '발표'], 카드=''",
+      "match_basis": "position_shared_title"
+    },
+    {
+      "item_id": "52fdf8f3508d7a43eab4aa3312c9",
+      "school": "조천중학교",
+      "round": "2026-round-1-nw1",
+      "grade": 1,
+      "semester": 1,
+      "title": "과학 포스터 만들기",
+      "method": "",
+      "locator": "{\"start\":306647,\"end\":306657,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"text_field\":\"text\",\"sha256\":\"0211f88825c9cb3ae0895f47a07d8a622412aaf75def8e33204570db164354a2\",\"segment_id\":\"aiseg_125812cd06ae18b1f873d4f9\"}",
+      "activity": "제작",
+      "card": "E12",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-21"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "빈칸"
+      },
+      "notes": "방법 키=['산출물 평가', '발표'], 카드=''",
+      "match_basis": "position_shared_title"
+    },
+    {
+      "item_id": "7e6cba8cef1b3e699b20750d6a9c",
+      "school": "조천중학교",
+      "round": "2026-round-1-nw1",
+      "grade": 1,
+      "semester": 1,
+      "title": "열 활용 발명품 설계하기",
+      "method": "산출물 평가",
+      "locator": "{\"start\":134180,\"end\":135384,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"0211f88825c9cb3ae0895f47a07d8a622412aaf75def8e33204570db164354a2\",\"segment_id\":\"subj_0f00d97ab5d54691df44d1f2d33713e46172877b296fd7bbf522bdad3deee04c\"}",
+      "activity": "문제해결",
+      "card": "E13",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-20"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['산출물 평가'], 카드='산출물 평가'",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "6272497e9ae60c26e0c3f4ec37ce",
+      "school": "조천중학교",
+      "round": "2026-round-1-nw1",
+      "grade": 2,
+      "semester": 1,
+      "title": "광물과 암석 탐구하기",
+      "method": "서·논술형",
+      "locator": "{\"start\":81537,\"end\":83737,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"54c2bb353e6929f1e2a1272086c6a58499f1df85b6607d4842a8cfabd87482a2\",\"segment_id\":\"subj_301ec609384ea6f6a3af8161d767ddb3caaed06fa7d4f060d407a39dd68c539b\"}",
+      "activity": "추론·설명",
+      "card": "E14",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-23"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['서·논술형'], 카드='서·논술형'",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "14f3d5fe8d8e711413636d288f9e",
+      "school": "조천중학교",
+      "round": "2026-round-1-nw1",
+      "grade": 2,
+      "semester": 1,
+      "title": "빛과 소리의 특성 탐구하기",
+      "method": "서·논술형",
+      "locator": "{\"start\":83765,\"end\":86393,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"54c2bb353e6929f1e2a1272086c6a58499f1df85b6607d4842a8cfabd87482a2\",\"segment_id\":\"subj_301ec609384ea6f6a3af8161d767ddb3caaed06fa7d4f060d407a39dd68c539b\"}",
+      "activity": "추론·설명",
+      "card": "E15",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-24"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['서·논술형'], 카드='서·논술형'",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "989342e0718b19d824d30612a14d",
+      "school": "조천중학교",
+      "round": "2026-round-3-nw1",
+      "grade": 1,
+      "semester": 2,
+      "title": "상태 변화와 온도탐구하기",
+      "method": "실험, 서‧논술형",
+      "locator": "{\"start\":122057,\"end\":122804,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"42fe2b19eef46c21dfe45e864a17119db556ab082d43e58f08ac7213c737a778\",\"segment_id\":\"subj_7f22979e1fe21167f2e2c8308dfb778a6fd983d84374697930254ede888f52cd\"}",
+      "activity": "",
+      "card": "E16",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-06"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['실험', '서‧논술형'], 카드='실험, 서‧논술형'",
+      "match_basis": "title"
+    },
+    {
+      "item_id": "368656012d5b89841fe4e2859507",
+      "school": "조천중학교",
+      "round": "2026-round-3-nw1",
+      "grade": 1,
+      "semester": 2,
+      "title": "탄성력 탐구하기",
+      "method": "실험, 서‧논술형",
+      "locator": "{\"start\":122079,\"end\":122822,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"42fe2b19eef46c21dfe45e864a17119db556ab082d43e58f08ac7213c737a778\",\"segment_id\":\"subj_7f22979e1fe21167f2e2c8308dfb778a6fd983d84374697930254ede888f52cd\"}",
+      "activity": "",
+      "card": "E17",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-07"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['실험', '서‧논술형'], 카드='실험, 서‧논술형'",
+      "match_basis": "title"
+    },
+    {
+      "item_id": "9f9c3df70f6a9a434a6357d36b97",
+      "school": "조천중학교",
+      "round": "2026-round-3-nw1",
+      "grade": 2,
+      "semester": 2,
+      "title": "전기 에너지의 전환과 소비 전력탐구하기",
+      "method": "서·논술형",
+      "locator": "{\"start\":87207,\"end\":87920,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"f23bb6a9526ff7061f2eee6be7bef4c7f805581d1641b108f9ccb161f2c30cba\",\"segment_id\":\"subj_5e9b0bc6f5bdde8a96369300cfde2461aee3adb11e66acc5824c7f89f0c2983f\"}",
+      "activity": "추론·설명",
+      "card": "E18",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-08"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['서·논술형'], 카드='서·논술형'",
+      "match_basis": "title"
+    },
+    {
+      "item_id": "7a7a42bd34f9d68d9185d7101336",
+      "school": "조천중학교",
+      "round": "2026-round-3-nw1",
+      "grade": 2,
+      "semester": 2,
+      "title": "환경요인과 광합성의 관계탐구하기",
+      "method": "서·논술형",
+      "locator": "{\"start\":87240,\"end\":87938,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"f23bb6a9526ff7061f2eee6be7bef4c7f805581d1641b108f9ccb161f2c30cba\",\"segment_id\":\"subj_5e9b0bc6f5bdde8a96369300cfde2461aee3adb11e66acc5824c7f89f0c2983f\"}",
+      "activity": "추론·설명",
+      "card": "E19",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-09"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['서·논술형'], 카드='서·논술형'",
+      "match_basis": "title"
+    },
+    {
+      "item_id": "d4c40b6c9362daa8d214903fecfb",
+      "school": "조치원중학교",
+      "round": "2026-round-1-nw1",
+      "grade": 1,
+      "semester": 1,
+      "title": "물질의 상태변화탐구활동",
+      "method": "서술·논술",
+      "locator": "{\"start\":147025,\"end\":147673,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"f11fa031aee5c2dfbeb4bfe8e1e25629946412123aa97a7c9b07feb4eb4b255d\",\"segment_id\":\"assessment_69ed5ace2b089551d4fd4822162c4c787c851e3a704c174eb768bf75ddfba5ae\"}",
+      "activity": "추론·설명",
+      "card": "E20",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-25"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['서술·논술'], 카드='서술·논술'",
+      "match_basis": "position_shared_title"
+    },
+    {
+      "item_id": "42209ce94d9982a3c736a3bb757b",
+      "school": "조치원중학교",
+      "round": "2026-round-1-nw1",
+      "grade": 1,
+      "semester": 1,
+      "title": "탄성력 측정 보고서작성",
+      "method": "서술·논술",
+      "locator": "{\"start\":147046,\"end\":147687,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"f11fa031aee5c2dfbeb4bfe8e1e25629946412123aa97a7c9b07feb4eb4b255d\",\"segment_id\":\"assessment_69ed5ace2b089551d4fd4822162c4c787c851e3a704c174eb768bf75ddfba5ae\"}",
+      "activity": "추론·설명",
+      "card": "E21",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-26"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['서술·논술'], 카드='서술·논술'",
+      "match_basis": "position_shared_title"
+    },
+    {
+      "item_id": "0a69c5e41236a841bef869197424",
+      "school": "조치원중학교",
+      "round": "2026-round-1-nw1",
+      "grade": 2,
+      "semester": 1,
+      "title": "광합성 탐구 보고서",
+      "method": "서술·논술",
+      "locator": "{\"start\":151480,\"end\":152133,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"73202fbaf31794c910da18008b9fbe71e0d7ba90eaf3619f46f925b239177c67\",\"segment_id\":\"assessment_b836cb20b26fe2a37b3139587557f45faff996916e5e3e7891fc21b420e2e726\"}",
+      "activity": "추론·설명",
+      "card": "E22",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-27"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['서술·논술'], 카드='서술·논술'",
+      "match_basis": "position_shared_title"
+    },
+    {
+      "item_id": "23b684400011fdcb8d615edce85f",
+      "school": "조치원중학교",
+      "round": "2026-round-1-nw1",
+      "grade": 2,
+      "semester": 1,
+      "title": "지구계 탐구 보고서",
+      "method": "서술·논술",
+      "locator": "{\"start\":151499,\"end\":152147,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"73202fbaf31794c910da18008b9fbe71e0d7ba90eaf3619f46f925b239177c67\",\"segment_id\":\"assessment_b836cb20b26fe2a37b3139587557f45faff996916e5e3e7891fc21b420e2e726\"}",
+      "activity": "추론·설명",
+      "card": "E23",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-28"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['서술·논술'], 카드='서술·논술'",
+      "match_basis": "position_shared_title"
+    },
+    {
+      "item_id": "ce5a96f0c4dbf10eccc0a7ce0e12",
+      "school": "조치원중학교",
+      "round": "2026-round-3-nw1",
+      "grade": 1,
+      "semester": 2,
+      "title": "멸종위기생물 보호 보고서",
+      "method": "서술·논술",
+      "locator": "{\"start\":19065,\"end\":19967,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"text_field\":\"text\",\"sha256\":\"73951b7362675d459e17a75de68e78caaaa09c21896cc1fd56bbea1c82d20259\",\"segment_id\":\"aiseg_ca4537a1cb8f20bde861bd03\"}",
+      "activity": "추론·설명",
+      "card": "E24",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-11"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['서술·논술'], 카드='서술·논술'",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "38ab18cb523d72f83a4d1849d34e",
+      "school": "조치원중학교",
+      "round": "2026-round-3-nw1",
+      "grade": 1,
+      "semester": 2,
+      "title": "탐구 계획 보고서",
+      "method": "",
+      "locator": "{\"start\":17908,\"end\":17923,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"text_field\":\"text\",\"sha256\":\"73951b7362675d459e17a75de68e78caaaa09c21896cc1fd56bbea1c82d20259\",\"segment_id\":\"aiseg_ca4537a1cb8f20bde861bd03\"}",
+      "activity": "탐구",
+      "card": "E25",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-10"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "빈칸"
+      },
+      "notes": "방법 키=['서술·논술'], 카드=''",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "bc2cb474de14cacb5767ce0126cf",
+      "school": "조치원중학교",
+      "round": "2026-round-3-nw1",
+      "grade": 1,
+      "semester": 2,
+      "title": "태양계 탐구 보고서",
+      "method": "",
+      "locator": "{\"start\":19968,\"end\":19984,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"text_field\":\"text\",\"sha256\":\"73951b7362675d459e17a75de68e78caaaa09c21896cc1fd56bbea1c82d20259\",\"segment_id\":\"aiseg_ca4537a1cb8f20bde861bd03\"}",
+      "activity": "작성",
+      "card": "E26",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-12"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "빈칸"
+      },
+      "notes": "방법 키=['서술·논술'], 카드=''",
+      "match_basis": "position_unique"
+    },
+    {
+      "item_id": "82f9fbcc74388bc849c0e4696ec5",
+      "school": "조치원중학교",
+      "round": "2026-round-3-nw1",
+      "grade": 2,
+      "semester": 2,
+      "title": "전기회로실험보고서",
+      "method": "서술·논술 · 실험·실습",
+      "locator": "{\"start\":50559,\"end\":51208,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"73951b7362675d459e17a75de68e78caaaa09c21896cc1fd56bbea1c82d20259\",\"segment_id\":\"assessment_c5b8112a053bf611a6bf447e1675ee094dd15318ee9cd4f237f1d102e07252da\"}",
+      "activity": "추론·설명",
+      "card": "E27",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-14"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['서술·논술', '실험·실습'], 카드='서술·논술 · 실험·실습'",
+      "match_basis": "position_shared_title"
+    },
+    {
+      "item_id": "aa16685672eecaccdae8882b2d51",
+      "school": "조치원중학교",
+      "round": "2026-round-3-nw1",
+      "grade": 2,
+      "semester": 2,
+      "title": "주기율표 작성하기",
+      "method": "서술·논술",
+      "locator": "{\"start\":50541,\"end\":51193,\"offset_unit\":\"unicode_codepoint\",\"end_exclusive\":true,\"converter\":\"kordoc\",\"sha256\":\"73951b7362675d459e17a75de68e78caaaa09c21896cc1fd56bbea1c82d20259\",\"segment_id\":\"assessment_c5b8112a053bf611a6bf447e1675ee094dd15318ee9cd4f237f1d102e07252da\"}",
+      "activity": "추론·설명",
+      "card": "E28",
+      "set": "fresh6",
+      "task_ids": [
+        "F6-13"
+      ],
+      "verdicts": {
+        "수행평가 과제": "맞음",
+        "제목": "맞음",
+        "단원": "-",
+        "활동": "-",
+        "방법": "맞음"
+      },
+      "notes": "방법 키=['서술·논술'], 카드='서술·논술'",
+      "match_basis": "position_shared_title"
+    }
+  ],
+  "verdict_counts": {
+    "cards": 28,
+    "columns": {
+      "수행평가 과제": {
+        "맞음": 28
+      },
+      "제목": {
+        "맞음": 28
+      },
+      "단원": {
+        "-": 28
+      },
+      "활동": {
+        "-": 28
+      },
+      "방법": {
+        "맞음": 22,
+        "빈칸": 6
+      }
+    }
+  },
+  "verdict_counts_by_set": {
+    "fresh3": {
+      "cards": 0,
+      "columns": {
+        "수행평가 과제": {},
+        "제목": {},
+        "단원": {},
+        "활동": {},
+        "방법": {}
+      }
+    },
+    "fresh4": {
+      "cards": 0,
+      "columns": {
+        "수행평가 과제": {},
+        "제목": {},
+        "단원": {},
+        "활동": {},
+        "방법": {}
+      }
+    },
+    "fresh6": {
+      "cards": 28,
+      "columns": {
+        "수행평가 과제": {
+          "맞음": 28
+        },
+        "제목": {
+          "맞음": 28
+        },
+        "단원": {
+          "-": 28
+        },
+        "활동": {
+          "-": 28
+        },
+        "방법": {
+          "맞음": 22,
+          "빈칸": 6
+        }
+      }
+    }
+  },
+  "public_card_ids": [
+    "31c73158f37db3c3ae9a9dfbb65d",
+    "bf3ddbf264a67ad40227d054858c",
+    "94a1a82f50468d1a10c14780cf99",
+    "8ad59d4e659c4137daa8cd3ffdc2",
+    "a5f9b5d5227cc0c191432eaee5ba",
+    "bcc38d760fe18b7ef5bc59833204",
+    "3079b2f9b40c2a9e564d9a9a6635",
+    "d27fd9dc7f7987f27acc4a0bce2f",
+    "ebabc23ecd480c55037c77b9f713",
+    "7769917cb8d0ff890c8b0ebee8f7",
+    "938eeb29ef03ba73773e1825cae2",
+    "52fdf8f3508d7a43eab4aa3312c9",
+    "7e6cba8cef1b3e699b20750d6a9c",
+    "6272497e9ae60c26e0c3f4ec37ce",
+    "14f3d5fe8d8e711413636d288f9e",
+    "989342e0718b19d824d30612a14d",
+    "368656012d5b89841fe4e2859507",
+    "9f9c3df70f6a9a434a6357d36b97",
+    "7a7a42bd34f9d68d9185d7101336",
+    "d4c40b6c9362daa8d214903fecfb",
+    "42209ce94d9982a3c736a3bb757b",
+    "0a69c5e41236a841bef869197424",
+    "23b684400011fdcb8d615edce85f",
+    "ce5a96f0c4dbf10eccc0a7ce0e12",
+    "38ab18cb523d72f83a4d1849d34e",
+    "bc2cb474de14cacb5767ce0126cf",
+    "82f9fbcc74388bc849c0e4696ec5",
+    "aa16685672eecaccdae8882b2d51"
+  ]
+}
