@@ -1,0 +1,230 @@
+{
+ "database": "data/publish/science/math_assessment_catalog_detail.public.sqlite",
+ "database_sha256": "cd050506ce2f2fb22164a75b2a3bc34930524c80ca7b7db9166b31db5ae7b6a0",
+ "cards": [
+  {
+   "card": "F01",
+   "item_id": "b0be0401977559ff6cd432913921"
+  },
+  {
+   "card": "F02",
+   "item_id": "2ea2794770509ce57f55edbf1a7e"
+  },
+  {
+   "card": "F03",
+   "item_id": "d0f3b4e22d25fe82b4978fd16a5d"
+  },
+  {
+   "card": "F04",
+   "item_id": "fce421b15c9be0cc1f39b95884c0"
+  },
+  {
+   "card": "F05",
+   "item_id": "fb3cd00c50407e663f2ef023ec8e"
+  },
+  {
+   "card": "F06",
+   "item_id": "60c1d84d4fd97e9dc25b8171bfe0"
+  },
+  {
+   "card": "F07",
+   "item_id": "a04026c456746b5f72b650f1e60e"
+  },
+  {
+   "card": "F08",
+   "item_id": "6925baaf47018f60941f27aed159"
+  },
+  {
+   "card": "F09",
+   "item_id": "61a2c627a41d633555b5d9f37e43"
+  },
+  {
+   "card": "F10",
+   "item_id": "fe40f7586cbeef86c113845dffea"
+  },
+  {
+   "card": "F11",
+   "item_id": "bf0291bda3f43e58ee43479f558f"
+  },
+  {
+   "card": "F12",
+   "item_id": "f605e5c01d350088ccbd0964063d"
+  },
+  {
+   "card": "F13",
+   "item_id": "67ae8fb536e3f9f84bc17b845c16"
+  },
+  {
+   "card": "F14",
+   "item_id": "f74b6569a5d296f4caf2ee48f4ba"
+  },
+  {
+   "card": "F15",
+   "item_id": "7ca28197f64fe411d58d02f8e87b"
+  },
+  {
+   "card": "F16",
+   "item_id": "6031b7932a1fe68b14b356639958"
+  },
+  {
+   "card": "F17",
+   "item_id": "198891568f39f6d99bc93997450e"
+  },
+  {
+   "card": "F18",
+   "item_id": "003da4d6b35cb3a3371f23c26964"
+  },
+  {
+   "card": "F19",
+   "item_id": "d0d6ad53c18973f1acbb85789b1a"
+  },
+  {
+   "card": "F20",
+   "item_id": "2614a11ced1c2c968a3f002b3760"
+  },
+  {
+   "card": "F21",
+   "item_id": "2e034f508fdc7b5137f1cac71e6e"
+  },
+  {
+   "card": "F22",
+   "item_id": "a5c000eb10f8b3f29b28fc7c0c86"
+  },
+  {
+   "card": "F23",
+   "item_id": "5fb615008544fda99f3ed3c8e01d"
+  },
+  {
+   "card": "F24",
+   "item_id": "a7c4f78ea50f5ef37e0bb3cd2387"
+  },
+  {
+   "card": "F25",
+   "item_id": "b6bddfba9594a06c8b18469d7e3a"
+  },
+  {
+   "card": "F26",
+   "item_id": "43b8e29156bb4fc1ea30d89ea035"
+  },
+  {
+   "card": "F27",
+   "item_id": "bf4525515c5d2806daa116a7796d"
+  },
+  {
+   "card": "F28",
+   "item_id": "8de83012c775417b3d81af637bb4"
+  },
+  {
+   "card": "F29",
+   "item_id": "84f9b139adc0640ff2ec12e908c4"
+  },
+  {
+   "card": "F30",
+   "item_id": "bb5f8d4f0e66c8eff0450fd62167"
+  },
+  {
+   "card": "F31",
+   "item_id": "a246be21c12acffc1673d3ae9a53"
+  },
+  {
+   "card": "F32",
+   "item_id": "6b6c135ef6ae529f16280af91090"
+  },
+  {
+   "card": "F33",
+   "item_id": "f478318dcde22e92b554717e874a"
+  },
+  {
+   "card": "F34",
+   "item_id": "944c27fcf5a241685b84c0ad6021"
+  },
+  {
+   "card": "F35",
+   "item_id": "b0f947ce0c3bad80c17302f13e5a"
+  },
+  {
+   "card": "F36",
+   "item_id": "6094703f316ddcebfa35cb166601"
+  },
+  {
+   "card": "F37",
+   "item_id": "bae8ea8a38d93478b7179ce7bdae"
+  },
+  {
+   "card": "F38",
+   "item_id": "7b0b583326c17e0604229a60cea4"
+  },
+  {
+   "card": "F39",
+   "item_id": "043190bbad0e13db1f6c90a72283"
+  },
+  {
+   "card": "F40",
+   "item_id": "ca9d193c04ff090abcd5482dade9"
+  },
+  {
+   "card": "F41",
+   "item_id": "5d7e6c01dc1060b675d08a676f2e"
+  },
+  {
+   "card": "F42",
+   "item_id": "e0feaad1666643e4419f562d6e0b"
+  },
+  {
+   "card": "F43",
+   "item_id": "3209fdd188fe4bf4fc449593bf1f"
+  },
+  {
+   "card": "F44",
+   "item_id": "1b654521f6a92d03717ebdab58ff"
+  },
+  {
+   "card": "F45",
+   "item_id": "b91f643ccf502af8908382b11af4"
+  },
+  {
+   "card": "F46",
+   "item_id": "8a92a885b23afd30fe9fd3dd675b"
+  },
+  {
+   "card": "F47",
+   "item_id": "1b94b55d6204d8982bc8491c4422"
+  },
+  {
+   "card": "F48",
+   "item_id": "1e50bad3df3e5345d52d9476197d"
+  },
+  {
+   "card": "F49",
+   "item_id": "2675a1464a623b54522497752858"
+  },
+  {
+   "card": "F50",
+   "item_id": "b54fbce81bd09d1b3108fb461a6d"
+  },
+  {
+   "card": "F51",
+   "item_id": "da8eb402076b06ff8ec5415b9117"
+  },
+  {
+   "card": "F52",
+   "item_id": "c5816da926232b44d67edccec4a3"
+  },
+  {
+   "card": "F53",
+   "item_id": "d729c43a6a41afafbf612ff72c8d"
+  },
+  {
+   "card": "F54",
+   "item_id": "8563391924bf704fa66cb8124c34"
+  },
+  {
+   "card": "F55",
+   "item_id": "db3795172428a795bdcdd84637cc"
+  },
+  {
+   "card": "F56",
+   "item_id": "42af481a1510f516bc4132543137"
+  }
+ ]
+}
