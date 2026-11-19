@@ -66,6 +66,8 @@ def build_parser(description: str) -> argparse.ArgumentParser:
                            default=DEFAULT_WORKERS)
         start.add_argument("--sequential-rounds", action="store_true",
                            help="run round 3 then round 1 instead of two threads")
+        start.add_argument("--publish-last", action="store_true",
+                           help="publish and gate only after the last listed bundle")
         start.add_argument("--isolated-cwd", type=Path, default=DEFAULT_ISOLATED_CWD)
         start.add_argument("--wait-seconds", type=float, default=DEFAULT_WAIT_SECONDS)
         start.add_argument("--restart-on-failure", type=int, default=restarts)
@@ -101,6 +103,7 @@ def launch(cfg: Config, restart_on_failure: int = DEFAULT_LAUNCH_RESTARTS, *,
             "--wait-seconds", str(cfg.wait_seconds),
             "--max-step-failures", str(max_step_failures),
             *(("--sequential-rounds",) if cfg.sequential_rounds else ()),
+            *(("--publish-last",) if cfg.publish_last else ()),
             "--restart-on-failure", str(restart_on_failure)]
     options = ({"creationflags": DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP}
                if (platform or os.name) == "nt" else {"start_new_session": True})

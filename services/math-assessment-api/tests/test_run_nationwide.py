@@ -507,3 +507,19 @@ def test_changed_roster_restarts_affected_round_and_publication(setup):
     assert not any(key == round_key(1, 3) for key, _, _ in new_calls)
     assert "build0" in [name for _, name, _ in new_calls]
     assert load_state(cfg.root)["bundles"]["1"]["school_count"] == 2
+
+
+def test_publish_last_runs_publish_and_gates_once(setup):
+    # N3 재실행: 묶음마다 공개판·게이트를 돌리지 않고 마지막 묶음 뒤에 한 번만 돈다.
+    cfg, fake = setup
+    cfg = replace(cfg, bundles=(1, 2), publish_last=True)
+    assert fake.run(cfg) == 0
+    names = fake.names()
+    publish = [s.name for s in publish_steps(cfg, ())]
+    assert names.count(publish[0]) == 1 and names.count("detail") == 1
+    assert names.index(publish[0]) > max(i for i, n in enumerate(names) if n == "axes")
+    state = load_state(cfg.root)
+    assert state["bundles"]["1"]["status"] == "rounds_done"
+    assert state["bundles"]["2"]["status"] == "done"
+    count = len(fake.calls)
+    assert fake.run(cfg) == 0 and len(fake.calls) == count

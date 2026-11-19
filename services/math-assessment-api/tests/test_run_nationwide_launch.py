@@ -407,3 +407,16 @@ def test_posix_liveness_injects_signal_check(error, expected):
     assert pid_is_alive(123, platform="posix", kill=kill) is expected
     assert calls == [(123, 0)]
     assert pid_is_alive(0, platform="posix", kill=kill) is False
+
+
+def test_publish_last_cli_is_forwarded(tmp_path, monkeypatch):
+    calls = []
+
+    def popen(argv, **kwargs):
+        assert "--publish-last" in argv
+        calls.append(launcher.build_parser("").parse_args(argv[2:]))
+        return SimpleNamespace(pid=123)
+
+    assert runner.main(["launch", "--bundles", "1-6", "--publish-last"],
+                       root=tmp_path, popen=popen) == 0
+    assert calls[0].publish_last is True

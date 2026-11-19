@@ -44,6 +44,9 @@ class Config:
     isolated_cwd: Path = DEFAULT_ISOLATED_CWD
     wait_seconds: float = DEFAULT_WAIT_SECONDS
     sequential_rounds: bool = False
+    # Re-runs: publish and gate once, after the last listed bundle (N3: one nationwide
+    # publish took ~15 h; six of them would add days).
+    publish_last: bool = False
 
 
 @dataclass(frozen=True)

@@ -379,7 +379,7 @@ def main(argv=None, *, root=None, popen=None, pid_alive=None) -> int:
     if not isolated.is_absolute():
         isolated = project / isolated
     cfg = Config(project, args.bundles, args.model, args.workers, isolated, args.wait_seconds,
-                 args.sequential_rounds)
+                 args.sequential_rounds, args.publish_last)
     if args.command == "launch":
         return launch(cfg, args.restart_on_failure, max_step_failures=args.max_step_failures,
                       popen=popen)

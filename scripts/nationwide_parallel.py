@@ -124,6 +124,10 @@ def run_bundle(runner, bundle: int, run_gates) -> None:
     try:
         runner.prepare_bundle(bundle)
         run_rounds(runner, bundle)
+        if runner.cfg.publish_last and bundle != max(runner.cfg.bundles):
+            with runner.checkpoint.edit():
+                runner.checkpoint.state["bundles"][str(bundle)]["status"] = "rounds_done"
+            return
         with runner.checkpoint.edit():
             publish = runner.scope(bundle, "publish")
             if "rounds" not in publish:

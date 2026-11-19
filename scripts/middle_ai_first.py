@@ -19,6 +19,7 @@ from pathlib import Path
 if __package__:
     from . import middle_ai_read as ai
     from .course_subject import course_name_before, is_non_science_course
+    from .listed_task_cells import task_column_lines
     from .middle_ai_first_merge import VERSION, fill_methods, merge_targets
     from .middle_ai_first_merge import merge_report as merge_report
     from .middle_fields import method_literal
@@ -33,6 +34,7 @@ if __package__:
 else:
     import middle_ai_read as ai
     from course_subject import course_name_before, is_non_science_course
+    from listed_task_cells import task_column_lines
     from middle_ai_first_merge import VERSION, fill_methods, merge_targets
     from middle_ai_first_merge import merge_report as merge_report
     from middle_fields import method_literal
@@ -70,15 +72,19 @@ def select_windows(document, sections, filename, conversion):
     return "excluded", [], reason or "과학 대상 창 없음"
 
 
-def document_targets(output, template, metadata, mode, windows, text_sha256, text):
+def document_targets(output, template, metadata, mode, windows, text_sha256, text,
+                     task_unit_c=""):
+    """Plan C text only in chunks with a listed task cell; others keep cached answers (N3)."""
     lines, starts = ai.line_index(text)
+    listed = task_column_lines(text) if task_unit_c else []
     targets = []
     for lo, hi in windows:
         for left, right in ai.split_window(lines, lo, hi, limit=60_000, overlap=3_000):
             identity = digest_id("aif_", VERSION, metadata["round"], metadata["document_id"],
                                  left, right, text_sha256)
             numbered = "".join(f"{i}\t{lines[i - 1]}" for i in range(left, right + 1))
-            prompt = (template + "\n\n## 참고 메타데이터\n\n"
+            extra = task_unit_c if any(left <= n <= right for n in listed) else ""
+            prompt = (template + extra + "\n\n## 참고 메타데이터\n\n"
                       + json.dumps(metadata, ensure_ascii=False) + "\n\n"
                       + f"## 원문 (문서 전체 기준 {left}–{right}줄)\n\n" + numbered)
             targets.append({**metadata, "target_id": identity, "mode": mode,
@@ -96,6 +102,7 @@ def build_targets(root: Path, round_key: str) -> dict:
     documents = ai.read_json(root / f"data/derived/segments/{round_key}.json")["documents"]
     sections = ai.read_json(root / f"data/derived/subjects/{round_key}.json")["sections"]
     template = ai.read_text(root / "scripts/prompts/middle_ai_first_v1.md")
+    task_unit_c = ai.read_text(root / "scripts/prompts/middle_ai_first_task_unit_c.md")
     targets, selected, excluded = [], [], []
     for document in documents:
         identity, source = document["document_id"], document["source"]
@@ -118,7 +125,8 @@ def build_targets(root: Path, round_key: str) -> dict:
                     "grade_candidates": ai.metadata_candidates(document, local, "grade"),
                     "semester_candidates": ai.metadata_candidates(document, local, "semester")}
         targets.extend(document_targets(output, template, metadata, mode, windows,
-                                        document["text_sha256"], conversion["text"]))
+                                        document["text_sha256"], conversion["text"],
+                                        task_unit_c))
     ai.write_text(output / "targets.jsonl", "".join(
         json.dumps(t, ensure_ascii=False) + "\n" for t in targets))
     summary = {"round": round_key, "selection_mode": "first", "documents": len(selected),

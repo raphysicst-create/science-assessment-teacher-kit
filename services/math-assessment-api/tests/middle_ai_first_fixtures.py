@@ -31,8 +31,9 @@ def offline(monkeypatch):
 
 @pytest.fixture
 def root(tmp_path):
-    template = ai.read_text(PROJECT / "scripts/prompts/middle_ai_first_v1.md")
-    ai.write_text(tmp_path / "scripts/prompts/middle_ai_first_v1.md", template)
+    for name in ("middle_ai_first_v1.md", "middle_ai_first_task_unit_c.md"):
+        ai.write_text(tmp_path / f"scripts/prompts/{name}",
+                      ai.read_text(PROJECT / f"scripts/prompts/{name}"))
     install_documents(tmp_path, [("science", "과학 평가계획.hwp", TEXT)])
     return tmp_path
 
