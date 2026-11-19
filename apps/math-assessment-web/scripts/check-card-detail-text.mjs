@@ -18,9 +18,10 @@ const QUIET_MS = 500;
 // 방문자 카운터는 카드 내용이 아니고 API가 분당 12회로 제한한다(429). 이 경로의 오류만 실패로 세지 않는다.
 const IGNORED_ERROR_PATHS = ["/api/v1/visitors"];
 const HEIGHT = 844;
+// Chrome first: headless Edge exits 0 at once while an Edge update is pending (11-12, 11-16).
 const BROWSER_PATHS = [
-  "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
   "C:/Program Files/Google/Chrome/Application/chrome.exe",
+  "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
 ];
 const TEXT_PATTERN = /<\s*\/?\s*(?:table|thead|tbody|tfoot|tr|td|th|caption|colgroup|col)(?=[\s/>]|$)[^>\n]*(?:>|(?=\n|$))|&(?:lt|gt|amp|quot|apos|nbsp|#\d+|#x[\da-f]+);/gi;
 

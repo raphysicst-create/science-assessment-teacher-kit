@@ -26,6 +26,18 @@ ROOT = Path(__file__).resolve().parents[1]
 COMPARISON_FIELDS = ("check_count", "empty_check_count", "science_code_count")
 
 
+def report_converter(result: dict) -> dict:
+    """Converter observation as written: no text, and PDF line layout as a count only.
+
+    `surfaces` (every PDF line with its box) was 94% of the report (nw2 round 1) and
+    nothing reads it back; the full report passed 4 GB per round on nw5/nw6 (11-19).
+    """
+    kept = {key: value for key, value in result.items() if key not in {"text", "surfaces"}}
+    if "surfaces" in result:
+        kept["surface_count"] = len(result["surfaces"])
+    return kept
+
+
 def compare_pdf(direct: dict, structured: dict) -> dict:
     """A failed converter has unknown counts, not evidence of zero source ink."""
     if "failed" in {direct["conversion_status"], structured["conversion_status"]}:
@@ -63,7 +75,7 @@ def audit_zip(path: Path, kordoc: Path, root: Path, source: dict) -> dict:
             "method_check_comparison",
         }}
         kind = Path(child["member_name"]).suffix.lower().lstrip(".")
-        converters = {child["converter"]: result}
+        converters = {child["converter"]: report_converter(result)}
         comparisons = {}
         if kind == "pdf":
             # A member read failure has no converter observations, but still
@@ -77,7 +89,8 @@ def audit_zip(path: Path, kordoc: Path, root: Path, source: dict) -> dict:
                     "text_layer_status", child["conversion_status"],
                 )}
                 structured = child["kordoc"]
-            converters = {"pymupdf": direct, "kordoc": structured}
+            converters = {"pymupdf": report_converter(direct),
+                          "kordoc": report_converter(structured)}
             comparisons = {
                 "pdf_comparison": compare_pdf(direct, structured),
                 "method_check_comparison": compare_method_rows(
@@ -85,7 +98,7 @@ def audit_zip(path: Path, kordoc: Path, root: Path, source: dict) -> dict:
                 ),
             }
         children.append(conversion_metadata({
-            **result, "filename": child["member_name"], "format": kind,
+            **report_converter(result), "filename": child["member_name"], "format": kind,
             "sha256_prefix": child.get("sha256", "")[:12], "audit_status": "converted",
             "converters": converters, **comparisons,
         }))
@@ -153,10 +166,7 @@ def audit_document(row: dict, root: Path, kordoc: Path) -> dict:
         record["method_check_comparison"] = compare_method_rows(
             direct, structured, provenance["sha256"],
         )
-    record["converters"] = {
-        name: {key: value for key, value in result.items() if key != "text"}
-        for name, result in converters.items()
-    }
+    record["converters"] = {name: report_converter(result) for name, result in converters.items()}
     # Re-hash after both converters, verifying that originals stayed intact.
     with path.open("rb") as stream:
         if hashlib.file_digest(stream, "sha256").hexdigest() != provenance["sha256"]:

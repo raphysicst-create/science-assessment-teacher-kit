@@ -110,6 +110,9 @@ def verified_input(root, round_key):
     if verified["targets_sha256"] != ai.sha(ai.read_text(output / "targets.jsonl")):
         raise ValueError("targets가 변경됨. verify를 다시 실행해야 함")
     targets = {t["target_id"]: t for t in ai.load_targets(output)}
+    # Many tasks share one converted document: check each (path, hash) once.
+    # nw6 round 3 re-read 1,297 documents for 5,293 tasks, 526 s -> 137 s (11-19).
+    checked_conversions = set()
     try:
         for identity, binding in verified["run_bindings"].items():
             status = ai.read_json(output / f"responses/{identity}.status.json")
@@ -120,7 +123,10 @@ def verified_input(root, round_key):
             if (not task["target_ids"]
                     or not set(task["target_ids"]) <= verified["run_bindings"].keys()):
                 raise ValueError("과제 실행 바인딩 누락")
-            ai.conversion_for(root, task)
+            key = (task["converted_path"], task["text_sha256"])
+            if key not in checked_conversions:
+                ai.conversion_for(root, task)
+                checked_conversions.add(key)
     except (OSError, KeyError, TypeError) as error:
         raise ValueError("검증 바인딩 변경 또는 누락. verify 필요") from error
     return verified
