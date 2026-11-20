@@ -25,6 +25,7 @@ from scripts.nationwide_steps import (
     OUTPUT,
     Config,
     child_env,
+    publish_steps,
     round_steps,
 )
 
@@ -77,8 +78,12 @@ def build_parser(description: str) -> argparse.ArgumentParser:
     status.add_argument("--json", action="store_true")
     reset = commands.add_parser("reset", help="clear round stages and later publication/gates")
     reset.add_argument("--bundles", type=parse_bundles, required=True)
-    reset.add_argument("--from", dest="from_step", required=True,
-                       choices=[step.name for step in round_steps(Config(Path(".")), 1, 3)])
+    start_at = reset.add_mutually_exclusive_group(required=True)
+    start_at.add_argument("--from", dest="from_step",
+                          choices=[step.name for step in round_steps(Config(Path(".")), 1, 3)])
+    start_at.add_argument("--publish-from", dest="publish_from",
+                          choices=[step.name for step in publish_steps(Config(Path(".")), ())],
+                          help="keep rounds; clear this publication step, later ones and gates")
     return parser
 
 

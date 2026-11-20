@@ -19,7 +19,14 @@ from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 
-from scripts.nationwide_steps import OUTPUT, ROUND_ORDER, Config, round_key, round_steps
+from scripts.nationwide_steps import (
+    OUTPUT,
+    ROUND_ORDER,
+    Config,
+    publish_steps,
+    round_key,
+    round_steps,
+)
 
 STATE_VERSION = 1
 REPEATED_FAILURE_CODE = 7
@@ -193,6 +200,35 @@ def reset(root: Path, bundles: tuple[int, ...], from_step: str) -> int:
                 state["status"] = "pending"
                 state.pop("last_stop", None)
             checkpoint.event("reset", bundles=list(bundles), from_step=from_step)
+        return 0
+    except sqlite3.OperationalError as error:
+        if "locked" not in str(error).casefold():
+            raise
+        print("nationwide runner is already locked", file=sys.stderr)
+        return 5
+
+
+def reset_publication(root: Path, bundles: tuple[int, ...], from_step: str) -> int:
+    """Keep finished rounds and earlier publication steps; rerun from_step onward and gates."""
+    names = [step.name for step in publish_steps(Config(root), ())]
+    following = names[names.index(from_step):]
+    try:
+        with runner_lock(root):
+            checkpoint = Checkpoint(root)
+            with checkpoint.edit() as state:
+                for number, bundle in state["bundles"].items():
+                    if int(number) not in bundles:
+                        continue
+                    publish = bundle.get("publish")
+                    if publish is not None:
+                        for name in following:
+                            publish["steps"].pop(name, None)
+                        publish["status"] = "pending"
+                    bundle.pop("gate", None)
+                    bundle["status"] = "pending"
+                state["status"] = "pending"
+                state.pop("last_stop", None)
+            checkpoint.event("reset", bundles=list(bundles), publish_from=from_step)
         return 0
     except sqlite3.OperationalError as error:
         if "locked" not in str(error).casefold():

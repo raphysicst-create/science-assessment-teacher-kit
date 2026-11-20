@@ -83,3 +83,30 @@ def test_reset_rejects_non_round_steps_without_touching_state(tmp_path, name):
     with pytest.raises(SystemExit) as error:
         runner.main(["reset", "--bundles", "1", "--from", name], root=tmp_path)
     assert error.value.code == 2 and not (tmp_path / OUTPUT).exists()
+
+
+def test_publish_from_keeps_rounds_and_earlier_publication_steps(tmp_path):
+    before = completed_checkpoint(tmp_path)
+    names = [step.name for step in runner.publish_steps(Config(tmp_path), ())]
+    split = names.index("exclusions")
+    with Checkpoint(tmp_path).edit() as state:
+        state["bundles"]["3"]["publish"]["steps"] = {name: {"status": "done"} for name in names}
+    assert runner.main(["reset", "--bundles", "3", "--publish-from", "exclusions"],
+                       root=tmp_path) == 0
+    state = load_state(tmp_path)
+    entry = state["bundles"]["3"]
+    assert list(entry["publish"]["steps"]) == names[:split]
+    assert entry["publish"]["status"] == "pending" and entry["publish"]["rounds"]
+    assert "gate" not in entry and entry["status"] == "pending"
+    assert entry["rounds"] == before["bundles"]["3"]["rounds"]
+    for number in ("1", "2"):
+        assert state["bundles"][number] == before["bundles"][number]
+    assert state["status"] == "pending" and "last_stop" not in state
+    assert names.index("corrections") == split + 1
+
+
+def test_reset_needs_exactly_one_start(tmp_path):
+    with pytest.raises(SystemExit) as error:
+        runner.main(["reset", "--bundles", "1", "--from", "items", "--publish-from", "exclusions"],
+                    root=tmp_path)
+    assert error.value.code == 2 and not (tmp_path / OUTPUT).exists()

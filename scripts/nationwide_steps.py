@@ -173,6 +173,8 @@ def publish_steps(cfg: Config, rounds: tuple[str, ...]) -> list[Step]:
                     "--risk-queue", "data/derived/science_audit/risk-queue.csv",
                     "--risk-queue", f"{cards}/card-exclusions.csv", "--output", PUBLIC_DATABASE,
                     "--report", "data/derived/science_audit/publication-exclusions.json"),
+        python_step(cfg, "corrections", "apply_confirmed_corrections", "--database", PUBLIC_DATABASE,
+                    "--report", "data/derived/science_audit/confirmed-corrections.json"),
         python_step(cfg, "audit-public", "run_science_audits", "--database", PUBLIC_DATABASE,
                     "--out-dir", "data/derived/science_audit_public", "--card-verified",
                     f"{cards}/verified.json", env={"MATH_ASSESSMENT_DETAIL_DB": PUBLIC_DATABASE}),

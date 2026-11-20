@@ -45,6 +45,7 @@ from scripts.nationwide_state import (  # noqa: E402
     load_state,
     now,
     reset,
+    reset_publication,
     runner_lock,
     status_text,
 )
@@ -370,6 +371,8 @@ def main(argv=None, *, root=None, popen=None, pid_alive=None) -> int:
               else status_text(state, pid_alive=pid_alive))
         return 0
     if args.command == "reset":
+        if args.publish_from:
+            return reset_publication(project, args.bundles, args.publish_from)
         return reset(project, args.bundles, args.from_step)
     if (args.workers < 1 or args.max_step_failures < 1 or args.wait_seconds < 0
             or args.restart_on_failure < 0):
