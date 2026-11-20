@@ -65,12 +65,20 @@
 
 추천 이유: 북극성 지표는 정밀도와 재현율이고, 이번 미달은 두 유형 모두 코드로 잡을 수 있다. 재현율(0.917)과 게이트는 이미 통과했으므로 다시 돌려도 잃을 것이 적다. 배포는 되돌리기 어려운 공개라 미달인 상태로 내보내지 않는 쪽을 권한다.
 
+## 5-1. 사용자 결정 (11-20): "확인된 사실만 고치고 배포하자 그냥"
+- 고친 것(`scripts/apply_confirmed_corrections.py`, f557461): 절 제목형 카드 81장 보류, 선일여중 학년 오류 확인 카드 8장 보류, 방법 519장을 원문 체크칸 기준으로 고침(48장은 체크칸이 없어 비움).
+- 고치지 않은 것(추정이라서): 학년·영역 어긋남(상한 약 860장·2.8%), C안 합치기, 화면에 안 쓰는 방법 선택지 표.
+- 재실행 결과: 게이트 blocking 0, 모든 게이트 종료 0. 공개 **30,461장·3,161교**, 보류 3,835. 공개판 sha256 앞 16자 `e6f27e1802ea21cb`.
+- fresh7 카드: 틀린 12장 모두 보류, 방법 틀림 6장 중 5장 바로잡힘. **재맹검이 아니다.** 이 카드에서 규칙을 만들었으므로 0.786 → 1.0처럼 읽으면 안 된다. 남은 위험은 2절 전국 규모 추정 중 학년 오류 상한 약 2.8%다.
+
 ## 6. 배포 명령 (사용자가 실행)
+배포 묶음은 이미 만들어 두었다(`npm run package:vercel` 게이트 12:36, `npm run stage:vercel` 11-20 종료 0 → `.tmp/vercel-stage`, 90파일·108MB).
 ```
-cd D:\workspace\projects\math_assessment_teacher_kit
-npm run package:vercel
-npm run stage:vercel
+cd D:\workspace\projects\math_assessment_teacher_kit\.tmp\vercel-stage
+npx vercel login
+npx vercel deploy --prod
 ```
-- 그 뒤 Vercel 배포, 배포된 화면에서 홈·목록·카드 상세를 한 번씩 열어 확인.
+- 처음이면 `vercel deploy`가 프로젝트 연결을 묻는다. 기존 프로젝트가 있으면 그것을 고른다.
+- 그 뒤 배포된 화면에서 홈·목록·카드 상세를 한 번씩 열어 확인.
 - 사람 확인이 남은 것: 출처 레지스트리의 교육과정 줄(2022 개정 중학교 과학과 교육과정) 식별자·날짜(`data/publish/official_math_source_registry.json`, `needs_human_review`).
 - push·배포·태그는 하지 않았다. 정답 라벨(`data/gold*`)은 열지 않았다.
