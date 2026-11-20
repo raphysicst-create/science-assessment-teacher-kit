@@ -51,3 +51,4 @@ data/dev_labels/
 
 # 두 번째 맹검 세트 gold2도 git 제외 (2026-11-10)
 data/gold2/
+data/.gold-before-acl-fix/
