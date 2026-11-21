@@ -47,7 +47,7 @@
 | `review_score`, `evidence_score` | 근거 완결성 참고 점수 |
 | `evidence_excerpt` | 최대 902자의 요약 발췌 |
 | `source_char_count` | 원본 추출문의 길이 |
-| `title_basis` | 목록 공개 대상의 표지 `source_detail` |
+| `title_basis` | 목록 공개 대상의 표지 `source_detail`. 공개 카드가 0장이 된 사례는 `source_detail_held`(목록·필터 수·사례 조회에서 빠짐, `refresh_science_case_summaries.py`가 쓴다) |
 
 ### `case_action_tags`, `case_task_names`, `case_detail_status`
 

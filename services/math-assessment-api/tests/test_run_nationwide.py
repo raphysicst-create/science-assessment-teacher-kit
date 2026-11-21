@@ -523,3 +523,18 @@ def test_publish_last_runs_publish_and_gates_once(setup):
     assert state["bundles"]["2"]["status"] == "done"
     count = len(fake.calls)
     assert fake.run(cfg) == 0 and len(fake.calls) == count
+
+
+def test_publication_ends_with_case_summary_refresh_and_check(tmp_path):
+    # 카드를 보류로 바꾸는 단계(exclusions·corrections) 뒤에 사례 요약을 다시 맞추고 검사한다.
+    steps = publish_steps(Config(tmp_path), ())
+    names = [step.name for step in steps]
+    assert names[-2:] == ["case-refresh", "case-check"]
+    assert names.index("corrections") < names.index("case-refresh")
+    refresh, check = steps[-2:]
+    assert refresh.argv[1:] == (
+        "scripts/refresh_science_case_summaries.py", "--database", PUBLIC_DATABASE,
+        "--report", "data/derived/science_audit/case-summaries.json")
+    assert check.argv[1:] == (
+        "scripts/check_science_case_summaries.py", "--database", PUBLIC_DATABASE)
+    assert refresh.ok_codes == check.ok_codes == (0,)

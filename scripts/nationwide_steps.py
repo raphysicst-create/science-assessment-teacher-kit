@@ -180,6 +180,12 @@ def publish_steps(cfg: Config, rounds: tuple[str, ...]) -> list[Step]:
                     f"{cards}/verified.json", env={"MATH_ASSESSMENT_DETAIL_DB": PUBLIC_DATABASE}),
         python_step(cfg, "method-text", "check_science_method_text", "--database", PUBLIC_DATABASE,
                     "--output", "json", ok_codes=(0, 1)),
+        # 사례 요약은 감사(카드만 봄)와 무관해 맨 끝에 둔다. 여기부터 다시 돌리면 감사를 건너뛴다.
+        python_step(cfg, "case-refresh", "refresh_science_case_summaries",
+                    "--database", PUBLIC_DATABASE,
+                    "--report", "data/derived/science_audit/case-summaries.json"),
+        python_step(cfg, "case-check", "check_science_case_summaries",
+                    "--database", PUBLIC_DATABASE),
     ]
     return steps
 
