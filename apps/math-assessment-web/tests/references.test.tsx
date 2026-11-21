@@ -157,6 +157,17 @@ describe("과학 수행평가 참고", () => {
     expect(readReferenceFilters(new URLSearchParams("standard=[9과23-02]"))).toMatchObject({ standard: "[9과23-02]" });
   });
 
+  it("행정구역 개편으로 생긴 시·도 이름도 URL에서 읽고 한글이 아닌 값은 비운다", () => {
+    expect(readReferenceFilters(new URLSearchParams("region=전남광주통합특별시&district=광산구")))
+      .toMatchObject({ region: "전남광주통합특별시", district: "광산구" });
+    expect(readReferenceFilters(new URLSearchParams("region=서울&district=강남구")))
+      .toMatchObject({ region: "서울", district: "강남구" });
+    for (const region of ["bad", "<script>", "서", "가".repeat(13), "서울 특별시"]) {
+      expect(readReferenceFilters(new URLSearchParams({ region, district: "광산구" })))
+        .toMatchObject({ region: "", district: "" });
+    }
+  });
+
   it("더 보기 오류 후 재시도에서도 중복 없이 이어 붙인다", async () => {
     payload.total_items = 2;
     render(<ReferenceExplorer />);
