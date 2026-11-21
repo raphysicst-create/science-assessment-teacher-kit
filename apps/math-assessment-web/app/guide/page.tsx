@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import Link from "../SiteLink";
-import { SITE_NAME } from "../lib/site";
+import { SITE_NAME, pageMetadata } from "../lib/site";
 
-export const metadata: Metadata = {
-  title: "사용설명서",
-  description: `${SITE_NAME}에서 단원×활동 찾기, 전체 원문 라이브러리, 원문 비교와 교사 검토함을 사용하는 방법입니다.`,
-};
+export const metadata: Metadata = pageMetadata("/guide", "사용설명서", `${SITE_NAME}에서 단원×활동 찾기, 전체 원문 라이브러리, 원문 비교와 교사 검토함을 사용하는 방법입니다.`);
 
 const workflow = [
   { number: "01", title: "단원×활동 찾기로 시작", description: "중학교 과학 단원과 활동을 고르고 학년·성취기준으로 좁힙니다. 같은 수행평가 항목의 원문 근거를 확인합니다.", href: "/references", link: "단원×활동 찾기 열기" },

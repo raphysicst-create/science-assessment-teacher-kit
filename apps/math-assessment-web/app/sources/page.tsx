@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import Link from "../SiteLink";
+import { pageMetadata } from "../lib/site";
 
 import OfficialSources from "./OfficialSources";
 import PublicationSnapshot from "./PublicationSnapshot";
 
-export const metadata: Metadata = {
-  title: "자료와 해석 안내",
-  description: "과학 수행평가 사례의 출처, 처리 과정과 해석 범위를 설명합니다.",
-};
+export const metadata: Metadata = pageMetadata("/sources", "자료와 해석 안내", "과학 수행평가 사례의 출처, 처리 과정과 해석 범위를 설명합니다.");
 
 const stages = [
   ["01", "원문 보존", "학교알리미에 공개된 평가계획 원문은 수정하지 않고 별도 보존합니다."],

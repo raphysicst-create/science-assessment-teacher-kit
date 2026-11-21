@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import Link from "../SiteLink";
-import { CONTACT_LABEL, CONTACT_URL, OPERATOR_NAME, OPERATOR_URL, SITE_NAME } from "../lib/site";
+import { CONTACT_LABEL, CONTACT_URL, OPERATOR_NAME, OPERATOR_URL, SITE_NAME, pageMetadata } from "../lib/site";
 
-export const metadata: Metadata = {
-  title: "개인정보 처리방침",
-  description: `${SITE_NAME}의 개인정보 처리방침입니다.`,
-};
+export const metadata: Metadata = pageMetadata("/privacy", "개인정보 처리방침", `${SITE_NAME}의 개인정보 처리방침입니다.`);
 
 export default function PrivacyPage() {
   return (

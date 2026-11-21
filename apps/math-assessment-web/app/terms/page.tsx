@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import Link from "../SiteLink";
-import { CONTACT_LABEL, CONTACT_URL, OPERATOR_NAME, OPERATOR_URL, ORIGINAL_WORK_NOTICE, SITE_NAME } from "../lib/site";
+import { CONTACT_LABEL, CONTACT_URL, OPERATOR_NAME, OPERATOR_URL, ORIGINAL_WORK_NOTICE, SITE_NAME, pageMetadata } from "../lib/site";
 
-export const metadata: Metadata = {
-  title: "이용·보호 안내",
-  description: `${SITE_NAME}의 자료 이용 범위와 보호 안내입니다.`,
-};
+export const metadata: Metadata = pageMetadata("/terms", "이용·보호 안내", `${SITE_NAME}의 자료 이용 범위와 보호 안내입니다.`);
 
 export default function TermsPage() {
   return (
