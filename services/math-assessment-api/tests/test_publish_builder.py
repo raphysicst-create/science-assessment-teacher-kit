@@ -521,3 +521,13 @@ def test_generic_colspan_label_is_not_used_as_an_overview() -> None:
 def test_category_does_not_leak_from_unrelated_document_context() -> None:
     structure = {"overview": "문제 풀이 과정을 작성한다.", "criteria": []}
     assert assessment_category("문제 풀이 과정 작성하기", structure, "앞부분 독서 안내") == ""
+
+
+def test_old_region_names_follow_the_nationwide_roster_name() -> None:
+    from scripts.science_catalog_inputs import normalized_region
+
+    assert normalized_region("광주광역시") == "전남광주통합특별시"
+    assert normalized_region("전라남도") == "전남광주통합특별시"
+    assert normalized_region("전남광주통합특별시") == "전남광주통합특별시"
+    assert normalized_region("서울특별시") == "서울특별시"
+    assert normalized_region("") == ""

@@ -91,6 +91,15 @@ def load_rosters(root: Path) -> dict:
     return result
 
 
+# 전국 명단(nw1~6)은 '전남광주통합특별시'로 적는다. 그 전에 받은 명단(dev2·gold2·fresh3)의 옛
+# 이름을 같은 이름으로 맞춰, 시·도 필터에 한 지역이 셋으로 갈리지 않게 한다.
+REGION_ALIASES = {"광주광역시": "전남광주통합특별시", "전라남도": "전남광주통합특별시"}
+
+
+def normalized_region(name: str) -> str:
+    return REGION_ALIASES.get(name, name)
+
+
 def fallback_region(item: dict) -> str:
     parts = str(item.get("original_path") or "").replace("\\", "/").split("/")
     if "4ga_rounds" in parts:
@@ -148,6 +157,7 @@ def round_records(root: Path, source_round: str, rosters: dict,
             conversions[converted] = read_json(root / converted)
         document = documents.get(item["document_id"], {})
         region, district = rosters.get(item.get("school_code"), (fallback_region(item), ""))
+        region = normalized_region(region)
         records.append(
             {
                 "item": item,
