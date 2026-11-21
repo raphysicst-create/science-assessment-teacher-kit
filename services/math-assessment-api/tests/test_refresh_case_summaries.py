@@ -31,6 +31,14 @@ def snapshot(database):
             for table in SNAPSHOT_TABLES}
 
 
+CARD_TABLES = ("assessment_items", "assessment_item_axes")
+
+
+def card_snapshot(database):
+    return {table: rows(database, f"SELECT * FROM {table} ORDER BY 1, 2")
+            for table in CARD_TABLES}
+
+
 def case_cards(database):
     """사례 하나와 그 카드 (item_id, title_raw) 목록(item_order 순). 데모는 사례마다 카드 2장."""
     case_id = rows(database, "SELECT case_id FROM cases ORDER BY case_id LIMIT 1")[0][0]
@@ -44,7 +52,7 @@ def hold(database, item_id):
                       "WHERE item_id = ?", (item_id,))
 
 
-def test_fresh_build_is_left_unchanged(science_demo, tmp_path):
+def test_fresh_build_is_left_unchanged(science_demo):
     database = science_demo["database"]
     before = snapshot(database)
     report = rs.refresh(database)
@@ -62,9 +70,11 @@ def test_held_card_title_leaves_the_case_summary(science_demo):
     stale = checker.check(database)
     assert stale["held_title_listed"] == 1 and stale["title_count_differs"] == 1
     assert stale["primary_not_first_card"] == 1
+    cards_before = card_snapshot(database)
 
     report = rs.refresh(database)
 
+    assert card_snapshot(database) == cards_before
     assert report["changed_cases"] == 1 and report["held_cases"] == 0
     assert checker.check(database) == CLEAN
     listed = {item["case_id"]: item for item in client.get("/api/v1/cases").json()["items"]}
@@ -83,9 +93,11 @@ def test_case_without_public_cards_leaves_the_library_and_can_return(science_dem
         hold(database, item_id)
     assert checker.check(database)["public_case_without_card"] == 1
     assert client.get("/api/v1/cases").json()["total"] == 2
+    cards_before = card_snapshot(database)
 
     report = rs.refresh(database)
 
+    assert card_snapshot(database) == cards_before
     assert report["held_cases"] == 1 and report["held_case_ids"] == [case_id]
     assert checker.check(database) == CLEAN
     library = client.get("/api/v1/cases").json()
@@ -125,6 +137,18 @@ def test_blank_method_drops_the_method_signal_and_score(science_demo):
                                  "WHERE case_id = ? AND method != ''", (case_id,))[0][0]
     assert stored == with_method
     assert rs.refresh(database)["rankings_fixed"] == 0
+
+
+def test_public_card_the_detail_api_would_hide_is_reported(science_demo):
+    database, client = science_demo["database"], science_demo["client"]
+    case_id, cards = case_cards(database)
+    item_id = cards[0][0]
+    assert client.get(f"/api/v1/assessment-items/{item_id}").status_code == 200
+    execute(database, "UPDATE assessment_items SET title_basis = 'section' WHERE item_id = ?",
+            (item_id,))
+
+    assert client.get(f"/api/v1/assessment-items/{item_id}").status_code == 404
+    assert checker.check(database) == {**CLEAN, "public_card_not_viewable": 1}
 
 
 def test_same_weight_written_two_ways_is_listed_once():

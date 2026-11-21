@@ -1112,7 +1112,7 @@ cp data/publish/science/math_assessment_catalog_detail.public.sqlite .tmp/public
 .venv/Scripts/python.exe scripts/check_science_case_summaries.py --database data/publish/science/math_assessment_catalog_detail.public.sqlite; echo "exit $?"
 ```
 Expected: `e6f27e1802ea21cb`, 그리고
-`{"public_case_without_card": 332, "card_case_not_public": 0, "held_title_listed": 2032, "title_count_differs": 2104, "primary_not_first_card": 1136}` `exit 1`
+`{"public_case_without_card": 332, "card_case_not_public": 0, "held_title_listed": 2032, "title_count_differs": 2104, "primary_not_first_card": 1136, "public_card_not_viewable": 0}` `exit 1`
 
 - [ ] **Step 6-3: 원본(전체) DB에서는 아무것도 바뀌지 않는지 사본으로 본다**
 
@@ -1157,7 +1157,7 @@ sha256sum data/publish/science/math_assessment_catalog_detail.public.sqlite | cu
 Expected:
 - `done 0 {...}` 모든 단계 exit_code 0
 - `'cases': 12167, 'public_cases': 11835, 'held_cases': 332, 'changed_cases': 2270, 'rankings_fixed': 48`, `changed_columns`에 `'title_basis': 332, 'task_names_json': 1772, 'primary_task_name': 804`
-- 검사 다섯 값 모두 0, `exit 0`
+- 검사 여섯 값 모두 0, `exit 0`
 - 새 sha256 앞 16자(기록용, `e6f27e…`와 달라야 한다)
 
 - [ ] **Step 6-6: 카드와 검색 칸이 그대로인지 본다**
@@ -1221,7 +1221,7 @@ with TestClient(app) as client:
 EOF
 rm -r .tmp/stage-db-check
 ```
-Expected: 검사 다섯 값 0·`exit 0`, `meta {'public_cases': 11835, 'public_items': 30461}`, `library 11835 11835 11835`, `detail 404 0`. `held title`은 숫자를 기록만 한다(공개 카드 제목에 같은 글이 있으면 0이 아닐 수 있다. 고치기 전 값과 비교해 줄었는지 본다).
+Expected: 검사 여섯 값 0·`exit 0`, `meta {'public_cases': 11835, 'public_items': 30461}`, `library 11835 11835 11835`, `detail 404 0`. `held title`은 숫자를 기록만 한다(공개 카드 제목에 같은 글이 있으면 0이 아닐 수 있다. 고치기 전 값과 비교해 줄었는지 본다).
 스테이지 DB에 `rate limit`(429)이 나오면 요청마다 `x-real-ip`가 다른지 확인한다.
 
 - [ ] **Step 6-8: 배포 안내를 고친다**
@@ -1251,6 +1251,8 @@ Expected: 검사 다섯 값 0·`exit 0`, `meta {'public_cases': 11835, 'public_i
   - 새 확장 검색 검사(성취기준·지역·집계 수, 2,675개 요청)는 임시 폴더에만 있다. 저장소에 넣을지 정한다(9갈래 병렬로 약 40분).
   - `subject_stats`·`subject_action_tags`(경향 화면 집계)는 보류 카드 3,835장을 포함한 빌드 때 값이다.
   - 공개 카드 제목 "세부평가기준"(김해모산중)처럼 절 제목으로 보이는 제목이 `HEADING_TITLES`에 없다.
+  - 출처 등록부(build_science_source_registry.py)는 공개 카드가 0장인 사례의 학교도 싣는다.
+  - semesters_json은 다시 계산하지 않는다(화면에 쓰이지 않음). 다음 전체 빌드 뒤 확인: cases.region에 '광주광역시'·'전라남도'가 0건인지.
 
 - [ ] **Step 6-10: 커밋하고 마무리 확인**
 

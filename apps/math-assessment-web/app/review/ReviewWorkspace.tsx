@@ -35,8 +35,8 @@ export default function ReviewWorkspace() {
   const [cases, setCases] = useState<Record<string, CaseItem>>({});
   const [selectedId, setSelectedId] = useState("");
   const [draft, setDraft] = useState<ReviewRecord | null>(null);
+  const [unavailableIds, setUnavailableIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const queueKey = state?.queue.join(",") ?? "";
   const hydrated = state !== null;
@@ -65,18 +65,24 @@ export default function ReviewWorkspace() {
     queueMicrotask(() => {
       if (controller.signal.aborted) return;
       setLoading(queuedCaseIds.length > 0);
-      setError("");
-      if (!queuedCaseIds.length) setCases({});
+      if (!queuedCaseIds.length) { setCases({}); setUnavailableIds([]); }
     });
     if (!queuedCaseIds.length) return () => controller.abort();
-    Promise.all(queuedCaseIds.map((caseId) => fetchCatalog<CaseItem>(`cases/${caseId}`, controller.signal)))
-      .then((items) => setCases(Object.fromEntries(items.map((item) => [item.case_id, item]))))
-      .catch((reason: Error) => { if (!controller.signal.aborted) setError(reason.message); })
+    Promise.allSettled(queuedCaseIds.map((caseId) => fetchCatalog<CaseItem>(`cases/${caseId}`, controller.signal)))
+      .then((results) => {
+        if (controller.signal.aborted) return;
+        const items = results
+          .filter((result): result is PromiseFulfilledResult<CaseItem> => result.status === "fulfilled")
+          .map((result) => result.value);
+        setCases(Object.fromEntries(items.map((item) => [item.case_id, item])));
+        setUnavailableIds(queuedCaseIds.filter((_, index) => results[index].status === "rejected"));
+      })
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
   }, [hydrated, queueKey]);
 
   const selectedCase = selectedId ? cases[selectedId] : undefined;
+  const selectedUnavailable = selectedId !== "" && unavailableIds.includes(selectedId);
   const reviewedCases = useMemo(
     () => state?.queue.filter((caseId) => state.decisions[caseId] && reviewedDimensionCount(state.decisions[caseId]) > 0).length ?? 0,
     [state],
@@ -117,23 +123,32 @@ export default function ReviewWorkspace() {
       </header>
 
       {!state || loading ? <div className="reviewLoading" role="status">검토할 사례를 불러오고 있습니다.</div> : null}
-      {error ? <div className="reviewError" role="alert"><strong>검토함을 불러오지 못했습니다.</strong><p>{error}</p></div> : null}
-      {state && !loading && !error && !state.queue.length ? (
+      {state && !loading && !state.queue.length ? (
         <section className="reviewEmpty">
           <span aria-hidden="true">＋</span><h2>검토함이 비어 있습니다</h2><p>사례 라이브러리에서 근거를 읽고 검토할 사례를 담아 주세요.</p><Link href="/cases">전체 사례에서 시작하기 →</Link>
         </section>
       ) : null}
 
-      {state && !loading && !error && state.queue.length ? (
+      {state && !loading && state.queue.length ? (
         <div className="reviewWorkspace">
           <aside className="reviewQueue" aria-labelledby="review-queue-title">
             <div><h2 id="review-queue-title">검토할 사례</h2><Link href="/cases">사례 더 담기</Link></div>
             <ol>{state.queue.map((caseId, index) => {
               const item = cases[caseId];
               const record = reviewRecord(state, caseId);
-              return <li key={caseId}><button type="button" className={selectedId === caseId ? "selected" : ""} onClick={() => { setSelectedId(caseId); setDraft(reviewRecord(state, caseId)); setNotice(""); }}><span>{String(index + 1).padStart(2, "0")} · {item?.subject || "불러오는 중"}</span><strong>{item?.primary_task_name || caseId}</strong><small>{reviewedDimensionCount(record)}/6 기준 · {DECISION_LABELS[record.decision]}</small></button></li>;
+              const unavailable = unavailableIds.includes(caseId);
+              return <li key={caseId}><button type="button" className={selectedId === caseId ? "selected" : ""} onClick={() => { setSelectedId(caseId); setDraft(reviewRecord(state, caseId)); setNotice(""); }}><span>{String(index + 1).padStart(2, "0")} · {item?.subject || (unavailable ? "확인 필요" : "불러오는 중")}</span><strong>{unavailable ? "불러올 수 없는 사례" : (item?.primary_task_name || caseId)}</strong><small>{reviewedDimensionCount(record)}/6 기준 · {DECISION_LABELS[record.decision]}</small></button></li>;
             })}</ol>
           </aside>
+
+          {selectedUnavailable ? (
+            <section className="reviewCanvas" aria-labelledby="selected-review-title">
+              <div className="reviewCaseHeader">
+                <div><h2 id="selected-review-title">불러올 수 없는 사례</h2><p>이 사례는 더 이상 공개되지 않거나 지금 불러올 수 없습니다. 적어 둔 검토 기록은 이 브라우저에 남아 있습니다.</p></div>
+                <div><button type="button" onClick={removeSelected}>검토함에서 빼기</button></div>
+              </div>
+            </section>
+          ) : null}
 
           {selectedCase && draft ? (
             <section className="reviewCanvas" aria-labelledby="selected-review-title">

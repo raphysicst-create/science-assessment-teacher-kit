@@ -7,6 +7,8 @@
 - held_title_listed: 과제명 목록에 공개 카드 제목이 아닌 값이 있는 사례
 - title_count_differs: 과제명 수가 공개 카드 수와 다른 사례
 - primary_not_first_card: 대표 과제명이 첫 공개 카드 제목이 아닌 사례
+- public_card_not_viewable: 공개(bounded)인데 title_basis가 table·heading이 아니라
+  상세 API가 404를 내는 카드
 돌리기: .venv/Scripts/python.exe scripts/check_science_case_summaries.py --database PATH
         (어긋남이 있으면 종료 코드 1, 표준 출력에 JSON)
 검증: .venv/Scripts/python.exe -m pytest -q
@@ -46,6 +48,9 @@ CHECKS = {
         "AND c.primary_task_name IS NOT (SELECT i.title_raw FROM assessment_items i "
         "WHERE i.case_id = c.case_id AND i.extraction_status = 'bounded' "
         "ORDER BY i.item_order LIMIT 1)",
+    "public_card_not_viewable":
+        "SELECT COUNT(*) FROM assessment_items WHERE extraction_status = 'bounded' "
+        "AND title_basis NOT IN ('table', 'heading')",
 }
 
 

@@ -1,7 +1,8 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import ReviewWorkspace from "../app/review/ReviewWorkspace";
+import { REVIEW_STORAGE_KEY } from "../app/review/review-store";
 
 const caseId = "0123456789abcdef01234567";
 
@@ -47,5 +48,29 @@ describe("교사 검토함", () => {
     expect(screen.getByText("과제 명료성")).not.toBeNull();
     expect(screen.getByText("공정성")).not.toBeNull();
     expect(screen.getByRole("button", { name: "교사 검토 저장" })).not.toBeNull();
+  });
+
+  it("불러올 수 없는 사례가 있어도 검토함을 열고 그 사례를 뺄 수 있게 한다", async () => {
+    const goneId = "fedcba9876543210fedcba98";
+    window.localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify({ version: 1, queue: [goneId], decisions: {} }));
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(async (url: string) => (
+      url.endsWith(goneId)
+        ? { ok: false, status: 404, json: async () => ({ detail: "사례를 찾을 수 없습니다." }) }
+        : { ok: true, json: async () => caseItem }
+    )));
+    render(<ReviewWorkspace />);
+
+    await waitFor(() => expect(screen.getByRole("heading", { name: "열의 이동 실험 보고서" })).not.toBeNull());
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(screen.getByText("불러올 수 없는 사례")).not.toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: /불러올 수 없는 사례/ }));
+    expect(screen.getByText("이 사례는 더 이상 공개되지 않거나 지금 불러올 수 없습니다. 적어 둔 검토 기록은 이 브라우저에 남아 있습니다.")).not.toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "검토함에서 빼기" }));
+
+    await waitFor(() => expect(screen.queryByText("불러올 수 없는 사례")).toBeNull());
+    const stored = JSON.parse(window.localStorage.getItem(REVIEW_STORAGE_KEY) ?? "{}");
+    expect(stored.queue).toEqual([caseId]);
+    await waitFor(() => expect(screen.getByRole("heading", { name: "열의 이동 실험 보고서" })).not.toBeNull());
   });
 });
