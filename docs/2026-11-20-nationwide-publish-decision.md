@@ -79,6 +79,9 @@ npx vercel login
 npx vercel deploy --prod
 ```
 - 처음이면 `vercel deploy`가 프로젝트 연결을 묻는다. 기존 프로젝트가 있으면 그것을 고른다.
+- (11-21) 검색·색인 점검 뒤 배포 묶음을 다시 만들었다: 공개판 `3e2156aeab4d063d`, 라이브러리 11,835사례(공개 카드 0장인 332사례는 목록에서 뺌), `.tmp/vercel-stage` 91파일.
+- 사이트 주소: Vercel 프로젝트 환경 변수 `NEXT_PUBLIC_SITE_URL`에 운영 주소(예: `https://<도메인>`)를 넣는다. 없으면 Vercel 운영 도메인을 자동으로 쓴다. 커스텀 도메인을 쓰는데 주소가 다르게 나오면 이 값을 넣고 다시 배포한다.
+- 배포 뒤 확인(주소만 바꿔 실행): `curl -s https://<도메인>/robots.txt`의 Sitemap 줄, `curl -s https://<도메인>/sitemap.xml`의 `<loc>` 8개, `curl -s https://<도메인>/cases | grep -o '<link rel="canonical"[^>]*>'`가 모두 `https://<도메인>`으로 시작하는지 본다. `localhost`가 보이면 환경 변수가 빠진 것이다.
 - 그 뒤 배포된 화면에서 홈·목록·카드 상세를 한 번씩 열어 확인.
 - 사람 확인이 남은 것: 출처 레지스트리의 교육과정 줄(2022 개정 중학교 과학과 교육과정) 식별자·날짜(`data/publish/official_math_source_registry.json`, `needs_human_review`).
 - push·배포·태그는 하지 않았다. 정답 라벨(`data/gold*`)은 열지 않았다.
