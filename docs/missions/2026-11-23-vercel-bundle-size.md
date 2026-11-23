@@ -1,5 +1,5 @@
 # Vercel Hobby 한도에 맞춰 배포 묶음 줄이기
-상태: 진행
+상태: 대기(사람 결정)
 부서: dev
 라운드: 1/1
 검수: -(코드 검사로만 확인)
@@ -35,7 +35,7 @@
 - 묶음 DB와 공개판 DB(`data/publish/science/…detail.public.sqlite`) 행 해시 대조: `cases` 12,167, `assessment_items`(HTML 칸 제외) 34,296, `assessment_item_axes` 127,747, `assessment_item_rankings` 34,296, `subject_stats` 모두 같음. 공개 여부 다름 0, 공개 카드인데 원문 HTML 없음 0.
 - 묶음 조각만으로 띄운 API(`.tmp/stagecheck/e2e.py`, 요청 제한만 끔): `/tmp`에 DB 하나(187,256,832바이트)만 풀림. meta 공개 사례 11,835·공개 카드 30,461. 라이브러리 11,835사례(중복 0), 사례·상세 11,835건, 공개 카드 상세 30,461장 모두 200(실패 0). references·facets·trends·sources 200. 552초.
 - `npm run test`: Python 2,940 통과, 웹 82 통과, 제품 경계 통과. `npm run lint:api` 통과.
-- 공식 검색 검사(`check_science_search.py`, 묶음 DB에 metadata 표만 붙인 사본): 진행 중. 첫 실행은 내가 건 50분 제한에 걸려 결과 없이 끝났다(4천여 쪽을 차례로 요청한다).
+- 공식 검색 검사(`check_science_search.py`, 묶음 DB에 metadata 표만 붙인 사본, 축 JSON `axes_hybrid` 25회차): 723조합(비지 않음 611·빈 112), 카드 섞임·집합·건수·빈 결과 어긋남 모두 0, 종료 0, 4,658초. 11-20 공개판 검사(`data/derived/science_audit_public/search.json`)와 숫자 전부 같음(case_level_join_false_cases_total 53,958 포함). 첫 실행은 내가 건 50분 제한에 걸려 결과 없이 끝났다.
 
 ## 백로그
 - 공식 검색 검사가 한 시간 넘게 걸린다. 배포본 DB에는 metadata 표가 없어 `--axes-json`을 줘도 metadata를 먼저 읽다 실패한다(`metadata_axes_dir`가 항상 불림).
