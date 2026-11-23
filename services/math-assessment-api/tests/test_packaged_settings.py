@@ -177,6 +177,48 @@ def test_detail_gzip_parts_materialize_without_legacy_archive_pattern(
         assert connection.execute("SELECT value FROM marker").fetchone()[0] == "detail-ready"
 
 
+def test_catalog_uses_detail_package_when_only_detail_is_shipped(
+    tmp_path, monkeypatch
+) -> None:
+    source = tmp_path / "detail-source.sqlite"
+    with sqlite3.connect(source) as connection:
+        connection.execute("CREATE TABLE marker (value TEXT NOT NULL)")
+        connection.execute("INSERT INTO marker VALUES ('detail-serves-catalog')")
+    data_directory = tmp_path / "data"
+    data_directory.mkdir()
+    (data_directory / "detail.sqlite.gz.part-00").write_bytes(
+        gzip.compress(source.read_bytes(), compresslevel=9, mtime=0)
+    )
+    runtime_directory = tmp_path / "runtime"
+    runtime_directory.mkdir()
+
+    monkeypatch.setattr(settings, "DEFAULT_DETAIL_DATABASE", tmp_path / "missing-detail.sqlite")
+    monkeypatch.setattr(settings, "DEFAULT_DATABASE", tmp_path / "missing-default.sqlite")
+    monkeypatch.setattr(settings, "PACKAGED_DATABASE", data_directory / "missing.sqlite")
+    monkeypatch.setattr(settings, "PACKAGED_DATABASE_GZIP", data_directory / "missing.gz")
+    monkeypatch.setattr(settings, "PACKAGED_DATABASE_GZIP_PATTERN", "catalog.sqlite.gz.part-*")
+    monkeypatch.setattr(settings, "PACKAGED_DATABASE_ARCHIVE", data_directory / "legacy")
+    monkeypatch.setattr(settings, "PACKAGED_DATABASE_ARCHIVE_PATTERN", "legacy.part-*")
+    monkeypatch.setattr(settings, "PACKAGED_DETAIL_DATABASE", data_directory / "missing-d.sqlite")
+    monkeypatch.setattr(settings, "PACKAGED_DETAIL_DATABASE_GZIP", data_directory / "missing-d.gz")
+    monkeypatch.setattr(
+        settings, "PACKAGED_DETAIL_DATABASE_GZIP_PATTERN", "detail.sqlite.gz.part-*"
+    )
+    monkeypatch.setattr(settings, "PACKAGED_RELEASE_MANIFEST", data_directory / "none.json")
+    monkeypatch.setattr(settings, "PACKAGED_DATA", data_directory)
+    monkeypatch.setattr(settings.tempfile, "tempdir", str(runtime_directory))
+
+    catalog = settings.catalog_database_path()
+
+    assert catalog == settings.detail_catalog_database_path()
+    assert catalog.name.startswith("science-assessment-detail-")
+    assert len(list(runtime_directory.glob("*.sqlite"))) == 1
+    with sqlite3.connect(catalog) as connection:
+        assert connection.execute("SELECT value FROM marker").fetchone()[0] == (
+            "detail-serves-catalog"
+        )
+
+
 def test_missing_manifest_identity_hashes_archive_contents(tmp_path, monkeypatch) -> None:
     source = tmp_path / "source.sqlite"
     with sqlite3.connect(source) as connection:

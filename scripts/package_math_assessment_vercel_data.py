@@ -27,10 +27,15 @@ TABLE_STRUCTURE_QUEUE = (
     ROOT / "data" / "derived" / "science_audit_public" / "risk-queue.csv"
 )
 INCLUDED_FILES = ("official_math_source_registry.json",)
-CATALOG_DATABASE_NAME = "math_assessment_catalog.sqlite"
 DETAIL_DATABASE_NAME = "math_assessment_catalog_detail.sqlite"
 DATABASE_ARCHIVE_CHUNK_BYTES = 4_000_000
-SCIENCE_TABLES = ("source_segments", "assessment_item_methods", "assessment_item_axes")
+# Vercel Hobby limits: CLI upload 100 MB total, function /tmp 500 MB.  Only one
+# detail database is shipped (the API reads catalog queries from it too), and
+# only science tables the API reads.  source_segments and
+# assessment_item_methods stay in the local publish DB for audits.
+SCIENCE_TABLES = ("assessment_item_axes",)
+UPLOAD_LIMIT_BYTES = 100_000_000
+UPLOAD_BUDGET_BYTES = 92_000_000
 SCIENCE_ITEM_COLUMNS = (
     "segment_id", "task_no", "locator", "grade", "semester", "unit_status",
     "unit_reason", "activity_abstain_reason", "source_item_id", "source_round",
@@ -302,6 +307,20 @@ def catalog_counts(database_path: Path) -> dict[str, int]:
         }
 
 
+def assert_upload_budget(target_directory: Path) -> None:
+    """Fail packaging when deploy data leaves too little room under Vercel Hobby."""
+    total = sum(
+        path.stat().st_size
+        for path in target_directory.iterdir()
+        if path.is_file() and path.name != DETAIL_DATABASE_NAME
+    )
+    if total > UPLOAD_BUDGET_BYTES:
+        raise RuntimeError(
+            f"packaged data is {total:,} bytes; budget {UPLOAD_BUDGET_BYTES:,} "
+            f"keeps room for code under the {UPLOAD_LIMIT_BYTES:,}-byte upload limit"
+        )
+
+
 def database_manifest_record(database_path: Path) -> dict[str, object]:
     """Describe a database even when only its archive chunks are deployed."""
     return {
@@ -366,14 +385,7 @@ def main() -> None:
     if target.is_dir():
         shutil.rmtree(target)
     target.mkdir(parents=True)
-    catalog_path = target / CATALOG_DATABASE_NAME
     detail_path = target / DETAIL_DATABASE_NAME
-    package_catalog(
-        detail_database,
-        catalog_path,
-        include_source_html=False,
-        review_item_ids=review_item_ids,
-    )
     package_catalog(
         detail_database,
         detail_path,
@@ -383,20 +395,17 @@ def main() -> None:
     for source in sources[2:]:
         shutil.copy2(source, target / source.name)
 
-    package_catalog_archive(catalog_path, target)
     package_catalog_archive(detail_path, target)
-    database_counts = catalog_counts(catalog_path)
-    database_records = [
-        database_manifest_record(path) for path in (catalog_path, detail_path)
-    ]
+    database_counts = catalog_counts(detail_path)
+    database_records = [database_manifest_record(detail_path)]
     # Windows may retain a read handle while a local preview is running.  The
     # archive parts are authoritative for deployment, so a leftover local copy
     # is harmless and is ignored by the staging script.
-    for path in (catalog_path, detail_path):
-        try:
-            path.unlink()
-        except PermissionError:
-            pass
+    try:
+        detail_path.unlink()
+    except PermissionError:
+        pass
+    assert_upload_budget(target)
 
     packaged = sorted(path for path in target.iterdir() if path.is_file())
     manifest = {
@@ -423,7 +432,7 @@ def main() -> None:
                 "sha256": sha256(path),
             }
             for path in packaged
-            if path.name not in {CATALOG_DATABASE_NAME, DETAIL_DATABASE_NAME}
+            if path.name != DETAIL_DATABASE_NAME
         ],
     }
     (target / "release-manifest.json").write_text(

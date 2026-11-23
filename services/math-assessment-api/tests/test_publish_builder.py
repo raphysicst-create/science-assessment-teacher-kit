@@ -148,10 +148,14 @@ def test_science_packaging_preserves_tables_columns_and_indexes(tmp_path, includ
     build_demo(source)
     package_catalog(source, target, include_source_html=include_source_html, review_item_ids=set())
     with sqlite3.connect(source) as original, sqlite3.connect(target) as packaged:
-        for table in ("assessment_item_axes", "assessment_item_methods", "source_segments"):
-            assert packaged.execute(f"SELECT * FROM {table} ORDER BY 1, 2").fetchall() == (
-                original.execute(f"SELECT * FROM {table} ORDER BY 1, 2").fetchall()
-            )
+        assert packaged.execute("SELECT * FROM assessment_item_axes ORDER BY 1, 2").fetchall() == (
+            original.execute("SELECT * FROM assessment_item_axes ORDER BY 1, 2").fetchall()
+        )
+        # The API never reads these; leaving them out keeps the Vercel upload small.
+        for table in ("assessment_item_methods", "source_segments"):
+            assert not packaged.execute(
+                "SELECT 1 FROM sqlite_schema WHERE type = 'table' AND name = ?", (table,)
+            ).fetchone()
         columns = {row[1] for row in packaged.execute("PRAGMA table_info(assessment_items)")}
         assert {"segment_id", "source_item_id", "activity_abstain_reason", "locator"} <= columns
         assert packaged.execute(

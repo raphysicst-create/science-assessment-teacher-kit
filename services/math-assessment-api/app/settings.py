@@ -202,13 +202,14 @@ def materialized_packaged_database(*, detail: bool = False) -> Path:
 def catalog_database_path() -> Path:
     configured = os.environ.get("MATH_ASSESSMENT_PUBLISH_DB", "").strip()
     if not configured:
-        return (
-            DEFAULT_DETAIL_DATABASE
-            if DEFAULT_DETAIL_DATABASE.is_file()
-            else DEFAULT_DATABASE
-            if DEFAULT_DATABASE.is_file()
-            else materialized_packaged_database(detail=False)
-        )
+        if DEFAULT_DETAIL_DATABASE.is_file():
+            return DEFAULT_DETAIL_DATABASE
+        if DEFAULT_DATABASE.is_file():
+            return DEFAULT_DATABASE
+        catalog = materialized_packaged_database(detail=False)
+        # The deploy package ships one detail database (a superset of the
+        # catalog) to stay under Vercel Hobby upload and /tmp limits.
+        return catalog if catalog.is_file() else detail_catalog_database_path()
     path = Path(configured)
     return path if path.is_absolute() else PROJECT_ROOT / path
 

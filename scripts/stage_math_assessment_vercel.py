@@ -33,6 +33,8 @@ WEB_FILES = (
     "tsconfig.json",
 )
 API_FILES = ("requirements.txt",)
+# Vercel Hobby rejects CLI deployments whose source files exceed 100 MB in total.
+UPLOAD_LIMIT_BYTES = 100_000_000
 
 
 def copy_file(source: Path, target: Path) -> None:
@@ -86,10 +88,17 @@ def main() -> None:
             f"forbidden={[path.name for path in forbidden]}"
         )
 
+    total_bytes = sum(path.stat().st_size for path in files)
+    if total_bytes > UPLOAD_LIMIT_BYTES:
+        raise RuntimeError(
+            f"Vercel stage is {total_bytes:,} bytes; Hobby CLI upload limit is "
+            f"{UPLOAD_LIMIT_BYTES:,}"
+        )
+
     summary = {
         "target": str(TARGET),
         "file_count": len(files),
-        "total_bytes": sum(path.stat().st_size for path in files),
+        "total_bytes": total_bytes,
         "largest_file_bytes": max(path.stat().st_size for path in files),
     }
     print(json.dumps(summary, ensure_ascii=False))

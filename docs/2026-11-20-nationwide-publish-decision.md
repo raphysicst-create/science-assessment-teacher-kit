@@ -80,6 +80,7 @@ npx vercel deploy --prod
 ```
 - 처음이면 `vercel deploy`가 프로젝트 연결을 묻는다. 기존 프로젝트가 있으면 그것을 고른다.
 - (11-21) 검색·색인 점검 뒤 배포 묶음을 다시 만들었다: 공개판 `3e2156aeab4d063d`, 라이브러리 11,835사례(공개 카드 0장인 332사례는 목록에서 뺌), `.tmp/vercel-stage` 91파일.
+- (11-23) Vercel Hobby 한도(CLI 업로드 합계 100MB, 함수 `/tmp` 500MB)에 맞춰 묶음을 줄였다: 108.3MB → **60.5MB**(79파일), 실행 중 `/tmp` 482MB → **187MB**. DB를 하나(상세 DB)만 싣고 API가 검색도 그 DB로 읽는다. API가 읽지 않는 `assessment_item_methods`·`source_segments`는 배포본에서 뺐다(로컬 공개판 DB에는 그대로). 임무 기록 `docs/missions/2026-11-23-vercel-bundle-size.md`.
 - 사이트 주소: Vercel 프로젝트 환경 변수 `NEXT_PUBLIC_SITE_URL`에 운영 주소(예: `https://<도메인>`)를 넣는다. 없으면 Vercel 운영 도메인을 자동으로 쓴다. 커스텀 도메인을 쓰는데 주소가 다르게 나오면 이 값을 넣고 다시 배포한다.
 - 배포 뒤 확인(주소만 바꿔 실행): `curl -s https://<도메인>/robots.txt`의 Sitemap 줄, `curl -s https://<도메인>/sitemap.xml`의 `<loc>` 8개, `curl -s https://<도메인>/cases | grep -o '<link rel="canonical"[^>]*>'`가 모두 `https://<도메인>`으로 시작하는지 본다. `localhost`가 보이면 환경 변수가 빠진 것이다.
 - 그 뒤 배포된 화면에서 홈·목록·카드 상세를 한 번씩 열어 확인.
