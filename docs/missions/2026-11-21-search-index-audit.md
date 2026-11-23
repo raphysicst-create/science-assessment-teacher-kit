@@ -1,5 +1,5 @@
 # 검색·색인 전수 점검(배포 묶음 기준)
-상태: 대기(사람 결정)
+상태: 완료(배포 대기는 2026-11-23-vercel-bundle-size 한 곳으로 모음)
 부서: dev
 라운드: 2/2
 검수: Task마다 검토 + 브랜치 전체 검토(수정 1회, 재검토 통과)
@@ -65,3 +65,4 @@
 
 ## 총괄 메모
 - 2026-11-23 · 총괄: 사용자 "일단 깃허브에 배포해줘" → origin을 `raphysicst-create/science-assessment-teacher-kit`(이름 바뀐 저장소)로 고치고 main 73ca27a push(fast-forward 174커밋). Vercel 배포는 여전히 사용자.
+- 2026-11-23 · 총괄 마감: 결과물은 GitHub에 공개됨. 남은 Vercel 배포는 `2026-11-23-vercel-bundle-size` 기록 하나에서 본다.
