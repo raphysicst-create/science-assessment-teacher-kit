@@ -26,7 +26,9 @@ DETAIL_DATABASE = SOURCE_DIRECTORY / "science" / "math_assessment_catalog_detail
 TABLE_STRUCTURE_QUEUE = (
     ROOT / "data" / "derived" / "science_audit_public" / "risk-queue.csv"
 )
-INCLUDED_FILES = ("official_math_source_registry.json",)
+# science_axes.json is read by every filtered science query (/references, /curated).
+SCIENCE_AXES = ROOT / "data" / "reference" / "science_axes.json"
+INCLUDED_FILES = ("official_math_source_registry.json", SCIENCE_AXES.name)
 DETAIL_DATABASE_NAME = "math_assessment_catalog_detail.sqlite"
 DATABASE_ARCHIVE_CHUNK_BYTES = 4_000_000
 # Vercel Hobby limits: CLI upload 100 MB total, function /tmp 500 MB.  Only one
@@ -375,6 +377,7 @@ def main() -> None:
         detail_database,
         table_structure_queue,
         args.official_registry.resolve(),
+        SCIENCE_AXES.resolve(),
     ]
     missing = [str(path) for path in sources if not path.is_file()]
     if missing:

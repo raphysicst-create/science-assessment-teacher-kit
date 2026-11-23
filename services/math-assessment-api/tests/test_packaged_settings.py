@@ -249,3 +249,21 @@ def test_missing_manifest_identity_hashes_archive_contents(tmp_path, monkeypatch
     assert "unknown" not in materialized.name
     with sqlite3.connect(materialized) as connection:
         assert connection.execute("SELECT value FROM marker").fetchone()[0] == "content-addressed"
+
+
+def test_science_axes_fall_back_to_packaged_copy(tmp_path, monkeypatch) -> None:
+    """The deploy bundle has no repo data/ folder (Vercel 500 on /references, 11-23)."""
+
+    repo_axes = settings.DEFAULT_SCIENCE_AXES
+    packaged = tmp_path / "science_axes.json"
+    packaged.write_bytes(repo_axes.read_bytes())
+    monkeypatch.setattr(settings, "DEFAULT_SCIENCE_AXES", tmp_path / "missing.json")
+    monkeypatch.setattr(settings, "PACKAGED_SCIENCE_AXES", packaged)
+    settings.science_axes.cache_clear()
+    try:
+        axes = settings.science_axes()
+    finally:
+        settings.science_axes.cache_clear()
+
+    assert len(axes["units"]) == 23
+    assert axes["activities"]

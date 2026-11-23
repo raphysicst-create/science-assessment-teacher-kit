@@ -1,10 +1,10 @@
 # Vercel Hobby 한도에 맞춰 배포 묶음 줄이기
-상태: 대기(사람 결정)
+상태: 완료(배포됨 https://science-assessment-teacher-kit.vercel.app)
 부서: dev
-라운드: 1/1
-검수: -(코드 검사로만 확인)
-사람 결정: 1(Vercel 배포, 사용자 계정으로. 이 임무와 무관하게 남아 있던 것)
-총괄에게: 배포 묶음이 Hobby 한도를 넘어 줄였다. 배포는 여전히 사용자가 한다.
+라운드: 2/2(배포 뒤 500 하나 고쳐 재배포)
+검수: -(코드 검사·운영 주소 확인으로만)
+사람 결정: 0(사용자 "vercel 배포 해줘" 11-23으로 배포함)
+총괄에게: 운영 배포 완료. vercel link가 GitHub 자동 배포를 몰래 켜서 끊었다(아래 "배포"). 묶음에 축 기준표가 빠진 숨은 버그를 배포 뒤에 잡았다.
 갱신: 2026-11-23
 
 ## 브리프
@@ -37,13 +37,23 @@
 - `npm run test`: Python 2,940 통과, 웹 82 통과, 제품 경계 통과. `npm run lint:api` 통과.
 - 공식 검색 검사(`check_science_search.py`, 묶음 DB에 metadata 표만 붙인 사본, 축 JSON `axes_hybrid` 25회차): 723조합(비지 않음 611·빈 112), 카드 섞임·집합·건수·빈 결과 어긋남 모두 0, 종료 0, 4,658초. 11-20 공개판 검사(`data/derived/science_audit_public/search.json`)와 숫자 전부 같음(case_level_join_false_cases_total 53,958 포함). 첫 실행은 내가 건 50분 제한에 걸려 결과 없이 끝났다.
 
+## 배포 (11-23, 사용자 "vercel 배포 해줘")
+- Vercel 프로젝트 `raphysicst/science-assessment-teacher-kit` 새로 만듦. 운영 주소 https://science-assessment-teacher-kit.vercel.app, 지역 icn1.
+- 함정 1: `.tmp/vercel-stage`는 git 저장소 안이라 `vercel link`가 저장소 루트를 연결하고 **GitHub 저장소 자동 배포까지 켰다**(루트에 `.vercel`·`.env.local`(OIDC 토큰) 생성, `.gitignore`에 `.env*` 추가). 그대로면 push마다 DB 없는 저장소가 운영으로 배포된다. → `vercel git disconnect`로 끊고, 루트 `.vercel`·`.env.local` 삭제, `.gitignore` 되돌림. 스테이지를 저장소 밖(세션 스크래치)으로 복사해 거기서 link·deploy. 다음 배포도 **저장소 밖 복사본에서** 한다.
+- 함정 2(배포 전부터 있던 버그): 첫 배포에서 `/api/v1/references`·`/curated`(필터 쓰는 경로) 500. API가 `data/reference/science_axes.json`을 저장소 루트에서 읽는데 묶음에 없었다. 로컬 e2e는 저장소 안에서 돌아 이 파일을 찾아 통과했다. → 패키징이 `science_axes.json`(81KB)을 API 데이터 폴더에 복사, `settings.science_axes`가 저장소 파일이 없으면 그 복사본을 읽음, 회귀 테스트 `test_science_axes_fall_back_to_packaged_copy`. DB 해시 `0be5a46146abe565` 그대로(공개 데이터 변화 없음), 묶음 80파일 60,550,925바이트.
+- 재배포 전 확인: 저장소 밖 복사본에서 그 안의 앱 코드로 API 15경로 모두 200(`-I`, 앱 파일 경로가 저장소 밖임을 단언).
+- 재배포 뒤 운영 주소: 페이지 9개(홈·목록·단원활동·동향·안내·출처·약관·개인정보·사례 상세)·API 13경로 모두 200, 응답 0.3~1.9초. meta 공개 사례 11,835·카드 30,461. robots Sitemap 줄·sitemap `<loc>` 8개·canonical 모두 운영 주소(`NEXT_PUBLIC_SITE_URL` 없이 Vercel 운영 도메인 자동). `/references` 화면 브라우저 확인(항목 30,461·사례 11,835, 단원·지역 필터 채워짐). 새 배포 오류 로그 0(첫 배포는 4건).
+
 ## 백로그
+- 배포 묶음 검사(e2e)를 저장소 밖 복사본에서 돌리게 고정한다. 저장소 안에서 돌면 저장소 파일에 기대는 경로를 못 잡는다.
 - 공식 검색 검사가 한 시간 넘게 걸린다. 배포본 DB에는 metadata 표가 없어 `--axes-json`을 줘도 metadata를 먼저 읽다 실패한다(`metadata_axes_dir`가 항상 불림).
 - 원작자 계정이 아니므로 첫 배포 뒤 Vercel 함수 로그에서 첫 요청(DB 풀기) 시간을 한 번 본다. 로컬에서는 1초 안.
 
 ## 회고
 - ① 산출물 기준: 배포 묶음은 배포처 한도(업로드 합계·`/tmp`)를 패키징·stage 단계에서 바이트로 검사한다. "게이트 통과"에 배포처 한도가 없어서 108MB 묶음이 "배포 준비 완료"로 보고됐다.
 - ② 일하는 방식: "릴리즈 가능?"에 테스트·게이트만 보고 "가능"이라고 먼저 답했다가, 계정 질문에서 한도를 보고 정정했다. 배포 판단에는 배포처 한도 대조를 넣는다.
+- ① 산출물 기준(배포): 배포 묶음 검사는 저장소 밖 복사본에서, 묶음 안 코드로 돌린다. 저장소 안 검사가 "모두 200"이어도 운영에서 500이 났다.
+- ② 일하는 방식(배포): `vercel link`는 git 저장소 안에서 돌리면 저장소 루트를 연결하고 GitHub 자동 배포를 켠다. 배포 폴더는 git 밖에 두고, link 뒤 `vercel git` 연결 여부를 본다.
 
 ## 총괄 메모
 - 2026-11-23 · 총괄: 사용자 "일단 깃허브에 배포해줘" → origin을 `raphysicst-create/science-assessment-teacher-kit`(이름 바뀐 저장소)로 고치고 main 73ca27a push(fast-forward 174커밋). Vercel 배포는 여전히 사용자.

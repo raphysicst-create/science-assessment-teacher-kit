@@ -75,6 +75,9 @@ DEFAULT_OFFICIAL_SOURCE_REGISTRY = (
     PROJECT_ROOT / "data" / "publish" / "official_math_source_registry.json"
 )
 PACKAGED_OFFICIAL_SOURCE_REGISTRY = PACKAGED_DATA / "official_math_source_registry.json"
+DEFAULT_SCIENCE_AXES = PROJECT_ROOT / "data" / "reference" / "science_axes.json"
+# The deploy bundle has no repo data/ folder; packaging copies the axes here.
+PACKAGED_SCIENCE_AXES = PACKAGED_DATA / "science_axes.json"
 ACTIVITY_TAB_POLICY_DEFAULT = "all_reference"
 ACTIVITY_TAB_POLICIES = ("all_reference", "high_accuracy_only")
 HIGH_ACCURACY_ACTIVITIES = ("experiment", "making", "process")
@@ -88,7 +91,9 @@ def activity_tab_policy() -> str:
 @lru_cache(maxsize=1)
 def science_axes() -> dict:
     """Load allowed science axes once; verify with test_science_reference_api.py."""
-    source = PROJECT_ROOT / "data/reference/science_axes.json"
+    source = (
+        DEFAULT_SCIENCE_AXES if DEFAULT_SCIENCE_AXES.is_file() else PACKAGED_SCIENCE_AXES
+    )
     reference = json.loads(source.read_text(encoding="utf-8"))
     areas = reference["units"]["areas"]
     return {
