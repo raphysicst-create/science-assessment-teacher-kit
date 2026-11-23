@@ -37,6 +37,7 @@ export default function SourceDocumentHtml({ html }: { html: string }) {
     || segmented.prunedTrailingColumnCount
     || segmented.normalizedLongHeaderCellCount
     || segmented.wideTableCount
+    || segmented.pipeTableCount
   );
   useEffect(() => {
     if (!rootRef.current) return;

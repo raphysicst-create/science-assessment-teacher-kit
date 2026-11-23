@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { apiParameters, fetchCatalog, type ScienceReferenceResponse } from "../lib/catalog-api";
 import ReferenceCard from "./ReferenceCard";
 import { readReferenceFilters, type ReferenceFilters } from "./reference-filters";
+import { SCIENCE_STANDARD_TEXT, UNIT_GRADE_GROUPS, unitGrade } from "../lib/science-standards";
 
 const PAGE_SIZE = 30;
 const EMPTY_FILTERS: ReferenceFilters = { unit: "", standard: "", activity: "", grade: "", region: "", district: "" };
@@ -46,6 +47,17 @@ export default function ReferenceExplorer() {
   }
 
   function clearFilters() { changeFilters(EMPTY_FILTERS); }
+  // A unit from another grade's group would show only stray cards, so drop it.
+  function changeGrade(grade: string) {
+    const keepUnit = !grade || !filters.unit || unitGrade(filters.unit) === grade;
+    changeFilters(keepUnit ? { grade } : { grade, unit: "", standard: "" });
+  }
+
+  const units = data?.axes.units ?? [];
+  const unitGroups = UNIT_GRADE_GROUPS
+    .map((group) => ({ ...group, units: units.filter((item) => unitGrade(item.value) === group.grade) }))
+    .sort((left, right) => Number(right.grade === filters.grade) - Number(left.grade === filters.grade));
+  const unitStandards = (data?.axes.standards ?? []).filter((item) => item.value.slice(3, 5) === filters.unit);
   function loadMore() { setLoading(true); setError(""); setOffset(data?.items.length ?? 0); }
 
   return <main id="main-content" className="catalogPage referencePage scienceReferences">
@@ -57,22 +69,29 @@ export default function ReferenceExplorer() {
     </header>
 
     <section className="caseFilterPanel referenceFilterPanel" aria-label="과학 수행평가 필터">
-      <div className="caseFilterTopline"><div><span className="stepPill">필터</span><h2>학년·지역 좁히기</h2></div><button type="button" onClick={clearFilters}>조건 해제</button></div>
+      <div className="caseFilterTopline"><div><span className="stepPill">필터</span><h2>지역 좁히기</h2></div><button type="button" onClick={clearFilters}>조건 해제</button></div>
       <div className="filterControls">
-        <label><span>학년</span><select value={filters.grade} onChange={(event) => changeFilters({ grade: event.target.value })}><option value="">전체</option><option value="1">1학년</option><option value="2">2학년</option></select></label>
         <label><span>시·도</span><select value={filters.region} onChange={(event) => changeFilters({ region: event.target.value, district: "" })}><option value="">전국</option>{data?.facets.regions.map((item) => <option key={item.value} value={item.value}>{item.value} · {item.count}</option>)}</select></label>
         <label><span>시·군·구</span><select value={filters.district} disabled={!filters.region} onChange={(event) => changeFilters({ district: event.target.value })}><option value="">{filters.region ? "전체 시·군·구" : "시·도를 먼저 선택"}</option>{filters.region ? data?.facets.districts.map((item) => <option key={item.value} value={item.value}>{item.value} · {item.count}</option>) : null}</select></label>
       </div>
     </section>
 
     <section className="curatedSection" aria-labelledby="reference-units">
-      <h2 id="reference-units">단원 선택</h2>
-      <div className="referenceUnitChips" role="group" aria-label="과학 단원">
-        {data?.axes.units.map((item) => <button type="button" key={item.value} className={`${filters.unit === item.value ? "selected" : ""} ${item.item_count === 0 ? "zeroCount" : ""}`} aria-disabled={item.item_count === 0} aria-pressed={filters.unit === item.value} onClick={() => changeFilters({ unit: filters.unit === item.value ? "" : item.value, standard: "" })}>{item.value} {item.label} · {item.item_count.toLocaleString()}</button>)}
+      <h2 id="reference-units">학년·단원 선택</h2>
+      <div className="filterControls referenceUnitSelects">
+        <label><span>학년</span><select value={filters.grade} onChange={(event) => changeGrade(event.target.value)}><option value="">전체 학년</option><option value="1">1학년</option><option value="2">2학년</option></select></label>
+        <label><span>단원</span><select value={filters.unit} onChange={(event) => changeFilters({ unit: event.target.value, standard: "" })}>
+          <option value="">전체 단원</option>
+          {unitGroups.map((group) => <optgroup key={group.grade} label={group.label}>
+            {group.units.map((item) => <option key={item.value} value={item.value}>{item.value} {item.label} · {item.item_count.toLocaleString()}</option>)}
+          </optgroup>)}
+        </select></label>
+        <label><span>성취기준</span><select value={filters.standard} disabled={!filters.unit} onChange={(event) => changeFilters({ standard: event.target.value })}>
+          <option value="">{filters.unit ? "단원 전체 성취기준" : "단원을 먼저 선택"}</option>
+          {unitStandards.map((item) => <option key={item.value} value={item.value}>{item.value} {SCIENCE_STANDARD_TEXT[item.value] ?? ""} · {item.item_count.toLocaleString()}</option>)}
+        </select></label>
       </div>
-      {filters.unit ? <div className="referenceUnitChips" role="group" aria-label="성취기준">
-        {data?.axes.standards.filter((item) => item.value.slice(3, 5) === filters.unit).map((item) => <button type="button" key={item.value} className={`${filters.standard === item.value ? "selected" : ""} ${item.item_count === 0 ? "zeroCount" : ""}`} aria-disabled={item.item_count === 0} aria-pressed={filters.standard === item.value} onClick={() => changeFilters({ standard: filters.standard === item.value ? "" : item.value })}>{item.value} · {item.item_count.toLocaleString()}</button>)}
-      </div> : null}
+      {filters.standard ? <p className="referenceStandardText"><strong>{filters.standard}</strong> {SCIENCE_STANDARD_TEXT[filters.standard] ?? ""}</p> : null}
     </section>
 
     <section className="curatedSection referenceCuratedSection" aria-labelledby="reference-activities">

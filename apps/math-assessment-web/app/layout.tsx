@@ -7,7 +7,7 @@ import "katex/dist/katex.min.css";
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "./globals.css";
 import VisitorCounter from "./VisitorCounter";
-import { CONTACT_LABEL, CONTACT_URL, OPERATOR_NAME, OPERATOR_URL, ORIGINAL_WORK_NOTICE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "./lib/site";
+import { BLOG_LABEL, BLOG_URL, CONTACT_LABEL, CONTACT_URL, OPERATOR_NAME, OPERATOR_URL, ORIGINAL_WORK_NOTICE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "./lib/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -52,15 +52,18 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <a className="skipLink" href="#main-content">본문으로 바로가기</a>
         <header className="siteHeader">
           <div className="headerInner">
-            <Link className="brand" href="/" aria-label={`${SITE_NAME} 홈`}>
-              <svg className="brandLogo" viewBox="0 0 40 40" aria-hidden="true">
-                <rect x="1" y="1" width="38" height="38" rx="9" fill="currentColor" />
-                <path d="M10.5 27V13.5L20 22l9.5-8.5V27" fill="none" stroke="white" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="20" cy="22" r="2.35" fill="#38bdf8" />
-              </svg>
-              <span>{SITE_NAME}</span>
-              <small className="brandUpdatedAt">업데이트 {releaseDateLabel()}</small>
-            </Link>
+            <div className="brandBlock">
+              <Link className="brand" href="/" aria-label={`${SITE_NAME} 홈`}>
+                <svg className="brandLogo" viewBox="0 0 40 40" aria-hidden="true">
+                  <rect x="1" y="1" width="38" height="38" rx="9" fill="currentColor" />
+                  <path d="M10.5 27V13.5L20 22l9.5-8.5V27" fill="none" stroke="white" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="20" cy="22" r="2.35" fill="#38bdf8" />
+                </svg>
+                <span>{SITE_NAME}</span>
+                <small className="brandUpdatedAt">업데이트 {releaseDateLabel()}</small>
+              </Link>
+              <a className="brandBlog" href={BLOG_URL} target="_blank" rel="noopener">블로그 · {BLOG_LABEL}</a>
+            </div>
             <nav aria-label="주요 메뉴">
               <ul className="mainNav">
                 {navigation.map((item) => (

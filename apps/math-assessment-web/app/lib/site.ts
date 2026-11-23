@@ -12,6 +12,9 @@ export function resolveSiteUrl(explicit?: string, vercelProductionHost?: string)
 export const SITE_URL = resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL, process.env.VERCEL_PROJECT_PRODUCTION_URL);
 export const OPERATOR_NAME = "raphysicst-create";
 export const OPERATOR_URL = "https://github.com/raphysicst-create";
+// 운영자 블로그. 머리글 제목 바로 아래에 보인다(사용자 11-23).
+export const BLOG_URL = "https://blog.naver.com/raphysicst";
+export const BLOG_LABEL = "blog.naver.com/raphysicst";
 export const CONTACT_URL = "https://github.com/raphysicst-create/math-assessment-teacher-kit/issues";
 export const CONTACT_LABEL = "자료 오류·정정·삭제 요청: GitHub 이슈";
 export const ORIGINAL_WORK_NOTICE = "이 사이트는 「수학 수행평가 아이디어 아카이브」(서아인, MIT 라이선스)를 바탕으로 만든 과학판입니다.";

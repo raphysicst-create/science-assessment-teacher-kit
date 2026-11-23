@@ -1,4 +1,6 @@
 // Restore and segment source tables, recognizing middle-school science codes. Verify: npm run test:web.
+import { restorePipeRowTables } from "./pipe-row-tables";
+
 export type SegmentedSourceHtml = {
   html: string;
   splitTableCount: number;
@@ -12,6 +14,7 @@ export type SegmentedSourceHtml = {
   prunedTrailingColumnCount: number;
   normalizedLongHeaderCellCount: number;
   wideTableCount: number;
+  pipeTableCount: number;
 };
 
 type SectionKey = "overview" | "standards" | "method" | "rubric";
@@ -613,10 +616,12 @@ export function segmentSourceTables(value: string): SegmentedSourceHtml {
       prunedTrailingColumnCount: 0,
       normalizedLongHeaderCellCount: 0,
       wideTableCount: 0,
+      pipeTableCount: 0,
     };
   }
 
   const document = new DOMParser().parseFromString(value, "text/html");
+  const pipeTableCount = restorePipeRowTables(document);
   const reconstructedCellCount = mergeSuffixContinuationTables(document);
   let gradeContinuationRowCount = mergeAchievementLevelContinuations(document);
   const mergedFragmentCount = mergeRepeatedHeaderTables(document);
@@ -686,5 +691,6 @@ export function segmentSourceTables(value: string): SegmentedSourceHtml {
     prunedTrailingColumnCount,
     normalizedLongHeaderCellCount,
     wideTableCount,
+    pipeTableCount,
   };
 }

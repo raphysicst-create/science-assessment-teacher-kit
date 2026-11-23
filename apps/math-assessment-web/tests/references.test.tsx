@@ -68,9 +68,9 @@ describe("과학 수행평가 참고", () => {
   it("단원 23개와 활동 전체+10개, 항목·사례 수를 따로 표시한다", async () => {
     render(<ReferenceExplorer />);
     await screen.findByRole("article");
-    const units = within(screen.getByRole("group", { name: "과학 단원" }));
-    expect(units.getAllByRole("button")).toHaveLength(23);
-    expect(units.getByRole("button", { name: "01 단원 1 · 0" })).toHaveAttribute("aria-disabled", "true");
+    const units = within(screen.getByRole("combobox", { name: "단원" }));
+    expect(units.getAllByRole("option")).toHaveLength(24);
+    expect(units.getAllByRole("group").map((group) => group.getAttribute("label"))).toEqual(["1학년 단원", "2학년 단원", "3학년 단원"]);
     expect(screen.getAllByRole("tab")).toHaveLength(11);
     expect(screen.getByRole("tab", { name: "전체 · 7" })).toHaveAttribute("aria-selected", "true");
     expect(screen.getAllByText("자동 분류(참고)")).toHaveLength(2);
@@ -118,17 +118,37 @@ describe("과학 수행평가 참고", () => {
     await waitFor(() => expect(navigation.replace).toHaveBeenLastCalledWith("/references", { scroll: false }));
   });
 
-  it("0건 단원도 선택·해제되고 단원 변경은 성취기준을 초기화한다", async () => {
+  it("학년·단원·성취기준을 드롭다운으로 고르고 성취기준 문구를 보여 준다", async () => {
     render(<ReferenceExplorer />);
     await screen.findByRole("article");
-    fireEvent.click(screen.getByRole("button", { name: "01 단원 1 · 0" }));
-    await waitFor(() => expect(screen.getByRole("button", { name: "01 단원 1 · 0" })).toHaveAttribute("aria-pressed", "true"));
-    fireEvent.click(screen.getByRole("button", { name: "03 열 · 2" }));
-    fireEvent.click(await screen.findByRole("button", { name: "[9과03-01] · 0" }));
+    const unit = screen.getByRole("combobox", { name: "단원" });
+    const standard = screen.getByRole("combobox", { name: "성취기준" });
+    expect(standard).toBeDisabled();
+    expect(within(unit).getByRole("group", { name: "1학년 단원" })).toBeInTheDocument();
+    expect(within(unit).getByRole("option", { name: "01 단원 1 · 0" })).toBeEnabled();
+
+    fireEvent.change(unit, { target: { value: "03" } });
+    await waitFor(() => expect(standard).toBeEnabled());
+    expect(within(standard).getByRole("option", { name: /\[9과03-01\] 온도와 열평형 과정을/ })).toBeInTheDocument();
+    fireEvent.change(standard, { target: { value: "[9과03-01]" } });
     await waitFor(() => expect(decodeURIComponent(navigation.replace.mock.lastCall![0])).toContain("standard=[9과03-01]"));
-    fireEvent.click(screen.getByRole("button", { name: "03 열 · 2" }));
+    expect(document.querySelector(".referenceStandardText")).toHaveTextContent("[9과03-01] 온도와 열평형 과정을 물질을 구성하는 입자들의 배치나 움직임 등으로 설명하기");
+
+    fireEvent.change(unit, { target: { value: "" } });
     await waitFor(() => expect(navigation.replace).toHaveBeenLastCalledWith("/references", { scroll: false }));
-    expect(screen.queryByRole("group", { name: "성취기준" })).not.toBeInTheDocument();
+    expect(standard).toBeDisabled();
+  });
+
+  it("다른 학년을 고르면 그 학년 단원이 아닌 단원 선택을 지운다", async () => {
+    navigation.query = "unit=03&grade=1";
+    render(<ReferenceExplorer />);
+    await screen.findByRole("article");
+    const unit = screen.getByRole("combobox", { name: "단원" });
+    fireEvent.change(screen.getByRole("combobox", { name: "학년" }), { target: { value: "2" } });
+    await waitFor(() => expect(navigation.replace).toHaveBeenLastCalledWith("/references?grade=2", { scroll: false }));
+    expect(unit).toHaveValue("");
+    const groups = within(unit).getAllByRole("group").map((group) => group.getAttribute("label"));
+    expect(groups[0]).toBe("2학년 단원");
   });
 
   it("모든 필터를 URL과 요청에 동기화하고 offset 페이지를 이어 붙인다", async () => {

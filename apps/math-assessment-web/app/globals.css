@@ -84,6 +84,16 @@ a { color: inherit; }
   letter-spacing: -0.025em;
 }
 
+.brandBlock { display: flex; flex-direction: column; align-items: flex-start; }
+.brandBlog {
+  margin: -0.3rem 0 0 3.07rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.brandBlog:hover, .brandBlog:focus-visible { color: var(--color-primary); text-decoration: underline; }
+
 .brandUpdatedAt {
   margin-left: 0.15rem;
   color: var(--muted);
@@ -342,6 +352,7 @@ a { color: inherit; }
   .headerInner, .hero, .boundaryBanner, .featurePage { width: min(100% - 28px, 1180px); }
   .brand { font-size: 0.92rem; }
   .brandLogo { width: 2rem; height: 2rem; }
+  .brandBlog { margin-left: 2.72rem; }
   .mainNav { justify-content: flex-start; gap: 0.35rem; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 0.15rem; scrollbar-width: thin; }
   .mainNav li { flex: 0 0 auto; }
   .mainNav a { min-height: 44px; padding: 0.34rem 0.65rem; display: flex; align-items: center; border: 1px solid #d5ddd8; border-radius: 999px; background: rgba(255,255,255,0.55); font-size: 0.72rem; }
@@ -1888,6 +1899,11 @@ a { color: inherit; }
 .scienceReferences .pageHeaderCompact > div { min-width: 0; }
 .scienceReferences .pageHeaderCompact > p { flex-shrink: 0; white-space: nowrap; }
 .referenceSource, .referenceClassification, .referenceEvidence { color: var(--muted); font-size: 0.8rem; }
+.referenceUnitSelects { grid-template-columns: minmax(7rem, 0.6fr) minmax(12rem, 1.2fr) minmax(14rem, 2fr); }
+.referenceUnitSelects select { text-overflow: ellipsis; }
+.referenceStandardText { margin: 0.8rem 0 0; padding: 0.7rem 0.9rem; border-left: 3px solid var(--color-primary); background: var(--surface); line-height: 1.6; }
+.referenceStandardText strong { margin-right: 0.35rem; }
+@media (max-width: 900px) { .referenceUnitSelects { grid-template-columns: 1fr; } }
 .referenceUnitChips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0; }
 .referenceUnitChips button { min-height: 44px; max-width: 100%; padding: 0.55rem 0.7rem; border: 1px solid var(--line); border-radius: 0.3rem; color: var(--ink); background: var(--surface); text-align: left; overflow-wrap: anywhere; }
 .referenceUnitChips button.selected { border-color: var(--color-primary); box-shadow: inset 0 0 0 1px var(--color-primary); }
