@@ -1,24 +1,13 @@
 "use client";
 
+// Science trend overview for 2022 개정 과학 (the only course here). Verify: npm run test:web.
 import Link from "../SiteLink";
-import { useRouter, useSearchParams } from "next/navigation";
-import { type CSSProperties, useEffect, useMemo, useState } from "react";
+import { type CSSProperties, useEffect, useState } from "react";
 
-import {
-  apiParameters,
-  fetchCatalog,
-  type SubjectItem,
-  type SubjectListResponse,
-  type TrendItem,
-  type TrendListResponse,
-} from "../lib/catalog-api";
+import { apiParameters, fetchCatalog, type TrendItem, type TrendListResponse } from "../lib/catalog-api";
 
-const DEFAULT_CURRICULUM = "2022";
-const DEFAULT_SUBJECT = "과학";
-
-function safeCurriculum(value: string | null) {
-  return value === "2015" || value === "2022" ? value : DEFAULT_CURRICULUM;
-}
+const CURRICULUM = "2022";
+const SUBJECT = "과학";
 
 function percentage(value: number, total: number) {
   if (!total) return "0%";
@@ -30,69 +19,20 @@ function displayYears(values: number[]) {
 }
 
 export default function TrendsExplorer() {
-  const searchParameters = useSearchParams();
-  const router = useRouter();
-  const initialCurriculum = safeCurriculum(searchParameters.get("curriculum"));
-  const initialSubject = searchParameters.get("subject") || DEFAULT_SUBJECT;
-  const [subjects, setSubjects] = useState<SubjectItem[]>([]);
-  const [curriculum, setCurriculum] = useState(initialCurriculum);
-  const [subject, setSubject] = useState(initialSubject);
+  const curriculum = CURRICULUM;
+  const subject = SUBJECT;
   const [trend, setTrend] = useState<TrendItem | null>(null);
-  const [caution, setCaution] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
-    fetchCatalog<SubjectListResponse>("subjects", controller.signal)
-      .then((payload) => setSubjects(payload.items.filter((item) => item.curriculum !== "shared")))
-      .catch((reason: Error) => { if (!controller.signal.aborted) setError(reason.message); });
-    return () => controller.abort();
-  }, []);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const parameters = apiParameters({ curriculum, subject });
-    fetchCatalog<TrendListResponse>(`trends?${parameters}`, controller.signal)
-      .then((payload) => {
-        setTrend(payload.items[0] ?? null);
-        setCaution(payload.caution);
-      })
+    fetchCatalog<TrendListResponse>(`trends?${apiParameters({ curriculum, subject })}`, controller.signal)
+      .then((payload) => setTrend(payload.items[0] ?? null))
       .catch((reason: Error) => { if (!controller.signal.aborted) setError(reason.message); })
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
   }, [curriculum, subject]);
-
-  useEffect(() => {
-    const parameters = apiParameters({ curriculum, subject });
-    router.replace(`/trends?${parameters}`, { scroll: false });
-  }, [curriculum, subject, router]);
-
-  const courseOptions = useMemo(
-    () => subjects.filter((item) => item.curriculum === curriculum),
-    [curriculum, subjects],
-  );
-
-  function changeCurriculum(value: string) {
-    const nextCourses = subjects.filter((item) => item.curriculum === value);
-    setLoading(true);
-    setError("");
-    setCurriculum(value);
-    setSubject(nextCourses.some((item) => item.subject === subject) ? subject : (nextCourses[0]?.subject ?? ""));
-  }
-
-  function changeSubject(value: string) {
-    setLoading(true);
-    setError("");
-    setSubject(value);
-  }
-
-  function resetCourse() {
-    setLoading(true);
-    setError("");
-    setCurriculum(DEFAULT_CURRICULUM);
-    setSubject(DEFAULT_SUBJECT);
-  }
 
   const maximumTagCount = Math.max(...(trend?.action_tags.map((item) => item.documents) ?? [1]));
   const caseLink = `/cases?${apiParameters({ curriculum, subject })}`;
@@ -106,42 +46,6 @@ export default function TrendsExplorer() {
         </div>
         {!loading && !error && trend && <p><strong>{trend.documents.toLocaleString()}</strong><span>확인 문서</span></p>}
       </header>
-
-      <section className="filterDock" aria-labelledby="course-filter-title">
-        <div className="filterDockHeading">
-          <div>
-            <span className="stepPill">1</span>
-            <h2 id="course-filter-title">살펴볼 과목</h2>
-          </div>
-          <button type="button" onClick={resetCourse}>
-            초기화
-          </button>
-        </div>
-        <div className="filterControls">
-          <label>
-            <span>교육과정</span>
-            <select value={curriculum} onChange={(event) => changeCurriculum(event.target.value)}>
-              <option value="2015">2015 개정</option>
-              <option value="2022">2022 개정</option>
-            </select>
-          </label>
-          <label className="wideControl">
-            <span>과학 과목</span>
-            <select value={subject} onChange={(event) => changeSubject(event.target.value)}>
-              {courseOptions.map((item) => (
-                <option key={`${item.curriculum}-${item.subject}`} value={item.subject}>
-                  {item.subject} · {item.documents.toLocaleString()}건
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-        <div className="activeFilters" aria-label="현재 선택">
-          <span>현재 선택</span>
-          <strong>{curriculum} 개정</strong>
-          <strong>{subject}</strong>
-        </div>
-      </section>
 
       {loading ? <LoadingTrends /> : null}
       {error ? <ErrorPanel message={error} /> : null}
@@ -158,7 +62,6 @@ export default function TrendsExplorer() {
 
           <section className="metricSection" aria-labelledby="overview-title">
             <div className="sectionLabel">
-              <span className="stepPill">2</span>
               <div><h2 id="overview-title">한눈에 보는 {subject}</h2><p>{displayYears(trend.academic_years)}학년도 평가계획 기준</p></div>
             </div>
             <dl className="catalogMetrics">
@@ -208,23 +111,6 @@ export default function TrendsExplorer() {
             </section>
           </div>
 
-          <section className="coverageSection" aria-labelledby="coverage-title">
-            <div className="sectionLabel">
-              <span className="stepPill">3</span>
-              <div><h2 id="coverage-title">학교별 확인 상태</h2><p>수집한 공개 평가계획의 교육과정·과목 확인표 기준</p></div>
-            </div>
-            {Object.values(trend.coverage).some((value) => value !== null) ? <div className="coverageGrid">
-              <div className="coveragePrimary"><span>평가계획에서 발견</span><strong>{trend.coverage.found?.toLocaleString() ?? "미집계"}</strong><small>학교</small></div>
-              <dl>
-                <div><dt>교육과정 판별 유보</dt><dd>{trend.coverage.found_curriculum_ambiguous?.toLocaleString() ?? "미집계"}</dd></div>
-                <div><dt>평가계획에서 미검출</dt><dd>{trend.coverage.not_found_in_collected_plans?.toLocaleString() ?? "미집계"}</dd></div>
-                <div><dt>개설 여부 미확인</dt><dd>{trend.coverage.offering_unknown?.toLocaleString() ?? "미집계"}</dd></div>
-                <div><dt>추출 실패</dt><dd>{trend.coverage.extraction_failed?.toLocaleString() ?? "미집계"}</dd></div>
-              </dl>
-            </div> : <p>학교별 확인 상태는 집계 준비 중입니다.</p>}
-            <div className="interpretationNote"><strong>해석 주의</strong><p>{caution}</p></div>
-          </section>
-
           <section className="nextActionCard">
             <div><p className="eyebrow">다음 단계</p><h2>숫자 뒤에 있는 실제 사례를 살펴보세요</h2><p>{curriculum} 개정 {subject} 사례에서 과제명, 활동 표지, 평가 근거를 비교합니다.</p></div>
             <Link href={caseLink}>{subject} 사례 보기 <span aria-hidden="true">→</span></Link>
@@ -244,5 +130,5 @@ function ErrorPanel({ message }: { message: string }) {
 }
 
 function EmptyPanel() {
-  return <div className="emptyPanel"><strong>이 조건에서 확인된 자료가 없습니다.</strong><p>다른 교육과정이나 과목을 선택해 보세요.</p></div>;
+  return <div className="emptyPanel"><strong>이 조건에서 확인된 자료가 없습니다.</strong><p>공개 자료가 준비되면 이곳에 표시됩니다.</p></div>;
 }

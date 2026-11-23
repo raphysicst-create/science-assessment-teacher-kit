@@ -64,7 +64,7 @@ export default function ReferenceExplorer() {
     <header className="pageHeaderCompact">
       <div><p className="breadcrumb"><Link href="/">홈</Link><span>/</span>단원·활동별 사례</p><h1>단원·활동으로 찾는 과학 수행평가</h1>
         <p>단원을 고르고 활동을 고르면, 그 조합의 실제 사례가 나옵니다.</p>
-        <p className="referenceSource">단원: 2022 개정 중학교 과학 교육과정 영역 · 활동: 명칭은 생명과학판에서 차용, 판정 정의는 별도 작성</p></div>
+      </div>
       <p aria-label="검색 결과 수">항목 {(data?.total_items ?? 0).toLocaleString()} · 사례 {(data?.total_cases ?? 0).toLocaleString()}</p>
     </header>
 
