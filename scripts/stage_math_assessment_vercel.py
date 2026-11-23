@@ -66,7 +66,11 @@ def main() -> None:
 
     api_source = ROOT / "services" / "math-assessment-api"
     api_target = TARGET / "services" / "math-assessment-api"
-    shutil.copytree(api_source / "app", api_target / "app")
+    # Local test runs leave bytecode caches; they are not deploy inputs.
+    shutil.copytree(
+        api_source / "app", api_target / "app",
+        ignore=shutil.ignore_patterns("__pycache__", "*.pyc"),
+    )
     for name in API_FILES:
         copy_file(api_source / name, api_target / name)
     for source in sorted(PACKAGED_DATA.iterdir()):
